@@ -6,10 +6,15 @@
   "type": "module",
   "scripts": {
     "test": "node build/test-automation.mjs",
-    "link:foundry": "node build/link-foundry.mjs"
+    "link:foundry": "node build/link-foundry.mjs",
+    "index:pf2e": "node build/index-pf2e.mjs",
+    "build:vanilla": "node build/build-vanilla.mjs"
   },
   "engines": {
     "node": ">=22"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "classic-level": "^3.0.0"
+  }
 }

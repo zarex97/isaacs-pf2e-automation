@@ -467,6 +467,73 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The vanilla table's data: the bundle, and every entry checked against pf2e itself            */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const V = await import("./lib/vanilla.mjs");
+    const { EVENTS, OUTCOMES } = await import("../scripts/riders/data.mjs");
+    const { AREA_SHAPES, AFFECTS } = await import("../scripts/targeting/config.mjs");
+    const index = JSON.parse(fs.readFileSync(V.INDEX, "utf8"));
+    const en = JSON.parse(fs.readFileSync(path.join(ROOT, "lang", "en.json"), "utf8"));
+    const flat = (obj, prefix = "") => Object.entries(obj).flatMap(([k, v]) => (typeof v === "object" ? flat(v, `${prefix}${k}.`) : [`${prefix}${k}`]));
+    const ctx = { index, authoredKeys: AUTHORED_KEYS, events: EVENTS, outcomes: OUTCOMES, applyTypes: BUILT_IN_APPLY_TYPES, areaShapes: AREA_SHAPES, affects: AFFECTS, i18nKeys: new Set(flat(en)) };
+
+    const built = V.bundle();
+    const carriageReturn = new RegExp(String.fromCharCode(13), "g");
+    check("data/vanilla.json is what content/vanilla builds (npm run build:vanilla)", fs.readFileSync(V.BUNDLE, "utf8").replace(carriageReturn, ""), V.serialise(built));
+    check("the bundle names the pf2e it was checked against", built.pf2e, index.pf2e);
+    check("every vanilla entry is sound", Object.entries(built.entries).flatMap(([slug, entry]) => V.problemsWith(slug, entry, ctx)), []);
+    check("every alias leads to an entry, and shadows no live slug", V.aliasProblems(built.aliases, built.entries, index), []);
+
+    // The checks themselves, on fixtures: a sound entry passes, and each kind of mistake is named.
+    const fearUuid = Object.values(index.effects)[0];
+    const sound = {
+        areaTargeting: { maxTargets: 2 },
+        riders: [{ outcomes: ["failure"], apply: { type: "condition", slug: "frightened", value: 2 } },
+            { event: "action-used", apply: { type: "effect", uuid: fearUuid } }],
+    };
+    check("a sound entry has no problems", V.problemsWith("fear", sound, ctx), []);
+    const heal = Object.keys(index.spells.heal?.overlays ?? {})[0];
+    const wrong = (slug, entry) => V.problemsWith(slug, entry, ctx).length;
+    check("each mistake is caught", {
+        slug: wrong("not-a-spell", {}),
+        key: wrong("fear", { ridersApplied: {} }),
+        variant: wrong("heal", { variants: { nope: { riders: [] } } }),
+        variantOk: wrong("heal", { variants: { [heal]: { areaTargeting: { affects: "allies" } } } }),
+        condition: wrong("fear", { riders: [{ apply: { type: "condition", slug: "terrified" } }] }),
+        effect: wrong("fear", { riders: [{ apply: { type: "effect", uuid: "Compendium.pf2e.spell-effects.Item.xxxxxxxxxxxxxxxx" } }] }),
+        event: wrong("fear", { riders: [{ event: "spell-landed", apply: { type: "prompt" } }] }),
+        outcome: wrong("fear", { riders: [{ outcomes: ["fail"], apply: { type: "prompt" } }] }),
+        type: wrong("fear", { riders: [{ apply: { type: "equip" } }] }),
+        save: wrong("fear", { riders: [{ apply: { type: "save", statistic: "perception" } }] }),
+        nested: wrong("fear", { riders: [{ apply: { type: "save", statistic: "will", riders: [{ apply: { type: "condition", slug: "terrified" } }] } }] }),
+        literal: wrong("fear", { riders: [{ apply: { type: "prompt", text: "Run away." } }] }),
+        missingKey: wrong("fear", { riders: [{ apply: { type: "prompt", text: "ISAACS_AUTOMATION.Vanilla.fear.Nope" } }] }),
+        shape: wrong("calm", { areaTargeting: { area: { type: "blob", value: 10 } } }),
+        affects: wrong("calm", { areaTargeting: { affects: "friends" } }),
+    }, { slug: 1, key: 1, variant: 1, variantOk: 0, condition: 1, effect: 1, event: 1, outcome: 1, type: 1, save: 1, nested: 1, literal: 1, missingKey: 1, shape: 1, affects: 1 });
+    check("an alias to nothing, or over a live slug, is caught", V.aliasProblems({ "magic-missile": "force-barrage", fear: "calm" }, { calm: {} }, index).length, 2);
+
+    // The words a table entry names by key are read back translated; an item's own text is left alone.
+    const savedGame = globalThis.game;
+    globalThis.game = { ...savedGame, i18n: { has: (k) => k === "ISAACS_AUTOMATION.Vanilla.slow.Prompt", localize: () => "Run!" } };
+    Vanilla.setTable({ entries: { slow: { riders: [{ apply: { type: "prompt", text: "ISAACS_AUTOMATION.Vanilla.slow.Prompt" } }] } } });
+    const item = (flags = {}) => ({ documentName: "Item", slug: "slow", flags });
+    check("a table entry's key is read as its words", configOf(item(), "riders")[0].apply.text, "Run!");
+    check("an item's own text is not touched", configOf(item({ [LIB_ID]: { riders: [{ apply: { type: "prompt", text: "ISAACS_AUTOMATION.Vanilla.slow.Prompt" } }] } }), "riders")[0].apply.text, "ISAACS_AUTOMATION.Vanilla.slow.Prompt");
+    Vanilla.setTable({ aliases: {}, entries: {} });
+    globalThis.game = savedGame;
+
+    // A newer pf2e installed here than the index was made from: say so, but do not fail CI over it.
+    const local = path.join(process.env.FOUNDRY_DATA ?? path.join(process.env.LOCALAPPDATA ?? "", "FoundryVTT", "Data"), "systems", "pf2e", "system.json");
+    if (fs.existsSync(local)) {
+        const installed = JSON.parse(fs.readFileSync(local, "utf8")).version;
+        if (installed !== index.pf2e) console.warn(`pf2e ${installed} is installed; the index is from ${index.pf2e}. Run npm run index:pf2e.`);
+    }
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The contract                                                                                 */
 /* -------------------------------------------------------------------------------------------- */
 
@@ -574,6 +641,11 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
         }
     }
     for (const m of fs.readFileSync(path.join(ROOT, "templates", "area-targets.hbs"), "utf8").matchAll(/localize "([^"]+)"/g)) used.add(m[1]);
+    // The vanilla table names its words by full key.
+    const vanillaDir = path.join(ROOT, "content", "vanilla");
+    for (const file of fs.existsSync(vanillaDir) ? fs.readdirSync(vanillaDir) : []) {
+        for (const m of fs.readFileSync(path.join(vanillaDir, file), "utf8").matchAll(/"(ISAACS_AUTOMATION\.Vanilla\.[^"]+)"/g)) used.add(m[1]);
+    }
     check("every string the module shows is in lang/en.json", [...used].filter((k) => !defined.has(k)).sort(), []);
     check("lang/en.json carries no string nothing shows", [...defined].filter((k) => !used.has(k)).sort(), []);
 }

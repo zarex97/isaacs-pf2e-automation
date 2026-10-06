@@ -52,7 +52,12 @@ pipeline, registry and hook, is [`Docs/api.md`](Docs/api.md).
 ```sh
 npm test               # offline checks, plain Node
 npm run link:foundry   # link this folder into Foundry's Data/modules
+npm run index:pf2e     # re-index the installed pf2e compendium (build/data/pf2e-index.json)
+npm run build:vanilla  # bundle content/vanilla/*.json into data/vanilla.json
 ```
+
+Vanilla table entries are one file per spell in `content/vanilla/<slug>.json`, in the shape item flags carry
+([`Docs/api.md`](Docs/api.md#vanilla-content--since-120)); `npm test` checks each against the pf2e index.
 
 Live verification is described in [`Docs/tools/live-verification.md`](Docs/tools/live-verification.md).
 
