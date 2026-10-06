@@ -26,9 +26,9 @@ const suppressibleTraits = new Set(["stance", "polymorph"]);
 let suppressor = null;
 
 function named(list, what, name, priority, fn) {
-    if (typeof fn !== "function") throw new Error(`Isaac's Homebrew | rider ${what} "${name}" is not a function.`);
+    if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | rider ${what} "${name}" is not a function.`);
     if (list.some((entry) => entry.name === name)) {
-        throw new Error(`Isaac's Homebrew | the rider engine already has a ${what} called "${name}".`);
+        throw new Error(`Isaac's PF2e Automation | the rider engine already has a ${what} called "${name}".`);
     }
     list.push({ name, priority, fn });
     list.sort((a, b) => a.priority - b.priority);
@@ -36,15 +36,29 @@ function named(list, what, name, priority, fn) {
 
 const listed = (list) => list.map(({ name, priority }) => ({ name, priority }));
 
+/** The statistic name the defaults use for "the best of the origin's spellcasting". */
+const SPELL = "spellcasting";
+
+/** The origin's spellcasting entry with the highest DC, if it has any. */
+function bestSpellcasting(actor) {
+    const entries = [...(actor?.spellcasting?.contents ?? actor?.spellcasting ?? [])].filter((entry) => entry?.statistic?.dc?.value);
+    return entries.sort((a, b) => b.statistic.dc.value - a.statistic.dc.value)[0] ?? null;
+}
+
+/** The origin's class DC, else its best spell DC, else nothing. */
+function defaultDC(actor) {
+    return actor?.classDC?.dc?.value ?? bestSpellcasting(actor)?.statistic?.dc?.value ?? null;
+}
+
 export const RiderExtensions = {
     /**
      * A rider apply type of another module's own: `{ apply: { type } }` dispatches to `fn(rider, context)`.
      * The built-in types cannot be replaced.
      */
     registerApplyType(type, fn, { builtIn = [] } = {}) {
-        if (typeof fn !== "function") throw new Error(`Isaac's Homebrew | apply type "${type}" is not a function.`);
+        if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | apply type "${type}" is not a function.`);
         if (applyTypes.has(type) || builtIn.includes(type)) {
-            throw new Error(`Isaac's Homebrew | the rider engine already has an apply type "${type}".`);
+            throw new Error(`Isaac's PF2e Automation | the rider engine already has an apply type "${type}".`);
         }
         applyTypes.set(type, fn);
     },
@@ -54,7 +68,7 @@ export const RiderExtensions = {
 
     /** A Strike a volley may name (`strikes.apply.strike`): `fn(actor, { exact })` → a strike action, or null. */
     registerStrikeSelector(name, fn) {
-        if (strikeSelectors.has(name)) throw new Error(`Isaac's Homebrew | the rider engine already has a strike selector "${name}".`);
+        if (strikeSelectors.has(name)) throw new Error(`Isaac's PF2e Automation | the rider engine already has a strike selector "${name}".`);
         strikeSelectors.set(name, fn);
     },
     strikeSelector(name) {
@@ -89,6 +103,9 @@ export const RiderExtensions = {
             const value = fn(dc, context);
             if (value !== undefined) return value;
         }
+        // Nothing named, nothing registered answered: what pf2e itself would reach for — the origin's class DC,
+        // then the best DC among its spellcasting entries. An unknown word stays unresolved, and says so.
+        if (dc === undefined || dc === null) return defaultDC(context?.originActor);
         return null;
     },
 
@@ -101,7 +118,8 @@ export const RiderExtensions = {
             const found = fn(actor, slug);
             if (found !== undefined) return found;
         }
-        return actor?.getStatistic?.(slug) ?? null;
+        if (slug === SPELL) return bestSpellcasting(actor)?.statistic ?? null;
+        return actor?.getStatistic?.(slug) ?? actor?.classDCs?.[slug] ?? null;
     },
 
     /** The statistic a counteract uses when the rider names none: `fn(actor)` → a slug, or `undefined`. */
@@ -113,7 +131,10 @@ export const RiderExtensions = {
             const slug = fn(actor);
             if (slug !== undefined) return slug;
         }
-        return null;
+        // The origin's class DC statistic, then its best spellcasting.
+        const classDC = actor?.classDC?.slug ?? null;
+        if (classDC) return classDC;
+        return bestSpellcasting(actor) ? SPELL : null;
     },
 
     /** Ranks added to a counteract: `fn(actor, item)` → a number. */
@@ -149,7 +170,7 @@ export const RiderExtensions = {
      * is counteracted is ended like any other.
      */
     registerSuppressor(fn) {
-        if (suppressor) throw new Error("Isaac's Homebrew | the rider engine already has a suppressor.");
+        if (suppressor) throw new Error("Isaac's PF2e Automation | the rider engine already has a suppressor.");
         suppressor = fn;
     },
     async suppress(effect, details) {
