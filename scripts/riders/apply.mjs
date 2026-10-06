@@ -1,4 +1,5 @@
 import { flagOf, mergedFlag } from "../lib/flags.mjs";
+import { configOf } from "../lib/config-of.mjs";
 import { describeActor, describeDamage, riderOptions, testPredicate } from "../lib/roll-options.mjs";
 import { catchTokens } from "../targeting/catch.mjs";
 import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, stepsFor, thresholdsCrossed, valueAtLevel } from "../targeting/heightening.mjs";
@@ -822,7 +823,7 @@ function strikeCount(rider, context, available) {
     if (asked !== "maxTargets") return available;
 
     const item = context.item ?? context.riderItem;
-    const flag = flagOf(item, "areaTargeting");
+    const flag = configOf(item, "areaTargeting");
     if (!flag?.maxTargets) return available;
 
     const bonusSteps = bonusStepsFrom(context.originActor?.getRollOptions?.() ?? []);
@@ -1627,7 +1628,7 @@ async function applyEffect(rider, context) {
  * counter starts above it.
  */
 async function crossThresholds(source, was, now, context) {
-    const thresholds = flagOf(source, "counterThresholds");
+    const thresholds = configOf(source, "counterThresholds");
     for (const threshold of thresholdsCrossed(thresholds, was, now)) {
         try {
             await applyOne(threshold, context);

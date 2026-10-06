@@ -12,6 +12,7 @@ shape only in a major version. A change starts here, then in `scripts/api.mjs`.
 | --- | --- |
 | 1.0.0 | Everything below unless marked otherwise |
 | 1.1.0 | The rider engine, areas left behind, the `counteracted` hook — marked where they appear |
+| 1.2.0 | The vanilla table and `api.vanilla` — marked where they appear |
 
 ## Pipelines
 
@@ -148,6 +149,30 @@ Ordered registries run in ascending priority; a name is taken once and a second 
 - `api.enemyTerrain` — `isaacs-pf2e-automation.enemyMovementCost`, difficult terrain that slows only the
   origin's opponents. `registerOriginFlag(key)` names another Region flag (with an `originUuid`) that says
   whose terrain it is.
+
+## Vanilla content — since 1.2.0
+
+Content nobody authored for this module, by slug: pf2e's own spells first. The config is the same an item's
+flags carry; where it comes from, for each **authored key** (`AUTHORED_KEYS`: `areaTargeting`,
+`areaTargetingShapes`, `riders`, `lingering`, `overlap`, `bypass`, `counterThresholds`), in order:
+
+1. the item's own flags, in any flag scope — `false` switches that key off, table and all;
+2. an entry another module registered for the item's slug;
+3. this module's table (`data/vanilla.json`), by slug or by a legacy slug's alias.
+
+Asked per key: an entry that says nothing about a key leaves the next source's answer standing. An entry may
+carry `variants: { [overlayId]: { …keys } }` for a cast variant (pf2e's `item.variantId`). Items from another
+module's compendium never take an entry, except a registering module's own items taking its own entries.
+
+An area from 2 or 3 aims at the `registered` tier of the scope setting, not as authored. A rider from 2 or 3
+is dropped when the spell is already covered by another active automation module (see the coexistence setting).
+
+- `api.vanilla.register(moduleId, { [slug]: entry })` — register in your `setup`. A slug is taken once; a
+  second module's claim is refused with a console warning.
+- `api.vanilla.configOf(document, key)` → the value; `api.vanilla.sourceOf(document, key)` →
+  `{ value, source: "flags" | "registered" | "table" | null, module, off, deferred, slug }`.
+- `api.vanilla.registered()` → `{ [slug]: moduleId }`; `api.vanilla.covered()` → this module's slugs;
+  `api.vanilla.AUTHORED_KEYS`.
 
 ## Hooks this module fires
 

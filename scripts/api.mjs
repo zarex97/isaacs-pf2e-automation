@@ -10,6 +10,8 @@ import { DEGREES, degreeOf } from "./lib/degree.mjs";
 import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage, OPTION as DAMAGED_THIS_ENCOUNTER, encounterOf } from "./lib/encounter-damage.mjs";
 import { flagOf, flagScopes, registerFlagScope } from "./lib/flags.mjs";
+import { AUTHORED_KEYS, configOf, sourceOf } from "./lib/config-of.mjs";
+import { Vanilla } from "./vanilla/table.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { describeActor, describeDamage, riderOptions, targetingOptions, testPredicate } from "./lib/roll-options.mjs";
 import { catchTokens } from "./targeting/catch.mjs";
@@ -86,6 +88,17 @@ export function buildApi() {
 
         // Which modules' flags carry authored config.
         flags: { registerFlagScope, flagOf, flagScopes },
+
+        // Content nobody authored for this module, by slug: entries other modules register, then this
+        // module's own table. `configOf` is what every authored read goes through (Docs/api.md).
+        vanilla: {
+            register: (moduleId, entries) => Vanilla.register(moduleId, entries),
+            registered: () => Vanilla.registered(),
+            covered: () => Vanilla.covered(),
+            configOf,
+            sourceOf,
+            AUTHORED_KEYS,
+        },
 
         // The rider engine, the GM relay, lingering ground, overlap and enemies-only terrain.
         ...buildRidersApi(),

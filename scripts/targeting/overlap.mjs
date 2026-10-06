@@ -1,5 +1,6 @@
 import { t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
+import { configOf } from "../lib/config-of.mjs";
 import { Relay } from "../riders/relay.mjs";
 import { LIB_ID } from "../id.mjs";
 import { catchTokens } from "./catch.mjs";
@@ -30,7 +31,7 @@ export const Overlap = {
     },
 
     async apply(config, regions, originToken) {
-        const spec = flagOf(config.item, FLAG);
+        const spec = configOf(config.item, FLAG);
         const placed = [regions].flat().filter((region) => region);
         if (!spec || placed.length < 2) return;
 
@@ -67,7 +68,7 @@ export const Overlap = {
  */
 export async function applyOverlap(payload) {
     const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
-    const spec = flagOf(item, FLAG);
+    const spec = configOf(item, FLAG);
     if (!spec) return;
 
     for (const { targetUuid, count } of payload.overlapped ?? []) {

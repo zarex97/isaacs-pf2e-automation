@@ -1,4 +1,5 @@
 import { flagOf } from "../lib/flags.mjs";
+import { configOf } from "../lib/config-of.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
 
@@ -104,7 +105,7 @@ export function bypassEntriesOn(actor, dealtBy = null) {
     const consider = (item) => {
         if (!item || seen.has(item.id)) return;
         seen.add(item.id);
-        const flagged = flagOf(item, FLAG);
+        const flagged = configOf(item, FLAG);
         if (!Array.isArray(flagged)) return;
         entries.push(...flagged.map((entry) => ({ entry: pinToSource(entry, item), item })));
     };

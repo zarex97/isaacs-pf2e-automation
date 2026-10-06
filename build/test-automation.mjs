@@ -388,6 +388,85 @@ const { describeActor, describeDamage } = await import("../scripts/lib/roll-opti
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The vanilla table: where authored config comes from                                          */
+/* -------------------------------------------------------------------------------------------- */
+
+const { Vanilla } = await import("../scripts/vanilla/table.mjs");
+const { configOf, sourceOf, AUTHORED_KEYS } = await import("../scripts/lib/config-of.mjs");
+const { configFor } = await import("../scripts/targeting/config.mjs");
+
+{
+    const fear = { riders: [{ apply: { type: "condition", slug: "frightened" } }], areaTargeting: { maxTargets: 1 } };
+    Vanilla.setTable({
+        aliases: { "magic-missile": "force-barrage" },
+        entries: {
+            fear,
+            "force-barrage": { areaTargeting: { maxTargets: 3 } },
+            heal: { areaTargeting: { affects: "allies" }, variants: { threeActions: { areaTargeting: { affects: "all" } } } },
+        },
+    });
+    const spell = (slug, extra = {}) => ({ documentName: "Item", type: "spell", slug, flags: {}, ...extra });
+
+    check("a table entry answers for a vanilla spell", configOf(spell("fear"), "riders"), fear.riders);
+    check("…and says it was the table", [sourceOf(spell("fear"), "riders").source, sourceOf(spell("fear"), "riders").module], ["table", LIB_ID]);
+    check("an item's own flag wins over the table", configOf(spell("fear", { flags: { [LIB_ID]: { riders: [] } } }), "riders"), []);
+    check("…per key: the table still answers the keys the item does not", configOf(spell("fear", { flags: { [LIB_ID]: { riders: [] } } }), "areaTargeting"), { maxTargets: 1 });
+    const off = sourceOf(spell("fear", { flags: { "a-homebrew": { riders: false } } }), "riders");
+    check("false switches a key off, table and all, and names the scope that said so", [off.value, off.off, off.module], [undefined, true, "a-homebrew"]);
+    check("a legacy slug reads its remaster entry", [configOf(spell("magic-missile"), "areaTargeting"), sourceOf(spell("magic-missile"), "areaTargeting").slug], [{ maxTargets: 3 }, "force-barrage"]);
+    check("a variant's keys override its spell's", [configOf(spell("heal"), "areaTargeting").affects, configOf(spell("heal", { variantId: "threeActions" }), "areaTargeting").affects], ["allies", "all"]);
+
+    const fromPack = (pack) => spell("fear", { _stats: { compendiumSource: `Compendium.${pack}.spells.Item.abc` } });
+    check("a copy from pf2e's own compendium matches", configOf(fromPack("pf2e"), "riders"), fear.riders);
+    check("another module's spell sharing the slug does not", configOf(fromPack("some-homebrew"), "riders"), undefined);
+    check("state keys never come from the table", AUTHORED_KEYS.includes("ridersApplied") || configOf(spell("fear"), "ridersApplied") !== undefined, false);
+    check("only Items are looked up", configOf({ documentName: "ChatMessage", slug: "fear", flags: {} }, "riders"), undefined);
+
+    Vanilla.register("a-bestiary", { fear: { riders: [{ apply: { type: "prompt" } }] }, "own-thing": { riders: [] } });
+    check("a registered entry ranks above the table", [configOf(spell("fear"), "riders")[0].apply.type, sourceOf(spell("fear"), "riders").module], ["prompt", "a-bestiary"]);
+    check("a registering module's own pack items take its entries", sourceOf(spell("own-thing", { _stats: { compendiumSource: "Compendium.a-bestiary.x.Item.y" } }), "riders").source, "registered");
+    Vanilla.register("someone-else", { fear: { riders: [] } });
+    check("a slug is registered once; the second module is refused", Vanilla.registered().fear, "a-bestiary");
+
+    Vanilla.setRiderDeferral((slug) => (slug === "fear" ? "pf2e-automations" : null));
+    const deferred = sourceOf(spell("fear"), "riders");
+    check("a table rider another module covers is deferred, and says to whom", [deferred.value, deferred.deferred], [undefined, "pf2e-automations"]);
+    check("…its area is not", configOf(spell("fear"), "areaTargeting"), { maxTargets: 1 });
+    check("…and an item's own riders are never deferred", configOf(spell("fear", { flags: { [LIB_ID]: { riders: [1] } } }), "riders"), [1]);
+    Vanilla.setRiderDeferral(null);
+
+    // The scope tiers: an authored flag always aims; a table entry is the `registered` tier.
+    const saved = { game: globalThis.game, canvas: globalThis.canvas };
+    let scope = "registered";
+    globalThis.canvas = { ready: true };
+    globalThis.game = { ...saved.game, settings: { get: (_m, key) => (key === "areaTargetingScope" ? scope : true) } };
+    const burst = (extra) => spell("calm", { actor: { getRollOptions: () => [] }, system: { area: { type: "emanation", value: 30 } }, rank: 4, ...extra });
+    Vanilla.setTable({ entries: { calm: { areaTargeting: { affects: "enemies" } } } });
+    const tiers = (item) => ["authored", "registered", "all"].map((s) => ((scope = s), configFor(item)?.affects ?? null));
+    check("a table area aims under registered and all, not authored-only", tiers(burst()), [null, "enemies", "enemies"]);
+    check("an authored flag aims under all three", tiers(burst({ flags: { [LIB_ID]: { areaTargeting: { affects: "allies" } } } })), ["allies", "allies", "allies"]);
+    check("areaTargeting: false keeps even 'every spell with an area' off it", tiers(burst({ flags: { [LIB_ID]: { areaTargeting: false } } })), [null, null, null]);
+    Object.assign(globalThis, saved);
+    Vanilla.setTable({ aliases: {}, entries: {} });
+}
+
+{
+    // Every authored read goes through configOf: a table can only answer where it is asked.
+    const authored = new Set(AUTHORED_KEYS);
+    const bypassed = [];
+    const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(dir, e.name)) : e.name.endsWith(".mjs") ? [path.join(dir, e.name)] : []));
+    for (const file of walk(SCRIPTS)) {
+        const text = fs.readFileSync(file, "utf8");
+        const flagConst = /(?:export )?const FLAG = "([A-Za-z]+)"/.exec(text)?.[1];
+        for (const m of text.matchAll(/flagOf\(\s*([\w.]+)\s*,\s*("([A-Za-z]+)"|FLAG)\s*\)/g)) {
+            const key = m[3] ?? flagConst;
+            if (authored.has(key) && /item|source/i.test(m[1])) bypassed.push(`${path.relative(ROOT, file)}: flagOf(${m[1]}, ${m[2]})`);
+        }
+    }
+    check("no authored key is read off an item with flagOf", bypassed, []);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The contract                                                                                 */
 /* -------------------------------------------------------------------------------------------- */
 

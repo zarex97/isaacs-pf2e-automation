@@ -19,6 +19,7 @@ import { registerEnemyTerrain } from "./targeting/enemy-terrain.mjs";
 import { AreaTargeting } from "./targeting/index.mjs";
 import { Lingering } from "./targeting/lingering.mjs";
 import { Overlap } from "./targeting/overlap.mjs";
+import { Vanilla } from "./vanilla/table.mjs";
 
 /**
  * What the automation does at `init` and at `setup`, as named steps.
@@ -33,6 +34,8 @@ export const INIT = [
     ["spell frequency", () => SpellFrequency.registerHooks()],
     ["feat and action frequency", () => FrequencyGuard.registerHooks()],
     ["damaged this encounter", () => EncounterDamage.registerHooks()],
+    // Not awaited: nothing reads the table before a cast, and a failed fetch leaves vanilla content as it was.
+    ["the vanilla table", () => void Vanilla.load()],
 ];
 
 /**

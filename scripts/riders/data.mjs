@@ -1,4 +1,5 @@
 import { flagOf } from "../lib/flags.mjs";
+import { configOf } from "../lib/config-of.mjs";
 import { LIB_ID } from "../id.mjs";
 
 export const OUTCOMES = ["criticalSuccess", "success", "failure", "criticalFailure"];
@@ -61,7 +62,7 @@ export function isAbilityUse(message) {
 
 /** Every rider declared on an item, or an empty list. */
 export function ridersOn(item) {
-    const riders = flagOf(item, "riders");
+    const riders = configOf(item, "riders");
     return Array.isArray(riders) ? riders : [];
 }
 
