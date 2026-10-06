@@ -15,6 +15,7 @@
  * specific: it is the same machinery any reaction in any class would want, and the Saint's own reaction
  * Techniques could move onto it without a line of new code.
  */
+import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 
 /**
@@ -120,10 +121,10 @@ export async function offerReaction(rider, context) {
         flavor: `${item.name} — ${rider.apply.freeAction ? "free action" : "reaction"}`,
         content:
             `<p>${prompt}</p>`
-            + `<div class="isaacs-hb-choice">`
-            + `<button type="button" data-action="isaacs-hb-reaction">${label}</button>`
+            + `<div class="isaacs-automation-choice">`
+            + `<button type="button" data-action="isaacs-automation-reaction">${label}</button>`
             + `</div>`
-            + `<p class="isaacs-hb-hint"><em>Ignoring this card declines the reaction; nothing is spent.</em></p>`,
+            + `<p class="isaacs-automation-hint"><em>Ignoring this card declines the reaction; nothing is spent.</em></p>`,
         flags: {
             [LIB_ID]: {
                 reaction: {
@@ -152,12 +153,12 @@ export async function offerReaction(rider, context) {
 
 /** Bind the button on a rendered reaction card. Mirrors `bindChoiceButtons` beside it. */
 export function bindReactionButtons(message, html, request) {
-    const reaction = message?.flags?.[LIB_ID]?.reaction;
+    const reaction = flagOf(message, "reaction");
     if (!reaction || !html?.querySelectorAll) return;
 
-    for (const button of html.querySelectorAll(`[data-action="isaacs-hb-reaction"]`)) {
+    for (const button of html.querySelectorAll(`[data-action="isaacs-automation-reaction"], [data-action="isaacs-hb-reaction"]`)) {
         button.addEventListener("click", async () => {
-            for (const sibling of html.querySelectorAll(`[data-action="isaacs-hb-reaction"]`)) {
+            for (const sibling of html.querySelectorAll(`[data-action="isaacs-automation-reaction"], [data-action="isaacs-hb-reaction"]`)) {
                 sibling.disabled = true;
             }
             await request({ action: "applyReaction", event: "reaction", ...reaction });

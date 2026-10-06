@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { bonusStepsFrom, stepsFor } from "../targeting/heightening.mjs";
 import { LIB_ID } from "../id.mjs";
 import { escapeDcFor } from "./escape.mjs";
@@ -70,7 +71,7 @@ export const Encasement = {
 
     /** Break the shell — by damage reaching 0, by the escape check, or by a GM's own hand. */
     async destroy(hazard, { freed = true } = {}) {
-        const spec = hazard?.flags?.[LIB_ID]?.[FLAG];
+        const spec = flagOf(hazard, FLAG);
         if (!spec) return;
 
         for (const token of hazard.getActiveTokens(true, true) ?? []) {
@@ -85,7 +86,7 @@ export const Encasement = {
         for (const slug of [spec.conditions].flat().filter(Boolean)) {
             if (target.hasCondition(slug)) await target.decreaseCondition(slug, { forceRemove: true });
         }
-        const escape = target.items.find((i) => i.flags?.[LIB_ID]?.[FLAG]?.hazardUuid === hazard.uuid);
+        const escape = target.items.find((i) => flagOf(i, FLAG)?.hazardUuid === hazard.uuid);
         if (escape) await escape.delete();
 
         await ChatMessage.create({
@@ -97,7 +98,7 @@ export const Encasement = {
     registerHooks() {
         Hooks.on("updateActor", async (actor) => {
             if (game.users.activeGM?.id !== game.user.id) return;
-            if (!actor.flags?.[LIB_ID]?.[FLAG]) return;
+            if (!flagOf(actor, FLAG)) return;
             if ((actor.hitPoints?.value ?? 1) > 0) return;
             await Encasement.destroy(actor);
         });

@@ -1,4 +1,5 @@
 import { LIB_ID } from "../id.mjs";
+import { flagOf } from "../lib/flags.mjs";
 
 /** Where a lingering area keeps its origin. Spelled here rather than imported, so the two files do not import each other. */
 const LINGERING_FLAG = "lingering";
@@ -50,9 +51,8 @@ export function allianceOf(actor) {
  * filter was there, and it had nothing to compare against, so `catches` waved everybody through.
  */
 function originOf(region) {
-    const flags = region?.flags?.[LIB_ID] ?? {};
-    const key = [LINGERING_FLAG, ...originFlags].find((name) => flags[name]?.originUuid);
-    const uuid = key ? flags[key].originUuid : null;
+    const key = [LINGERING_FLAG, ...originFlags].find((name) => flagOf(region, name)?.originUuid);
+    const uuid = key ? flagOf(region, key).originUuid : null;
     const document = uuid ? fromUuidSync(uuid) : null;
     return document?.actor ?? document;
 }

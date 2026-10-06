@@ -1,3 +1,4 @@
+import { mergedFlag } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 
 /**
@@ -65,7 +66,7 @@ export async function claimRound(actor, item, index) {
     const stamp = roundKey();
     if (!stamp) return true;
     const key = riderKey(item, index);
-    const ledger = actor?.getFlag?.(LIB_ID, FLAG) ?? {};
+    const ledger = mergedFlag(actor, FLAG) ?? {};
     if (alreadySpent(ledger, key, stamp)) return false;
     await actor?.setFlag?.(LIB_ID, FLAG, { ...ledger, [key]: stamp });
     return true;

@@ -1,3 +1,4 @@
+import { flagOf, unsetFlagEverywhere } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 import { STRIKE_TECHNIQUE_FLAG, armedTechniqueId, ridersOn } from "./data.mjs";
 
@@ -66,8 +67,8 @@ export const StrikeTechnique = {
     },
 
     async disarm(actor) {
-        if (!actor?.getFlag?.(LIB_ID, STRIKE_TECHNIQUE_FLAG)) return;
-        await actor.unsetFlag(LIB_ID, STRIKE_TECHNIQUE_FLAG);
+        if (!flagOf(actor, STRIKE_TECHNIQUE_FLAG)) return;
+        await unsetFlagEverywhere(actor, STRIKE_TECHNIQUE_FLAG);
     },
 
     registerHooks() {

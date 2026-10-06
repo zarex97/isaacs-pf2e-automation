@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
 
@@ -52,7 +53,7 @@ export const MEMORY = "severingBypass";
  * encounter picks it up. It is cleared the next time Severance begins.
  */
 export function rememberedEntries(actor) {
-    const kept = actor?.getFlag?.(LIB_ID, MEMORY);
+    const kept = flagOf(actor, MEMORY);
     if (!kept?.slug || !Array.isArray(kept.entries)) return [];
     const item = { id: `remembered-${kept.slug}`, name: kept.name ?? kept.slug };
     return kept.entries.map((entry) => ({
@@ -103,7 +104,7 @@ export function bypassEntriesOn(actor, dealtBy = null) {
     const consider = (item) => {
         if (!item || seen.has(item.id)) return;
         seen.add(item.id);
-        const flagged = item.flags?.[LIB_ID]?.[FLAG];
+        const flagged = flagOf(item, FLAG);
         if (!Array.isArray(flagged)) return;
         entries.push(...flagged.map((entry) => ({ entry: pinToSource(entry, item), item })));
     };

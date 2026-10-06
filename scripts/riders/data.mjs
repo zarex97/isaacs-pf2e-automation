@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 
 export const OUTCOMES = ["criticalSuccess", "success", "failure", "criticalFailure"];
@@ -67,7 +68,7 @@ export function isAbilityUse(message) {
 
 /** Every rider declared on an item, or an empty list. */
 export function ridersOn(item) {
-    const riders = item?.flags?.[LIB_ID]?.riders;
+    const riders = flagOf(item, "riders");
     return Array.isArray(riders) ? riders : [];
 }
 
@@ -151,7 +152,7 @@ export const STRIKE_TECHNIQUE_FLAG = "strikeTechnique";
 
 /** The id, on the sheet, of the Technique whose Strike is pending — or null. */
 export function armedTechniqueId(actor) {
-    return actor?.getFlag?.(LIB_ID, STRIKE_TECHNIQUE_FLAG)?.itemId ?? null;
+    return flagOf(actor, STRIKE_TECHNIQUE_FLAG)?.itemId ?? null;
 }
 
 function scopedAway(source, item, event, actor) {

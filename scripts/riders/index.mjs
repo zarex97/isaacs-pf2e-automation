@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 import { bindReactionButtons } from "./reactions.mjs";
 import { Relay } from "./relay.mjs";
@@ -68,8 +69,8 @@ function bindCards(message, html) {
     // property runes from one *Athena's Temper*. Nothing about that looked like a double-fire at the table
     // — it looked like the rider being written wrong — and it only became visible on a card whose result
     // was an item rather than a condition, because applying the same condition twice is idempotent.
-    if (html?.dataset?.isaacsHbBound) return;
-    if (html?.dataset) html.dataset.isaacsHbBound = "1";
+    if (html?.dataset?.isaacsAutomationBound) return;
+    if (html?.dataset) html.dataset.isaacsAutomationBound = "1";
     bindChoiceButtons(message, html);
     bindPickButtons(message, html);
     bindCounteractButtons(message, html);
@@ -78,12 +79,12 @@ function bindCards(message, html) {
 
 /** The buttons on a "choose a sense" card. Clicking relays the pick; the GM applies it. */
 function bindChoiceButtons(message, html) {
-    const choice = message?.flags?.[LIB_ID]?.choice;
+    const choice = flagOf(message, "choice");
     if (!choice || !html?.querySelectorAll) return;
 
-    for (const button of html.querySelectorAll(`[data-action="isaacs-hb-rider-choice"]`)) {
+    for (const button of html.querySelectorAll(`[data-action="isaacs-automation-rider-choice"], [data-action="isaacs-hb-rider-choice"]`)) {
         button.addEventListener("click", async () => {
-            for (const sibling of html.querySelectorAll(`[data-action="isaacs-hb-rider-choice"]`)) {
+            for (const sibling of html.querySelectorAll(`[data-action="isaacs-automation-rider-choice"], [data-action="isaacs-hb-rider-choice"]`)) {
                 sibling.disabled = true;
             }
             await Relay.request({
@@ -105,12 +106,12 @@ function bindChoiceButtons(message, html) {
  * — so the GM re-reads what the ability actually does.
  */
 function bindPickButtons(message, html) {
-    const pick = message?.flags?.[LIB_ID]?.pick;
+    const pick = flagOf(message, "pick");
     if (!pick || !html?.querySelectorAll) return;
 
-    for (const button of html.querySelectorAll(`[data-action="isaacs-hb-rider-pick"]`)) {
+    for (const button of html.querySelectorAll(`[data-action="isaacs-automation-rider-pick"], [data-action="isaacs-hb-rider-pick"]`)) {
         button.addEventListener("click", async () => {
-            for (const sibling of html.querySelectorAll(`[data-action="isaacs-hb-rider-pick"]`)) {
+            for (const sibling of html.querySelectorAll(`[data-action="isaacs-automation-rider-pick"], [data-action="isaacs-hb-rider-pick"]`)) {
                 sibling.disabled = true;
             }
             await Relay.request({
@@ -131,12 +132,12 @@ function bindPickButtons(message, html) {
  * on the button rather than as an index into a rider.
  */
 function bindCounteractButtons(message, html) {
-    const counteract = message?.flags?.[LIB_ID]?.counteract;
+    const counteract = flagOf(message, "counteract");
     if (!counteract || !html?.querySelectorAll) return;
 
-    for (const button of html.querySelectorAll(`[data-action="isaacs-hb-counteract"]`)) {
+    for (const button of html.querySelectorAll(`[data-action="isaacs-automation-counteract"], [data-action="isaacs-hb-counteract"]`)) {
         button.addEventListener("click", async () => {
-            for (const sibling of html.querySelectorAll(`[data-action="isaacs-hb-counteract"]`)) {
+            for (const sibling of html.querySelectorAll(`[data-action="isaacs-automation-counteract"], [data-action="isaacs-hb-counteract"]`)) {
                 sibling.disabled = true;
             }
             await Relay.request({

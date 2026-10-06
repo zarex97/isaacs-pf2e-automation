@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
 import { growByStep, inflictPersistent, runSave } from "../riders/apply.mjs";
@@ -82,7 +83,7 @@ export const Lingering = {
      * which is the shape of nearly every defect this campaign has turned up.
      */
     specsFor(item) {
-        const declared = item?.flags?.[LIB_ID]?.[FLAG];
+        const declared = flagOf(item, FLAG);
         if (!declared) return [];
         const options = new Set([
             ...(item.actor?.getRollOptions?.() ?? []),
@@ -234,15 +235,15 @@ export const Lingering = {
         const now = game.time.worldTime;
         for (const scene of game.scenes) {
             const stale = scene.regions.filter((region) => {
-                const expiry = region.flags?.[LIB_ID]?.[FLAG]?.expiresAt;
+                const expiry = flagOf(region, FLAG)?.expiresAt;
                 return typeof expiry === "number" && expiry <= now;
             });
             if (stale.length === 0) continue;
 
             // Scenery first: a Region deleted while its walls are still standing leaves nothing behind to
             // say the walls were ever ours.
-            const lightIds = stale.flatMap((region) => region.flags[LIB_ID][FLAG].lightIds ?? []);
-            const wallIds = stale.flatMap((region) => region.flags[LIB_ID][FLAG].wallIds ?? []);
+            const lightIds = stale.flatMap((region) => flagOf(region, FLAG).lightIds ?? []);
+            const wallIds = stale.flatMap((region) => flagOf(region, FLAG).wallIds ?? []);
             const live = (type, ids) => ids.filter((id) => scene[type].has(id));
             if (lightIds.length > 0) {
                 await scene.deleteEmbeddedDocuments("AmbientLight", live("lights", lightIds));
@@ -346,7 +347,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
         if (game.users?.activeGM?.id !== game.user?.id) return;
 
         const region = this.parent?.region ?? this.parent?.parent;
-        const payload = region?.flags?.[LIB_ID]?.[FLAG];
+        const payload = flagOf(region, FLAG);
         const damage = payload?.damage;
         const actor = event.data?.token?.actor;
         if (!actor || (!damage?.formula && !payload?.save)) return;

@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { RiderExtensions } from "./extensions.mjs";
 import { LIB_ID } from "../id.mjs";
 
@@ -66,7 +67,7 @@ export const Escape = {
         // What was granted, and what was written by hand. An Escape this module created carries the flag
         // and is deleted with the grip; an Escape authored onto an item in content says what it releases
         // in its own rider and must survive being used, because it is part of that item forever.
-        const granted = action?.flags?.[LIB_ID]?.[FLAG] ?? null;
+        const granted = flagOf(action, FLAG) ?? null;
         const spec = granted ?? authored;
         if (!actor || !spec) return;
 
@@ -102,8 +103,8 @@ export const Escape = {
             if (!actor?.items) return;
             if (item.type === "action") return;
 
-            for (const action of actor.items.filter((i) => i.flags?.[LIB_ID]?.[FLAG])) {
-                const spec = action.flags[LIB_ID][FLAG];
+            for (const action of actor.items.filter((i) => flagOf(i, FLAG))) {
+                const spec = flagOf(action, FLAG);
                 const orphaned = spec.effectId
                     ? spec.effectId === item.id
                     : (spec.conditions ?? []).includes(item.slug) && !actor.hasCondition?.(item.slug);
@@ -190,7 +191,7 @@ export function escapeDcFor(dc, context) {
 }
 
 function isEscapeFor(item, spec) {
-    const existing = item.flags?.[LIB_ID]?.[FLAG];
+    const existing = flagOf(item, FLAG);
     if (!existing) return false;
     if (existing.source !== spec.source) return false;
     return (existing.conditions ?? []).join(",") === (spec.conditions ?? []).join(",");

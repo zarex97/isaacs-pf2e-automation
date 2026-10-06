@@ -1,3 +1,4 @@
+import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 
 /**
@@ -29,7 +30,7 @@ export const SharedAllowance = {
         const actors = new Set((scene?.tokens ?? []).map((t) => t.actor).filter(Boolean));
         for (const actor of actors) {
             const copies = actor.itemTypes.effect.filter((effect) => {
-                if (!effect.flags?.[LIB_ID]?.sharedAllowance) return false;
+                if (!flagOf(effect, "sharedAllowance")) return false;
                 return (effect.system.rules ?? []).some((rule) =>
                     spent.some((m) => ruleSlug(rule) === m.slug && samePredicate(rule.predicate, m.predicate)));
             });

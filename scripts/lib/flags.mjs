@@ -27,3 +27,23 @@ export function flagOf(doc, key) {
     }
     return undefined;
 }
+
+/**
+ * A keyed record kept under one flag — receipts on a message, a ledger on an actor — merged across every
+ * scope, this module's own entries winning.
+ *
+ * The rider engine wrote under the homebrew's namespace before it moved here (phase 2). A receipt or a
+ * ledger is short-lived, but one written the moment before an upgrade must still be read the moment after;
+ * reading only the first scope that has the flag would hide an old entry behind a new one. Dropped in 2.0.0.
+ */
+export function mergedFlag(doc, key) {
+    const parts = [...scopes].reverse().map((scope) => doc?.flags?.[scope]?.[key]).filter((v) => v && typeof v === "object");
+    return parts.length === 0 ? undefined : Object.assign({}, ...parts);
+}
+
+/** Unset a flag in every scope that holds it, so an entry the homebrew wrote cannot outlive its clearing. */
+export async function unsetFlagEverywhere(doc, key) {
+    for (const scope of scopes) {
+        if (doc?.flags?.[scope]?.[key] !== undefined) await doc.unsetFlag(scope, key);
+    }
+}

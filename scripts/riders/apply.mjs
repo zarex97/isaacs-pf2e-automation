@@ -1,3 +1,4 @@
+import { flagOf, mergedFlag } from "../lib/flags.mjs";
 import { describeActor, describeDamage, riderOptions, testPredicate } from "../lib/roll-options.mjs";
 import { catchTokens } from "../targeting/catch.mjs";
 import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, stepsFor, thresholdsCrossed, valueAtLevel } from "../targeting/heightening.mjs";
@@ -83,7 +84,7 @@ async function applyToTarget(target, candidates, context, payload) {
     // re-apply. The Saint got the counteract card and never their own aura. `selfOnly` is therefore folded
     // in: it is undefined for every event that never splits this way, so nothing else moves.
     const receiptKey = receiptKeyFor(payload, target.id);
-    const previous = context.message?.flags?.[LIB_ID]?.ridersApplied?.[receiptKey] ?? null;
+    const previous = mergedFlag(context.message, "ridersApplied")?.[receiptKey] ?? null;
     if (previous?.outcome === (payload.outcome ?? null)) return;
     if (previous) await undo(actor, previous);
 
@@ -821,7 +822,7 @@ function strikeCount(rider, context, available) {
     if (asked !== "maxTargets") return available;
 
     const item = context.item ?? context.riderItem;
-    const flag = item?.flags?.[LIB_ID]?.areaTargeting;
+    const flag = flagOf(item, "areaTargeting");
     if (!flag?.maxTargets) return available;
 
     const bonusSteps = bonusStepsFrom(context.originActor?.getRollOptions?.() ?? []);
@@ -952,7 +953,7 @@ async function applyHeal(rider, context) {
         : (Number(rider.apply.maxPerCast) || Infinity);
 
     const message = context.message;
-    const pool = Number(message?.flags?.[LIB_ID]?.healPool) || 0;
+    const pool = Number(flagOf(message, "healPool")) || 0;
     const allowed = Math.max(0, Math.min(each, cap - pool));
     if (allowed <= 0) {
         // Said out loud rather than whispered. It is the Technique reporting its own ceiling, not a job for
@@ -1113,7 +1114,7 @@ async function applyCounteract(rider, context) {
             const itemTraits = item.system?.traits?.value ?? [];
             if (!traits.some((trait) => itemTraits.includes(trait))) continue;
             buttons.push(
-                `<button type="button" data-action="isaacs-hb-counteract" data-effect="${item.uuid}">`
+                `<button type="button" data-action="isaacs-automation-counteract" data-effect="${item.uuid}">`
                 + `${foundry.utils.escapeHTML(`${actor.name}: ${item.name}`)}</button>`,
             );
         }
@@ -1140,7 +1141,7 @@ async function applyCounteract(rider, context) {
         whisper: [...ownersAndGMs(context.originActor)],
         flavor: context.item?.name ?? "Counteract",
         content: `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? "Counteract one, if you wish.")}</p>`
-            + `<div class="isaacs-hb-choice">${buttons.join(" ")}</div>`,
+            + `<div class="isaacs-automation-choice">${buttons.join(" ")}</div>`,
         flags: {
             [LIB_ID]: {
                 counteract: {
@@ -1183,7 +1184,7 @@ export async function resolveCounteract(payload) {
     const targetRank = Math.max(1, Number(effect.system?.level?.value) || 1);
     // "Cannot be counteracted below Nth rank" — Null Shroud's darkness (#95). The floor rides on the effect, and a
     // counteract of lower rank fails without a roll.
-    const floor = Number(effect.flags?.[LIB_ID]?.counteractFloor) || 0;
+    const floor = Number(flagOf(effect, "counteractFloor")) || 0;
     if (floor && counteractRank(actor, item) < floor) {
         await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), flavor: item?.name ?? "Counteract",
             flags: { [LIB_ID]: { counteractFloor: { effect: effect.uuid, floor } } },
@@ -1202,8 +1203,8 @@ export async function resolveCounteract(payload) {
     const ourRank = counteractRank(actor, item);
     const reach = { criticalSuccess: 3, success: 1, failure: -1, criticalFailure: -Infinity }[outcome] ?? -Infinity;
     const counteracted = targetRank <= ourRank + reach;
-    // Anything that answers a counteract — Quartz Depth 3's charge (#89) — hears it here.
-    Hooks.callAll("isaacsHb.counteracted", actor, { effect, counteracted, outcome });
+    // Anything that answers a counteract hears it here: `(actor, { effect, counteracted, outcome })`.
+    Hooks.callAll(`${LIB_ID}.counteracted`, actor, { effect, counteracted, outcome });
 
     // Suppression rather than ending, for the things that are a STATE rather than a spell: a stance, a
     // polymorph, or whatever traits another module registered as one. Deleting a high-rank state with a
@@ -1316,7 +1317,7 @@ async function applyReadout(rider, context) {
  * moment you cast until the end of the encounter" is one fact told twice, not two different mechanics.
  */
 async function reportTrackedHp(item, context) {
-    const uuid = item?.flags?.[LIB_ID]?.trackedTarget;
+    const uuid = flagOf(item, "trackedTarget");
     const token = uuid ? await fromUuid(uuid) : null;
     const actor = token?.actor;
 
@@ -1476,7 +1477,7 @@ async function applyCondition(rider, context) {
     const standing = source
         ? context.actor.itemTypes.effect.find(
               (e) => e.name === `${context.item?.name ?? context.riderItem?.name ?? ""}: ${label}`
-                  && e.flags?.[LIB_ID]?.rider?.source === source,
+                  && flagOf(e, "rider")?.source === source,
           )
         : null;
     // Only a grant still holding its condition is refreshed. One whose condition was taken off by hand — or
@@ -1630,7 +1631,7 @@ async function applyEffect(rider, context) {
  * counter starts above it.
  */
 async function crossThresholds(source, was, now, context) {
-    const thresholds = source?.flags?.[LIB_ID]?.counterThresholds;
+    const thresholds = flagOf(source, "counterThresholds");
     for (const threshold of thresholdsCrossed(thresholds, was, now)) {
         try {
             await applyOne(threshold, context);
@@ -1718,7 +1719,7 @@ export async function inflictPersistent(actor, { formula, damageType = "bleed", 
         (c) =>
             c.slug === "persistent-damage" &&
             c.system.persistent?.damageType === damageType &&
-            c.flags?.[LIB_ID]?.rider,
+            flagOf(c, "rider"),
     );
     if (ours.length > 0) {
         await actor.deleteEmbeddedDocuments("Item", ours.map((c) => c.id));
@@ -1984,7 +1985,7 @@ async function applyPool(rider, context) {
         const stamp = game.combat?.started ? game.combat.id : null;
         if (!stamp) return;
         const key = `${(context.riderItem ?? context.item)?.id ?? "unknown"}-pool`;
-        const ledger = actor.getFlag(LIB_ID, "poolSpent") ?? {};
+        const ledger = mergedFlag(actor, "poolSpent") ?? {};
         if (ledger[key] === stamp) return;
         await actor.setFlag(LIB_ID, "poolSpent", { ...ledger, [key]: stamp });
     }
@@ -2491,7 +2492,7 @@ async function postPick({ rider, index, item }, context, payload) {
 
     const buttons = candidates
         .map((token) =>
-            `<button type="button" data-action="isaacs-hb-rider-pick" data-token="${token.document.uuid}">`
+            `<button type="button" data-action="isaacs-automation-rider-pick" data-token="${token.document.uuid}">`
             + `${foundry.utils.escapeHTML(token.name)}</button>`)
         .join(" ");
 
@@ -2506,7 +2507,7 @@ async function postPick({ rider, index, item }, context, payload) {
         flavor: item.name,
         content:
             `<p>${foundry.utils.escapeHTML(spec.prompt ?? "Choose a creature.")}</p>`
-            + `<div class="isaacs-hb-choice">${buttons}</div>`,
+            + `<div class="isaacs-automation-choice">${buttons}</div>`,
         flags: {
             [LIB_ID]: {
                 pick: {
@@ -2602,7 +2603,7 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
     const buttons = offered
         .map(
             ({ option, optionIndex }) =>
-                `<button type="button" data-action="isaacs-hb-rider-choice" data-option="${optionIndex}">`
+                `<button type="button" data-action="isaacs-automation-rider-choice" data-option="${optionIndex}">`
                 + `${foundry.utils.escapeHTML(option.label ?? `Option ${optionIndex + 1}`)}</button>`,
         )
         .join(" ");
@@ -2618,7 +2619,7 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
         flavor: `${item.name} — ${(actor ?? context.actor)?.name}`,
         content:
             `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? "Choose one.")}</p>`
-            + `<div class="isaacs-hb-choice">${buttons}</div>`,
+            + `<div class="isaacs-automation-choice">${buttons}</div>`,
         flags: {
             [LIB_ID]: {
                 choice: {
