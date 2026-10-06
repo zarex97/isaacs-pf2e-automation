@@ -36,7 +36,7 @@ export const Relay = {
     },
 
     /**
-     * Add a handler from outside the riders — the Assimilator's Instinct cards. The same trust boundary holds: the
+     * Add a handler from outside the riders — another module's own card buttons. The same trust boundary holds: the
      * payload names a message and a pick, and the handler re-reads what that message offered.
      */
     register(action, handler) {

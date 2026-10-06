@@ -62,3 +62,41 @@ the rest.
 
 **Period**:
 A named interval another module turns over itself (a homebrew's "Zenith day"); `refillPeriod` refills it.
+
+### Riders
+
+**Rider**:
+What an item does to a creature *besides* damage, authored in its `riders` flag: an **event**, the
+outcomes it fires on, a predicate, and what it applies.
+
+**Event**:
+What a rider keys off — a save rolled, a Strike resolved, damage applied, a turn starting or ending, an
+aura ticking. Each names whose items are read.
+
+**Apply type**:
+What a rider does — `condition`, `save`, `counteract`, `prompt`… A built-in one, or one a module registered.
+
+**Origin** (of a rider):
+The creature whose item the rider is on; it is the origin of the DC, the area and anything `self`.
+
+**Snapshot**:
+The world as it was before a pass applied anything. Riders are chosen against it, so an escalation ladder
+advances one step per hit; a `live` rider is chosen against the world as the pass leaves it.
+
+**Receipt**:
+What a pass applied, kept on the message, so a reroll can take back exactly that and nothing else.
+
+**Relay**:
+The socket path from whoever saw the event to the active GM, who is the only one who may write to every
+sheet. No GM online: the caster is told, once per cast.
+
+**Extension**:
+A registration on `api.riderExtensions` that answers a question the engine asks — a DC, a statistic, a
+duration — on behalf of content the engine knows nothing about.
+_Avoid_: "branch" — the engine has none for any one class.
+
+**Lingering area**:
+A Region a cast leaves behind, expiring with world time.
+
+**Enemy terrain**:
+Difficult terrain that only slows the origin's opponents.

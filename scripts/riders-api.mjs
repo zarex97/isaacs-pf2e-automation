@@ -25,9 +25,8 @@ import { Overlap } from "./targeting/overlap.mjs";
 /**
  * The rider engine's part of the automation's contract.
  *
- * Phase 1's contract (`isaacs-pf2e-automation`'s `api.mjs`) already holds targeting and the pipelines. This
- * is what the engine adds to it when it moves there; until then the homebrew's door builds it from the
- * staged code. Grouped by what a caller is doing, so a file can move without the contract changing.
+ * Spread into `api.mjs` beside targeting and the pipelines; documented in `Docs/api.md` (since 1.1.0).
+ * Grouped by what a caller is doing, so a file can move without the contract changing.
  */
 export function buildRidersApi() {
     return {

@@ -11,6 +11,7 @@ shape only in a major version. A change starts here, then in `scripts/api.mjs`.
 | Since | Meaning |
 | --- | --- |
 | 1.0.0 | Everything below unless marked otherwise |
+| 1.1.0 | The rider engine, areas left behind, the `counteracted` hook — marked where they appear |
 
 ## Pipelines
 
@@ -88,13 +89,90 @@ id registered with `api.flags.registerFlagScope`, so a module keeps authoring un
   creature that lost Hit Points this encounter), `EncounterDamage`.
 - `api.flags`: `registerFlagScope(moduleId)`, `flagOf(document, key)`, `flagScopes()`.
 
+## Riders — since 1.1.0
+
+The authoring reference is [`riders.md`](riders.md): events, apply types, the `rider:*` options.
+
+- `api.riders` — the engine's own settings and hooks, which this module installs itself; nothing to call.
+- `api.relay` — the GM relay riders run through. `register(action, fn)` adds a handler of your own (an
+  action already taken is kept); `request(payload)` runs `payload.action` on the active GM's client, at once
+  if that is you, and warns the caster once per cast when no GM is online.
+- `api.riderPriority` — `{ bypass, riders }`, where the engine's `damageBus` stages sit. Place a stage of
+  your own relative to these.
+
+### `api.riderExtensions`
+
+Ordered registries run in ascending priority; a name is taken once and a second throws.
+
+| Method | `fn` | Answers |
+| --- | --- | --- |
+| `registerApplyType(type, fn)` | `(rider, context)` | a rider `apply.type` of your own; the built-in types cannot be replaced |
+| `registerStrikeSelector(name, fn)` | `(actor, { exact })` | the strike action `strikes.apply.strike: "<name>"` means, or `null` |
+| `registerOriginValue(name, match, fn)` | `(context, match)` | a value an expression asks the origin for; `match` is an exact string or a RegExp; `undefined` passes |
+| `registerDcResolver(name, priority, fn)` | `(dc, context)` | the number `dc: "<word>"` means; `undefined` passes. Unanswered and absent: class DC, else best spell DC |
+| `registerStatisticResolver(name, priority, fn)` | `(actor, slug)` | a statistic by slug; `undefined` passes. Then `spellcasting`, `getStatistic`, `classDCs` |
+| `registerDefaultStatistic(name, priority, fn)` | `(actor)` | the slug a `counteract` with no `statistic` uses; `undefined` passes. Then class DC, then `spellcasting` |
+| `registerCounteractRankBonus(name, priority, fn)` | `(actor, item)` | ranks added to a counteract; answers add up |
+| `registerAfterCounteract(name, priority, fn)` | `({ actor, effect, item, outcome, counteracted, suppressible, suppressed })` | awaited after the counteract resolves |
+| `registerSuppressor(fn)` | `(effect, { actor, outcome, item })` | `{ suppressed, until }` — suppresses rather than ends a suppressible effect; `until` is the phrase the card prints. One per world |
+| `registerSuppressibleTrait(trait)` | — | effects with this trait are suppressed, not ended (`stance`, `polymorph` built in) |
+| `registerSaveModifier(name, priority, fn)` | `({ statistic, context })` | `{ statistic?, modifiers? }` for a save the engine rolls; a later step sees the statistic an earlier one chose |
+| `registerDurationModifier(name, priority, fn)` | `(duration, rider, context)` | a rider effect's duration, adjusted |
+| `registerTeleportRefusal(name, priority, fn)` | `(token, context)` | a reason the token refuses forced movement, or `null` |
+| `registerEffectFollowUp(name, priority, fn)` | `(rider, context, created)` | awaited after a rider's effect is created |
+| `registerAreaAnchors(name, fn)` | `(actor)` | `{ [anchor]: { x, y } }` an area rider's `area.anchor` may name |
+| `registered()` | — | everything registered, for the console |
+
+### Pieces to reuse
+
+- `api.riderApply`: `inflictPersistent`, `resolveCounteract`, `runSave`, `basicLadder`, `growByStep`,
+  `conditionUuidOf`.
+- `api.riderData`: `isAbilityUse(message)` — a message is an item being used, not a roll the item caused.
+- `api.reactions`: `canOffer({ hasReaction, alreadyOffered, ownerOnline, frequencyLeft })`.
+- `api.bypass`: `shadowTarget(actor, { reduction, hardness, immunities, types })` → an undo;
+  `registerRollBypass()`; `FLAG`, `MEMORY`. Damage flagged `bypass` ignores what it names.
+- `api.banish`, `api.encasement`, `api.escape` — what the `banish`, `encasement` and `escape` apply types
+  run on. `banish.records()`, `banish.isBanished(tokenUuid)`.
+- `api.strikeTechnique` — a spell with a `strike-resolved` rider and no `attack` trait arms the caster's
+  next Strike when cast, and only that Strike fires its riders. `isOne(item)`, `isArmed(actor, item)`.
+- `api.sharedAllowance` — effects flagged `sharedAllowance` are one bonus with many holders: the first
+  holder's roll takes back every other copy aimed at the same creature.
+
+### Areas left behind — since 1.1.0
+
+- `api.lingering` — an item's `flags[<scope>].lingering` (one spec or a list, each with an optional
+  `predicate` and `duration`) leaves a Region of behavior type `api.lingeringData.BEHAVIOR_TYPE` behind the
+  cast, expiring with world time. `specsFor(item)`.
+- `api.overlap` — `flags[<scope>].overlap` on an item with several placements: a creature caught by more
+  than one gets the item's penalty to the save, as an effect.
+- `api.enemyTerrain` — `isaacs-pf2e-automation.enemyMovementCost`, difficult terrain that slows only the
+  origin's opponents. `registerOriginFlag(key)` names another Region flag (with an `originUuid`) that says
+  whose terrain it is.
+
 ## Hooks this module fires
 
 | Hook | Args | When |
 | --- | --- | --- |
 | `isaacs-pf2e-automation.init` | `(api)` | at `init`, once the API is published |
+| `isaacs-pf2e-automation.counteracted` | `(actor, { effect, counteracted, outcome })` | since 1.1.0 — a rider's counteract resolved |
 
 ## Settings
 
 `areaTargeting` (world), `areaTargetingScope` (world: `authored` · `registered` · `all`), `enforceRange`
 (world), `areaTargetingReview` (client).
+
+Since 1.1.0: `riders` (world, boolean), `automateDeath` (world: `npcs` · `all` · `off`), `banishments`
+(world, hidden — the creatures folded away and when they return).
+
+## Legacy reads — since 1.1.0, removed in 2.0.0
+
+The engine moved here from `isaacs-hb-pf2e`. Until 2.0.0 it also understands what that module wrote:
+
+- card buttons posted under the old `isaacs-hb-rider-*`, `isaacs-hb-counteract` and `isaacs-hb-reaction`
+  actions still work;
+- once that module registers its flag scope (`api.flags.registerFlagScope("isaacs-hb-pf2e")`), receipts on
+  messages and the ledgers on actors (`ridersApplied`, `poolSpent`, round gates) are merged across both
+  namespaces, and an armed Strike is cleared from both — so a cast made just before the upgrade still
+  resolves just after it.
+
+New content is written under this module's id only.
