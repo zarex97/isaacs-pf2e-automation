@@ -176,3 +176,6 @@ The engine moved here from `isaacs-hb-pf2e`. Until 2.0.0 it also understands wha
   resolves just after it.
 
 New content is written under this module's id only.
+
+While `isaacs-hb-pf2e` is active and still requires this module below 1.1.0, it runs its own copy of the
+engine, and this module's rider engine does not start (the GM is told once). Everything else runs.

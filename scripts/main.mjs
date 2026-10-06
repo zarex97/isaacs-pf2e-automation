@@ -33,7 +33,14 @@ export const INIT = [
     ["spell frequency", () => SpellFrequency.registerHooks()],
     ["feat and action frequency", () => FrequencyGuard.registerHooks()],
     ["damaged this encounter", () => EncounterDamage.registerHooks()],
-    // The rider engine and what it runs on its own.
+];
+
+/**
+ * The rider engine and what it runs on its own — skipped, as a whole, while a homebrew that carries its own
+ * copy of the engine is active (`module.mjs`). Two engines would register the same damage stages, the
+ * second throwing, and would both apply every rider.
+ */
+export const RIDER_INIT = [
     ["the rider engine's settings", () => Riders.registerSettings()],
     ["the banishment register", () => { Banish.registerSettings(); Banish.registerHooks(); }],
     ["enemies-only difficult terrain", () => registerEnemyTerrain()],
@@ -54,5 +61,8 @@ export const SETUP = [
     ["character preparation", () => ActorPreparation.install()],
     ["detection modes", () => DetectionModes.install()],
     ["the reroll pipeline", () => RerollPipeline.install()],
+];
+
+export const RIDER_SETUP = [
     ["the rider engine", () => Riders.registerHooks()],
 ];

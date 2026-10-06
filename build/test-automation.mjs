@@ -371,6 +371,22 @@ const { describeActor, describeDamage } = await import("../scripts/lib/roll-opti
     check("damage options name the type, that it landed, and the Strike's outcome", describeDamage({ types: ["cold"], total: 5, outcome: "success" }), ["rider:damage", "rider:damage:type:cold", "rider:damage:dealt", "rider:damage:outcome:success"]);
 }
 
+{
+    // Two engines would register the same damage stages and both apply every rider.
+    const saved = { Hooks: globalThis.Hooks, game: globalThis.game, foundry: globalThis.foundry };
+    globalThis.Hooks ??= { once() {}, on() {}, callAll() {} };
+    const newer = (a, b) => a.split(".").map(Number).reduce((r, x, i) => r || (x === Number(b.split(".")[i] ?? 0) ? 0 : x > Number(b.split(".")[i] ?? 0) ? 1 : -1), 0) > 0;
+    globalThis.foundry = { ...(globalThis.foundry ?? {}), utils: { ...(globalThis.foundry?.utils ?? {}), isNewerVersion: newer } };
+    const { homebrewRunsItsOwnEngine } = await import("../scripts/module.mjs");
+    const homebrew = (active, minimum) => ({ get: (id) => (id === "isaacs-hb-pf2e" ? { active, relationships: { requires: new Set([{ id: LIB_ID, compatibility: { minimum } }]) } } : undefined) });
+    const answers = [[true, "1.0.0"], [true, "1.1.0"], [true, "1.2.0"], [false, "1.0.0"]].map(([active, minimum]) => {
+        globalThis.game = { modules: homebrew(active, minimum) };
+        return homebrewRunsItsOwnEngine();
+    });
+    check("the engine stands down only for an active homebrew requiring this module below 1.1.0", answers, [true, false, false, false]);
+    Object.assign(globalThis, saved);
+}
+
 /* -------------------------------------------------------------------------------------------- */
 /*  The contract                                                                                 */
 /* -------------------------------------------------------------------------------------------- */

@@ -254,6 +254,9 @@
         "Effect": {
             "Applied": "Applied by {by}.",
             "AppliedOn": "Applied by {by} on a {outcome}."
+        },
+        "Riders": {
+            "StandDown": "Isaac's Homebrew is older than 1.1.0 and runs its own rider engine, so this module's is off. Update Isaac's Homebrew to use this one."
         }
     }
 }
