@@ -100,3 +100,17 @@ A Region a cast leaves behind, expiring with world time.
 
 **Enemy terrain**:
 Difficult terrain that only slows the origin's opponents.
+
+### Vanilla content
+
+**Vanilla table**:
+Config for content nobody authored for this module, by slug, in the shape item flags carry — this module's
+own (`data/vanilla.json`), plus entries other modules **register**.
+
+**Authored key**:
+A flag key content is written with (`areaTargeting`, `riders`, …), which a table entry may supply. Every
+other flag is state the module wrote itself.
+_Avoid_: "flag" for a table entry's key — it is not on the item.
+
+**Deferred**:
+A table rider left to another active module that already covers the spell.
