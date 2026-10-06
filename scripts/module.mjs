@@ -2,6 +2,7 @@ import { buildApi } from "./api.mjs";
 import { LIB_ID } from "./id.mjs";
 import { t } from "./i18n.mjs";
 import { INIT, RIDER_INIT, RIDER_SETUP, SETUP } from "./main.mjs";
+import { Coexistence } from "./vanilla/coexistence.mjs";
 
 /** The homebrew the rider engine moved here from. */
 const HOMEBREW = "isaacs-hb-pf2e";
@@ -55,6 +56,9 @@ Hooks.once("setup", () => {
     for (const [feature, fn] of SETUP) start(feature, fn);
     if (!standDown) for (const [feature, fn] of RIDER_SETUP) start(feature, fn);
 });
+
+// What other automation modules already cover, so the vanilla table's riders can step aside for it.
+Hooks.once("ready", () => void Coexistence.gather());
 
 // Said once to the GM, who is the one who can update the homebrew.
 Hooks.once("ready", () => {

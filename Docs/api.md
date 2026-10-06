@@ -173,6 +173,10 @@ is dropped when the spell is already covered by another active automation module
   `{ value, source: "flags" | "registered" | "table" | null, module, off, deferred, slug }`.
 - `api.vanilla.registered()` → `{ [slug]: moduleId }`; `api.vanilla.covered()` → this module's slugs;
   `api.vanilla.AUTHORED_KEYS`.
+- `api.vanilla.covering()` → `{ [slug]: moduleId }`, the spells another active automation module covers
+  (PF2e Automations, read live from its `rules/config.json`; PF2e Assistant, from the list this module ships);
+  `api.vanilla.deferredTo(slug)` → that module's id, `"setting:off"` when the setting has table riders off,
+  or null when a table rider for that spell applies.
 
 ## Hooks this module fires
 
@@ -185,6 +189,9 @@ is dropped when the spell is already covered by another active automation module
 
 `areaTargeting` (world), `areaTargetingScope` (world: `authored` · `registered` · `all`), `enforceRange`
 (world), `areaTargetingReview` (client).
+
+Since 1.2.0: `vanillaRiders` (world: `off` · `uncovered` (default) · `all`) — whether a table or registered
+entry's riders apply, and whether they step aside for a spell another active module automates.
 
 Since 1.1.0: `riders` (world, boolean), `automateDeath` (world: `npcs` · `all` · `off`), `banishments`
 (world, hidden — the creatures folded away and when they return).

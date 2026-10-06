@@ -37,6 +37,8 @@ Foundry VTT 14, pf2e 8.3 or later.
 - **Enforce range** — refuse a placement out of reach, with a question that lets you place it anyway.
 - **Review targets before casting** — per user.
 - **Apply riders automatically** — on by default.
+- **Riders for vanilla spells** — the conditions this module applies for pf2e's own spells: off, only for
+  spells PF2e Automations and PF2e Assistant do not already automate (default), or all of them.
 - **Automate death effects** — whom a rider may kill outright: creatures without a player owner (default),
   anyone, or nobody (a whisper to the GM instead).
 
@@ -54,6 +56,7 @@ npm test               # offline checks, plain Node
 npm run link:foundry   # link this folder into Foundry's Data/modules
 npm run index:pf2e     # re-index the installed pf2e compendium (build/data/pf2e-index.json)
 npm run build:vanilla  # bundle content/vanilla/*.json into data/vanilla.json
+npm run coverage:assistant  # refresh which spells PF2e Assistant automates (data/coverage/)
 ```
 
 Vanilla table entries are one file per spell in `content/vanilla/<slug>.json`, in the shape item flags carry
