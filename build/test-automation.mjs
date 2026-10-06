@@ -316,6 +316,41 @@ const sources = mjsUnder(SCRIPTS).map((file) => ({ file, rel: path.relative(ROOT
     ]);
 }
 
+/**
+ * Where a `"prototype"` wrap actually lands.
+ *
+ * The strategy exists for one reason — `ActorPF2e#applyDamage` is declared on the shared base and
+ * inherited by every actor type, so a wrapper defined on the one subclass the path names leaves NPCs
+ * untouched — and for most of this code's life it did precisely that. The walk stopped at the **first**
+ * prototype that owned the method, and pf2e's `CharacterPF2e` declares its own `applyDamage`, so the patch
+ * went on the character class alone. **No damage rider in the module had ever fired against an NPC**,
+ * which is almost everything an area is aimed at.
+ *
+ * Nothing here needs Foundry: the bug is a prototype-chain walk, and a three-class chain reproduces it
+ * exactly. The second check is the other half — a subclass override must still run, reaching the patched
+ * method through `super`.
+ */
+class WrapBase {
+    hit() {
+        return "base";
+    }
+}
+class WrapSub extends WrapBase {
+    hit() {
+        return `sub(${super.hit()})`;
+    }
+}
+class WrapSibling extends WrapBase {}
+
+globalThis.__wrapProbe = { classes: { sub: WrapSub, sibling: WrapSibling } };
+const { wrap: wrapMethod } = await import("../scripts/lib/wrap.mjs");
+wrapMethod("__wrapProbe.classes.sub.prototype.hit", function (wrapped, ...args) {
+    return `wrapped:${wrapped(...args)}`;
+}, { feature: "the prototype-walk test", strategy: "prototype" });
+
+check("a prototype wrap lands on the class that declares the method", new WrapSibling().hit(), "wrapped:base");
+check("a subclass override still runs, reaching the wrap through super", new WrapSub().hit(), "sub(wrapped:base)");
+
 {
     const escapes = [];
     for (const { file, rel, text } of sources) {
