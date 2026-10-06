@@ -1,13 +1,23 @@
 /**
  * Where other code plugs into the rider engine.
  *
- * The engine — events, targets, the twenty-odd apply types, receipts — is generic. The classes built on it
- * are not: Libra summons Arms, a Soulbound spends charges and Reiatsu, a Quincy's counteract refunds a point
- * and leaves the target off-guard, a Stargazer's Long Now stretches a minute to ten. Those used to be
- * branches inside `apply.mjs`, which tied the engine to every class that ever needed a word in it.
+ * The engine — events, targets, the twenty-odd apply types, receipts — is generic. The content built on it
+ * is not: an apply type of its own, a DC named by a class's own word, a counteract that refunds a point, a
+ * duration stretched by a feat. Those used to be branches inside `apply.mjs`, which tied the engine to
+ * every class that ever needed a word in it.
  *
  * Each of them is now a registration. Ordered lists run in ascending priority; a name is taken once.
  */
+
+/**
+ * The apply types `applyOne` switches on itself. A registration under one of these names would never be
+ * reached — the switch answers first — so it is refused instead. The tests keep this list and the switch equal.
+ */
+export const BUILT_IN_APPLY_TYPES = Object.freeze([
+    "prompt", "pick", "choice", "save", "pool", "damage", "death", "persistent-damage", "effect", "condition",
+    "teleport", "strikes", "banish", "heal", "readout", "toggle", "counteract", "reaction", "flat-check",
+    "encasement", "escape", "expire",
+]);
 
 const applyTypes = new Map();
 const strikeSelectors = new Map();
@@ -55,9 +65,9 @@ export const RiderExtensions = {
      * A rider apply type of another module's own: `{ apply: { type } }` dispatches to `fn(rider, context)`.
      * The built-in types cannot be replaced.
      */
-    registerApplyType(type, fn, { builtIn = [] } = {}) {
+    registerApplyType(type, fn) {
         if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | apply type "${type}" is not a function.`);
-        if (applyTypes.has(type) || builtIn.includes(type)) {
+        if (applyTypes.has(type) || BUILT_IN_APPLY_TYPES.includes(type)) {
             throw new Error(`Isaac's PF2e Automation | the rider engine already has an apply type "${type}".`);
         }
         applyTypes.set(type, fn);

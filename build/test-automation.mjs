@@ -279,6 +279,99 @@ check(
 );
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The rider engine, without Foundry                                                            */
+/* -------------------------------------------------------------------------------------------- */
+
+const { RiderExtensions, BUILT_IN_APPLY_TYPES } = await import("../scripts/riders/extensions.mjs");
+const { collectRiders, riderAt, isAbilityUse, EVENTS } = await import("../scripts/riders/data.mjs");
+const { mergedFlag } = await import("../scripts/lib/flags.mjs");
+const { canOffer } = await import("../scripts/riders/reactions.mjs");
+const { describeActor, describeDamage } = await import("../scripts/lib/roll-options.mjs");
+
+{
+    const throws = (fn) => { try { fn(); return false; } catch { return true; } };
+    const fighter = { classDC: { slug: "fighter", dc: { value: 27 } }, spellcasting: [{ statistic: { dc: { value: 30 } } }] };
+    const wizard = { classDC: null, spellcasting: [{ statistic: { dc: { value: 22 } } }, { statistic: { dc: { value: 25 } } }] };
+
+    check("a rider save with no DC is the origin's class DC", RiderExtensions.resolveDC(undefined, { originActor: fighter }), 27);
+    check("…else its best spell DC", RiderExtensions.resolveDC(undefined, { originActor: wizard }), 25);
+    check("a numeric DC is itself", RiderExtensions.resolveDC(18, { originActor: fighter }), 18);
+    check("a word nothing answers stays unresolved", RiderExtensions.resolveDC("cosmo", { originActor: fighter }), null);
+
+    RiderExtensions.registerDcResolver("test-late", 20, (dc) => (dc === "cosmo" ? 99 : undefined));
+    RiderExtensions.registerDcResolver("test-early", 10, (dc) => (dc === "cosmo" ? 31 : undefined));
+    check("a registered DC resolver answers its own word, in priority order", RiderExtensions.resolveDC("cosmo", {}), 31);
+    check("a DC resolver's name is taken once", throws(() => RiderExtensions.registerDcResolver("test-early", 0, () => 1)), true);
+
+    check("a counteract with no statistic uses the class DC's", RiderExtensions.defaultStatistic(fighter), "fighter");
+    check("…else spellcasting", RiderExtensions.defaultStatistic(wizard), "spellcasting");
+    check("spellcasting is the origin's best entry", RiderExtensions.statistic(wizard, "spellcasting")?.dc?.value, 25);
+
+    check("a built-in apply type cannot be registered over", BUILT_IN_APPLY_TYPES.map((type) => throws(() => RiderExtensions.registerApplyType(type, () => {}))).every(Boolean), true);
+    RiderExtensions.registerApplyType("test-type", () => "ran");
+    check("a registered apply type is found", RiderExtensions.applyType("test-type")?.(), "ran");
+    check("an apply type is registered once", throws(() => RiderExtensions.registerApplyType("test-type", () => {})), true);
+
+    const applySource = fs.readFileSync(path.join(ROOT, "scripts", "riders", "apply.mjs"), "utf8");
+    const at = applySource.indexOf("async function applyOne(");
+    const switched = [...applySource.slice(at, applySource.indexOf("\n}\n", at)).matchAll(/^\s*case "([a-z-]+)":/gm)].map((m) => m[1]);
+    check("the built-in list is exactly applyOne's switch", [...BUILT_IN_APPLY_TYPES].sort(), switched.sort());
+}
+
+{
+    const spell = (id, riders, extra = {}) => ({ id, type: "spell", system: { traits: { value: [] } }, flags: { [LIB_ID]: { riders } }, ...extra });
+    const strikeRider = { event: "strike-resolved", apply: { type: "prompt" } };
+    const saveRider = { apply: { type: "condition", slug: "frightened" } };
+    const cloth = { id: "cloth", type: "equipment", flags: { "a-homebrew": { riders: [strikeRider] } } };
+    const fist = { id: "fist", type: "weapon", flags: {} };
+    const technique = spell("tech", [strikeRider]);
+    const other = spell("other", [saveRider]);
+    const actor = { items: [cloth, technique, other], flags: {} };
+
+    const ids = (found) => found.map(({ item, index }) => `${item.id}#${index}`);
+    check("a rider with no event is a save-rolled rider", ids(collectRiders({ event: "save-rolled", item: other, actor })), ["other#0"]);
+    check("save-rolled reads only the item that forced the save", ids(collectRiders({ event: "save-rolled", item: technique, actor })), []);
+    check("a Strike's riders are searched across the sheet, in any registered scope", ids(collectRiders({ event: "strike-resolved", item: fist, actor })), ["cloth#0"]);
+    actor.flags[LIB_ID] = { strikeTechnique: { itemId: "tech" } };
+    check("an armed spell's Strike rider joins that Strike", ids(collectRiders({ event: "strike-resolved", item: fist, actor })), ["cloth#0", "tech#0"]);
+
+    const nested = spell("nested", [{ apply: { type: "save", riders: [saveRider, { apply: { type: "choice" } }] } }]);
+    check("a nested rider is found by its address", riderAt(nested, [0, "riders", 1])?.apply?.type, "choice");
+    check("every event the doc lists is one the engine knows", EVENTS.includes("ally-damaged") && EVENTS.includes("aura-tick"), true);
+
+    check("a posted card is a use", isAbilityUse({ rolls: [], flags: { pf2e: { context: { type: "spell-cast" } } } }), true);
+    check("a save the rider forced is not another use", isAbilityUse({ rolls: [{}], flags: { pf2e: { context: { type: "saving-throw" } } } }), false);
+    check("an unknown context type is not a use", isAbilityUse({ rolls: [], flags: { pf2e: { context: { type: "something-new" } } } }), false);
+}
+
+{
+    const message = { flags: { "a-homebrew": { ridersApplied: { a: "old", b: "old" } }, [LIB_ID]: { ridersApplied: { b: "new" } } } };
+    check("a receipt is read from both namespaces, this module's winning", mergedFlag(message, "ridersApplied"), { a: "old", b: "new" });
+    check("no receipt anywhere is undefined", mergedFlag({ flags: {} }, "ridersApplied"), undefined);
+
+    check("a reaction is offered when everything allows it", canOffer({ hasReaction: true, alreadyOffered: false, ownerOnline: true, frequencyLeft: 1 }), true);
+    check("…and not to an owner who is offline, or twice, or at zero uses", [
+        canOffer({ hasReaction: true, alreadyOffered: false, ownerOnline: false, frequencyLeft: 1 }),
+        canOffer({ hasReaction: true, alreadyOffered: true, ownerOnline: true, frequencyLeft: 1 }),
+        canOffer({ hasReaction: true, alreadyOffered: false, ownerOnline: true, frequencyLeft: 0 }),
+    ], [false, false, false]);
+
+    const target = {
+        itemTypes: {
+            condition: [{ slug: "frightened", system: { value: { value: 2 } } }],
+            effect: [{ slug: "needle", system: { badge: { type: "counter", value: 3 } } }],
+        },
+        hitPoints: { value: 10, max: 40 },
+        items: [],
+    };
+    const options = describeActor(target);
+    check("rider options say a condition, its value and every value it meets", ["rider:target:condition:frightened", "rider:target:condition:frightened:2", "rider:target:condition:frightened:1+", "rider:target:condition:frightened:2+"].every((o) => options.includes(o)), true);
+    check("…a counter badge the same way", ["rider:target:effect:needle:3", "rider:target:effect:needle:3+"].every((o) => options.includes(o)) && !options.includes("rider:target:effect:needle:4+"), true);
+    check("…and health", [options.includes("rider:target:hp-half-or-less"), options.includes("rider:target:hp-zero")], [true, false]);
+    check("damage options name the type, that it landed, and the Strike's outcome", describeDamage({ types: ["cold"], total: 5, outcome: "success" }), ["rider:damage", "rider:damage:type:cold", "rider:damage:dealt", "rider:damage:outcome:success"]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The contract                                                                                 */
 /* -------------------------------------------------------------------------------------------- */
 
@@ -287,6 +380,12 @@ check(
     check("the API names every pipeline", ["castPipeline", "damageBus", "checkPipeline", "actorPreparation", "detectionModes", "rerollPipeline"].every((k) => api[k]?.stages), true);
     check("the API offers the targeting registries", ["registerPreAim", "registerAimed", "registerAfterAim", "registerOriginResolver", "registerScopePredicate", "registerAreaCount"].every((k) => typeof api.targeting[k] === "function"), true);
     check("the API offers flag scopes, step providers and exemptions", [typeof api.flags.registerFlagScope, typeof api.heightening.registerStepProvider, typeof api.frequencyGuard.exempt], ["function", "function", "function"]);
+
+    // Every `api.<key>` Docs/api.md names is on the object, so the contract cannot promise what is not there.
+    const doc = fs.readFileSync(path.join(ROOT, "Docs", "api.md"), "utf8");
+    const named = new Set([...doc.matchAll(/`api\.([a-zA-Z]+)/g)].map((m) => m[1]));
+    check("every api key Docs/api.md names exists", [...named].filter((k) => !(k in api)).sort(), []);
+    check("every registry Docs/api.md lists on riderExtensions exists", [...doc.matchAll(/^\| `(register[A-Za-z]*)\(/gm)].map((m) => m[1]).filter((k) => !(k in api.riderExtensions) && !(k in api.targeting)).sort(), []);
 }
 
 /* -------------------------------------------------------------------------------------------- */
@@ -388,6 +487,40 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "module.json"), "utf8"));
     check("the manifest's id is the one the code uses", manifest.id, LIB_ID);
     check("the manifest's files exist", [...manifest.esmodules, ...manifest.styles, ...manifest.languages.map((l) => l.path)].filter((p) => !fs.existsSync(path.join(ROOT, p))), []);
+}
+
+/**
+ * Docs/riders.md is a third copy of two lists the source already holds: the apply-type switch and EVENTS.
+ * The homebrew's README drifted to seven of twenty-one types before a check like this caught it.
+ */
+{
+    const doc = fs.readFileSync(path.join(ROOT, "Docs", "riders.md"), "utf8");
+    const documentedIn = (heading, nextHeading) => {
+        const start = doc.indexOf(heading);
+        const names = new Set();
+        for (const line of doc.slice(start, doc.indexOf(nextHeading, start)).split("\n")) {
+            if (!line.startsWith("|")) continue;
+            for (const [, name] of (line.split("|")[1] ?? "").matchAll(/`([a-z-]+)`/g)) names.add(name);
+        }
+        names.delete("type");
+        names.delete("event");
+        return names;
+    };
+    const applySource = fs.readFileSync(path.join(ROOT, "scripts", "riders", "apply.mjs"), "utf8");
+    const dataSource = fs.readFileSync(path.join(ROOT, "scripts", "riders", "data.mjs"), "utf8");
+    // Anchored to applyOne's switch: other switches in the file have lowercase-hyphen cases of their own.
+    const at = applySource.indexOf("async function applyOne(");
+    const body = applySource.slice(at, applySource.indexOf("\n}\n", at));
+    const dispatched = new Set([...body.matchAll(/^\s*case "([a-z-]+)":/gm)].map((m) => m[1]));
+    const eventsBlock = dataSource.slice(dataSource.indexOf("export const EVENTS"));
+    const events = new Set([...eventsBlock.slice(0, eventsBlock.indexOf("]")).matchAll(/"([a-z-]+)"/g)].map((m) => m[1]));
+    const types = documentedIn("### What a rider can do", "### Areas");
+    const documentedEvents = documentedIn("### Events", "### What a rider can do");
+    const missing = (a, b) => [...a].filter((x) => !b.has(x)).sort();
+    check("Docs/riders.md documents every apply type the dispatcher handles", missing(dispatched, types), []);
+    check("Docs/riders.md invents no apply type", missing(types, dispatched), []);
+    check("Docs/riders.md documents every event", missing(events, documentedEvents), []);
+    check("Docs/riders.md invents no event", missing(documentedEvents, events), []);
 }
 
 report("Automation tests");
