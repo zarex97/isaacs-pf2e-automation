@@ -1,3 +1,4 @@
+import { t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { bonusStepsFrom, stepsFor } from "../targeting/heightening.mjs";
 import { LIB_ID } from "../id.mjs";
@@ -63,9 +64,13 @@ export const Encasement = {
 
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
-            flavor: context.item?.name ?? spec.name ?? "Encasement",
-            content: `<p><strong>${target.name}</strong> is encased in ${spec.name ?? "ice"} — `
-                + `Hardness ${hazard.hardness}, ${hazard.hitPoints.max} Hit Points.</p>`,
+            flavor: context.item?.name ?? spec.name ?? t("Encasement.Title"),
+            content: `<p>${t("Encasement.Encased", {
+                target: target.name,
+                name: spec.name ?? t("Encasement.Default"),
+                hardness: hazard.hardness,
+                hp: hazard.hitPoints.max,
+            })}</p>`,
         });
     },
 
@@ -90,7 +95,7 @@ export const Encasement = {
         if (escape) await escape.delete();
 
         await ChatMessage.create({
-            content: `<p><strong>${target.name}</strong> breaks free of ${spec.name ?? "the encasement"}.</p>`,
+            content: `<p>${t("Encasement.BreaksFree", { target: target.name, name: spec.name ?? t("Encasement.Default") })}</p>`,
         });
     },
 
@@ -147,7 +152,7 @@ async function createHazard(spec, target, token) {
         await canvas.scene.createEmbeddedDocuments("Token", [tokenDoc.toObject()]);
         return hazard;
     } catch (error) {
-        console.error("Isaac's Homebrew | could not raise an encasement", error);
+        console.error("Isaac's PF2e Automation | could not raise an encasement", error);
         return null;
     }
 }
@@ -163,14 +168,13 @@ function escapeAction(spec, hazard, context) {
     const dc = escapeDcFor(spec.escapeDc, context);
     return {
         type: "action",
-        name: `Escape ${spec.name ?? "the Encasement"}`,
+        name: t("Escape.Name", { name: spec.name ?? t("Encasement.Default") }),
         img: hazard.img,
         system: {
             actionType: { value: "action" },
             actions: { value: 1 },
             description: {
-                value: `<p>Attempt an Athletics check against DC ${dc} to break free of `
-                    + `@UUID[${hazard.uuid}]{${hazard.name}}. Destroying it does the same.</p>`,
+                value: `<p>${t("Encasement.EscapeDescription", { dc, link: `@UUID[${hazard.uuid}]{${hazard.name}}` })}</p>`,
             },
             traits: { value: ["escape"], rarity: "common" },
             category: "defensive",

@@ -70,7 +70,7 @@ export function catches(originAlliance, tokenAlliance) {
 export function registerEnemyTerrain() {
     const base = foundry.data?.regionBehaviors?.ModifyMovementCostRegionBehaviorType;
     if (!base) {
-        console.warn(`Isaac's Homebrew | no ModifyMovementCostRegionBehaviorType; ${TYPE} is off.`);
+        console.warn(`Isaac's PF2e Automation | no ModifyMovementCostRegionBehaviorType; ${TYPE} is off.`);
         return false;
     }
 

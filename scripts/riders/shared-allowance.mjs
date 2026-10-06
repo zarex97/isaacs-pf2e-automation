@@ -18,7 +18,7 @@ export const SharedAllowance = {
     registerHooks() {
         Hooks.on("createChatMessage", (message) => {
             if (!isWriter()) return;
-            SharedAllowance.onRoll(message).catch((e) => console.error("Isaac's Homebrew | shared allowance", e));
+            SharedAllowance.onRoll(message).catch((e) => console.error("Isaac's PF2e Automation | shared allowance", e));
         });
     },
 

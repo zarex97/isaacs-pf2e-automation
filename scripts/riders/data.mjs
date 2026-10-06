@@ -3,13 +3,6 @@ import { LIB_ID } from "../id.mjs";
 
 export const OUTCOMES = ["criticalSuccess", "success", "failure", "criticalFailure"];
 
-export const OUTCOME_LABELS = {
-    criticalSuccess: "critical success",
-    success: "success",
-    failure: "failure",
-    criticalFailure: "critical failure",
-};
-
 /**
  * The events a rider can key off.
  *

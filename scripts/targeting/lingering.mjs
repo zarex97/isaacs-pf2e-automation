@@ -1,3 +1,4 @@
+import { key, t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
@@ -35,7 +36,7 @@ const UNIT_SECONDS = { seconds: 1, rounds: 6, minutes: 60, hours: 3600, days: 86
 export const Lingering = {
     register() {
         CONFIG.RegionBehavior.dataModels[BEHAVIOR_TYPE] = LingeringRegionBehaviorType;
-        CONFIG.RegionBehavior.typeLabels[BEHAVIOR_TYPE] = "Lingering Technique";
+        CONFIG.RegionBehavior.typeLabels[BEHAVIOR_TYPE] = key("Lingering.TypeLabel");
         CONFIG.RegionBehavior.typeIcons[BEHAVIOR_TYPE] = "fa-solid fa-fire";
     },
 
@@ -107,7 +108,7 @@ export const Lingering = {
             const model = CONFIG.RegionBehavior.dataModels.modifyMovementCost;
             const actions = Object.keys(model?.schema?.fields?.difficulties?.fields ?? {});
             if (actions.length === 0) {
-                console.warn("Isaac's Homebrew | no movement actions to make difficult; terrain skipped.");
+                console.warn("Isaac's PF2e Automation | no movement actions to make difficult; terrain skipped.");
             }
             const cost = Number(spec.difficultTerrain) || 2;
             if (actions.length > 0) {
@@ -117,7 +118,7 @@ export const Lingering = {
                 const enemiesOnly = spec.affects === "enemies" && CONFIG.RegionBehavior.dataModels[TERRAIN_TYPE];
                 behaviors.push({
                     type: enemiesOnly ? TERRAIN_TYPE : "modifyMovementCost",
-                    name: enemiesOnly ? "Difficult terrain (enemies)" : "Difficult terrain",
+                    name: t(enemiesOnly ? "Lingering.TerrainEnemies" : "Lingering.Terrain"),
                     system: { difficulties: Object.fromEntries(actions.map((action) => [action, cost])) },
                 });
             }
@@ -410,7 +411,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
         if (!DamageRoll) return;
         const roll = await new DamageRoll(`(${damage.formula})[${damage.type ?? "fire"}]`).evaluate();
         await roll.toMessage(
-            { flavor: `${payload.name ?? "Lingering area"} — ${actor.name}` },
+            { flavor: t("Lingering.Flavor", { name: payload.name ?? t("Lingering.TypeLabel"), actor: actor.name }) },
             { rollMode: game.settings.get("core", "rollMode") },
         );
         await actor.applyDamage({ damage: roll, token: event.data.token });

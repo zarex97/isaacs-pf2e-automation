@@ -261,7 +261,7 @@ export function shadowTarget(actor, { reduction = 0, hardness = false, immunitie
             try {
                 restore();
             } catch (error) {
-                console.error("Isaac's Homebrew | could not restore a shadowed target", error);
+                console.error("Isaac's PF2e Automation | could not restore a shadowed target", error);
             }
         }
     };
@@ -327,7 +327,7 @@ export function registerRollBypass() {
 
             if (changed) message.updateSource({ rolls: rewritten });
         } catch (error) {
-            console.error("Isaac's Homebrew | could not put a bypass on a damage roll", error);
+            console.error("Isaac's PF2e Automation | could not put a bypass on a damage roll", error);
         }
     });
 }

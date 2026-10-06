@@ -1,3 +1,4 @@
+import { t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { RiderExtensions } from "./extensions.mjs";
 import { LIB_ID } from "../id.mjs";
@@ -124,11 +125,11 @@ export const ESCAPE_DC_TYPES = new Set(["condition", "encasement"]);
 
 /** The granted action, as a plain source object — no Foundry, so the build can read it. */
 export function escapeActionSource({ item, dc, statistic = null, release }) {
-    const name = item?.name ?? "the grip";
-    const skill = statistic ? capitalise(statistic) : "Acrobatics or Athletics";
+    const name = item?.name ?? t("Escape.Grip");
+    const skill = statistic ? capitalise(statistic) : t("Escape.EitherSkill");
     return {
         type: "action",
-        name: `Escape ${name}`,
+        name: t("Escape.Name", { name }),
         img: item?.img ?? "icons/skills/movement/figure-running-gray.webp",
         system: {
             actionType: { value: "action" },
@@ -138,11 +139,7 @@ export function escapeActionSource({ item, dc, statistic = null, release }) {
             // *caster's* own spell, and an `@UUID` to an item on someone else's sheet renders to a player
             // as a broken link they cannot open.
             description: {
-                value: `<p>Attempt ${article(skill)} ${skill} check against <strong>DC ${dc}</strong> to `
-                    + `break free of <strong>${name}</strong>. On a success you are released and this `
-                    + `action goes away.</p>`
-                    + `<p><em>Pathfinder's Escape also allows an unarmed attack roll. A table that would `
-                    + `rather roll that can, against the same DC.</em></p>`,
+                value: `<p>${t("Escape.Description", { skill, dc, name })}</p><p><em>${t("Escape.UnarmedNote")}</em></p>`,
             },
             traits: { value: ["attack"], rarity: "common" },
             category: "defensive",
@@ -184,7 +181,7 @@ export function escapeDcFor(dc, context) {
     const value = RiderExtensions.resolveDC(dc, context);
     if (value !== null) return value;
     console.warn(
-        `Isaac's Homebrew | escape: could not resolve escape DC ${JSON.stringify(dc)}`
+        `Isaac's PF2e Automation | escape: could not resolve escape DC ${JSON.stringify(dc)}`
             + ` for ${context.originActor?.name ?? "an unknown origin"} — falling back to 10.`,
     );
     return 10;
@@ -201,6 +198,3 @@ function capitalise(slug) {
     return String(slug).charAt(0).toUpperCase() + String(slug).slice(1);
 }
 
-function article(word) {
-    return /^[AEIOU]/i.test(word) ? "an" : "a";
-}

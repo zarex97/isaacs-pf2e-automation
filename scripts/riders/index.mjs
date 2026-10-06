@@ -1,3 +1,4 @@
+import { key } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 import { bindReactionButtons } from "./reactions.mjs";
@@ -25,10 +26,8 @@ import { Sources } from "./sources.mjs";
 export const Riders = {
     registerSettings() {
         game.settings.register(LIB_ID, "riders", {
-            name: "Apply Technique riders automatically",
-            hint: "When a save is rolled, a Strike lands, or damage is applied, apply the conditions the "
-                + "Technique or Cloth inflicts. Requires a GM online; saves rolled from a chat card also "
-                + "require pf2e-toolbelt's Target Helper.",
+            name: key("Settings.Riders.Name"),
+            hint: key("Settings.Riders.Hint"),
             scope: "world",
             config: true,
             type: Boolean,
@@ -36,16 +35,15 @@ export const Riders = {
         });
 
         game.settings.register(LIB_ID, "automateDeath", {
-            name: "Automate death effects",
-            hint: "Antares, Royal Funeral and the Cancer Zenith say \"or die\". Choose who the module is "
-                + "allowed to do that to; anyone else gets a whisper to the GM instead.",
+            name: key("Settings.AutomateDeath.Name"),
+            hint: key("Settings.AutomateDeath.Hint"),
             scope: "world",
             config: true,
             type: String,
             choices: {
-                npcs: "Creatures without a player owner",
-                all: "Anyone, including player characters",
-                off: "Nobody — always whisper",
+                npcs: key("Settings.AutomateDeath.Npcs"),
+                all: key("Settings.AutomateDeath.All"),
+                off: key("Settings.AutomateDeath.Off"),
             },
             default: "npcs",
         });

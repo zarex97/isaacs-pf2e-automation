@@ -1,3 +1,4 @@
+import { t } from "../i18n.mjs";
 import { LIB_ID } from "../id.mjs";
 import { applyRiders, applyChoice, applyPick, resolveCounteract, resolveReaction } from "./apply.mjs";
 
@@ -70,8 +71,6 @@ async function warnNoGM({ event, messageId, itemUuid }) {
     warned.add(key);
     setTimeout(() => warned.delete(key), 10_000);
 
-    const name = game.messages.get(messageId ?? "")?.item?.name ?? "This Technique";
-    ui.notifications.warn(
-        `${name}: no GM is online, so its riders were not applied. Apply them by hand.`,
-    );
+    const name = game.messages.get(messageId ?? "")?.item?.name ?? t("Relay.ThisAbility");
+    ui.notifications.warn(t("Relay.NoGM", { name }));
 }

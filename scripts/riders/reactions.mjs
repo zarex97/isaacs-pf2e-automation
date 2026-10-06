@@ -15,6 +15,7 @@
  * specific: it is the same machinery any reaction in any class would want, and the Saint's own reaction
  * Techniques could move onto it without a line of new code.
  */
+import { t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 
@@ -118,13 +119,13 @@ export async function offerReaction(rider, context) {
         // the opposite of what the clause says. `looksAbleToReact` is really "able to act at all" —
         // unconscious, paralyzed, petrified, stunned — which gates a free action just as well, and the
         // module has never tracked a *spent* reaction, so nothing else here needs to change.
-        flavor: `${item.name} — ${rider.apply.freeAction ? "free action" : "reaction"}`,
+        flavor: t("Reaction.Flavor", { item: item.name, kind: t(rider.apply.freeAction ? "Reaction.Free" : "Reaction.Reaction") }),
         content:
             `<p>${prompt}</p>`
             + `<div class="isaacs-automation-choice">`
             + `<button type="button" data-action="isaacs-automation-reaction">${label}</button>`
             + `</div>`
-            + `<p class="isaacs-automation-hint"><em>Ignoring this card declines the reaction; nothing is spent.</em></p>`,
+            + `<p class="isaacs-automation-hint"><em>${t("Reaction.Decline")}</em></p>`,
         flags: {
             [LIB_ID]: {
                 reaction: {

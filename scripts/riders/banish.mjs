@@ -1,3 +1,4 @@
+import { t } from "../i18n.mjs";
 import { LIB_ID } from "../id.mjs";
 
 const SETTING = "banishments";
@@ -95,9 +96,11 @@ export const Banish = {
 
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor: originActor }),
-            content:
-                `<p><strong>${record.name}</strong> — ${record.label}. It returns in `
-                + `${describeSeconds(seconds)}${returnsToSquare ? ", to the square it left" : ""}.</p>`,
+            content: `<p>${t(returnsToSquare ? "Banish.GoneToSquare" : "Banish.Gone", {
+                name: record.name,
+                label: record.label,
+                time: describeSeconds(seconds),
+            })}</p>`,
         });
         return record;
     },
@@ -125,7 +128,7 @@ export const Banish = {
 
         const scene = game.scenes.get(record.sceneId);
         if (!scene) {
-            ui.notifications.warn(`${record.name} was banished from a scene that no longer exists.`);
+            ui.notifications.warn(t("Banish.MissingScene", { name: record.name }));
             return null;
         }
         if (scene.tokens.has(record.tokenId)) return null; // already back, by hand
@@ -149,7 +152,7 @@ export const Banish = {
         }
 
         await ChatMessage.create({
-            content: `<p><strong>${record.name}</strong> returns — ${record.label} has ended.</p>`,
+            content: `<p>${t("Banish.Returns", { name: record.name, label: record.label })}</p>`,
         });
         return token;
     },
@@ -161,7 +164,7 @@ export const Banish = {
 };
 
 function describeSeconds(seconds) {
-    if (seconds % 3600 === 0) return `${seconds / 3600} hour${seconds === 3600 ? "" : "s"}`;
-    if (seconds % 60 === 0) return `${seconds / 60} minute${seconds === 60 ? "" : "s"}`;
-    return `${Math.round(seconds / 6)} round${seconds === 6 ? "" : "s"}`;
+    if (seconds % 3600 === 0) return seconds === 3600 ? t("Time.Hour") : t("Time.Hours", { n: seconds / 3600 });
+    if (seconds % 60 === 0) return seconds === 60 ? t("Time.Minute") : t("Time.Minutes", { n: seconds / 60 });
+    return seconds === 6 ? t("Time.Round") : t("Time.Rounds", { n: Math.round(seconds / 6) });
 }

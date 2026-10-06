@@ -1,3 +1,4 @@
+import { t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { Relay } from "../riders/relay.mjs";
 import { LIB_ID } from "../id.mjs";
@@ -82,12 +83,11 @@ export async function applyOverlap(payload) {
         await actor.createEmbeddedDocuments("Item", [
             {
                 type: "effect",
-                name: `${item.name}: caught by ${count}`,
+                name: t("Overlap.Name", { item: item.name, count }),
                 img: item.img,
                 system: {
                     description: {
-                        value: `<p>Caught by ${count} placements of @UUID[${item.uuid}]{${item.name}} — `
-                            + `${spec.value ?? -2} circumstance to the save it forces.</p>`,
+                        value: `<p>${t("Overlap.Description", { count, link: `@UUID[${item.uuid}]{${item.name}}`, value: spec.value ?? -2 })}</p>`,
                     },
                     duration: { expiry: "turn-start", sustained: false, unit: "rounds", value: 1 },
                     level: { value: item.level ?? item.system?.level?.value ?? 1 },

@@ -19,6 +19,17 @@
             "Review": {
                 "Name": "Review targets before casting",
                 "Hint": "Show the list of caught tokens for confirmation after you place the area. Turn this off to target everything the area caught and cast immediately."
+            },
+            "Riders": {
+                "Name": "Apply riders automatically",
+                "Hint": "When a save is rolled, a Strike lands, or damage is applied, apply what the ability's riders inflict. Requires a GM online; saves rolled from a chat card also require PF2e Toolbelt's Target Helper."
+            },
+            "AutomateDeath": {
+                "Name": "Automate death effects",
+                "Hint": "Some riders say \"or die\". Choose whom they may do that to; anyone else gets a whisper to the GM instead.",
+                "Npcs": "Creatures without a player owner",
+                "All": "Anyone, including player characters",
+                "Off": "Nobody — always whisper"
             }
         },
         "Aim": {
@@ -92,6 +103,157 @@
                 "P1W": "per week",
                 "P1M": "per month"
             }
+        },
+        "Encasement": {
+            "Title": "Encasement",
+            "Default": "the encasement",
+            "Encased": "<strong>{target}</strong> is encased in {name} — Hardness {hardness}, {hp} Hit Points.",
+            "BreaksFree": "<strong>{target}</strong> breaks free of {name}.",
+            "EscapeDescription": "Attempt an Athletics check against DC {dc} to break free of {link}. Destroying it does the same."
+        },
+        "Escape": {
+            "Grip": "the grip",
+            "EitherSkill": "Acrobatics or Athletics",
+            "Name": "Escape {name}",
+            "Description": "Attempt a check — {skill} — against <strong>DC {dc}</strong> to break free of <strong>{name}</strong>. On a success you are released and this action goes away.",
+            "UnarmedNote": "Pathfinder's Escape also allows an unarmed attack roll. A table that would rather roll that can, against the same DC.",
+            "Check": "Escape",
+            "Free": "<strong>{actor}</strong> breaks free of {held}.",
+            "Held": "<strong>{actor}</strong> struggles against {held} and does not break free."
+        },
+        "Banish": {
+            "Gone": "<strong>{name}</strong> — {label}. It returns in {time}.",
+            "GoneToSquare": "<strong>{name}</strong> — {label}. It returns in {time}, to the square it left.",
+            "Returns": "<strong>{name}</strong> returns — {label} has ended.",
+            "MissingScene": "{name} was banished from a scene that no longer exists.",
+            "Label": "Banished",
+            "Already": "{name} is already folded away."
+        },
+        "Time": {
+            "Hour": "1 hour",
+            "Hours": "{n} hours",
+            "Minute": "1 minute",
+            "Minutes": "{n} minutes",
+            "Round": "1 round",
+            "Rounds": "{n} rounds"
+        },
+        "Reaction": {
+            "Flavor": "{item} — {kind}",
+            "Free": "free action",
+            "Reaction": "reaction",
+            "Decline": "Ignoring this card declines the reaction; nothing is spent."
+        },
+        "Overlap": {
+            "Name": "{item}: caught by {count}",
+            "Description": "Caught by {count} placements of {link} — {value} circumstance to the save it forces."
+        },
+        "Lingering": {
+            "Terrain": "Difficult terrain",
+            "TerrainEnemies": "Difficult terrain (enemies)",
+            "TypeLabel": "Lingering area",
+            "Flavor": "{name} — {actor}"
+        },
+        "Relay": {
+            "ThisAbility": "This ability",
+            "NoGM": "{name}: no GM is online, so its riders were not applied. Apply them by hand."
+        },
+        "Outcome": {
+            "criticalSuccess": "critical success",
+            "success": "success",
+            "failure": "failure",
+            "criticalFailure": "critical failure"
+        },
+        "Rider": {
+            "Name": "Rider",
+            "Area": "Rider area",
+            "ThisActivity": "This ability",
+            "TheTarget": "the target",
+            "Flavor": "{name} — {actor}",
+            "FlavorOutcome": "{name} — {actor}, {outcome}",
+            "LeftToTable": "Left to the table:"
+        },
+        "Choice": {
+            "Prompt": "Choose one.",
+            "Gone": "{item}: {option} is no longer available.",
+            "ThisOption": "This option",
+            "ThatOption": "that option"
+        },
+        "Pick": {
+            "Prompt": "Choose a creature."
+        },
+        "FlatCheck": {
+            "Flavor": "{label} — <strong>{result}</strong> against DC {dc}"
+        },
+        "Move": {
+            "Refused": "{name} {refusal} — the movement is refused.",
+            "Drag": "{name} is dragged {feet} feet closer.",
+            "Throw": "{name} is thrown {feet} feet away.",
+            "DragShort": "{name} is pulled {feet} feet closer — the {travel}-foot drag ran out of map.",
+            "ThrowShort": "{name} is pulled {feet} feet away — the {travel}-foot throw ran out of map."
+        },
+        "Strikes": {
+            "MissingOne": "{item} could not find {missing} on the sheet, so that Strike was not made.",
+            "MissingMany": "{item} could not find {missing} on the sheet, so those Strikes were not made."
+        },
+        "Heal": {
+            "Regains": "{item}: <strong>{actor}</strong> regains {healed} Hit Points",
+            "Capped": "Nothing more to give — <strong>{actor}</strong> has drawn all {cap} Hit Points this casting allows.",
+            "Pooled": "<strong>{actor}</strong> regains {healed} Hit Points ({so} of {cap} this casting).",
+            "Full": "<strong>{actor}</strong> is already at full Hit Points."
+        },
+        "Toggle": {
+            "Title": "Toggle",
+            "Missing": "No \"{option}\" toggle to flip — set it by hand.",
+            "On": "{option} is now on.",
+            "Off": "{option} is now off.",
+            "Cycled": "<strong>{actor}</strong> is now <strong>{label}</strong>."
+        },
+        "Counteract": {
+            "Title": "Counteract",
+            "Prompt": "Counteract one, if you wish.",
+            "Nothing": "Nothing with {traits} to counteract in the area.",
+            "NoStatistic": "{actor} has no {slug} statistic to counteract with.",
+            "Floor": "<strong>{effect}</strong> cannot be counteracted below rank {floor} — a counteract rank of {rank} does not touch it.",
+            "CannotSuppress": "{effect} could not be suppressed without stranding a grant.",
+            "Suppressed": "<strong>{effect}</strong> is <strong>suppressed</strong> {until}, and cannot be re-entered until then.",
+            "UntilNextTurn": "until the end of {actor}'s next turn",
+            "Gone": "<strong>{effect}</strong> is counteracted and gone.",
+            "Holds": "<strong>{effect}</strong> holds — rank {rank} against a counteract rank of {ours} on a {outcome}.",
+            "FailedCheck": "failed check"
+        },
+        "Readout": {
+            "Title": "What the senses tell",
+            "Within": "Within {range} feet:",
+            "Nothing": "Nothing living or dead within {range} feet.",
+            "Tracked": "A marked creature",
+            "Hp": "<strong>{name}</strong> is at {value} / {max} Hit Points.",
+            "Gone": "There is nothing left to read.",
+            "Dying": "dying",
+            "Unknown": "unknown",
+            "Healthy": "healthy",
+            "NearDeath": "near death",
+            "Hurt": "hurt"
+        },
+        "Condition": {
+            "Removed": "{actor} is no longer {slug}."
+        },
+        "Damage": {
+            "Unpreventable": "{item} — {actor} (unpreventable)"
+        },
+        "Death": {
+            "Prompt": "It dies.",
+            "Text": "it dies.",
+            "Dies": "<strong>{actor}</strong> is reduced to 0 Hit Points — {text}"
+        },
+        "Pool": {
+            "GainOne": "{actor} regains <strong>1 focus point</strong> — {now} of {max}.",
+            "Gain": "{actor} regains <strong>{n} focus points</strong> — {now} of {max}.",
+            "SpendOne": "{actor} spends <strong>1 focus point</strong> — {left} left.",
+            "Spend": "{actor} spends <strong>{n} focus points</strong> — {left} left."
+        },
+        "Effect": {
+            "Applied": "Applied by {by}.",
+            "AppliedOn": "Applied by {by} on a {outcome}."
         }
     }
 }

@@ -433,7 +433,7 @@ export const Sources = {
         try {
             damage.options.bypass = mergeBypass(damage.options.bypass, matching, damageTypes);
         } catch (error) {
-            console.error("Isaac's Homebrew | could not merge damage bypass", error);
+            console.error("Isaac's PF2e Automation | could not merge damage bypass", error);
         }
 
         return shadowTarget(actor, {
@@ -580,7 +580,7 @@ export const Sources = {
                     const range = Number(rider.range);
                     if (!Number.isFinite(range) || range <= 0) {
                         console.warn(
-                            `Isaac's Homebrew | ${owned.name}: an \`ally-damaged\` rider needs a \`range\` in `
+                            `Isaac's PF2e Automation | ${owned.name}: an \`ally-damaged\` rider needs a \`range\` in `
                             + "feet, and has none. It will never fire.",
                         );
                         continue;

@@ -367,11 +367,17 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     const en = JSON.parse(fs.readFileSync(path.join(ROOT, "lang", "en.json"), "utf8"));
     const flatten = (obj, prefix = "") => Object.entries(obj).flatMap(([k, v]) => (typeof v === "object" ? flatten(v, `${prefix}${k}.`) : [`${prefix}${k}`]));
     const defined = new Set(flatten(en));
+    // A quoted key under any of the file's own top-level groups (`"Aim.Failed"`, `"Banish.Returns"`).
+    const groups = Object.keys(en.ISAACS_AUTOMATION).join("|");
+    const groupKey = new RegExp(`["'\`]((?:${groups})\\.[A-Z][A-Za-z]*(?:\\.[A-Za-z]+)*)["'\`]`, "g");
     const used = new Set();
     for (const { text } of sources) {
         // Any quoted key, wherever it is chosen — a ternary picks between two, a map names three.
-        for (const m of text.matchAll(/["'`]((?:Settings|Aim|Review|Reason|Rule|Frequency)\.[A-Za-z.]+)["'`]/g)) used.add(`ISAACS_AUTOMATION.${m[1]}`);
-        if (text.includes("Frequency.Per.${per}")) for (const k of defined) if (k.startsWith("ISAACS_AUTOMATION.Frequency.Per.")) used.add(k);
+        for (const m of text.matchAll(groupKey)) used.add(`ISAACS_AUTOMATION.${m[1]}`);
+        // A key spelled from a value: every key under that prefix is one the value can name.
+        for (const [spelled, prefix] of [["Frequency.Per.${per}", "Frequency.Per."], ["Outcome.${outcome}", "Outcome."]]) {
+            if (text.includes(spelled)) for (const k of defined) if (k.startsWith(`ISAACS_AUTOMATION.${prefix}`)) used.add(k);
+        }
     }
     for (const m of fs.readFileSync(path.join(ROOT, "templates", "area-targets.hbs"), "utf8").matchAll(/localize "([^"]+)"/g)) used.add(m[1]);
     check("every string the module shows is in lang/en.json", [...used].filter((k) => !defined.has(k)).sort(), []);

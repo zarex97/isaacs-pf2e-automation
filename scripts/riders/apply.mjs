@@ -5,7 +5,11 @@ import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, step
 import { shapeFromArea } from "../targeting/place.mjs";
 import { LIB_ID } from "../id.mjs";
 import { Banish, durationSeconds } from "./banish.mjs";
-import { OUTCOME_LABELS, collectRiders, itemFor, riderAt } from "./data.mjs";
+import { collectRiders, itemFor, riderAt } from "./data.mjs";
+import { t } from "../i18n.mjs";
+
+/** A degree of success, in words. */
+const outcomeLabel = (outcome) => t(`Outcome.${outcome}`);
 import { Encasement } from "./encasement.mjs";
 import { Escape, escapeStatisticFor } from "./escape.mjs";
 import { RiderExtensions } from "./extensions.mjs";
@@ -140,7 +144,7 @@ async function applyToTarget(target, candidates, context, payload) {
         try {
             await applyOne(rider, { ...work, item, riderIndex: index, riderItem: item });
         } catch (error) {
-            console.error(`Isaac's Homebrew | ${item.name}: rider failed on ${actor.name}`, rider, error);
+            console.error(`Isaac's PF2e Automation | ${item.name}: rider failed on ${actor.name}`, rider, error);
         }
     }
 
@@ -170,7 +174,7 @@ async function applyToTarget(target, candidates, context, payload) {
             try {
                 await applyOne(rider, { ...work, item, riderIndex: index, riderItem: item });
             } catch (error) {
-                console.error(`Isaac's Homebrew | ${item.name}: live rider failed on ${actor.name}`, rider, error);
+                console.error(`Isaac's PF2e Automation | ${item.name}: live rider failed on ${actor.name}`, rider, error);
             }
         }
     }
@@ -228,7 +232,7 @@ export async function applyChoice(payload) {
     // who spends four points and then presses the five-point button on the same card would otherwise take
     // a fifth from a pool that no longer has it.
     if (!testPredicate(option.predicate, riderOptions({ originActor: context.originActor, targetActor: actor, item }))) {
-        ui.notifications.warn(`${item?.name ?? "This option"}: ${option.label ?? "that option"} is no longer available.`);
+        ui.notifications.warn(t("Choice.Gone", { item: item?.name ?? t("Choice.ThisOption"), option: option.label ?? t("Choice.ThatOption") }));
         return;
     }
 
@@ -314,7 +318,7 @@ async function applyFlatCheck(rider, context) {
 
     await roll.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor ?? context.actor }),
-        flavor: `${label} — <strong>${passed ? "success" : "failure"}</strong> against DC ${dc}`,
+        flavor: t("FlatCheck.Flavor", { label, result: outcomeLabel(passed ? "success" : "failure"), dc }),
     });
 
     const branch = passed ? rider.apply.onSuccess : rider.apply.onFailure;
@@ -416,7 +420,7 @@ async function applyOne(rider, context) {
             // A type another module registered — Libra's Arms, a Soulbound's charge pool.
             const registered = RiderExtensions.applyType(apply.type);
             if (registered) return registered(rider, context);
-            console.warn(`Isaac's Homebrew | ${context.item?.name}: unknown rider type "${apply.type}"`);
+            console.warn(`Isaac's PF2e Automation | ${context.item?.name}: unknown rider type "${apply.type}"`);
         }
     }
 }
@@ -456,7 +460,7 @@ async function targetsFor(rider, context) {
     if (!originToken?.object) return [];
     if (!canvas?.ready || canvas.scene?.id !== originToken.parent?.id) {
         console.warn(
-            `Isaac's Homebrew | ${context.originActor?.name}: an area rider needs the origin's scene to be `
+            `Isaac's PF2e Automation | ${context.originActor?.name}: an area rider needs the origin's scene to be `
                 + `the viewed one, and it is not. Skipped.`,
         );
         return [];
@@ -522,7 +526,7 @@ async function targetsFor(rider, context) {
     if (shapes.length === 0) return [];
 
     const region = new CONFIG.Region.documentClass(
-        { name: "Rider area", shapes, flags: { pf2e: { areaShape: areas[0].type } } },
+        { name: t("Rider.Area"), shapes, flags: { pf2e: { areaShape: areas[0].type } } },
         { parent: canvas.scene },
     );
     // `catchTokens` reads the origin actor off `config.item`, so hand it something item-shaped. The aura
@@ -582,7 +586,7 @@ async function applyTeleport(rider, context) {
     // anyway and leave the table to argue. Who refuses, and why, is registered (`registerTeleportRefusal`).
     const refusal = RiderExtensions.teleportRefusal(token, context);
     if (refusal) {
-        context.notes.push(`${token.name} ${refusal} — the movement is refused.`);
+        context.notes.push(t("Move.Refused", { name: token.name, refusal }));
         return;
     }
 
@@ -647,12 +651,8 @@ async function applyTeleport(rider, context) {
     // and "away" would be a lie for the half of them that drag.
     const towards = rider.apply.direction === "toward";
     const short = travelled < travel - (scene.grid.distance || 5);
-    context.notes.push(
-        short
-            ? `${token.name} is pulled ${travelled} feet ${towards ? "closer" : "away"} — the `
-                + `${Math.round(travel)}-foot ${towards ? "drag" : "throw"} ran out of map.`
-            : `${token.name} is ${towards ? `dragged ${travelled} feet closer` : `thrown ${travelled} feet away`}.`,
-    );
+    const moved = { name: token.name, feet: travelled, travel: Math.round(travel) };
+    context.notes.push(t(short ? (towards ? "Move.DragShort" : "Move.ThrowShort") : (towards ? "Move.Drag" : "Move.Throw"), moved));
 }
 
 /**
@@ -693,15 +693,15 @@ async function applyStrikes(rider, context) {
         : null;
     const missing = sequence?.filter((entry) => !entry.strike).map((entry) => entry.wanted) ?? [];
     if (missing.length > 0) {
-        context.notes.push(
-            `${context.item?.name ?? "This activity"} could not find ${missing.join(", ")} on the sheet, `
-                + `so ${missing.length === 1 ? "that Strike was" : "those Strikes were"} not made.`,
-        );
+        context.notes.push(t(missing.length === 1 ? "Strikes.MissingOne" : "Strikes.MissingMany", {
+            item: context.item?.name ?? t("Rider.ThisActivity"),
+            missing: missing.join(", "),
+        }));
     }
     const strikes = sequence?.filter((entry) => entry.strike).map((entry) => entry.strike) ?? null;
     const strike = strikes ? strikes[0] : findStrike(actor, rider.apply.strike ?? "unarmed");
     if (!strike?.variants?.length) {
-        console.warn(`Isaac's Homebrew | ${context.item?.name}: no Strike to make`);
+        console.warn(`Isaac's PF2e Automation | ${context.item?.name}: no Strike to make`);
         return;
     }
 
@@ -722,7 +722,7 @@ async function applyStrikes(rider, context) {
             source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: rider.apply.uuid });
             [effect] = await actor.createEmbeddedDocuments("Item", [source]);
         } else {
-            console.warn(`Isaac's Homebrew | volley effect not found: ${rider.apply.uuid}`);
+            console.warn(`Isaac's PF2e Automation | volley effect not found: ${rider.apply.uuid}`);
         }
     }
 
@@ -774,7 +774,7 @@ async function applyStrikes(rider, context) {
                         riderIndex: [context.riderIndex, "onAllHit", innerIndex].flat(),
                     });
                 } catch (error) {
-                    console.error(`Isaac's Homebrew | ${context.item?.name}: an all-hit follow-up failed`, inner, error);
+                    console.error(`Isaac's PF2e Automation | ${context.item?.name}: an all-hit follow-up failed`, inner, error);
                 }
             }
         }
@@ -871,7 +871,7 @@ async function followUp(rider, context, { token, outcome }) {
                 riderIndex: [context.riderIndex, key, innerIndex].flat(),
             });
         } catch (error) {
-            console.error(`Isaac's Homebrew | ${context.item?.name}: a Strike's follow-up failed`, inner, error);
+            console.error(`Isaac's PF2e Automation | ${context.item?.name}: a Strike's follow-up failed`, inner, error);
         }
     }
 }
@@ -893,12 +893,12 @@ async function applyBanish(rider, context) {
 
     const record = await Banish.take(context.target, {
         seconds,
-        label: rider.apply.label ?? `${context.item?.name ?? "Banished"}`,
+        label: rider.apply.label ?? context.item?.name ?? t("Banish.Label"),
         originActor: context.originActor,
         returnsToSquare: rider.apply.returnsToSquare !== false,
     });
     if (!record) {
-        context.notes.push(`${context.target?.name ?? "The target"} is already folded away.`);
+        context.notes.push(t("Banish.Already", { name: context.target?.name ?? t("Rider.TheTarget") }));
     }
 }
 
@@ -929,7 +929,7 @@ async function applyHeal(rider, context) {
         if (healed > 0) await actor.update({ "system.attributes.hp.value": hp.value + healed });
         await roll.toMessage({
             speaker: ChatMessage.getSpeaker({ actor }),
-            flavor: `${context.item?.name ?? "Rider"}: <strong>${actor.name}</strong> regains ${healed} Hit Points`,
+            flavor: t("Heal.Regains", { item: context.item?.name ?? t("Rider.Name"), actor: actor.name, healed }),
         });
         return;
     }
@@ -960,9 +960,8 @@ async function applyHeal(rider, context) {
         // the GM, and a GM-only whisper is exactly the shape this programme exists to remove.
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor }),
-            flavor: context.item?.name ?? "Rider",
-            content: `<p>The flames find nothing more to give — <strong>${actor.name}</strong> has drawn all `
-                + `${cap} Hit Points this casting allows.</p>`,
+            flavor: context.item?.name ?? t("Rider.Name"),
+            content: `<p>${t("Heal.Capped", { actor: actor.name, cap })}</p>`,
         });
         return;
     }
@@ -973,11 +972,10 @@ async function applyHeal(rider, context) {
 
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: context.item?.name ?? "Rider",
+        flavor: context.item?.name ?? t("Rider.Name"),
         content: healed > 0
-            ? `<p>The flames feed — <strong>${actor.name}</strong> regains ${healed} Hit Points `
-                + `(${pool + allowed} of ${cap} this casting).</p>`
-            : `<p><strong>${actor.name}</strong> is already at full Hit Points; the flames feed on nothing.</p>`,
+            ? `<p>${t("Heal.Pooled", { actor: actor.name, healed, so: pool + allowed, cap })}</p>`
+            : `<p>${t("Heal.Full", { actor: actor.name })}</p>`,
     });
 }
 
@@ -1008,14 +1006,14 @@ async function applyToggle(rider, context) {
         const wanted = rider.apply.value !== false;
         const result = await actor.toggleRollOption(domain, option, null, wanted);
         if (result === null) {
-            context.prompts.push(`No "${option}" toggle to flip — set it by hand.`);
+            context.prompts.push(t("Toggle.Missing", { option }));
             return;
         }
         if (rider.apply.announce !== false) {
             await ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ actor }),
-                flavor: context.item?.name ?? "Toggle",
-                content: `<p>${foundry.utils.escapeHTML(rider.apply.text ?? `${option} is now ${wanted ? "on" : "off"}.`)}</p>`,
+                flavor: context.item?.name ?? t("Toggle.Title"),
+                content: `<p>${foundry.utils.escapeHTML(rider.apply.text ?? t(wanted ? "Toggle.On" : "Toggle.Off", { option }))}</p>`,
             });
         }
         return;
@@ -1025,15 +1023,15 @@ async function applyToggle(rider, context) {
     const next = cycle[(cycle.indexOf(current) + 1) % cycle.length];
     const result = await actor.toggleRollOption(domain, option, null, true, next);
     if (result === null) {
-        context.prompts.push(`No "${option}" toggle to flip — set it on the Cloth by hand.`);
+        context.prompts.push(t("Toggle.Missing", { option }));
         return;
     }
 
     const label = rider.apply.labels?.[next] ?? next;
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: context.item?.name ?? "Toggle",
-        content: `<p><strong>${actor.name}</strong> is now in their <strong>${label}</strong> aspect.</p>`,
+        flavor: context.item?.name ?? t("Toggle.Title"),
+        content: `<p>${t("Toggle.Cycled", { actor: actor.name, label })}</p>`,
     });
 }
 
@@ -1062,8 +1060,8 @@ async function applyEscape(rider, context) {
 
     // The ability's own name, kept on the action at grant time rather than recovered from the action's
     // title: a GM who renames "Escape Sai — Restrain" on a sheet should not change what the chat says.
-    const held = hazard?.name ?? rider.apply.name ?? "the grip";
-    const roll = await statistic.roll({ dc: { value: Number(dc) || 0 }, skipDialog: true, label: "Escape" });
+    const held = hazard?.name ?? rider.apply.name ?? t("Escape.Grip");
+    const roll = await statistic.roll({ dc: { value: Number(dc) || 0 }, skipDialog: true, label: t("Escape.Check") });
     const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
     if (outcome === "success" || outcome === "criticalSuccess") {
         if (hazard) {
@@ -1075,14 +1073,13 @@ async function applyEscape(rider, context) {
             await Escape.release(context.actor, context.item, rider.apply);
             await ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ actor: context.actor }),
-                content: `<p><strong>${context.actor.name}</strong> breaks free of ${held}.</p>`,
+                content: `<p>${t("Escape.Free", { actor: context.actor.name, held })}</p>`,
             });
         }
     } else {
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor: context.actor }),
-            content: `<p><strong>${context.actor.name}</strong> struggles against ${held} and does `
-                + `not break free.</p>`,
+            content: `<p>${t("Escape.Held", { actor: context.actor.name, held })}</p>`,
         });
     }
 }
@@ -1121,7 +1118,7 @@ async function applyCounteract(rider, context) {
     }
 
     if (buttons.length === 0) {
-        context.notes.push(`Nothing ${traits.join(" or ")} to counteract in the area.`);
+        context.notes.push(t("Counteract.Nothing", { traits: traits.join(" / ") }));
         return;
     }
 
@@ -1139,8 +1136,8 @@ async function applyCounteract(rider, context) {
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
         whisper: [...ownersAndGMs(context.originActor)],
-        flavor: context.item?.name ?? "Counteract",
-        content: `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? "Counteract one, if you wish.")}</p>`
+        flavor: context.item?.name ?? t("Counteract.Title"),
+        content: `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? t("Counteract.Prompt"))}</p>`
             + `<div class="isaacs-automation-choice">${buttons.join(" ")}</div>`,
         flags: {
             [LIB_ID]: {
@@ -1177,7 +1174,7 @@ export async function resolveCounteract(payload) {
     // Registered resolvers first — a borrowed class counteracts with its lender's statistic.
     const statistic = RiderExtensions.statistic(actor, slug);
     if (!statistic) {
-        ui.notifications.warn(`${actor.name} has no ${slug} statistic to counteract with.`);
+        ui.notifications.warn(t("Counteract.NoStatistic", { actor: actor.name, slug }));
         return;
     }
 
@@ -1186,10 +1183,9 @@ export async function resolveCounteract(payload) {
     // counteract of lower rank fails without a roll.
     const floor = Number(flagOf(effect, "counteractFloor")) || 0;
     if (floor && counteractRank(actor, item) < floor) {
-        await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), flavor: item?.name ?? "Counteract",
+        await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), flavor: item?.name ?? t("Counteract.Title"),
             flags: { [LIB_ID]: { counteractFloor: { effect: effect.uuid, floor } } },
-            content: `<p><strong>${effect.name}</strong> cannot be counteracted below rank ${floor} — a counteract rank of `
-                + `${counteractRank(actor, item)} does not touch it.</p>` });
+            content: `<p>${t("Counteract.Floor", { effect: effect.name, floor, rank: counteractRank(actor, item) })}</p>` });
         return;
     }
     const roll = await statistic.roll({
@@ -1219,7 +1215,7 @@ export async function resolveCounteract(payload) {
         if (!suppression) await effect.delete();
         else if (!suppression.suppressed) {
             // A state whose rules carry grant-time state cannot be parked and must not be deleted either.
-            ui.notifications.warn(`${effect.name} could not be suppressed without stranding a grant.`);
+            ui.notifications.warn(t("Counteract.CannotSuppress", { effect: effect.name }));
         }
     } else if (counteracted) {
         await effect.delete();
@@ -1232,15 +1228,15 @@ export async function resolveCounteract(payload) {
 
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: item?.name ?? "Counteract",
+        flavor: item?.name ?? t("Counteract.Title"),
         content: counteracted && suppression
-            ? `<p><strong>${effect.name}</strong> is <strong>suppressed</strong> `
-                + (suppression.until ?? `until the end of ${effect.actor?.name ?? "the target"}'s next turn`)
-                + ", and cannot be re-entered until then.</p>"
+            ? `<p>${t("Counteract.Suppressed", {
+                effect: effect.name,
+                until: suppression.until ?? t("Counteract.UntilNextTurn", { actor: effect.actor?.name ?? t("Rider.TheTarget") }),
+            })}</p>`
             : counteracted
-                ? `<p><strong>${effect.name}</strong> is counteracted and gone.</p>`
-                : `<p><strong>${effect.name}</strong> holds — rank ${targetRank} against a counteract rank of `
-                    + `${ourRank} on a ${OUTCOME_LABELS[outcome] ?? "failed check"}.</p>`,
+                ? `<p>${t("Counteract.Gone", { effect: effect.name })}</p>`
+                : `<p>${t("Counteract.Holds", { effect: effect.name, rank: targetRank, ours: ourRank, outcome: outcome ? outcomeLabel(outcome) : t("Counteract.FailedCheck") })}</p>`,
     });
 }
 
@@ -1256,7 +1252,7 @@ function dcByLevel(level) {
     return table[index];
 }
 
-/** The Saint's own players and the GMs — the people a decision like this belongs to. */
+/** The caster's own players and the GMs — the people a decision like this belongs to. */
 function ownersAndGMs(actor) {
     const recipients = new Set(ChatMessage.getWhisperRecipients("GM").map((user) => user.id));
     for (const [userId, level] of Object.entries(actor?.ownership ?? {})) {
@@ -1303,10 +1299,10 @@ async function applyReadout(rider, context) {
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
         whisper: [...recipients],
-        flavor: rider.apply.title ?? context.item?.name ?? "The Boundary",
+        flavor: rider.apply.title ?? context.item?.name ?? t("Readout.Title"),
         content: rows.length > 0
-            ? `<p>Within ${range} feet:</p><ul>${rows.join("")}</ul>`
-            : `<p>Nothing living or dead within ${range} feet.</p>`,
+            ? `<p>${t("Readout.Within", { range })}</p><ul>${rows.join("")}</ul>`
+            : `<p>${t("Readout.Nothing", { range })}</p>`,
     });
 }
 
@@ -1324,21 +1320,21 @@ async function reportTrackedHp(item, context) {
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
         whisper: [...ownersAndGMs(context.originActor)],
-        flavor: item?.name ?? "Royal Funeral",
+        flavor: item?.name ?? t("Readout.Tracked"),
         content: actor?.hitPoints
-            ? `<p><strong>${token.name}</strong> is at ${actor.hitPoints.value} / ${actor.hitPoints.max} Hit Points.</p>`
-            : `<p>The rose's colour has faded &mdash; there is nothing left to read.</p>`,
+            ? `<p>${t("Readout.Hp", { name: token.name, value: actor.hitPoints.value, max: actor.hitPoints.max })}</p>`
+            : `<p>${t("Readout.Gone")}</p>`,
     });
 }
 
 /** The four words the guide uses, and nothing finer: healthy, hurt, near death, dying. */
 function hpCategory(actor) {
-    if (actor.itemTypes?.condition?.some((c) => c.slug === "dying")) return "dying";
+    if (actor.itemTypes?.condition?.some((c) => c.slug === "dying")) return t("Readout.Dying");
     const hp = actor.hitPoints;
-    if (!hp?.max) return "unknown";
-    if (hp.value <= 0) return "dying";
-    if (hp.value >= hp.max) return "healthy";
-    return hp.value <= hp.max / 4 ? "near death" : "hurt";
+    if (!hp?.max) return t("Readout.Unknown");
+    if (hp.value <= 0) return t("Readout.Dying");
+    if (hp.value >= hp.max) return t("Readout.Healthy");
+    return hp.value <= hp.max / 4 ? t("Readout.NearDeath") : t("Readout.Hurt");
 }
 
 /**
@@ -1410,7 +1406,7 @@ async function applyCondition(rider, context) {
         const held = context.actor?.itemTypes?.condition?.find((c) => c.slug === slug && c.active);
         if (!held) return;
         await context.actor.decreaseCondition(slug, { forceRemove: true });
-        context.notes.push(`${context.actor.name} is no longer ${slug}.`);
+        context.notes.push(t("Condition.Removed", { actor: context.actor.name, slug }));
         return;
     }
 
@@ -1455,13 +1451,13 @@ async function applyCondition(rider, context) {
 
     const condition = game.pf2e.ConditionManager.getCondition(slug);
     if (!condition) {
-        console.warn(`Isaac's Homebrew | unknown condition slug "${slug}"`);
+        console.warn(`Isaac's PF2e Automation | unknown condition slug "${slug}"`);
         return;
     }
 
     const conditionUuid = conditionUuidOf(condition);
     if (!conditionUuid) {
-        console.warn(`Isaac's Homebrew | condition "${slug}" has no resolvable uuid to grant`);
+        console.warn(`Isaac's PF2e Automation | condition "${slug}" has no resolvable uuid to grant`);
         return;
     }
 
@@ -1543,7 +1539,7 @@ async function applyEffect(rider, context) {
     const uuid = rider.apply.uuid;
     const source = (await fromUuid(uuid))?.toObject();
     if (!source) {
-        console.warn(`Isaac's Homebrew | rider effect not found: ${uuid}`);
+        console.warn(`Isaac's PF2e Automation | rider effect not found: ${uuid}`);
         return;
     }
 
@@ -1636,7 +1632,7 @@ async function crossThresholds(source, was, now, context) {
         try {
             await applyOne(threshold, context);
         } catch (error) {
-            console.error(`Isaac's Homebrew | ${source.name}: threshold ${threshold.at} failed`, threshold, error);
+            console.error(`Isaac's PF2e Automation | ${source.name}: threshold ${threshold.at} failed`, threshold, error);
         }
     }
 }
@@ -1744,7 +1740,7 @@ async function applyDamageRider(rider, context) {
     const { damageType = "untyped", perStep = null, perCounter = null } = rider.apply;
     const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
     if (!DamageRoll) {
-        console.warn("Isaac's Homebrew | pf2e's DamageRoll is not registered; damage rider skipped.");
+        console.warn("Isaac's PF2e Automation | pf2e's DamageRoll is not registered; damage rider skipped.");
         return;
     }
 
@@ -1794,7 +1790,7 @@ async function applyDamageRider(rider, context) {
         const bare = await new DamageRoll(`(${amount})[${damageType}]`).evaluate();
         await bare.toMessage(
             { speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
-              flavor: `${context.item?.name ?? "Rider"} — ${context.actor.name} (unpreventable)` },
+              flavor: t("Damage.Unpreventable", { item: context.item?.name ?? t("Rider.Name"), actor: context.actor.name }) },
             { rollMode: game.settings.get("core", "rollMode") },
         );
         // `skipIWR` is the "unresistable" half, and it is the whole point of the clause.
@@ -1803,11 +1799,11 @@ async function applyDamageRider(rider, context) {
     }
 
     const roll = await new DamageRoll(`(${expression})[${damageType}]`).evaluate();
-    const name = context.item?.name ?? context.originActor?.name ?? "Rider";
+    const name = context.item?.name ?? context.originActor?.name ?? t("Rider.Name");
     await roll.toMessage(
         {
             speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
-            flavor: `${name} — ${context.actor.name}`,
+            flavor: t("Rider.Flavor", { name, actor: context.actor.name }),
         },
         { rollMode: game.settings.get("core", "rollMode") },
     );
@@ -1842,7 +1838,7 @@ async function applyDeath(rider, context) {
     const playerOwned = context.actor.hasPlayerOwner;
 
     if (mode === "off" || (mode === "npcs" && playerOwned)) {
-        context.prompts.push(rider.apply.text ?? "It dies.");
+        context.prompts.push(rider.apply.text ?? t("Death.Prompt"));
         return;
     }
 
@@ -1868,10 +1864,8 @@ async function applyDeath(rider, context) {
 
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
-        flavor: context.item?.name ?? context.originActor?.name ?? "Rider",
-        content: `<p><strong>${context.actor.name}</strong> is reduced to 0 Hit Points — ${
-            rider.apply.text ?? "it dies."
-        }</p>`,
+        flavor: context.item?.name ?? context.originActor?.name ?? t("Rider.Name"),
+        content: `<p>${t("Death.Dies", { actor: context.actor.name, text: rider.apply.text ?? t("Death.Text") })}</p>`,
     });
 }
 
@@ -1973,9 +1967,8 @@ async function applyPool(rider, context) {
         await actor.update({ "system.resources.focus.value": (focus.value ?? 0) + gained });
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor }),
-            flavor: (context.riderItem ?? context.item)?.name ?? "Rider",
-            content: `<p>${actor.name} regains <strong>${gained} Reiatsu Point${gained === 1 ? "" : "s"}</strong> — `
-                + `${(focus.value ?? 0) + gained} of ${max}.</p>`,
+            flavor: (context.riderItem ?? context.item)?.name ?? t("Rider.Name"),
+            content: `<p>${t(gained === 1 ? "Pool.GainOne" : "Pool.Gain", { actor: actor.name, n: gained, now: (focus.value ?? 0) + gained, max })}</p>`,
         });
         return;
     }
@@ -1997,9 +1990,8 @@ async function applyPool(rider, context) {
     await actor.update({ "system.resources.focus.value": (focus.value ?? 0) - paid });
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: (context.riderItem ?? context.item)?.name ?? "Rider",
-        content: `<p>${actor.name} spends <strong>${paid} Reiatsu Point${paid === 1 ? "" : "s"}</strong> — `
-            + `${(focus.value ?? 0) - paid} left.</p>`,
+        flavor: (context.riderItem ?? context.item)?.name ?? t("Rider.Name"),
+        content: `<p>${t(paid === 1 ? "Pool.SpendOne" : "Pool.Spend", { actor: actor.name, n: paid, left: (focus.value ?? 0) - paid })}</p>`,
     });
 }
 
@@ -2023,7 +2015,7 @@ export async function runSave(spec, context) {
     const { statistic: slug, modifiers } = RiderExtensions.modifySave(spec.statistic, context);
     const statistic = context.actor.getStatistic?.(slug);
     if (!statistic) {
-        console.warn(`Isaac's Homebrew | ${context.actor.name} has no ${slug} statistic`);
+        console.warn(`Isaac's PF2e Automation | ${context.actor.name} has no ${slug} statistic`);
         return;
     }
 
@@ -2181,7 +2173,7 @@ function applySubstitutions(source, substitutions, context) {
     for (const { path, value: expression } of list) {
         const value = resolveFromOrigin(expression, context);
         if (value === null) {
-            console.warn(`Isaac's Homebrew | could not resolve "${expression}" for ${path}`);
+            console.warn(`Isaac's PF2e Automation | could not resolve "${expression}" for ${path}`);
             continue;
         }
         foundry.utils.setProperty(source, path, value);
@@ -2313,16 +2305,17 @@ function resolveFromOrigin(expression, context) {
 
 function effectSource(label, rules, rider, context) {
     const item = context.item ?? context.riderItem;
-    const name = item?.name ?? context.originActor?.name ?? "Rider";
+    const name = item?.name ?? context.originActor?.name ?? t("Rider.Name");
     return {
         type: "effect",
         name: `${name}: ${label}`,
         img: item?.img ?? "icons/svg/aura.svg",
         system: {
             description: {
-                value: item?.uuid
-                    ? `<p>Applied by @UUID[${item.uuid}]{${name}}${outcomeSuffix(context)}.</p>`
-                    : `<p>Applied by ${name}${outcomeSuffix(context)}.</p>`,
+                value: `<p>${t(context.outcome ? "Effect.AppliedOn" : "Effect.Applied", {
+                    by: item?.uuid ? `@UUID[${item.uuid}]{${name}}` : name,
+                    outcome: context.outcome ? outcomeLabel(context.outcome) : "",
+                })}</p>`,
             },
             duration: durationData(rider.duration),
             level: { value: item?.level ?? item?.system?.level?.value ?? 1 },
@@ -2337,7 +2330,7 @@ function effectSource(label, rules, rider, context) {
 }
 
 function outcomeSuffix(context) {
-    return context.outcome ? ` on a ${OUTCOME_LABELS[context.outcome]}` : "";
+    return context.outcome ? ` — ${outcomeLabel(context.outcome)}` : "";
 }
 
 /**
@@ -2366,7 +2359,7 @@ function startData() {
     return { value: game.time.worldTime, initiative: game.combat?.combatant?.initiative ?? null };
 }
 
-/** Lets the effect's own rules resolve against the Saint that caused it, the way an aura's would. */
+/** Lets the effect's own rules resolve against the creature that caused it, the way an aura's would. */
 function contextData({ originActor, originToken, item, actor, target }) {
     if (!originActor) return null;
     return {
@@ -2406,10 +2399,10 @@ function riderFlags(rider, { message, item, outcome }) {
 async function postNotes({ notes, item, originActor, actor, outcome }) {
     const lines = notes.filter((text) => text).map((text) => `<li>${text}</li>`).join("");
     if (!lines) return;
-    const name = item?.name ?? originActor?.name ?? "Rider";
+    const name = item?.name ?? originActor?.name ?? t("Rider.Name");
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: originActor }),
-        flavor: `${name} — ${actor.name}${outcome ? `, ${OUTCOME_LABELS[outcome]}` : ""}`,
+        flavor: t(outcome ? "Rider.FlavorOutcome" : "Rider.Flavor", { name, actor: actor.name, outcome: outcome ? outcomeLabel(outcome) : "" }),
         content: `<ul>${lines}</ul>`,
     });
 }
@@ -2424,12 +2417,12 @@ async function postNotes({ notes, item, originActor, actor, outcome }) {
 async function postPrompts({ prompts, item, originActor, actor, outcome }) {
     const lines = prompts.filter((text) => text).map((text) => `<li>${text}</li>`).join("");
     if (!lines) return;
-    const name = item?.name ?? originActor?.name ?? "Rider";
+    const name = item?.name ?? originActor?.name ?? t("Rider.Name");
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: originActor }),
         whisper: ChatMessage.getWhisperRecipients("GM").map((user) => user.id),
-        flavor: `${name} — ${actor.name}${outcome ? `, ${OUTCOME_LABELS[outcome]}` : ""}`,
-        content: `<p>Left to the table:</p><ul>${lines}</ul>`,
+        flavor: t(outcome ? "Rider.FlavorOutcome" : "Rider.Flavor", { name, actor: actor.name, outcome: outcome ? outcomeLabel(outcome) : "" }),
+        content: `<p>${t("Rider.LeftToTable")}</p><ul>${lines}</ul>`,
     });
 }
 
@@ -2506,7 +2499,7 @@ async function postPick({ rider, index, item }, context, payload) {
         whisper: [...recipients],
         flavor: item.name,
         content:
-            `<p>${foundry.utils.escapeHTML(spec.prompt ?? "Choose a creature.")}</p>`
+            `<p>${foundry.utils.escapeHTML(spec.prompt ?? t("Pick.Prompt"))}</p>`
             + `<div class="isaacs-automation-choice">${buttons}</div>`,
         flags: {
             [LIB_ID]: {
@@ -2618,7 +2611,7 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
         whisper: [...recipients],
         flavor: `${item.name} — ${(actor ?? context.actor)?.name}`,
         content:
-            `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? "Choose one.")}</p>`
+            `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? t("Choice.Prompt"))}</p>`
             + `<div class="isaacs-automation-choice">${buttons}</div>`,
         flags: {
             [LIB_ID]: {
