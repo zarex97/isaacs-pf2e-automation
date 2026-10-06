@@ -1,6 +1,7 @@
 import { flagOf } from "../lib/flags.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
+import { t } from "../i18n.mjs";
 import { Extensions } from "./extensions.mjs";
 import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel } from "./heightening.mjs";
 
@@ -55,7 +56,7 @@ export function configFor(item, override = {}) {
     const area = alternate ?? flag?.area ?? item.system?.area ?? null;
     const hasArea = !!area?.type && !!Number(area.value);
     if (hasArea && !AREA_SHAPES.includes(area.type)) {
-        console.warn(`Isaac's Homebrew | ${item.name}: unknown area shape "${area.type}"`);
+        console.warn(`Isaac's PF2e Automation | ${item.name}: unknown area shape "${area.type}"`);
         return null;
     }
     // A Technique with no area can still have something to say: "one creature, and two at 20th level" is a
@@ -68,9 +69,8 @@ export function configFor(item, override = {}) {
     // flag was written for this and always aims; the setting governs the items that were never written
     // with this in mind, and the narrower choice admits only what a registered scope predicate claims.
     const authored = !!flag;
-    if (!authored && game.settings.get(LIB_ID, "areaTargetingScope") === "techniques" && !Extensions.inScope(item)) {
-        return null;
-    }
+    const scope = game.settings.get(LIB_ID, "areaTargetingScope");
+    if (!authored && scope !== "all" && !(scope === "registered" && Extensions.inScope(item))) return null;
 
     // Heightening the cast rank cannot express — see `bonusStepsFrom`. pf2e has already finished
     // heightening by the time this runs, and at 20th the cast rank is pinned at 10 anyway, so the steps are
@@ -170,20 +170,21 @@ export function originTokenFor(actor, item = null) {
 
 /** A human-readable description of the rule, for the placement notification and the review dialog. */
 export function describe(config) {
-    const who = { all: "every creature", allies: "allies only", enemies: "enemies only" }[config.affects];
+    const who = t({ all: "Rule.Everyone", allies: "Rule.Allies", enemies: "Rule.Enemies" }[config.affects]);
     const extra = [];
     if (!config.area) {
         const bits = [];
-        if (config.maxTargets > 0) bits.push(`up to ${config.maxTargets} target${config.maxTargets === 1 ? "" : "s"}`);
-        if (config.range > 0) bits.push(`within ${config.range} ft`);
+        if (config.maxTargets > 0) {
+            bits.push(config.maxTargets === 1 ? t("Rule.UpToTargetsOne") : t("Rule.UpToTargets", { count: config.maxTargets }));
+        }
+        if (config.range > 0) bits.push(t("Rule.Within", { range: config.range }));
         return bits.join(", ") || who;
     }
-    const shape = config.area.type;
-    const size = `${config.area.value} ft`;
-    if (config.includesSelf) extra.push("including you");
-    if (config.predicate.length > 0) extra.push("filtered");
-    if (config.areas > 1) extra.push(`${config.areas} placements`);
-    if (config.maxTargets > 0) extra.push(`up to ${config.maxTargets}`);
-    if (config.range > 0) extra.push(`within ${config.range} ft`);
-    return `${size} ${shape} — ${who}${extra.length ? ` (${extra.join(", ")})` : ""}`;
+    if (config.includesSelf) extra.push(t("Rule.IncludingYou"));
+    if (config.predicate.length > 0) extra.push(t("Rule.Filtered"));
+    if (config.areas > 1) extra.push(t("Rule.Placements", { count: config.areas }));
+    if (config.maxTargets > 0) extra.push(t("Rule.UpTo", { count: config.maxTargets }));
+    if (config.range > 0) extra.push(t("Rule.Within", { range: config.range }));
+    const rule = t("Rule.Area", { size: config.area.value, shape: config.area.type, who });
+    return extra.length ? t("Rule.Extras", { rule, extras: extra.join(", ") }) : rule;
 }

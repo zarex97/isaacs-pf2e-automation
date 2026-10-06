@@ -1,6 +1,7 @@
 import { flagOf } from "../lib/flags.mjs";
 import { targetingOptions, testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
+import { key, t } from "../i18n.mjs";
 import { catchTokens } from "./catch.mjs";
 import { canRotate, configFor, describe, originTokenFor } from "./config.mjs";
 import { Extensions } from "./extensions.mjs";
@@ -42,9 +43,8 @@ export const AreaTargeting = {
 
     registerSettings() {
         game.settings.register(LIB_ID, "areaTargeting", {
-            name: "Place areas as Regions when casting",
-            hint: "A Technique with an area puts that area on the board to be aimed, then targets whoever is "
-                + "inside it, instead of asking you to select targets by hand first.",
+            name: key("Settings.AreaTargeting.Name"),
+            hint: key("Settings.AreaTargeting.Hint"),
             scope: "world",
             config: true,
             type: Boolean,
@@ -52,24 +52,25 @@ export const AreaTargeting = {
         });
 
         game.settings.register(LIB_ID, "areaTargetingScope", {
-            name: "Area targeting applies to",
-            hint: "Whether area targeting is used only for Techniques — the Saint's and the Soulbound's alike — "
-                + "or for every spell with "
-                + "an area in the world.",
+            name: key("Settings.Scope.Name"),
+            hint: key("Settings.Scope.Hint"),
             scope: "world",
             config: true,
             type: String,
+            // An ability written for area targeting always aims; this governs the rest. `registered` admits
+            // what another module's scope predicate claims (`registerScopePredicate`) — a homebrew's own
+            // focus spells, say — and is the default, because it takes over nothing nobody asked for.
             choices: {
-                techniques: "Techniques only (Saint and Soulbound)",
-                spells: "Every spell with an area",
+                authored: key("Settings.Scope.Authored"),
+                registered: key("Settings.Scope.Registered"),
+                all: key("Settings.Scope.All"),
             },
-            default: "techniques",
+            default: "registered",
         });
 
         game.settings.register(LIB_ID, "enforceRange", {
-            name: "Enforce Technique range",
-            hint: "Refuse a placement further from you than the Technique reaches. The module never checked "
-                + "this before, so it can be turned off — and a GM can always confirm past a rejection.",
+            name: key("Settings.EnforceRange.Name"),
+            hint: key("Settings.EnforceRange.Hint"),
             scope: "world",
             config: true,
             type: Boolean,
@@ -77,9 +78,8 @@ export const AreaTargeting = {
         });
 
         game.settings.register(LIB_ID, "areaTargetingReview", {
-            name: "Review targets before casting",
-            hint: "Show the list of caught tokens for confirmation after you place the area. Turn this off to "
-                + "target everything the area caught and cast immediately.",
+            name: key("Settings.Review.Name"),
+            hint: key("Settings.Review.Hint"),
             scope: "client",
             config: true,
             type: Boolean,
@@ -182,8 +182,8 @@ export const AreaTargeting = {
                 return true;
             }
         } catch (error) {
-            console.error("Isaac's Homebrew | area targeting failed", error);
-            ui.notifications.error("Area targeting failed; cast normally. See the console for details.");
+            console.error("Isaac's PF2e Automation | area targeting failed", error);
+            ui.notifications.error(t("Aim.Failed"));
             return true;
         } finally {
             // Runs before the cast proceeds, so the area is gone by the time the card is posted.
@@ -248,10 +248,10 @@ async function chooseShape(item) {
 
     const picked = await foundry.applications.api.DialogV2.wait({
         window: { title: item.name },
-        content: `<p>${item.name} can be released as either shape. Which is it?</p>`,
+        content: `<p>${t("Aim.ShapeQuestion", { name: item.name })}</p>`,
         buttons: choices.map((choice, index) => ({
             action: String(index),
-            label: choice.label ?? `${choice.value}-foot ${choice.type}`,
+            label: choice.label ?? t("Aim.ShapeLabel", { value: choice.value, type: choice.type }),
         })),
         rejectClose: false,
     });
@@ -274,8 +274,8 @@ async function chooseShape(item) {
  * direction.
  */
 function aimHint(cast, config) {
-    const base = `${cast.name}: ${describe(config)}`;
-    return canRotate(config.area?.type) ? `${base} — Shift+scroll to rotate (Ctrl for finer).` : base;
+    const data = { name: cast.name, rule: describe(config) };
+    return canRotate(config.area?.type) ? t("Aim.HintRotate", data) : t("Aim.Hint", data);
 }
 
 /**
@@ -291,9 +291,7 @@ async function checkExistingTargets(config, originToken) {
     const problems = [];
 
     if (config.maxTargets > 0 && targets.length > config.maxTargets) {
-        problems.push(
-            `${targets.length} targeted, and it reaches ${config.maxTargets}`,
-        );
+        problems.push(t("Aim.TooMany", { count: targets.length, max: config.maxTargets }));
     }
     // A requirement on the target itself: "one creature with at least 5 needles", "one creature with at
     // least 1 needle". An area Technique gets this from `catchTokens`, which simply does not offer a
@@ -303,24 +301,20 @@ async function checkExistingTargets(config, originToken) {
         (t) => !testPredicate(config.predicate, targetingOptions(config.item.actor, t.actor, config.item)),
     );
     if (config.predicate.length > 0 && failing.length > 0) {
-        problems.push(
-            `${failing.map((t) => t.document.name).join(", ")} ${failing.length === 1 ? "does" : "do"} not `
-            + `meet this Technique's requirement`,
-        );
+        const names = failing.map((token) => token.document.name).join(", ");
+        problems.push(t(failing.length === 1 ? "Aim.RequirementOne" : "Aim.RequirementMany", { names }));
     }
     if (config.range > 0 && game.settings.get(LIB_ID, "enforceRange") && originToken) {
         const far = targets.filter((t) => (originToken.distanceTo?.(t) ?? 0) > config.range);
         if (far.length > 0) {
-            problems.push(
-                `${far.map((t) => t.document.name).join(", ")} beyond ${config.range} ft`,
-            );
+            problems.push(t("Aim.Beyond", { names: far.map((token) => token.document.name).join(", "), range: config.range }));
         }
     }
     if (problems.length === 0) return true;
 
     return foundry.applications.api.DialogV2.confirm({
         window: { title: config.item.name },
-        content: `<p>${problems.join("; ")}.</p><p>Cast anyway?</p>`,
+        content: `<p>${problems.join("; ")}.</p><p>${t("Aim.CastAnyway")}</p>`,
         rejectClose: false,
     });
 }
@@ -349,10 +343,10 @@ async function withinRange(regions, config, originToken) {
     if (furthest <= config.range) return true;
 
     return foundry.applications.api.DialogV2.confirm({
-        window: { title: "Out of range" },
+        window: { title: t("Aim.OutOfRangeTitle") },
         content:
-            `<p><strong>${config.item.name}</strong> reaches ${config.range} feet. That placement is `
-            + `${Math.round(furthest)} feet away.</p><p>Place it anyway?</p>`,
+            `<p>${t("Aim.OutOfRange", { name: config.item.name, range: config.range, distance: Math.round(furthest) })}</p>`
+            + `<p>${t("Aim.PlaceAnyway")}</p>`,
         rejectClose: false,
     });
 }

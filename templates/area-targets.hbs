@@ -9,7 +9,7 @@
 
     {{#if caught.length}}
     <section class="area-caught">
-        <h3>Caught in the area <span class="count">{{caught.length}}</span></h3>
+        <h3>{{localize "ISAACS_AUTOMATION.Review.Caught"}} <span class="count">{{caught.length}}</span></h3>
         <ul>
             {{#each caught}}
             <li data-token-id="{{this.id}}">
@@ -24,12 +24,12 @@
         </ul>
     </section>
     {{else}}
-    <p class="empty">Nothing in the area can be targeted.</p>
+    <p class="empty">{{localize "ISAACS_AUTOMATION.Review.Empty"}}</p>
     {{/if}}
 
     {{#if rejected.length}}
     <section class="area-rejected">
-        <h3>Inside, but not targeted</h3>
+        <h3>{{localize "ISAACS_AUTOMATION.Review.Rejected"}}</h3>
         <ul>
             {{#each rejected}}
             <li data-token-id="{{this.id}}">
@@ -44,7 +44,7 @@
 
     {{#if canReaim}}
     <footer class="area-controls hint">
-        Re-aim puts the area back on the cursor. Shift+scroll turns it, Ctrl+scroll turns it finely.
+        {{localize "ISAACS_AUTOMATION.Review.ReaimHint"}}
     </footer>
     {{/if}}
 </div>

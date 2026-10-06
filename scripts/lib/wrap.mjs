@@ -41,14 +41,14 @@ export function wrap(path, wrapper, { feature = path, type = "MIXED", strategy =
     const previous = claimed.get(path);
     if (previous) {
         throw new Error(
-            `Isaac's Homebrew | ${path} is already wrapped by ${previous}; ${feature} cannot wrap it too. `
+            `Isaac's PF2e Automation | ${path} is already wrapped by ${previous}; ${feature} cannot wrap it too. `
             + "Both belong in one wrapper — see scripts/cast-pipeline.mjs for how that is done.",
         );
     }
 
     const resolved = resolve(path, strategy);
     if (!resolved) {
-        console.warn(`Isaac's Homebrew | could not find ${path}; ${feature} is off.`);
+        console.warn(`Isaac's PF2e Automation | could not find ${path}; ${feature} is off.`);
         return false;
     }
 

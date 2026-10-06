@@ -27,7 +27,7 @@ const stages = { before: [], after: [] };
 
 function add(list, name, priority, fn) {
     if (list.some((stage) => stage.name === name)) {
-        throw new Error(`Isaac's Homebrew | the damage bus already has a stage called "${name}".`);
+        throw new Error(`Isaac's PF2e Automation | the damage bus already has a stage called "${name}".`);
     }
     list.push({ name, priority, fn });
     list.sort((a, b) => a.priority - b.priority);
@@ -76,7 +76,7 @@ export const DamageBus = {
                         const restore = stage.fn(this, params);
                         if (typeof restore === "function") undo.push(restore);
                     } catch (error) {
-                        console.error(`Isaac's Homebrew | ${stage.name} failed before damage`, error);
+                        console.error(`Isaac's PF2e Automation | ${stage.name} failed before damage`, error);
                     }
                 }
 
@@ -89,7 +89,7 @@ export const DamageBus = {
                         try {
                             restore();
                         } catch (error) {
-                            console.error("Isaac's Homebrew | a damage stage could not undo itself", error);
+                            console.error("Isaac's PF2e Automation | a damage stage could not undo itself", error);
                         }
                     }
                 }
@@ -98,7 +98,7 @@ export const DamageBus = {
                     try {
                         await stage.fn(this, params, before);
                     } catch (error) {
-                        console.error(`Isaac's Homebrew | ${stage.name} failed after damage`, error);
+                        console.error(`Isaac's PF2e Automation | ${stage.name} failed after damage`, error);
                     }
                 }
                 return result;

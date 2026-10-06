@@ -1,3 +1,5 @@
+import { t } from "../i18n.mjs";
+
 /**
  * A spell's **Frequency**, which pf2e writes down and never reads.
  *
@@ -39,7 +41,7 @@ export const SpellFrequency = {
         if (!frequency || typeof frequency.value !== "number") return true;
 
         if (frequency.value <= 0) {
-            ui.notifications.warn(`${spell.name} has no uses left (${describe(frequency)}).`);
+            ui.notifications.warn(t("Frequency.SpellNoUses", { name: spell.name, rule: describe(frequency) }));
             return false;
         }
         await spell.update({ "system.frequency.value": frequency.value - 1 });
@@ -77,7 +79,7 @@ async function refill(actor, per) {
 
 function describe(frequency) {
     const per = String(frequency.per ?? "round");
-    return frequency.max === 1 ? `once per ${per}` : `${frequency.max} per ${per}`;
+    return frequency.max === 1 ? t("Frequency.Once", { per }) : t("Frequency.Times", { max: frequency.max, per });
 }
 
 /** One client does the refilling, or five players refill the same spell five times. */

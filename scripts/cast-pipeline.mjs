@@ -18,9 +18,9 @@ export const CAST_PRIORITY = {
 const stages = { before: [], after: [] };
 
 function add(list, name, priority, fn) {
-    if (typeof fn !== "function") throw new Error(`Isaac's Homebrew | cast stage "${name}" is not a function.`);
+    if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | cast stage "${name}" is not a function.`);
     if (list.some((stage) => stage.name === name)) {
-        throw new Error(`Isaac's Homebrew | the cast pipeline already has a stage called "${name}".`);
+        throw new Error(`Isaac's PF2e Automation | the cast pipeline already has a stage called "${name}".`);
     }
     list.push({ name, priority, fn });
     list.sort((a, b) => a.priority - b.priority);

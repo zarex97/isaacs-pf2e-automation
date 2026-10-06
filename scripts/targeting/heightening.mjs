@@ -24,9 +24,9 @@ const stepProviders = [];
  * @param {(options: Set<string>) => number} fn
  */
 export function registerStepProvider(name, fn) {
-    if (typeof fn !== "function") throw new Error(`Isaac's Homebrew | step provider "${name}" is not a function.`);
+    if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | step provider "${name}" is not a function.`);
     if (stepProviders.some((entry) => entry.name === name)) {
-        throw new Error(`Isaac's Homebrew | heightening already has a step provider called "${name}".`);
+        throw new Error(`Isaac's PF2e Automation | heightening already has a step provider called "${name}".`);
     }
     stepProviders.push({ name, fn });
 }

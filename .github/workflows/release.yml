@@ -1,0 +1,87 @@
+name: Build and Release
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # No dependencies to install: the tests are plain Node against the module's own sources.
+      - name: Test
+        run: npm test
+
+      # The version must be pinned BEFORE the module is assembled, so the manifest inside module.zip and
+      # the manifest attached beside it are the same file. When they disagree, Foundry downloads the
+      # update, reads the lower version out of the zip, and offers the same update again forever.
+      - name: Pin the manifest version to the tag
+        if: github.event_name == 'release'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Release tag '${GITHUB_REF_NAME}' does not read as vMAJOR.MINOR.PATCH." \
+                 "It would put '${VERSION}' in the manifest, and Foundry cannot compare that to an" \
+                 "installed version — the update silently reports 'already up to date'."
+            exit 1
+          fi
+          node -e '
+            const fs = require("fs");
+            const m = JSON.parse(fs.readFileSync("module.json", "utf8"));
+            m.version = process.argv[1];
+            fs.writeFileSync("module.json", JSON.stringify(m, null, 4) + "\n");
+          ' "$VERSION"
+          echo "Manifest pinned to ${VERSION}"
+
+      - name: Assemble the module
+        run: |
+          mkdir -p dist/isaacs-pf2e-automation
+          cp -r module.json LICENSE README.md lang scripts styles templates dist/isaacs-pf2e-automation/
+          cd dist/isaacs-pf2e-automation && zip -r ../../module.zip . && cd ../..
+
+      # The invariant that actually matters to Foundry, asserted rather than assumed.
+      - name: The attached manifest and the one inside the zip must agree
+        run: |
+          unzip -p module.zip module.json > /tmp/zipped-module.json
+          ATTACHED=$(node -p "require('$PWD/module.json').version")
+          ZIPPED=$(node -p "require('/tmp/zipped-module.json').version")
+          echo "attached: ${ATTACHED}  zipped: ${ZIPPED}"
+          if [ "$ATTACHED" != "$ZIPPED" ]; then
+            echo "::error::module.json says ${ATTACHED} but the copy inside module.zip says ${ZIPPED}."
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: module
+          path: |
+            module.json
+            module.zip
+
+  release:
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: module
+
+      - name: Attach module.json and module.zip to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            module.json
+            module.zip

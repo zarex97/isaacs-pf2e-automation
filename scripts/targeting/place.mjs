@@ -1,4 +1,5 @@
 import { LIB_ID } from "../id.mjs";
+import { t } from "../i18n.mjs";
 import { FLAG } from "./config.mjs";
 
 const TOOLBELT_ID = "pf2e-toolbelt";
@@ -30,7 +31,7 @@ export async function placeArea(config, originToken) {
     const shape = shapeFromArea(config.area, originToken, point);
     if (!shape) {
         if (config.area.type === "emanation") {
-            ui.notifications.warn(`${config.item.name} needs a token on the scene to originate from.`);
+            ui.notifications.warn(t("Aim.NoToken", { name: config.item.name }));
         }
         return null;
     }

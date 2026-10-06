@@ -10,7 +10,7 @@ import { wrap } from "./wrap.mjs";
  * ascending priority, isolated so one failing stage does not cost the token its vision.
  */
 
-const LOG = "Isaac's Homebrew |";
+const LOG = "Isaac's PF2e Automation |";
 const stages = [];
 
 export const DetectionModes = {

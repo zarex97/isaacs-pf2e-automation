@@ -1,0 +1,97 @@
+{
+    "ISAACS_AUTOMATION": {
+        "Settings": {
+            "AreaTargeting": {
+                "Name": "Place areas as Regions when casting",
+                "Hint": "An ability with an area puts that area on the board to be aimed, then targets whoever is inside it, instead of asking you to select targets by hand first."
+            },
+            "Scope": {
+                "Name": "Area targeting applies to",
+                "Hint": "Abilities written for area targeting are always aimed. This decides which of the rest are.",
+                "Authored": "Only abilities written for area targeting",
+                "Registered": "Those, and the abilities other modules ask for",
+                "All": "Every spell with an area"
+            },
+            "EnforceRange": {
+                "Name": "Enforce range",
+                "Hint": "Refuse a placement further from you than the ability reaches. Answering the question that follows can always place it anyway."
+            },
+            "Review": {
+                "Name": "Review targets before casting",
+                "Hint": "Show the list of caught tokens for confirmation after you place the area. Turn this off to target everything the area caught and cast immediately."
+            }
+        },
+        "Aim": {
+            "Hint": "{name}: {rule}",
+            "HintRotate": "{name}: {rule} — Shift+scroll to rotate (Ctrl for finer).",
+            "Failed": "Area targeting failed; cast normally. See the console for details.",
+            "ShapeQuestion": "{name} can be released as either shape. Which is it?",
+            "ShapeLabel": "{value}-foot {type}",
+            "NoToken": "{name} needs a token on the scene to originate from.",
+            "TooMany": "{count} targeted, and it reaches {max}",
+            "RequirementOne": "{names} does not meet this ability's requirement",
+            "RequirementMany": "{names} do not meet this ability's requirement",
+            "Beyond": "{names} beyond {range} ft",
+            "CastAnyway": "Cast anyway?",
+            "OutOfRangeTitle": "Out of range",
+            "OutOfRange": "<strong>{name}</strong> reaches {range} feet. That placement is {distance} feet away.",
+            "PlaceAnyway": "Place it anyway?"
+        },
+        "Review": {
+            "Title": "Confirm targets",
+            "Confirm": "Target and cast",
+            "Reaim": "Re-aim",
+            "Cancel": "Cancel",
+            "Nothing": "Nothing in the area.",
+            "AimAgain": "Aim again?",
+            "NothingInfo": "{name}: nothing in the area.",
+            "Caught": "Caught in the area",
+            "Rejected": "Inside, but not targeted",
+            "Empty": "Nothing in the area can be targeted.",
+            "ReaimHint": "Re-aim puts the area back on the cursor. Shift+scroll turns it, Ctrl+scroll turns it finely.",
+            "OverLimit": "over the limit of {max}"
+        },
+        "Reason": {
+            "You": "you",
+            "Hidden": "hidden token",
+            "NotCreature": "not a creature",
+            "Dead": "already dead",
+            "Neutral": "neutral",
+            "NotAlly": "not an ally",
+            "NotEnemy": "not an enemy",
+            "NoLine": "no line of effect",
+            "Excluded": "excluded by this ability's rule"
+        },
+        "Rule": {
+            "Everyone": "every creature",
+            "Allies": "allies only",
+            "Enemies": "enemies only",
+            "UpToTargetsOne": "up to 1 target",
+            "UpToTargets": "up to {count} targets",
+            "Within": "within {range} ft",
+            "Area": "{size} ft {shape} — {who}",
+            "Extras": "{rule} ({extras})",
+            "IncludingYou": "including you",
+            "Filtered": "filtered",
+            "Placements": "{count} placements",
+            "UpTo": "up to {count}"
+        },
+        "Frequency": {
+            "SpellNoUses": "{name} has no uses left ({rule}).",
+            "NoUses": "{name}: no uses left ({max} {rule}).",
+            "Once": "once per {per}",
+            "Times": "{max} per {per}",
+            "Per": {
+                "turn": "per turn",
+                "round": "per round",
+                "PT1M": "per minute",
+                "PT10M": "per 10 minutes",
+                "PT1H": "per hour",
+                "PT24H": "per day",
+                "day": "per day",
+                "P1W": "per week",
+                "P1M": "per month"
+            }
+        }
+    }
+}

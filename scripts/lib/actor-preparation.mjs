@@ -13,7 +13,7 @@ import { wrap } from "./wrap.mjs";
  * correction costs that correction and not the actor.
  */
 
-const LOG = "Isaac's Homebrew |";
+const LOG = "Isaac's PF2e Automation |";
 const stages = [];
 
 export const ActorPreparation = {

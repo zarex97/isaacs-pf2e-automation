@@ -14,8 +14,7 @@ import { AreaTargeting } from "./targeting/index.mjs";
  * What the automation does at `init` and at `setup`, as named steps.
  *
  * Named so whoever runs them can isolate each one — a feature that fails to start should cost that feature
- * and not the rest. Today the homebrew's entry point runs them; once the automation is its own module, its
- * own entry point will, and nothing here changes.
+ * and not the rest. `module.mjs` runs them, each in its own try so one failing step costs only itself.
  */
 export const INIT = [
     ["area targeting's settings", () => AreaTargeting.registerSettings()],

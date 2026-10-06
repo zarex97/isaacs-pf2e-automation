@@ -21,9 +21,9 @@ const scopes = new Map();
 let areaCount = null;
 
 function add(list, what, name, priority, fn) {
-    if (typeof fn !== "function") throw new Error(`Isaac's Homebrew | ${what} "${name}" is not a function.`);
+    if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | ${what} "${name}" is not a function.`);
     if (list.some((entry) => entry.name === name)) {
-        throw new Error(`Isaac's Homebrew | area targeting already has a ${what} called "${name}".`);
+        throw new Error(`Isaac's PF2e Automation | area targeting already has a ${what} called "${name}".`);
     }
     list.push({ name, priority, fn });
     list.sort((a, b) => a.priority - b.priority);
@@ -72,8 +72,8 @@ export const Extensions = {
      * @param {(item: object) => boolean} fn
      */
     registerScopePredicate(name, fn) {
-        if (typeof fn !== "function") throw new Error(`Isaac's Homebrew | scope predicate "${name}" is not a function.`);
-        if (scopes.has(name)) throw new Error(`Isaac's Homebrew | area targeting already has a scope predicate called "${name}".`);
+        if (typeof fn !== "function") throw new Error(`Isaac's PF2e Automation | scope predicate "${name}" is not a function.`);
+        if (scopes.has(name)) throw new Error(`Isaac's PF2e Automation | area targeting already has a scope predicate called "${name}".`);
         scopes.set(name, fn);
     },
 
@@ -83,7 +83,7 @@ export const Extensions = {
      * @param {(cast: object, options: object) => Promise<number | false> | number | false} fn
      */
     registerAreaCount(fn) {
-        if (areaCount) throw new Error("Isaac's Homebrew | area targeting already has an area count.");
+        if (areaCount) throw new Error("Isaac's PF2e Automation | area targeting already has an area count.");
         areaCount = fn;
     },
 

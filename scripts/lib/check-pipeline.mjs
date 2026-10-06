@@ -30,7 +30,7 @@ export const CheckPipeline = {
      */
     before(name, priority, fn) {
         if (stages.some((stage) => stage.name === name)) {
-            throw new Error(`Isaac's Homebrew | the check pipeline already has a stage called "${name}".`);
+            throw new Error(`Isaac's PF2e Automation | the check pipeline already has a stage called "${name}".`);
         }
         stages.push({ name, priority, fn });
         stages.sort((a, b) => a.priority - b.priority);
@@ -50,7 +50,7 @@ export const CheckPipeline = {
                         const next = stage.fn(check, context);
                         if (next && typeof next === "object") context = next;
                     } catch (error) {
-                        console.error(`Isaac's Homebrew | ${stage.name} failed before a check`, error);
+                        console.error(`Isaac's PF2e Automation | ${stage.name} failed before a check`, error);
                     }
                 }
                 return wrapped(check, context, ...rest);

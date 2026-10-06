@@ -101,7 +101,7 @@ export function testPredicate(predicate, options) {
     try {
         return new Predicate(predicate).test(options);
     } catch (error) {
-        console.error("Isaac's Homebrew | invalid predicate", predicate, error);
+        console.error("Isaac's PF2e Automation | invalid predicate", predicate, error);
         return true;
     }
 }

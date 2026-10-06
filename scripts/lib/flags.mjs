@@ -11,7 +11,7 @@ import { LIB_ID } from "../id.mjs";
 const scopes = [LIB_ID];
 
 export function registerFlagScope(moduleId) {
-    if (typeof moduleId !== "string" || !moduleId) throw new Error("Isaac's Homebrew | a flag scope needs a module id.");
+    if (typeof moduleId !== "string" || !moduleId) throw new Error("Isaac's PF2e Automation | a flag scope needs a module id.");
     if (!scopes.includes(moduleId)) scopes.push(moduleId);
 }
 

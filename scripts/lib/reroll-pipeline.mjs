@@ -13,7 +13,7 @@ import { wrap } from "./wrap.mjs";
  * crash in it should not take the reroll away from everyone.
  */
 
-const LOG = "Isaac's Homebrew |";
+const LOG = "Isaac's PF2e Automation |";
 const stages = [];
 
 export const RerollPipeline = {

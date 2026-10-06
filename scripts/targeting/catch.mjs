@@ -1,3 +1,4 @@
+import { t } from "../i18n.mjs";
 import { targetingOptions, testPredicate } from "../lib/roll-options.mjs";
 
 /**
@@ -33,7 +34,7 @@ export function catchTokens(region, config, originToken) {
     if (config.maxTargets > 0 && caught.length > config.maxTargets) {
         for (const entry of caught.slice(config.maxTargets)) {
             entry.checked = false;
-            entry.note = `over the limit of ${config.maxTargets}`;
+            entry.note = t("Review.OverLimit", { max: config.maxTargets });
         }
     }
 
@@ -43,19 +44,19 @@ export function catchTokens(region, config, originToken) {
 /** Why this token, though inside the area, is not a legal target. Null if it is one. */
 function rejectionFor(token, config, originActor, originToken, origin) {
     const actor = token.actor;
-    if (token === originToken) return config.includesSelf ? null : "you";
-    if (token.document.hidden) return "hidden token";
-    if (!actor?.isOfType?.("creature", "hazard", "vehicle")) return "not a creature";
-    if (actor.isDead) return "already dead";
+    if (token === originToken) return config.includesSelf ? null : t("Reason.You");
+    if (token.document.hidden) return t("Reason.Hidden");
+    if (!actor?.isOfType?.("creature", "hazard", "vehicle")) return t("Reason.NotCreature");
+    if (actor.isDead) return t("Reason.Dead");
 
-    if (actor.alliance === null && !config.includesNeutral) return "neutral";
-    if (config.affects === "allies" && !actor.isAllyOf(originActor)) return "not an ally";
-    if (config.affects === "enemies" && !actor.isEnemyOf(originActor)) return "not an enemy";
+    if (actor.alliance === null && !config.includesNeutral) return t("Reason.Neutral");
+    if (config.affects === "allies" && !actor.isAllyOf(originActor)) return t("Reason.NotAlly");
+    if (config.affects === "enemies" && !actor.isEnemyOf(originActor)) return t("Reason.NotEnemy");
 
-    if (config.requireLineOfEffect && blocked(origin, token.center)) return "no line of effect";
+    if (config.requireLineOfEffect && blocked(origin, token.center)) return t("Reason.NoLine");
 
     if (!testPredicate(config.predicate, targetingOptions(originActor, actor, config.item))) {
-        return "excluded by this Technique";
+        return t("Reason.Excluded");
     }
 
     return null;

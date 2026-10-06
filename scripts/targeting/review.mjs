@@ -1,4 +1,5 @@
 import { LIB_ID } from "../id.mjs";
+import { t } from "../i18n.mjs";
 import { describe } from "./config.mjs";
 
 // Looked up at call time rather than destructured at import, so this module can be loaded — and the
@@ -32,12 +33,12 @@ export async function reviewTargets({ caught, rejected }, config, { canReaim = f
         if (canReaim) {
             const again = await DialogV2().confirm({
                 window: { title: config.item.name },
-                content: `<p>Nothing in the area.</p><p>Aim again?</p>`,
+                content: `<p>${t("Review.Nothing")}</p><p>${t("Review.AimAgain")}</p>`,
                 rejectClose: false,
             });
             if (again) return REAIM;
         } else {
-            ui.notifications.info(`${config.item.name}: nothing in the area.`);
+            ui.notifications.info(t("Review.NothingInfo", { name: config.item.name }));
         }
         return [];
     }
@@ -72,7 +73,7 @@ export async function reviewTargets({ caught, rejected }, config, { canReaim = f
     const buttons = [
         {
             action: "confirm",
-            label: "Target and cast",
+            label: t("Review.Confirm"),
             icon: "fa-solid fa-crosshairs",
             default: true,
             callback: (_event, _button, dialog) =>
@@ -85,15 +86,15 @@ export async function reviewTargets({ caught, rejected }, config, { canReaim = f
     if (canReaim) {
         buttons.push({
             action: "reaim",
-            label: "Re-aim",
+            label: t("Review.Reaim"),
             icon: "fa-solid fa-rotate",
             callback: () => REAIM,
         });
     }
-    buttons.push({ action: "cancel", label: "Cancel", icon: "fa-solid fa-ban", callback: () => null });
+    buttons.push({ action: "cancel", label: t("Review.Cancel"), icon: "fa-solid fa-ban", callback: () => null });
 
     return DialogV2().wait({
-        window: { title: "Confirm targets", icon: "fa-solid fa-crosshairs" },
+        window: { title: t("Review.Title"), icon: "fa-solid fa-crosshairs" },
         classes: [LIB_ID, "area-targets"],
         position: { width: 420 },
         content,
