@@ -9,3 +9,6 @@ module.zip
 AGENTS.md
 # GitNexus skill files, reinstalled by `gitnexus setup`.
 .claude/skills/
+
+# Per-user Claude Code settings.
+.claude/settings.local.json
