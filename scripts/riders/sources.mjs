@@ -1,4 +1,5 @@
-import { DamageBus, describeActor, describeDamage } from "../../automation.mjs";
+import { DamageBus } from "../lib/damage-bus.mjs";
+import { describeActor, describeDamage } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
 import {
     bypassEntriesOn,

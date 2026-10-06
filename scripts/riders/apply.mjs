@@ -1,4 +1,7 @@
-import { applyHeightening, applyThresholds, bonusStepsFrom, catchTokens, describeActor, describeDamage, effectiveLevel, riderOptions, shapeFromArea, stepsFor, testPredicate, thresholdsCrossed, valueAtLevel } from "../../automation.mjs";
+import { describeActor, describeDamage, riderOptions, testPredicate } from "../lib/roll-options.mjs";
+import { catchTokens } from "../targeting/catch.mjs";
+import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, stepsFor, thresholdsCrossed, valueAtLevel } from "../targeting/heightening.mjs";
+import { shapeFromArea } from "../targeting/place.mjs";
 import { LIB_ID } from "../id.mjs";
 import { Banish, durationSeconds } from "./banish.mjs";
 import { OUTCOME_LABELS, collectRiders, itemFor, riderAt } from "./data.mjs";

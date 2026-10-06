@@ -1,6 +1,6 @@
 import { Relay } from "../riders/relay.mjs";
 import { LIB_ID } from "../id.mjs";
-import { catchTokens } from "../../automation.mjs";
+import { catchTokens } from "./catch.mjs";
 
 export const FLAG = "overlap";
 

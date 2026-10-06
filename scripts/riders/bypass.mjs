@@ -1,4 +1,4 @@
-import { testPredicate } from "../../automation.mjs";
+import { testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
 
 export const FLAG = "bypass";

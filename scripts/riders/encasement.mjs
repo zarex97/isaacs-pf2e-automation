@@ -1,4 +1,4 @@
-import { bonusStepsFrom, stepsFor } from "../../automation.mjs";
+import { bonusStepsFrom, stepsFor } from "../targeting/heightening.mjs";
 import { LIB_ID } from "../id.mjs";
 import { escapeDcFor } from "./escape.mjs";
 
