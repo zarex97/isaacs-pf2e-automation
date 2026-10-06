@@ -42,6 +42,13 @@
     "esmodules": [
         "scripts/module.mjs"
     ],
+    "socket": true,
+    "documentTypes": {
+        "RegionBehavior": {
+            "lingering": {},
+            "enemyMovementCost": {}
+        }
+    },
     "styles": [
         "styles/targeting.css"
     ],

@@ -1,4 +1,5 @@
 import { CastPipeline } from "./cast-pipeline.mjs";
+import { buildRidersApi } from "./riders-api.mjs";
 import { FrequencyGuard, mayPost } from "./economy/frequency-guard.mjs";
 import { Recharge, intervalSeconds } from "./economy/recharge.mjs";
 import { SpellFrequency } from "./economy/spell-frequency.mjs";
@@ -85,5 +86,8 @@ export function buildApi() {
 
         // Which modules' flags carry authored config.
         flags: { registerFlagScope, flagOf, flagScopes },
+
+        // The rider engine, the GM relay, lingering ground, overlap and enemies-only terrain.
+        ...buildRidersApi(),
     };
 }

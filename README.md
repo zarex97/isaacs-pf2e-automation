@@ -12,6 +12,12 @@ Automation for the [Pathfinder Second Edition](https://github.com/foundryvtt/pf2
 - **One wrapper per method.** Casting, damage, checks, rerolls, character preparation and detection modes
   each have a single wrapper with ordered stages, so modules that build on this one add stages instead of
   competing wrappers.
+- **Riders.** What an ability does *besides* damage, applied when it happens: a save rolled, a Strike
+  landed, damage applied, a turn ending. Conditions, effects, counteracts, forced movement, a choice
+  whispered to the caster — on the right creature's own sheet, and taken back on a reroll. Authoring
+  reference: [`Docs/riders.md`](Docs/riders.md). Needs a GM online.
+- **Areas left behind.** Ground that lingers after a cast, penalties for being caught by two placements at
+  once, and difficult terrain that slows only the caster's enemies.
 
 ## Install
 
@@ -30,6 +36,9 @@ Foundry VTT 14, pf2e 8.3 or later.
   all, whether abilities other modules ask for are added (default), or whether every spell with an area aims.
 - **Enforce range** — refuse a placement out of reach, with a question that lets you place it anyway.
 - **Review targets before casting** — per user.
+- **Apply riders automatically** — on by default.
+- **Automate death effects** — whom a rider may kill outright: creatures without a player owner (default),
+  anyone, or nobody (a whisper to the GM instead).
 
 Hold **Ctrl** while casting to skip aiming and use the targets you picked by hand.
 
