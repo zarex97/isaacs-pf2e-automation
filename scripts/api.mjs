@@ -11,6 +11,7 @@ import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage, OPTION as DAMAGED_THIS_ENCOUNTER, encounterOf } from "./lib/encounter-damage.mjs";
 import { flagOf, flagScopes, registerFlagScope } from "./lib/flags.mjs";
 import { AUTHORED_KEYS, configOf, sourceOf } from "./lib/config-of.mjs";
+import { Coexistence } from "./vanilla/coexistence.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { describeActor, describeDamage, riderOptions, targetingOptions, testPredicate } from "./lib/roll-options.mjs";
@@ -98,6 +99,9 @@ export function buildApi() {
             configOf,
             sourceOf,
             AUTHORED_KEYS,
+            // Which spells another active automation module covers, and who a table rider is left to.
+            covering: () => Coexistence.covered(),
+            deferredTo: (slug) => Coexistence.deferredTo(slug),
         },
 
         // The rider engine, the GM relay, lingering ground, overlap and enemies-only terrain.

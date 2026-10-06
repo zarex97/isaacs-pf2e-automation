@@ -30,6 +30,13 @@
                 "Npcs": "Creatures without a player owner",
                 "All": "Anyone, including player characters",
                 "Off": "Nobody — always whisper"
+            },
+            "VanillaRiders": {
+                "Name": "Riders for vanilla spells",
+                "Hint": "The conditions and effects this module applies for pf2e's own spells. PF2e Automations and PF2e Assistant automate some of the same spells; applying both would apply everything twice.",
+                "Off": "Off — areas only",
+                "Uncovered": "Only spells no other active module automates",
+                "All": "Every spell this module covers"
             }
         },
         "Aim": {

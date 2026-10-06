@@ -534,6 +534,63 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  Coexistence: a table rider steps aside for a spell another module already automates           */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { Coexistence, RIDERS_OFF } = await import("../scripts/vanilla/coexistence.mjs");
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
+    const assistant = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "coverage", "pf2e-assistant.json"), "utf8"));
+    check("PF2e Assistant's shipped list says which version it came from", [assistant.module, typeof assistant.version], ["pf2e-assistant", "string"]);
+    check("…and names only real pf2e spells", assistant.slugs.filter((slug) => !index.spells[slug]), []);
+
+    const saved = { game: globalThis.game, fetch: globalThis.fetch };
+    let choice = "uncovered";
+    const active = new Set(["pf2e-automations", "pf2e-assistant"]);
+    globalThis.game = {
+        ...saved.game,
+        settings: { get: (_m, k) => (k === "vanillaRiders" ? choice : true), register() {} },
+        modules: { get: (id) => ({ active: active.has(id) }) },
+        packs: { get: (id) => (id === "pf2e.spells-srd" ? { getIndex: async () => [{ _id: "fearId0000000000", name: "Fear", system: { slug: "fear" } }] } : undefined) },
+    };
+    globalThis.fetch = async (url) => ({
+        ok: true,
+        json: async () => (url.includes("pf2e-automations")
+            ? { groups: [
+                { group: "spell", name: "Fear", isActive: true, source: ["Compendium.pf2e.spells-srd.Item.fearId0000000000"] },
+                { group: "spell", name: "Slow", isActive: false, source: ["Compendium.pf2e.spells-srd.Item.slowId0000000000"] },
+                { group: "spell", name: "Calm Down", isActive: true, source: [], baseRules: [{ predicate: ["origin:item:calm"] }] },
+                { group: "feat", name: "Power Attack", isActive: true, source: [] },
+            ] }
+            : { slugs: ["daze"] }),
+    });
+    await Coexistence.gather();
+    const covering = Coexistence.covered();
+    check("PF2e Automations' active spell groups are read by the uuid they name, else their predicates", [covering.fear, covering.calm, covering.slow, covering["power-attack"]], ["pf2e-automations", "pf2e-automations", undefined, undefined]);
+    check("PF2e Assistant's list is read from the shipped file", covering.daze, "pf2e-assistant");
+
+    Vanilla.setRiderDeferral((slug) => Coexistence.deferredTo(slug));
+    Vanilla.setTable({ entries: { fear: { riders: [{ apply: { type: "prompt" } }], areaTargeting: { maxTargets: 1 } }, synesthesia: { riders: [{ apply: { type: "prompt" } }] } } });
+    const spellItem = (slug) => ({ documentName: "Item", slug, flags: {} });
+    // `fear` was registered by a test module above; Synesthesia is the table's alone.
+    const ridersFor = (slug) => { const s = sourceOf(spellItem(slug), "riders"); return s.deferred ?? (s.value ? "applies" : "none"); };
+    check("uncovered (the default): a covered spell's table riders step aside, an uncovered one's apply", [ridersFor("fear"), ridersFor("synesthesia")], ["pf2e-automations", "applies"]);
+    choice = "all";
+    check("all: every table rider applies", [ridersFor("fear"), ridersFor("synesthesia")], ["applies", "applies"]);
+    choice = "off";
+    check("off: none do, and the setting is what says so", [ridersFor("fear"), ridersFor("synesthesia")], [RIDERS_OFF, RIDERS_OFF]);
+    check("…while the table's areas still answer", configOf(spellItem("fear"), "areaTargeting"), { maxTargets: 1 });
+    active.clear();
+    choice = "uncovered";
+    await Coexistence.gather();
+    check("with neither module active, nothing is deferred", ridersFor("fear"), "applies");
+
+    Vanilla.setRiderDeferral(null);
+    Vanilla.setTable({ aliases: {}, entries: {} });
+    Object.assign(globalThis, saved);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The contract                                                                                 */
 /* -------------------------------------------------------------------------------------------- */
 

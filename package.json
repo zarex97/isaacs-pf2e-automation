@@ -8,7 +8,8 @@
     "test": "node build/test-automation.mjs",
     "link:foundry": "node build/link-foundry.mjs",
     "index:pf2e": "node build/index-pf2e.mjs",
-    "build:vanilla": "node build/build-vanilla.mjs"
+    "build:vanilla": "node build/build-vanilla.mjs",
+    "coverage:assistant": "node build/coverage-assistant.mjs"
   },
   "engines": {
     "node": ">=22"
