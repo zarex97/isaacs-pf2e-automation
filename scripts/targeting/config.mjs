@@ -1,4 +1,4 @@
-import { flagOf } from "../lib/flags.mjs";
+import { sourceOf } from "../lib/config-of.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
 import { t } from "../i18n.mjs";
@@ -40,7 +40,9 @@ export function configFor(item, override = {}) {
     if (!item?.actor || !canvas?.ready) return null;
     if (!game.settings.get(LIB_ID, "areaTargeting")) return null;
 
-    const flag = flagOf(item, FLAG) ?? null;
+    const found = sourceOf(item, FLAG);
+    if (found.off) return null;
+    const flag = found.value ?? null;
     if (flag?.enabled === false) return null;
 
     // A synthetic area is opt-in by definition; a real one is opt-out.
@@ -68,9 +70,13 @@ export function configFor(item, override = {}) {
     // It should not quietly take over every wizard's fireball unless the GM asks it to. An item carrying the
     // flag was written for this and always aims; the setting governs the items that were never written
     // with this in mind, and the narrower choice admits only what a registered scope predicate claims.
-    const authored = !!flag;
+    //
+    // An entry from the vanilla table, or one another module registered, is not authored on the item: it
+    // is this module asking for that spell, which is exactly what the `registered` choice admits.
+    const authored = found.source === "flags" && !!flag;
+    const asked = found.source === "table" || found.source === "registered";
     const scope = game.settings.get(LIB_ID, "areaTargetingScope");
-    if (!authored && scope !== "all" && !(scope === "registered" && Extensions.inScope(item))) return null;
+    if (!authored && scope !== "all" && !(scope === "registered" && (asked || Extensions.inScope(item)))) return null;
 
     // Heightening the cast rank cannot express — see `bonusStepsFrom`. pf2e has already finished
     // heightening by the time this runs, and at 20th the cast rank is pinned at 10 anyway, so the steps are

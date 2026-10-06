@@ -1,4 +1,4 @@
-import { flagOf } from "../lib/flags.mjs";
+import { configOf } from "../lib/config-of.mjs";
 import { targetingOptions, testPredicate } from "../lib/roll-options.mjs";
 import { LIB_ID } from "../id.mjs";
 import { key, t } from "../i18n.mjs";
@@ -220,7 +220,7 @@ function collect(regions, config, originToken) {
  * rather than the chat card.
  */
 async function chooseShape(item) {
-    const declared = flagOf(item, "areaTargetingShapes");
+    const declared = configOf(item, "areaTargetingShapes");
     if (!Array.isArray(declared) || declared.length === 0) return null;
 
     /**

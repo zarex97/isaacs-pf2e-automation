@@ -48,7 +48,7 @@ jobs:
       - name: Assemble the module
         run: |
           mkdir -p dist/isaacs-pf2e-automation
-          cp -r module.json LICENSE README.md lang scripts styles templates dist/isaacs-pf2e-automation/
+          cp -r module.json LICENSE README.md data lang scripts styles templates dist/isaacs-pf2e-automation/
           cd dist/isaacs-pf2e-automation && zip -r ../../module.zip . && cd ../..
 
       # The invariant that actually matters to Foundry, asserted rather than assumed.

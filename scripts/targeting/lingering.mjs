@@ -1,5 +1,6 @@
 import { key, t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
+import { configOf } from "../lib/config-of.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
 import { growByStep, inflictPersistent, runSave } from "../riders/apply.mjs";
@@ -84,7 +85,7 @@ export const Lingering = {
      * which is the shape of nearly every defect this campaign has turned up.
      */
     specsFor(item) {
-        const declared = flagOf(item, FLAG);
+        const declared = configOf(item, FLAG);
         if (!declared) return [];
         const options = new Set([
             ...(item.actor?.getRollOptions?.() ?? []),
