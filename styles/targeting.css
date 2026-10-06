@@ -1,0 +1,118 @@
+.isaacs-hb-pf2e.area-targets .area-targets-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.isaacs-hb-pf2e.area-targets .area-rule {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--color-border-dark, #7a7971);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.isaacs-hb-pf2e.area-targets .area-rule img {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 3px;
+    flex: 0 0 auto;
+}
+
+.isaacs-hb-pf2e.area-targets .area-rule h2 {
+    margin: 0;
+    border: none;
+    font-size: 1.05rem;
+}
+
+.isaacs-hb-pf2e.area-targets .area-rule .hint {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.isaacs-hb-pf2e.area-targets h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.3rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.75;
+}
+
+.isaacs-hb-pf2e.area-targets h3 .count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.6;
+}
+
+.isaacs-hb-pf2e.area-targets ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.isaacs-hb-pf2e.area-targets li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0.35rem;
+    border-radius: 3px;
+}
+
+.isaacs-hb-pf2e.area-targets li:hover {
+    background: rgba(200, 160, 32, 0.18);
+}
+
+.isaacs-hb-pf2e.area-targets li label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+.isaacs-hb-pf2e.area-targets li img {
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 3px;
+    flex: 0 0 auto;
+}
+
+.isaacs-hb-pf2e.area-targets li .who {
+    flex: 1 1 auto;
+}
+
+.isaacs-hb-pf2e.area-targets li .note,
+.isaacs-hb-pf2e.area-targets li .reason {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.isaacs-hb-pf2e.area-targets .area-rejected li {
+    opacity: 0.55;
+}
+
+.isaacs-hb-pf2e.area-targets .empty {
+    margin: 0;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.isaacs-hb-pf2e.area-targets .area-controls {
+    margin: 0;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--color-border-light-tertiary, rgb(0 0 0 / 15%));
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
