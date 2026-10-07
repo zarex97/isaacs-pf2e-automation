@@ -1984,6 +1984,57 @@
                 }
             ]
         },
+        "phantasmal-calamity": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "save",
+                        "statistic": "reflex",
+                        "riders": [
+                            {
+                                "outcomes": [
+                                    "failure",
+                                    "criticalFailure"
+                                ],
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "minutes"
+                                },
+                                "apply": {
+                                    "type": "condition",
+                                    "slug": "stunned",
+                                    "carries": [
+                                        {
+                                            "event": "turn-end",
+                                            "self": true,
+                                            "apply": {
+                                                "type": "save",
+                                                "statistic": "will",
+                                                "riders": [
+                                                    {
+                                                        "outcomes": [
+                                                            "success",
+                                                            "criticalSuccess"
+                                                        ],
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "phantom-pain": {
             "riders": [
                 {

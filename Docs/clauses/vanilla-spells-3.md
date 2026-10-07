@@ -368,11 +368,11 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-63a | "The vision deals 11d6 mental damage (basic Will save)" | A basic Will save in the 30-ft burst | | ☐ | |
-| VS-63b | "On a critical failure, the creature must also succeed at a reflex save or believe it's trapped" | A critical failure asks a Reflex save next | | ☐ | |
-| VS-63c | "If it fails the second save, it's also Stunned for 1 minute" | A failed Reflex save stuns for a minute | | ☐ | |
-| VS-63d | "It can attempt a new Will save at the end of each of its turns, and on a success, it disbelieves the illusion and recovers from the stunned condition" | A Will save at each turn's end; a success ends the stun | | ☐ | |
-| VS-63e | "The damage increases by 2d6" | Rank 7: 13d6 | | ☐ | |
+| VS-63a | "The vision deals 11d6 mental damage (basic Will save)" | A basic Will save in the 30-ft burst | pf2e's own card: a basic Will save, 11d6 mental, in the 30-foot burst area targeting placed | ✅ | The burst caught ZZ Victim; the card's save is pf2e's **basic** Will save against DC 34, its damage 11d6 mental (13d6 at rank 7), halved or doubled by the save on pf2e's own damage card |
+| VS-63b | "On a critical failure, the creature must also succeed at a reflex save or believe it's trapped" | A critical failure asks a Reflex save next | `content/vanilla/phantasmal-calamity.json`: `criticalFailure` → a `save` rider (`statistic: "reflex"`) | ✅ | A critical failure on the Will save (2): a **Reflex save** rolled at once against DC 34. A success there (40, with +30 Reflex): nothing more |
+| VS-63c | "If it fails the second save, it's also Stunned for 1 minute" | A failed Reflex save stuns for a minute | the Reflex save's `failure`/`criticalFailure` → stunned for 1 minute | ✅ | A critical failure on the Reflex save (2): *Phantasmal Calamity: Stunned* for **1 minute**, ZZ Victim **stunned** |
+| VS-63d | "It can attempt a new Will save at the end of each of its turns, and on a success, it disbelieves the illusion and recovers from the stunned condition" | A Will save at each turn's end; a success ends the stun | the stun's `carries`: a `turn-end` Will save, a success `shorten: "all"` | ✅ | In an encounter, at the end of ZZ Victim's turn: a Will save against DC 34 — a critical failure (2) kept the stun; next turn's success (40): "Drive: Phantasmal Calamity: Stunned on ZZ Victim ends." and the stunned condition went with it |
+| VS-63e | "The damage increases by 2d6" | Rank 7: 13d6 | pf2e's own heightening (+2d6) | ✅ | Rank 7: the card's damage **13d6** mental |
 
 ### VS-64 · Massacre
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 175 |
-| ✅ | 143 |
+| ☐ not yet driven | 170 |
+| ✅ | 148 |
 | ⚠️ | 7 |
 | ❌ | 0 |
 | 🔧 | 0 |
