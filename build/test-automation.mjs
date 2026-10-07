@@ -806,6 +806,18 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  Fast healing and regeneration, applied (VS-36)                                               */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { receivedLines, isTurnHealing, deactivates } = await import("../scripts/lib/fast-healing.mjs");
+    check("acid or fire switches Regenerate's regeneration off; cold does not", [deactivates(["fire"], [{ deactivatedBy: ["acid", "fire"] }]), deactivates(["cold"], [{ deactivatedBy: ["acid", "fire"] }]), deactivates(["fire"], [{}])], [true, false, false]);
+    const en = { "PF2E.Encounter.Broadcast.FastHealing.fast-healing.ReceivedMessage": "Received fast healing", "PF2E.Encounter.Broadcast.FastHealing.regeneration.ReceivedMessage": "Received regeneration" };
+    const lines = receivedLines((k) => en[k] ?? k);
+    check("pf2e's turn-start healing is known by its own words, in the current language", [isTurnHealing("<div>Received regeneration</div><div>Deactivated by acid or fire</div>", lines), isTurnHealing("Received fast healing", lines), isTurnHealing("Fortitude Saving Throw", lines), receivedLines((k) => k).length], [true, true, false, 0]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  A shield that ends when it blocks (VS-35)                                                    */
 /* -------------------------------------------------------------------------------------------- */
 

@@ -164,6 +164,9 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "FastHealing": {
+            "Off": "{actor} took acid or fire damage: no regeneration this turn."
+        },
         "ShieldBlock": {
             "Ended": "{actor} blocked with the shield: {name} ends, and it can't be cast again for 10 minutes."
         },

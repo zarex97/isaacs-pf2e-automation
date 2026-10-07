@@ -96,7 +96,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-36 | `regenerate` | 7 | Healing at each turn start | "restores 15 Hit Points to it at the start of each of its turns" | 15 HP at the start of each of the target's turns while it lasts | | ☐ | |
+| VS-36 | `regenerate` | 7 | Healing at each turn start | "restores 15 Hit Points to it at the start of each of its turns" | 15 HP at the start of each of the target's turns while it lasts | `content/vanilla/regenerate.json` (an `action-used` rider: pf2e's *Spell Effect: Regenerate* `atCastRank` — regeneration 15, 20 from rank 9, `deactivatedBy` acid and fire); `scripts/lib/fast-healing.mjs` | ✅ | In a combat, Aries before Capricorn (at 100 HP each time). **Rank 7** → at the start of Capricorn's turn, healed **15** (100 → 115). **Rank 9** → **20** (100 → 120). **Fire:** 10 fire during Aries' turn → at Capricorn's next turn start, "took acid or fire damage: no regeneration this turn" (90 → 90); the turn after, 20 again (90 → 110). Found on the way: pf2e only *posts* fast healing and regeneration as a roll for someone to apply, and prints "deactivated by acid or fire" as a reminder without acting on it — the module now applies them (recognising pf2e's own words in the current language) and skips the turn after acid or fire. Not automated: "can't die while regenerating" and regrowing organs. |
 | VS-37 | `spirit-link` | 1 | Hit Points moved between two | "You lose as many Hit Points as the target regained" | At cast and each turn start of the caster, the ally gains up to 2 HP and the caster loses the same | | ☐ | |
 | VS-38 | `vampiric-feast` | 3 | The caster gains from the damage | "temporary Hit Points equal to half the void damage the target takes" | After the damage lands, the caster gains half of what was actually taken as temporary HP | | ☐ | |
 | VS-39 | `sanctuary` | 1 | The attacker saves | "Creatures attempting to attack the target must attempt a Will save" | An attack on the warded creature first asks the attacker's Will save; a failure wastes it; a hostile action ends the spell | | ☐ | |
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 5 |
-| ✅ | 35 |
+| ☐ not yet driven | 4 |
+| ✅ | 36 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

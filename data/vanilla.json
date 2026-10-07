@@ -1546,6 +1546,19 @@
                 }
             ]
         },
+        "regenerate": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.dXq7z633ve4E0nlX",
+                        "replace": true,
+                        "atCastRank": true
+                    }
+                }
+            ]
+        },
         "scatter-scree": {
             "areaTargeting": {
                 "affects": "all"
