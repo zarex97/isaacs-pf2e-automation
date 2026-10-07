@@ -60,7 +60,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-15 | `dizzying-colors` | 1 | Several conditions, several durations | "Stunned 1, Blinded for 1 round, and dazzled for 1 minute" | In a 15-ft cone, each outcome's set of conditions with its own duration | | ☐ | |
+| VS-15 | `dizzying-colors` | 1 | Several conditions, several durations | "Stunned 1, Blinded for 1 round, and dazzled for 1 minute" | In a 15-ft cone, each outcome's set of conditions with its own duration | `content/vanilla/dizzying-colors.json` (pf2e's 15-ft cone `anchor: "caster"`, all; six condition riders: success dazzled 1 round; failure stunned 1, blinded 1 round, dazzled 1 minute; critical failure stunned for 1 round, blinded 1 minute) | ✅ | The cone pinned to Aries' east edge caught the Ghoul, Capricorn and Leo. Will saves from the card: **Ghoul — critical failure** → *Stunned* held by a 1-round effect (expires at turn start) and *Blinded* for 1 minute. **Leo — critical failure, improved to failure by pf2e's incapacitation** → *Stunned 1*, *Blinded* 1 round, *Dazzled* 1 minute (pf2e shows dazzled under blinded). **Capricorn — failure, improved to success by incapacitation** → *Dazzled* 1 round. Each condition carried its own duration. Representation: pf2e has no "stunned for 1 round"; it is a stunned condition held by a 1-round effect. |
 | VS-16 | `sleep` | 1 | Incapacitation, an exception | "doesn't fall Prone or release what it's holding" | A failure is unconscious *without* prone; it wakes after 1 minute | | ☐ | |
 | VS-17 | `blindness` | 3 | Permanent, then immune | "Blinded permanently" … "temporarily immune for 1 minute" | A critical failure blinds with no expiry; any outcome makes the target immune for 1 minute | | ☐ | |
 | VS-18 | `paralyze` | 3 | A save each turn shortens it | "a new Will save to reduce the remaining duration by 1 round" | Paralyzed 4 rounds; at the end of each of its turns a Will save takes a round off, or ends it on a critical success | | ☐ | |
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 26 |
-| ✅ | 14 |
+| ☐ not yet driven | 25 |
+| ✅ | 15 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |
