@@ -574,6 +574,27 @@ async function targetsFor(rider, context) {
 /* ------------------------------------------------------------------------------------------------ */
 
 /**
+ * Where a pushed token stops: the destination, or a square short of the first wall that blocks movement
+ * between its centre and the destination's. `collide(from, to)` is Foundry's movement collision test.
+ */
+export function stopShortOfWalls(here, wanted, size, gridSize, collide = defaultCollision) {
+    const centre = (p) => ({ x: p.x + size.w / 2, y: p.y + size.h / 2 });
+    const hit = collide(centre(here), centre(wanted));
+    if (!hit) return wanted;
+    const dx = wanted.x - here.x;
+    const dy = wanted.y - here.y;
+    const length = Math.hypot(dx, dy);
+    if (!length) return here;
+    const reach = Math.max(0, Math.hypot(hit.x - centre(here).x, hit.y - centre(here).y) - gridSize / 2);
+    const t = Math.min(1, reach / length);
+    return { x: here.x + dx * t, y: here.y + dy * t };
+}
+
+function defaultCollision(from, to) {
+    return CONFIG.Canvas.polygonBackends.move.testCollision(from, to, { type: "move", mode: "closest" }) ?? null;
+}
+
+/**
  * Move a creature, rather than telling the GM to.
  *
  * The module used to whisper every forced movement — "Teleported 250 feet in a direction of the Saint's
@@ -642,7 +663,13 @@ async function applyTeleport(rider, context) {
         : feet;
     if (travel <= 0) return;
 
-    const wanted = { x: here.x + ux * travel * perFoot, y: here.y + uy * travel * perFoot };
+    let wanted = { x: here.x + ux * travel * perFoot, y: here.y + uy * travel * perFoot };
+
+    // A push is not a teleport: *Gust of Wind* blows a creature 30 feet, and a wall in the way stops it.
+    // The token's centre travels until the first wall that blocks movement, and stops a square short.
+    if (rider.apply.stopsAtWalls) {
+        wanted = stopShortOfWalls(here, wanted, { w: token.width * gridSize, h: token.height * gridSize }, gridSize);
+    }
     const landed = {
         x: Math.clamp(wanted.x, rect.x, Math.max(rect.x, maxX)),
         y: Math.clamp(wanted.y, rect.y, Math.max(rect.y, maxY)),
@@ -662,9 +689,13 @@ async function applyTeleport(rider, context) {
     // creature has already been moved, so this is the Technique reporting itself, not a job for the GM —
     // and "away" would be a lie for the half of them that drag.
     const towards = rider.apply.direction === "toward";
-    const short = travelled < travel - (scene.grid.distance || 5);
+    // A wall that stops a push stops it short by any amount; the map edge is allowed a square of rounding.
+    const short = travelled < travel - (rider.apply.stopsAtWalls ? 0 : (scene.grid.distance || 5));
     const moved = { name: token.name, feet: travelled, travel: Math.round(travel) };
-    context.notes.push(t(short ? (towards ? "Move.DragShort" : "Move.ThrowShort") : (towards ? "Move.Drag" : "Move.Throw"), moved));
+    const said = rider.apply.stopsAtWalls
+        ? (short ? "Move.PushShort" : "Move.Push")
+        : short ? (towards ? "Move.DragShort" : "Move.ThrowShort") : (towards ? "Move.Drag" : "Move.Throw");
+    context.notes.push(t(said, moved));
 }
 
 /**

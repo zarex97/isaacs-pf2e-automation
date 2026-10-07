@@ -39,6 +39,8 @@ export function docs(built, index, en) {
         const what = a.type === "condition" ? [a.slug, a.value].filter((x) => x !== undefined && x !== null).join(" ")
             : a.type === "effect" ? (a.uuid ? Object.entries(index.effects).find(([, uuid]) => uuid === a.uuid)?.[0] ?? "effect" : words(a.label ?? "effect"))
             : a.type === "prompt" ? `GM note: “${words(a.text)}”`
+            : a.type === "teleport" ? `${a.stopsAtWalls ? "pushed" : "moved"} ${a.distance} ft${a.direction === "toward" ? " closer" : " away"}`
+            : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
         const lasting = [r.duration ? `${r.duration.value} ${r.duration.unit}` : null, a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null].filter(Boolean);
@@ -52,6 +54,7 @@ export function docs(built, index, en) {
         if (a.anchor === "caster") parts.push("from you");
         if (a.affects) parts.push(a.affects);
         if (a.includesSelf) parts.push("includes you");
+        if (a.predicate?.length) parts.push("filtered");
         if (a.maxTargets) parts.push(`up to ${a.maxTargets}`);
         if (a.chain) parts.push(`a chain, each within ${a.chain.link} ft of the last`);
         if (a.placeOnly) parts.push("placed, no targets");
@@ -69,6 +72,7 @@ export function docs(built, index, en) {
             ...rankFrom(l.predicate),
             l.difficultTerrain ? "difficult terrain" : null,
             l.replacesPrevious ? "ends your previous one" : null,
+            l.until === "originTurnStart" ? "until your next turn" : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
             l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l)} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
@@ -155,6 +159,8 @@ export function problemsWith(slug, entry, ctx) {
         for (const [i, spec] of [object.lingering ?? []].flat().entries()) {
             if (spec?.darkness !== undefined && spec.darkness !== true) at(`${where} lingering.darkness`.trim(), "true or absent");
             if (spec?.replacesPrevious !== undefined && spec.replacesPrevious !== true) at(`${where} lingering.replacesPrevious`.trim(), "true or absent");
+            if (spec?.until !== undefined && spec.until !== "originTurnStart") at(`${where} lingering.until`.trim(), "originTurnStart or absent");
+            if (spec?.targetPredicate !== undefined && !Array.isArray(spec.targetPredicate)) at(`${where} lingering.targetPredicate`.trim(), "a predicate list");
             if (spec?.save) {
                 const asked = [spec.save.statistic ?? spec.save.statistics ?? []].flat();
                 if (asked.length === 0 || asked.some((s) => !STATISTICS.includes(s))) at(`${where} lingering.save`.trim(), `a save names its statistic, or the statistics to choose between, from ${STATISTICS.join(", ")}`);

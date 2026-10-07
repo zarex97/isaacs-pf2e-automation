@@ -735,6 +735,19 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  A push that walls stop (VS-12)                                                               */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { stopShortOfWalls } = await import("../scripts/riders/apply.mjs");
+    const size = { w: 100, h: 100 };
+    const wallAtX = (x) => (from, to) => (to.x > x && from.x < x ? { x, y: from.y } : null);
+    check("a push with nothing in the way goes the whole distance", stopShortOfWalls({ x: 0, y: 0 }, { x: 600, y: 0 }, size, 100, () => null), { x: 600, y: 0 });
+    check("…and stops half a square short of the first wall, measured from the token's centre", stopShortOfWalls({ x: 0, y: 0 }, { x: 600, y: 0 }, size, 100, wallAtX(400)), { x: 300, y: 0 });
+    check("…which may be no distance at all", stopShortOfWalls({ x: 0, y: 0 }, { x: 600, y: 0 }, size, 100, wallAtX(90)), { x: 0, y: 0 });
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  A check the creature chooses (VS-09)                                                         */
 /* -------------------------------------------------------------------------------------------- */
 
