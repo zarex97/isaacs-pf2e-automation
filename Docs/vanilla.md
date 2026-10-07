@@ -6,7 +6,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 
 | Spell | Rank | Area and targets | Riders | Lingering |
 | :-- | :-- | :-- | :-- | :-- |
-| Calm | 2 | all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
+| Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
 | Electric Arc | 1 | up to 2 |  |  |
@@ -14,7 +14,8 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
-| Ice Storm | 4 | all |  | difficult terrain, 2 cold at turn end, 1 minutes |
+| Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold at turn end, 1 minutes |
+| Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
 

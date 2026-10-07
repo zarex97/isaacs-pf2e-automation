@@ -52,8 +52,57 @@ export async function placeArea(config, originToken) {
         return placed?.length ? placed : null;
     }
 
+    // "A bolt of lightning strikes outward from your hand": a line or a cone that starts at the caster, so
+    // the pointer turns it rather than carrying it off. Foundry's placement moves the whole shape with the
+    // cursor; `onMove` keeps it pinned to the edge of the caster's space and only aims it.
+    //
+    // Foundry's own `placeRegion`, not pf2e's: `RegionLayerPF2e#placeRegion` replaces any `onMove` it is
+    // handed with its own two-click aim (place the apex, then turn it), so ours never ran and the line went
+    // wherever the pointer was. pf2e's direction snapping is kept here instead — lines every 5°, cones every
+    // 45°, Ctrl for none.
+    if (pinnedToCaster(config) && originToken) {
+        const start = fromCaster(originToken, canvas.mousePosition);
+        const pinned = { ...shapeFromArea(config.area, originToken, start), ...start };
+        const step = config.area.type === "cone" ? 45 : 5;
+        const place = foundry.canvas.layers.RegionLayer.prototype.placeRegion;
+        const region = await place.call(canvas.regions, regionData(config, pinned), {
+            create: false,
+            allowRotation: false,
+            onMove: ({ event, shape: moving, position }) => {
+                const aimed = fromCaster(originToken, position);
+                const snapped = event?.ctrlKey || event?.metaKey ? aimed.rotation : Math.round(aimed.rotation / step) * step;
+                moving.updateSource(fromCaster(originToken, position, snapped));
+                return false;
+            },
+        });
+        return region ? [region] : null;
+    }
+
     const region = await canvas.regions.placeRegion(regionData(config, shape), { create: false });
     return region ? [region] : null;
+}
+
+/** A line or cone aimed from the caster rather than placed: `anchor: "caster"`. */
+export function pinnedToCaster(config) {
+    return config?.anchor === "caster" && ["line", "cone"].includes(config.area?.type);
+}
+
+/**
+ * Where a caster-anchored line or cone starts, and which way it points: on the edge of the caster's space,
+ * facing the pointer. The edge rather than the centre, because "outward from your hand" starts where the
+ * caster ends — a 120-foot line measured from the centre would be short by half a square.
+ */
+export function fromCaster(token, point, rotation = aimAngle(token.center, point)) {
+    const center = token.center;
+    const radians = (rotation * Math.PI) / 180;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    const halfW = (token.w ?? token.width ?? 0) / 2;
+    const halfH = (token.h ?? token.height ?? 0) / 2;
+    // The distance from the centre to the square's boundary along this direction.
+    const reach = Math.min(Math.abs(cos) > 1e-9 ? halfW / Math.abs(cos) : Infinity, Math.abs(sin) > 1e-9 ? halfH / Math.abs(sin) : Infinity);
+    const edge = Number.isFinite(reach) ? reach : 0;
+    return { x: center.x + cos * edge, y: center.y + sin * edge, rotation };
 }
 
 /**

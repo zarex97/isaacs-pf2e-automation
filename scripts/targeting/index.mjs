@@ -5,7 +5,7 @@ import { key, t } from "../i18n.mjs";
 import { catchTokens } from "./catch.mjs";
 import { canRotate, configFor, describe, originTokenFor } from "./config.mjs";
 import { Extensions } from "./extensions.mjs";
-import { discardArea, originOf, placeArea } from "./place.mjs";
+import { discardArea, originOf, pinnedToCaster, placeArea } from "./place.mjs";
 import { REAIM, reviewTargets } from "./review.mjs";
 
 /**
@@ -275,6 +275,7 @@ async function chooseShape(item) {
  */
 function aimHint(cast, config) {
     const data = { name: cast.name, rule: describe(config) };
+    if (pinnedToCaster(config)) return t("Aim.HintFromYou", data);
     return canRotate(config.area?.type) ? t("Aim.HintRotate", data) : t("Aim.Hint", data);
 }
 

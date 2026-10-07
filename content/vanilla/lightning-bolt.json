@@ -1,0 +1,6 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "anchor": "caster"
+    }
+}

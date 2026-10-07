@@ -53,7 +53,8 @@
             "CastAnyway": "Cast anyway?",
             "OutOfRangeTitle": "Out of range",
             "OutOfRange": "<strong>{name}</strong> reaches {range} feet. That placement is {distance} feet away.",
-            "PlaceAnyway": "Place it anyway?"
+            "PlaceAnyway": "Place it anyway?",
+            "HintFromYou": "{name}: {rule} — it starts at you; point where it goes."
         },
         "Review": {
             "Title": "Confirm targets",
