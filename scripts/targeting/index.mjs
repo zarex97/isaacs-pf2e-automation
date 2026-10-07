@@ -6,6 +6,8 @@ import { catchTokens } from "./catch.mjs";
 import { canRotate, configFor, describe, originTokenFor } from "./config.mjs";
 import { Extensions } from "./extensions.mjs";
 import { CastShape } from "./cast-shape.mjs";
+import { blocked } from "./catch.mjs";
+import { chainOrder } from "./chain.mjs";
 import { discardArea, originOf, pinnedToCaster, placeArea } from "./place.mjs";
 import { REAIM, reviewTargets } from "./review.mjs";
 
@@ -310,8 +312,22 @@ async function checkExistingTargets(config, originToken) {
         const names = failing.map((token) => token.document.name).join(", ");
         problems.push(t(failing.length === 1 ? "Aim.RequirementOne" : "Aim.RequirementMany", { names }));
     }
+    // A chain: some order of the picked creatures where each is within the link of the one before, and the
+    // caster can see a line to every one of them. Only the first has to be within the spell's range — the
+    // rest are reached by the arc, not by the caster.
+    let inRange = targets;
+    if (config.chain && targets.length > 0) {
+        const enforce = config.range > 0 && game.settings.get(LIB_ID, "enforceRange") && originToken;
+        const reachable = (target) => !enforce || (originToken.distanceTo?.(target) ?? 0) <= config.range;
+        const order = chainOrder(targets, (a, b) => a.distanceTo?.(b) ?? Infinity, config.chain.link, reachable);
+        if (!order) problems.push(t("Aim.ChainBroken", { link: config.chain.link, range: config.range }));
+        // The chain's own start is in range by construction; nothing else is held to the spell's range.
+        inRange = [];
+        const unseen = originToken ? targets.filter((target) => blocked(originToken.center, target.center)) : [];
+        if (unseen.length > 0) problems.push(t("Aim.NoLineTo", { names: unseen.map((token) => token.document.name).join(", ") }));
+    }
     if (config.range > 0 && game.settings.get(LIB_ID, "enforceRange") && originToken) {
-        const far = targets.filter((t) => (originToken.distanceTo?.(t) ?? 0) > config.range);
+        const far = inRange.filter((t) => (originToken.distanceTo?.(t) ?? 0) > config.range);
         if (far.length > 0) {
             problems.push(t("Aim.Beyond", { names: far.map((token) => token.document.name).join(", "), range: config.range }));
         }

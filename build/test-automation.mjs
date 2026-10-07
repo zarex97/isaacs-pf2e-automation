@@ -667,6 +667,23 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  Targets that form a chain (VS-04)                                                            */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { chainOrder } = await import("../scripts/targeting/chain.mjs");
+    const at = (name, x) => ({ name, x });
+    const d = (a, b) => Math.abs(a.x - b.x);
+    const names = (order) => order?.map((p) => p.name) ?? null;
+    check("picked out of order, the chain is found", names(chainOrder([at("c", 60), at("a", 0), at("b", 30)], d, 30)), ["c", "b", "a"]);
+    check("a gap wider than the link breaks it", chainOrder([at("a", 0), at("b", 30), at("c", 65)], d, 30), null);
+    check("it starts where the caster can reach", names(chainOrder([at("a", 0), at("b", 30), at("c", 60)], d, 30, (p) => p.x >= 60)), ["c", "b", "a"]);
+    check("…and a chain whose only start is out of reach is no chain", chainOrder([at("a", 0), at("b", 30), at("c", 60)], d, 30, (p) => p.x === 30), null);
+    check("one target is a chain of one, if it can be reached", [names(chainOrder([at("a", 0)], d, 30)), chainOrder([at("a", 0)], d, 30, () => false)], [["a"], null]);
+    check("a branch the path cannot walk is no chain", chainOrder([at("hub", 0), at("l", -30), at("r", 30), at("far", -65)], d, 30), null);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  A line or cone from the caster (VS-01)                                                       */
 /* -------------------------------------------------------------------------------------------- */
 
