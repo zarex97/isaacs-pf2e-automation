@@ -6,8 +6,15 @@ const SETTING = "banishments";
 /** World seconds per duration unit. A round is six seconds, which is how pf2e advances the clock. */
 const UNIT_SECONDS = { seconds: 1, rounds: 6, minutes: 60, hours: 3600, days: 86400 };
 
+/**
+ * "Banished" with no way back on its own — *Banishment* sends a creature to its home plane. Kept finite: the
+ * register is JSON, and `Infinity` would be stored as `null` and bring the creature straight back.
+ */
+export const FOR_GOOD = Number.MAX_SAFE_INTEGER;
+
 export function durationSeconds(duration) {
     if (!duration) return 0;
+    if (duration.unit === "unlimited") return FOR_GOOD;
     return (Number(duration.value) || 0) * (UNIT_SECONDS[String(duration.unit ?? "rounds")] ?? 6);
 }
 
@@ -96,7 +103,7 @@ export const Banish = {
 
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor: originActor }),
-            content: `<p>${t(returnsToSquare ? "Banish.GoneToSquare" : "Banish.Gone", {
+            content: `<p>${t(seconds >= FOR_GOOD ? "Banish.GoneForGood" : returnsToSquare ? "Banish.GoneToSquare" : "Banish.Gone", {
                 name: record.name,
                 label: record.label,
                 time: describeSeconds(seconds),
