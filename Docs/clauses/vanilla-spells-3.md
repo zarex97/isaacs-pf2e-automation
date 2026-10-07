@@ -485,8 +485,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-73a | "gaining a fly Speed equal to its Speed or 20 feet, whichever is greater" | A fly Speed of the creature's Speed, at least 20 ft | | ☐ | |
-| VS-73b | "Heightened (7th) The duration increases to 1 hour" | Rank 7 lasts an hour | | ☐ | |
+| VS-73a | "gaining a fly Speed equal to its Speed or 20 feet, whichever is greater" | A fly Speed of the creature's Speed, at least 20 ft | `content/vanilla/fly.json`: pf2e's *Spell Effect: Fly* (`BaseSpeed` fly = max(20, land)) on the target | ✅ | Leo (land 25): **fly 25**. ZZ Victim slowed to land 15: **fly 20** — the minimum |
+| VS-73b | "Heightened (7th) The duration increases to 1 hour" | Rank 7 lasts an hour | a rank-7 rider (`item:rank` ≥ 7) with a 1-hour duration | ✅ | Rank 4: the effect for 5 minutes; **rank 7**: **1 hour** |
 
 ### VS-74 · Earthbind
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 114 |
-| ✅ | 203 |
+| ☐ not yet driven | 112 |
+| ✅ | 205 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |
