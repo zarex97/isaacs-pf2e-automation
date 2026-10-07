@@ -59,6 +59,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
+| Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
 | Mountain Resilience | 4 |  | spell-effect-mountain-resilience (carries damage-received shorten) |  |
 | Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |

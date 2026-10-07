@@ -1362,4 +1362,12 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a spell's most actions, from its casting time", [mostActions({ system: { time: { value: "1 to 3" } } }), mostActions({ system: { time: { value: "2" } } }), mostActions({ system: { time: { value: "reaction" } } })], [3, 2, null]);
 }
 
+{
+    const { excepted } = await import("../scripts/riders/forbids.mjs");
+    const frenzy = { flags: { "isaacs-pf2e-automation": { forbids: ["concentrate"], forbidsExcept: { traits: ["rage"], slugs: ["seek"] } } } };
+    check("a form's exceptions: a rage action, Seek — not another concentrate action", [excepted(frenzy, { system: { traits: { value: ["concentrate", "rage"] } } }), excepted(frenzy, { slug: "seek", system: { traits: { value: ["concentrate"] } } }), excepted(frenzy, { slug: "recall-knowledge", system: { traits: { value: ["concentrate"] } } })], [true, true, false]);
+    const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    check("a granted action's save with no DC takes the spell's", bakeCast([{ apply: { type: "save", statistic: "will", dc: "spell" } }, { apply: { type: "save", dc: 30 } }], { dc: 25 }).map((r) => r.apply.dc), [25, 30]);
+}
+
 report("Automation tests");

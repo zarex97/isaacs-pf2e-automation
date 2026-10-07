@@ -618,14 +618,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-87a | "Targets gain 5 temporary Hit Points, a +10-foot status bonus to their Speeds, and weakness 5 to silver" | All three | | ☐ | |
-| VS-87b | "The fangs deal 2d8 piercing damage; the claws deal 2d6 slashing damage and have the agile and finesse traits" | Two new Strikes | | ☐ | |
-| VS-87c | "The targets use their highest weapon or unarmed attack proficiency with these attacks" | Their best proficiency | | ☐ | |
-| VS-87d | "On a critical hit with one of these unarmed attacks, the creature struck takes 1d4 persistent bleed damage" | Bleed on a critical hit | | ☐ | |
-| VS-87e | "The targets can't use concentrate actions unless those actions also have the rage trait, with the exception of Seek" | Their concentrate actions are refused, Seek and rage excepted | | ☐ | |
-| VS-87f | "A creature can attempt to end the spell's effect on itself by using a single action, which has the rage trait, to attempt a Will save against your spell DC" | An action to save its way out | | ☐ | |
+| VS-87a | "Targets gain 5 temporary Hit Points, a +10-foot status bonus to their Speeds, and weakness 5 to silver" | All three | pf2e's *Spell Effect: Moon Frenzy* (`TempHP`, land `FlatModifier`, `Weakness` silver), `atCastRank`; `addRules`: a status +10 to `all-speeds` | ✅ | Leo: **temp HP 5**, land 25 → **35**, fly 20 → **30**, **weakness silver 5** |
+| VS-87b | "The fangs deal 2d8 piercing damage; the claws deal 2d6 slashing damage and have the agile and finesse traits" | Two new Strikes | pf2e's two `Strike` rules | ✅ | Leo: **Fangs 2d8 piercing**, **Claw 2d6 slashing** with agile, finesse, unarmed |
+| VS-87c | "The targets use their highest weapon or unarmed attack proficiency with these attacks" | Their best proficiency | pf2e's `Strike` rules are unarmed, so they use the unarmed proficiency | ⚠️ | Leo's unarmed is his best proficiency (master; weapons untrained), so his Strikes are right. **Gap:** a creature better with weapons than unarmed attacks rolls these at its unarmed proficiency |
+| VS-87d | "On a critical hit with one of these unarmed attacks, the creature struck takes 1d4 persistent bleed damage" | Bleed on a critical hit | pf2e's `DamageDice` bleed, `critical: true`, on the two Strikes | ✅ | Fangs critical: **(2 × (2d8 + 2)) piercing + 1d4 bleed** |
+| VS-87e | "The targets can't use concentrate actions unless those actions also have the rage trait, with the exception of Seek" | Their concentrate actions are refused, Seek and rage excepted | `forbids: [concentrate]`, `forbidsExcept: { traits: [rage], slugs: [seek] }` (`forbids.mjs`): a cast stage and the action wrap | ✅ | In the frenzy, Aries casting *Guidance* (concentrate): **refused**; an action with concentrate: **refused**; one with concentrate and rage: **posted**; pf2e's *Seek* (concentrate, secret): **posted** |
+| VS-87f | "A creature can attempt to end the spell's effect on itself by using a single action, which has the rage trait, to attempt a Will save against your spell DC" | An action to save its way out | `originAction` with `holder: true`, traits `[rage]`, `spends: false`: a Will `save` at the spell's DC (baked); success or better `expire`s the effect | ✅ | Each target got **Shake Off the Moon Frenzy**. Leo used it: Will vs **DC 34**, a critical failure — still frenzied; again, a critical success — **Leo's effect gone**, Aries's untouched |
 | VS-87g | "If a target is in the light of a full moon, it also grows by one size if it were Medium or smaller" | — | | — | Nothing to automate: the moon is the GM's |
-| VS-87h | "Heightened (6th) The temporary Hit Points increase to 10, the silver weakness to 10, and the damage dealt by the attacks to three dice" | Rank 6's numbers | | ☐ | |
+| VS-87h | "Heightened (6th) The temporary Hit Points increase to 10, the silver weakness to 10, and the damage dealt by the attacks to three dice" | Rank 6's numbers | pf2e's values by `@item.level` | ✅ | Rank 6: **temp HP 10**, **silver 10**, Fangs **3d8**, Claw **3d6** |
 
 ### VS-88 · Evil Eye
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 57 |
-| ✅ | 259 |
-| ⚠️ | 9 |
+| ☐ not yet driven | 50 |
+| ✅ | 265 |
+| ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

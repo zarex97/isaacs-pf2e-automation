@@ -1949,7 +1949,9 @@ async function applyEffect(rider, context) {
     // A shield the spell makes — *Fire Shield*: raised by an action, its own Hit Points (`spell-shield.mjs`).
     if (rider.apply.shield) spellShieldSource(source, rider.apply.shield, riderSteps({ apply: { perStepInterval: rider.apply.perStepInterval } }, context));
     // What the form forbids its holder — *Vapor Form* (`forbids.mjs`).
-    if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids } });
+    if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids, ...(rider.apply.forbidsExcept ? { forbidsExcept: rider.apply.forbidsExcept } : {}) } });
+    // Rules added to a pf2e effect — *Moon Frenzy*'s "+10-foot status bonus to their Speeds", where pf2e's has only the land Speed.
+    if (Array.isArray(rider.apply.addRules)) source.system.rules = [...(source.system?.rules ?? []), ...rider.apply.addRules];
     const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
