@@ -2614,6 +2614,53 @@
                 }
             ]
         },
+        "tangling-creepers": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.tangling-creepers.Creepers",
+                "duration": {
+                    "value": 10,
+                    "unit": "minutes"
+                },
+                "inside": {
+                    "rules": [
+                        {
+                            "key": "FlatModifier",
+                            "selector": [
+                                "land-speed",
+                                "climb-speed",
+                                "swim-speed"
+                            ],
+                            "type": "circumstance",
+                            "value": -10,
+                            "label": "ISAACS_AUTOMATION.Vanilla.tangling-creepers.Creepers"
+                        }
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.tangling-creepers.Slowed"
+                },
+                "sustain": {
+                    "vine": {
+                        "reach": 15,
+                        "riders": [
+                            {
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "rounds"
+                                },
+                                "apply": {
+                                    "type": "condition",
+                                    "slug": "immobilized",
+                                    "escapeDc": "spell"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
         "toxic-cloud": {
             "areaTargeting": {
                 "affects": "all",

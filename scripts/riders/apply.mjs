@@ -344,6 +344,11 @@ async function applyFlatCheck(rider, context) {
 }
 
 
+/** Riders applied in order outside any event — what a lingering area's own action does to whoever it reaches. */
+export async function applyRiderList(riders, context) {
+    for (const rider of riders ?? []) await applyOne(rider, context);
+}
+
 async function applyOne(rider, context) {
     const apply = rider.apply ?? {};
     // A **nested** rider may name the creature the event was about, rather than the one the outer rider

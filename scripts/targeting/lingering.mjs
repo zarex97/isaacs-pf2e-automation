@@ -3,7 +3,7 @@ import { flagOf } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
 import { targetingOptions, testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
-import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
+import { applyRiderList, growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
 import { LIB_ID } from "../id.mjs";
 import { Inside, insidePayload } from "./inside.mjs";
 import { Sustain } from "../riders/sustain.mjs";
@@ -13,6 +13,7 @@ import { combatOf } from "../lib/combat.mjs";
 import { Relay } from "../riders/relay.mjs";
 import { Repels } from "./repels.mjs";
 import { Barrier } from "./barrier.mjs";
+import { pullSteps } from "../riders/pull.mjs";
 
 export const FLAG = "lingering";
 
@@ -51,6 +52,7 @@ export const Lingering = {
             const sustain = flagOf(region, FLAG)?.sustain;
             if (sustain?.move) return Lingering.fly(region);
             if (sustain?.bolt) return Lingering.bolt(region);
+            if (sustain?.vine) return Lingering.vine(region);
             // Sustained only to keep it going — *Hypnotize*.
             if (!Number(sustain?.radius)) return t("Lingering.Kept");
             return Lingering.grow(region);
@@ -542,6 +544,46 @@ export const Lingering = {
         return t("Lingering.Bolted", { name: token?.name ?? "" });
     },
 
+    /**
+     * A vine from the creepers. *Tangling Creepers*: "Once per round, you can Sustain the spell to make a vine lash out
+     * from any square within the expanse of creepers. This vine has a 15-foot reach. Make a melee spell attack roll
+     * against the target; on a success, the vine pulls the target into the creepers and makes it Immobilized for 1
+     * round or until the creature Escapes." The caster picks a creature within reach of the area; the attack is the
+     * spell's own spell attack; a hit pulls an outside target in, square by square toward the middle, and applies
+     * `vine.riders`.
+     */
+    async vine(region) {
+        const payload = flagOf(region, FLAG);
+        const scene = region.parent;
+        const vine = payload?.sustain?.vine;
+        if (!vine || !scene) return null;
+        const grid = scene.grid.size;
+        const shape = region.shapes?.[0];
+        const reach = ((Number(vine.reach) || 15) / (scene.grid.distance || 5)) * grid;
+        const originActor = payload.originUuid ? await fromUuid(payload.originUuid) : null;
+        const inReach = scene.tokens.filter((token) => token.actor && token.actor !== originActor
+            && reachOf(token, shape, grid) <= reach + 0.5);
+        const tokenId = await chooseBoltTarget(payload.name ?? region.name, inReach, "Lingering.VineTitle", "Lingering.VineHint");
+        if (!tokenId) return t("Lingering.NoBolt");
+        const token = scene.tokens.get(tokenId);
+        const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
+        const attack = item?.spellcasting?.statistic ?? originActor?.spellcasting?.find?.((entry) => entry.statistic)?.statistic;
+        const roll = attack ? await attack.roll({ dc: { value: token.actor.armorClass?.value ?? 10 }, skipDialog: true, item, traits: ["attack"], extraRollOptions: ["attack", "melee", "spell-attack-roll"], label: t("Lingering.VineAttack", { name: payload.name ?? region.name }) }) : null;
+        if ((roll?.degreeOfSuccess ?? 0) < 2) return t("Lingering.VineMissed", { name: token.name });
+        // "Pulls the target into the creepers."
+        if (!region.tokens?.has?.(token) && Number.isFinite(shape?.x)) {
+            const size = { w: token.width * grid, h: token.height * grid };
+            let at = { x: token.x, y: token.y };
+            for (const next of pullSteps(at, size, { x: shape.x, y: shape.y }, 99, grid)) {
+                at = next;
+                if (Math.hypot(at.x + size.w / 2 - shape.x, at.y + size.h / 2 - shape.y) <= (Number(shape.radius) || 0)) break;
+            }
+            await token.update({ x: at.x, y: at.y }, { animate: false, forcedMovement: true });
+        }
+        await applyRiderList(vine.riders, { ...saveWork(token, originActor, item, region), outcome: "success", created: [] });
+        return t("Lingering.VineCaught", { name: token.name });
+    },
+
     /** GM: the bolt falls on a creature that is inside a cloud of this storm. */
     async strike({ regionUuid, tokenUuid }) {
         const region = await fromUuid(regionUuid);
@@ -689,11 +731,20 @@ async function burnAlong(tokens, damage, item, originActor, name, flavor = "Ling
     }
 }
 
+/** How far a token's nearest edge is from a circular area's edge, in pixels — 0 inside it. */
+export function reachOf(token, shape, gridSize) {
+    if (!shape || !Number.isFinite(shape.x)) return Infinity;
+    const half = (Math.max(token.width, token.height) * gridSize) / 2;
+    const cx = (token._source?.x ?? token.x) + (token.width * gridSize) / 2;
+    const cy = (token._source?.y ?? token.y) + (token.height * gridSize) / 2;
+    return Math.max(0, Math.hypot(cx - shape.x, cy - shape.y) - (Number(shape.radius) || 0) - half);
+}
+
 /** Which creature inside the storm a bolt falls on, or none. */
-async function chooseBoltTarget(name, tokens) {
+async function chooseBoltTarget(name, tokens, title = "Lingering.BoltTitle", hint = "Lingering.BoltHint") {
     const choice = await foundry.applications.api.DialogV2.wait({
-        window: { title: t("Lingering.BoltTitle", { name }) },
-        content: `<p>${t("Lingering.BoltHint", { name })}</p>`,
+        window: { title: t(title, { name }) },
+        content: `<p>${t(hint, { name })}</p>`,
         buttons: [
             ...tokens.map((token) => ({ action: token.id, label: token.name })),
             { action: "none", label: t("Lingering.BoltNone") },

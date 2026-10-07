@@ -84,6 +84,7 @@ export function docs(built, index, en) {
             l.repels ? `repels: a ${l.repels.statistic ?? "will"} save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in` : null,
             l.drifts ? `drifts ${l.drifts.feet} ft away from you each round` : null,
             l.dismiss ? "Dismiss" : null,
+            l.sustain?.vine ? `Sustain: a vine (${l.sustain.vine.reach ?? 15}-ft reach) makes a melee spell attack — ${(l.sustain.vine.riders ?? []).map(rider).join("; ")}` : null,
             l.sustain?.bolt ? `bolt: ${l.sustain.bolt.formula} ${l.sustain.bolt.type ?? ""} on a creature in the storm (basic ${l.sustain.bolt.save ?? "reflex"}), at the cast and on each Sustain`.replace(/\s+/g, " ") : null,
             l.sustain?.lapses ? "ends if not Sustained" : null,
             l.sustain?.move ? `Sustain: moves ${l.sustain.move} ft, ${l.sustain.damage?.formula ?? ""} ${l.sustain.damage?.type ?? ""} to those it passes (basic ${l.sustain.damage?.save ?? "reflex"}), once a round`.replace(/\s+/g, " ") : l.sustain?.radius ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
@@ -178,7 +179,7 @@ export function problemsWith(slug, entry, ctx) {
             if (spec?.drifts !== undefined && !(Number(spec.drifts?.feet) > 0)) at(`${where} lingering.drifts`.trim(), "{ feet } it moves each round");
             if (spec?.repels !== undefined && (typeof spec.repels !== "object" || !spec.repels)) at(`${where} lingering.repels`.trim(), "{ statistic }");
             if (spec?.dismiss !== undefined && spec.dismiss !== true) at(`${where} lingering.dismiss`.trim(), "true or absent");
-            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0) && !spec.sustain?.bolt?.formula && spec.sustain?.lapses !== true) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
+            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0) && !spec.sustain?.bolt?.formula && spec.sustain?.lapses !== true && !spec.sustain?.vine) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
             if (spec?.sustain?.move && spec.sustain.damage && !spec.sustain.damage.formula) at(`${where} lingering.sustain.damage`.trim(), "a formula");
             if (spec?.targetPredicate !== undefined && !Array.isArray(spec.targetPredicate)) at(`${where} lingering.targetPredicate`.trim(), "a predicate list");
             if (spec?.save) {

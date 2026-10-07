@@ -170,6 +170,11 @@
             "FlewFlavor": "{name} — its flight",
             "Stayed": "left where it is",
             "Kept": "it goes on",
+            "VineTitle": "{name}: a vine",
+            "VineHint": "Which creature does the vine lash at? Everyone within its reach of the creepers is offered.",
+            "VineAttack": "{name}: the vine's spell attack",
+            "VineMissed": "the vine misses {name}",
+            "VineCaught": "the vine catches {name}",
             "BoltTitle": "{name}: a bolt",
             "BoltHint": "Where does the bolt fall? Every creature inside the storm is offered; the bolt strikes the one you choose.",
             "BoltNone": "On no one",
@@ -462,6 +467,10 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "tangling-creepers": {
+                "Creepers": "Tangling Creepers",
+                "Slowed": "–10 feet to land, climb and swim Speeds among the creepers."
             },
             "slither": {
                 "Snakes": "Slither",

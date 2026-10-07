@@ -224,12 +224,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-51a | "takes a –10-foot circumstance penalty to its Speeds while in the area" | A creature in the 40-ft burst has –10 ft Speeds, gone on leaving | | ☐ | |
-| VS-51b | "Once per round, you can Sustain the spell to make a vine lash out from any square within the expanse of creepers" | Sustaining (once a round) offers the vine's attack | | ☐ | |
-| VS-51c | "This vine has a 15-foot reach" | A target within 15 ft of the area | | ☐ | |
-| VS-51d | "Make a melee spell attack roll against the target" | The caster's melee spell attack against AC | | ☐ | |
-| VS-51e | "on a success, the vine pulls the target into the creepers" | A target outside the area is moved into it | | ☐ | |
-| VS-51f | "makes it Immobilized for 1 round or until the creature Escapes (against your spell DC), whichever comes first" | Immobilized for a round, with an Escape | | ☐ | |
+| VS-51a | "takes a –10-foot circumstance penalty to its Speeds while in the area" | A creature in the 40-ft burst has –10 ft Speeds, gone on leaving | `content/vanilla/tangling-creepers.json` (`lingering.inside`: a –10 ft circumstance penalty to land, climb and swim Speeds) | ✅ | Aries cast it (rank 6) on a 40-ft burst at (4100, 1500), 10 minutes. Capricorn inside: land Speed **15**; walked out: **25**; back in: 15 again. The penalty is to land, climb and swim — not fly |
+| VS-51b | "Once per round, you can Sustain the spell to make a vine lash out from any square within the expanse of creepers" | Sustaining (once a round) offers the vine's attack | `sustain.vine`; `canSustain` | ✅ | Round 2, Sustain: "Tangling Creepers: a vine" offered the creatures within its reach. A second Sustain that round: "Tangling Creepers has already been Sustained this round." — no vine |
+| VS-51c | "This vine has a 15-foot reach" | A target within 15 ft of the area | `reachOf` test (edge to edge, 15 ft) | ✅ | Offered: Capricorn and D5 (inside), ZZ Victim (5 ft outside the edge). Leo, 40 ft out, was not |
+| VS-51d | "Make a melee spell attack roll against the target" | The caster's melee spell attack against AC | the spell's own spellcasting statistic, against the target's AC | ✅ | "the vine's spell attack" against ZZ Victim: **DC 10** (his AC), success; against Capricorn: **DC 34** (his AC), success |
+| VS-51e | "on a success, the vine pulls the target into the creepers" | A target outside the area is moved into it | a hit outside the area pulls the target square by square toward its middle until inside (`forcedMovement`) | ✅ | ZZ Victim, outside at (5000, 1500): pulled to (4800, 1500), **inside** the creepers. Capricorn, already inside, stayed where he was |
+| VS-51f | "makes it Immobilized for 1 round or until the creature Escapes (against your spell DC), whichever comes first" | Immobilized for a round, with an Escape | `vine.riders`: immobilized, 1 round, `escapeDc: "spell"` | ✅ | ZZ Victim: *Immobilized* for **1 round** and *Escape Drive: Tangling Creepers* — Athletics against **DC 34** (the spell DC), critical failure. One round on, at the end of Aries' next turn, the immobilized ended by itself |
 
 ### VS-52 · Weapon Storm
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 254 |
-| ✅ | 68 |
+| ☐ not yet driven | 248 |
+| ✅ | 74 |
 | ⚠️ | 3 |
 | ❌ | 0 |
 | 🔧 | 0 |
