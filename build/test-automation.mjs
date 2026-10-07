@@ -1398,4 +1398,11 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("an aura's copy forbids what the effect radiating it forbids", [forbidsOf(copy, () => origin)?.forbids, forbidsOf({ sourceId: "other", flags: { pf2e: { aura: { origin: "Actor.x" } } } }, () => origin), forbidsOf(radiating).except], [["cast", "auditory"], null, { traits: ["subtle"] }]);
 }
 
+{
+    const { summonLevel, eligible } = await import("../scripts/targeting/summon.mjs");
+    check("the summon trait's levels by rank", [1, 2, 3, 4, 5, 6, 10].map(summonLevel), [-1, 1, 2, 3, 5, 7, 15]);
+    const wolf = { type: "npc", system: { details: { level: { value: 1 } }, traits: { value: ["animal"], rarity: "common" } } };
+    check("a summonable creature: an NPC, common, with the traits, at most the level", [eligible(wolf, { traits: ["animal"], maxLevel: 1 }), eligible(wolf, { traits: ["animal"], maxLevel: -1 }), eligible(wolf, { traits: ["fey"], maxLevel: 5 }), eligible({ ...wolf, system: { ...wolf.system, traits: { value: ["animal"], rarity: "uncommon" } } }, { traits: ["animal"], maxLevel: 5 }), eligible({ ...wolf, type: "hazard" }, { traits: [], maxLevel: 5 })], [true, false, false, false, false]);
+}
+
 report("Automation tests");

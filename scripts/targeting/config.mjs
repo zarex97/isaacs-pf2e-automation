@@ -146,6 +146,8 @@ export function configFor(item, override = {}) {
         chain: Number(flag?.chain?.link) > 0 ? { link: Number(flag.chain.link) } : null,
         // The caster moves to the placement — see `move-caster.mjs`.
         moveCaster: flag?.moveCaster ? { ...flag.moveCaster } : null,
+        // A creature summoned to the placement — see `summon.mjs`.
+        summon: flag?.summon ? { ...flag.summon } : null,
         // Aimed for where it stands, not for whom it catches: a wall that harms only those who cross it.
         placeOnly: flag?.placeOnly === true,
         // The creature an area is aimed from is caught too — see `collect`.

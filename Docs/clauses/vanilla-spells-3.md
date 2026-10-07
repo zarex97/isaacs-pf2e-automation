@@ -674,8 +674,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-93a | "You summon a creature that has the animal trait and whose level is –1 to fight for you" | The cast offers animals of level –1 from pf2e's bestiaries and places the chosen one within 30 ft, a minion of the caster | | ☐ | |
-| VS-93b | "Heightened As listed in the summon trait" | The level allowed grows with the rank (1 at 2nd, 2 at 3rd, 3 at 4th, 5 at 5th…) | | ☐ | |
+| VS-93a | "You summon a creature that has the animal trait and whose level is –1 to fight for you" | The cast offers animals of level –1 from pf2e's bestiaries and places the chosen one within 30 ft, a minion of the caster | `areaTargeting.summon: { traits: [animal] }` (`scripts/targeting/summon.mjs`): the placement is a 5-ft square within 30 ft (snapped, refused when occupied); after the cast a list of common creatures with the traits from pf2e's Monster Cores; the active GM imports the one chosen into *Summoned*, puts an unlinked token there (minion, summoned, the caster's owners) and gives the caster a Sustained effect for it — gone, the creature goes; the creature gone, the effect ends | ✅ | Rank 1: "Which creature? (level -1 at most)" — 9 animals (Compsognathus, Eagle, … Trilobite); the Guard Dog: **level −1, traits animal, minion, summoned**, owned as Aries, the Sustained 1-minute effect and *Sustain Drive: Summon Animal* on Aries. The effect deleted: "Guard Dog is gone.", the token too |
+| VS-93b | "Heightened As listed in the summon trait" | The level allowed grows with the rank (1 at 2nd, 2 at 3rd, 3 at 4th, 5 at 5th…) | `SUMMON_LEVELS`: the summon trait's table (−1, 1, 2, 3, 5, 7, … 15) | ✅ | Rank 2: **35** animals, Camel (1) … Viper (−1); the Wolf (level 1) on the snapped square |
 
 ### VS-94 · Final Sacrifice
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 36 |
-| ✅ | 279 |
+| ☐ not yet driven | 34 |
+| ✅ | 281 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -64,6 +64,7 @@ export function docs(built, index, en) {
         if (a.maxTargets) parts.push(`up to ${a.maxTargets}`);
         if (a.chain) parts.push(`a chain, each within ${a.chain.link} ft of the last`);
         if (a.placeOnly) parts.push("placed, no targets");
+        if (a.summon) parts.push(`summons a common ${(a.summon.traits ?? []).join(" ")} creature there, of the rank's summon level`);
         if (a.moveCaster) parts.push(a.moveCaster.seeBelowRank ? `you move there (seen, until rank ${a.moveCaster.seeBelowRank})` : "you move there");
         for (const [rank, gains] of Object.entries(a.heightening?.atRank ?? {})) {
             if (gains.maxTargets) parts.push(`+${gains.maxTargets} at rank ${rank}`);
@@ -164,6 +165,7 @@ export function problemsWith(slug, entry, ctx) {
             if (area.affects && !ctx.affects.includes(area.affects)) at(`${where} areaTargeting.affects`, `"${area.affects}" is not one of ${ctx.affects.join(", ")}`);
             for (const n of ["maxTargets", "range"]) if (area[n] !== undefined && !(Number(area[n]) > 0)) at(`${where} areaTargeting.${n}`, "a positive number");
             if (area.placeOnly !== undefined && typeof area.placeOnly !== "boolean") at(`${where} areaTargeting.placeOnly`, "true or false");
+            if (area.summon !== undefined && (typeof area.summon !== "object" || area.summon === null || !Array.isArray(area.summon.traits ?? []))) at(`${where} areaTargeting.summon`, "an object: { traits?, packs? }");
             if (area.moveCaster !== undefined && (typeof area.moveCaster !== "object" || area.moveCaster === null)) at(`${where} areaTargeting.moveCaster`, "an object: { seeBelowRank? }");
             if (area.chain !== undefined && !(Number(area.chain?.link) > 0)) at(`${where} areaTargeting.chain`, "a chain names its link in feet");
         }
