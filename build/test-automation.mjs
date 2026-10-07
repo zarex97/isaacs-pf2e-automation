@@ -584,6 +584,45 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The third tracker: every clause is pf2e's own words                                         */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { plainText, trackedSlugs } = await import("./lib/spell-text.mjs");
+    check("a link reads as its label, a template as its size, a roll as its formula",
+        plainText("<p>is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} in a @Template[burst|distance:10] for [[/r 1d4 #rounds]]{1d4 rounds}, @Damage[2d6[fire]]</p>"),
+        "is Dazzled in a 10-foot burst for 1d4 rounds, 2d6[fire]");
+    check("a tracker's spells are read off its spell table", trackedSlugs("| VS-41 | `floating-flame` | 2 |\n| VS-41a | \"x\" |"), ["floating-flame"]);
+
+    const file = path.join(ROOT, "Docs", "clauses", "vanilla-spells-3.md");
+    const text = fs.readFileSync(file, "utf8");
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
+    const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-spell-text.json"), "utf8")).spells;
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const spells = Object.fromEntries([...text.matchAll(/^\| (VS-\d+) \| `([a-z0-9-]+)` \|/gm)].map((m) => [m[1], m[2]]));
+    const clauses = text.split(/\r?\n/).filter((line) => /^\| VS-\d+[a-z] /.test(line)).map((line) => {
+        const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+        const [, spell, letter] = /^(VS-\d+)([a-z])$/.exec(cells[0]);
+        return { id: cells[0], spell, letter, clause: cells[1].replace(/^"|"$/g, ""), mark: cells[4] };
+    });
+    check("the third tracker lists sixty spells, each once", [Object.keys(spells).length, new Set(Object.values(spells)).size], [60, 60]);
+    check("…none of them already tracked in the second", Object.values(spells).filter((slug) => fs.readFileSync(path.join(ROOT, "Docs", "clauses", "vanilla-spells.md"), "utf8").includes(`\`${slug}\``)), []);
+    check("…all real pf2e spells", Object.values(spells).filter((slug) => !index.spells[slug]), []);
+    check("every clause belongs to a listed spell, and every spell has clauses",
+        [clauses.filter((c) => !spells[c.spell]).map((c) => c.id), Object.keys(spells).filter((id) => !clauses.some((c) => c.spell === id))], [[], []]);
+    check("clause IDs are numbered once each", clauses.length - new Set(clauses.map((c) => c.id)).size, 0);
+    check("every clause carries one of the six marks", clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => `${c.id} ${c.mark}`), []);
+    // The point of clausifying: a paraphrase here, or pf2e rewording a spell, fails the build.
+    check("every clause is a verbatim fragment of pf2e's own text",
+        clauses.filter((c) => !(words[spells[c.spell]] ?? "").includes(c.clause)).map((c) => c.id), []);
+    check("a spell with a ✅ clause has a table entry",
+        [...new Set(clauses.filter((c) => c.mark === "✅").map((c) => spells[c.spell]))].filter((slug) => !fs.existsSync(path.join(ROOT, "content", "vanilla", `${slug}.json`))), []);
+    const counted = Object.fromEntries(MARKS.map((mark) => [mark, clauses.filter((c) => c.mark === mark).length]));
+    const table = Object.fromEntries(MARKS.map((mark) => [mark, Number(new RegExp(`^\\| ${mark}[^|]*\\| (\\d+) \\|`, "m").exec(text)?.[1])]));
+    check("the third tracker's counts are its clauses counted", [table, Number(/\*\*Total\*\* \| \*\*(\d+)\*\*/.exec(text)?.[1])], [counted, clauses.length]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Coexistence: a table rider steps aside for a spell another module already automates           */
 /* -------------------------------------------------------------------------------------------- */
 

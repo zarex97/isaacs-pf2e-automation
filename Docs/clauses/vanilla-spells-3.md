@@ -1,0 +1,763 @@
+# Clauses — vanilla spells, the third batch
+
+*Spell tracker, clausified. Sixty pf2e Player Core spells, each chosen for a **shape** the first hundred
+rows' worth of work (the pilot in `Docs/vanilla.md` and the forty in `vanilla-spells.md`) did not exercise.
+Every spell is broken into **clauses**: independently-failable statements quoted from pf2e's own text, one
+row each.*
+
+**Tracker issue:** #57 · **Source:** pf2e 8.4.1's own spell text, as the sheet prints it
+(`npm run index:pf2e` writes it to `build/data/pf2e-spell-text.json`).
+
+## How a row is marked
+
+| Mark | Meaning |
+| :-- | :-- |
+| ☐ | Not yet driven |
+| ✅ | Driven live; the clause happened by itself |
+| ⚠️ | Driven live; partially happens — the gap is named in **Evidence** |
+| ❌ | Driven live; does not happen |
+| 🔧 | Was ❌ or ⚠️, a fix has landed, awaiting re-drive |
+| — | Nothing to automate (pure roleplaying / GM ruling) |
+
+**Clause** is a verbatim fragment of the spell's text. `npm test` asserts it still is one, so a paraphrase
+here or a pf2e rewording fails the build. **Must happen** is what the drive has to see. **Static check**
+names what guards it offline (an entry in `content/vanilla/`, a test); **Evidence** names what proved it in
+world `pf`. A spell is done when every one of its clauses is ✅ or —.
+
+Clause IDs are the spell's ID and a letter: `VS-41c` is the third clause of VS-41. Drives run with this
+module alone — PF2e Automations and PF2e Assistant off.
+
+*How a clause is driven — the rig, the traps and what a ✅ owes — is `Docs/tools/live-verification.md`.*
+
+## The spells
+
+| ID | Spell | Rank | Shape | Batch |
+| :-- | :-- | :-- | :-- | :-- |
+| VS-41 | `floating-flame` | 2 | An area moved on Sustain, harming along its path | 1 |
+| VS-42 | `toxic-cloud` | 5 | An area that drifts away from the caster | 1 |
+| VS-43 | `lightning-storm` | 5 | A storm that calls a bolt on each Sustain | 1 |
+| VS-44 | `falling-stars` | 9 | Four bursts, one save | 1 |
+| VS-45 | `gravity-well` | 3 | Pulled toward a centre | 1 |
+| VS-46 | `repulsion` | 6 | An aura that stops approach | 1 |
+| VS-47 | `wall-of-stone` | 5 | A wall of breakable sections | 2 |
+| VS-48 | `wall-of-thorns` | 3 | Damage for every move into the wall | 2 |
+| VS-49 | `hypnotize` | 3 | A cloud that fascinates | 2 |
+| VS-50 | `slither` | 5 | Grabbed or restrained by the ground | 2 |
+| VS-51 | `tangling-creepers` | 6 | A vine that strikes from the area on Sustain | 2 |
+| VS-52 | `weapon-storm` | 4 | Damage dice from the weapon in hand | 2 |
+| VS-53 | `spiritual-armament` | 2 | Sustain repeats the attack | 3 |
+| VS-54 | `telekinetic-maneuver` | 2 | A maneuver rolled with the spell attack | 3 |
+| VS-55 | `blazing-bolt` | 2 | A ray per action, the penalty after all of them | 3 |
+| VS-56 | `live-wire` | 1 | Damage on a miss | 3 |
+| VS-57 | `disintegrate` | 6 | An attack, then a save; dust at 0 | 3 |
+| VS-58 | `blister` | 5 | Charges spent by an action, each a cone from the target | 3 |
+| VS-59 | `spider-sting` | 1 | An affliction with stages | 4 |
+| VS-60 | `seal-fate` | 4 | A chosen weakness that kills | 4 |
+| VS-61 | `vision-of-death` | 4 | Killed at 0 by this spell; fleeing while frightened | 4 |
+| VS-62 | `wave-of-despair` | 5 | A save at each turn start decides that turn | 4 |
+| VS-63 | `phantasmal-calamity` | 6 | A second save on a critical failure | 4 |
+| VS-64 | `massacre` | 9 | A backlash when nobody dies | 4 |
+| VS-65 | `schadenfreude` | 1 | A reaction to your own critical failure | 5 |
+| VS-66 | `blinding-fury` | 6 | A reaction to being hurt: unseen by the one who hurt you | 5 |
+| VS-67 | `breath-of-life` | 5 | A reaction to a death | 5 |
+| VS-68 | `stabilize` | 1 | Dying ended, unconscious kept | 5 |
+| VS-69 | `sound-body` | 2 | A counteract against a condition, or a suppression | 5 |
+| VS-70 | `cleanse-affliction` | 2 | An affliction's stage lowered | 5 |
+| VS-71 | `enlarge` | 2 | A size change | 6 |
+| VS-72 | `animal-form` | 2 | A battle form | 6 |
+| VS-73 | `fly` | 4 | A Speed granted | 6 |
+| VS-74 | `earthbind` | 3 | Brought down and kept down | 6 |
+| VS-75 | `levitate` | 3 | Elevation moved on Sustain | 6 |
+| VS-76 | `vapor-form` | 4 | Actions forbidden | 6 |
+| VS-77 | `resist-energy` | 2 | A resistance of a chosen type | 7 |
+| VS-78 | `mountain-resilience` | 4 | A duration worn down by hits | 7 |
+| VS-79 | `protection` | 1 | A bonus that becomes an aura from a rank | 7 |
+| VS-80 | `fire-shield` | 4 | A shield that burns who it blocks | 7 |
+| VS-81 | `share-life` | 2 | Damage split with the caster | 7 |
+| VS-82 | `protector-tree` | 1 | Something that takes the blow for an ally | 7 |
+| VS-83 | `guidance` | 1 | A bonus spent by the roll it is used on | 8 |
+| VS-84 | `nudge-fate` | 1 | A bonus applied after the roll, when it matters | 8 |
+| VS-85 | `runic-weapon` | 1 | A weapon given runes | 8 |
+| VS-86 | `infuse-vitality` | 1 | Targets by actions; Strikes deal more | 8 |
+| VS-87 | `moon-frenzy` | 5 | Strikes granted | 8 |
+| VS-88 | `evil-eye` | 1 | A condition that can't drop below a value | 8 |
+| VS-89 | `unfettered-movement` | 4 | An Escape that always succeeds | 9 |
+| VS-90 | `planar-tether` | 4 | Teleportation counteracted | 9 |
+| VS-91 | `blur` | 2 | Concealed: a flat check to hit | 9 |
+| VS-92 | `silence` | 2 | Spellcasting refused | 9 |
+| VS-93 | `summon-animal` | 1 | A summoned creature | 9 |
+| VS-94 | `final-sacrifice` | 2 | A minion spent as an area | 9 |
+| VS-95 | `darkvision` | 2 | A sense granted | 10 |
+| VS-96 | `see-the-unseen` | 2 | The invisible seen, as concealed | 10 |
+| VS-97 | `revealing-light` | 2 | Invisible made concealed, concealment taken away | 10 |
+| VS-98 | `light` | 1 | A light that is placed, attached and moved | 10 |
+| VS-99 | `detect-magic` | 1 | Information told to the caster | 10 |
+| VS-100 | `vital-beacon` | 4 | Healing others take from you, weaker each time | 10 |
+
+## Batch 1 — Areas that move or multiply
+
+### VS-41 · Floating Flame
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-41a | "The flame deals 3d6 fire damage to each creature in the square in which it appears, with a basic Reflex save" | A 5-ft square is placed within 30 ft; each creature in it rolls a basic Reflex save against 3d6 fire | | ☐ | |
+| VS-41b | "When you Sustain this spell, you can levitate the flame up to 10 feet" | Sustaining moves the square up to 10 ft, and no farther | | ☐ | |
+| VS-41c | "It then deals damage to each creature whose space it shared at any point during its flight" | Every creature the square passed over saves, not only those where it stops | | ☐ | |
+| VS-41d | "you roll the damage once each time you Sustain" | One damage roll per Sustain, shared by everyone it hits | | ☐ | |
+| VS-41e | "A given creature can take damage from floating flame only once per round" | A creature already burned this round is passed over | | ☐ | |
+| VS-41f | "The damage increases by 1d6" | Rank 3 deals 4d6 | | ☐ | |
+
+### VS-42 · Toxic Cloud
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-42a | "This functions as Mist" | Inside the 20-ft burst, creatures are concealed as with *Mist* (VS-07) | | ☐ | |
+| VS-42b | "the area moves 10 feet away from you each round" | Each round the area moves 10 ft directly away from the caster | | ☐ | |
+| VS-42c | "You deal 6d8 poison damage to each breathing creature that starts its turn in the spell's area" | A creature starting its turn inside rolls a basic Fortitude save against 6d8 poison; one that doesn't breathe is passed over | | ☐ | |
+| VS-42d | "You can Dismiss the spell" | Dismissing it removes the area | | ☐ | |
+| VS-42e | "The damage increases by 1d8" | Rank 6 deals 7d8 | | ☐ | |
+
+### VS-43 · Lightning Storm
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-43a | "call down one lightning bolt within the spell's area" | At the cast, the storm's 20-ft burst is placed and one bolt is aimed inside it | | ☐ | |
+| VS-43b | "The bolt is a vertical line from the top of the storm cloud to the ground below, dealing 4d12 electricity damage to creatures in the line (basic Reflex save)" | The creatures in the bolt's square roll a basic Reflex save against 4d12 electricity | | ☐ | |
+| VS-43c | "the first time you Sustain the Spell each round, you can call another lightning bolt within the area" | The first Sustain in a round aims another bolt inside the storm; a bolt outside it is refused | | ☐ | |
+| VS-43d | "you can still call down only one bolt per turn" | A second Sustain in the same turn calls no bolt | | ☐ | |
+| VS-43e | "you can create two non-overlapping clouds instead of one" | The caster may place two storms that don't overlap (outdoors is the table's call); either takes the bolt | | ☐ | |
+| VS-43f | "The damage of each bolt increases by 1d12" | Rank 7 deals 5d12 | | ☐ | |
+
+### VS-44 · Falling Stars
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-44a | "Choose for the falling stars to be airbursts (sonic), asteroids (fire), comets (cold), or plasma (electricity)" | The cast asks for one of four kinds; the energy damage takes its type | | ☐ | |
+| VS-44b | "The spell gains the trait of the falling star type you chose" | The chosen trait is on the cast | | ☐ | |
+| VS-44c | "The four stars' central 10-foot bursts can't overlap" | Four 40-ft bursts are placed; a centre within 20 ft of another's is refused | | ☐ | |
+| VS-44d | "Each falling star deals 6d10 bludgeoning damage to each creature in the 10-foot burst at the center of its area of effect" | Creatures within 10 ft of a star's centre take the bludgeoning | | ☐ | |
+| VS-44e | "dealing 14d6 energy damage of the type you chose to each creature in its 40-foot burst" | Every creature in a star's 40-ft burst takes the energy | | ☐ | |
+| VS-44f | "attempts one basic Reflex save against the spell no matter how many overlapping explosions it's caught in" | One save per creature, whatever the overlaps | | ☐ | |
+| VS-44g | "can take each type of damage only once" | A creature caught by two stars takes the bludgeoning once and the energy once | | ☐ | |
+| VS-44h | "The bludgeoning damage increases by 1d10, and the energy damage increases by 2d6" | Rank 10: 7d10 and 16d6 | | ☐ | |
+
+### VS-45 · Gravity Well
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-45a | "All creatures and unsecured objects in the area move towards the center, depending on their Reflex saving throws" | Each creature in the 30-ft burst saves and moves toward the burst's centre | | ☐ | |
+| VS-45b | "This follows the rules for forced movement" | The move stops at walls and occupied spaces, and triggers no reactions | | ☐ | |
+| VS-45c | "creatures and objects nearer to the center move first" | Moves resolve from the centre outward, so the nearer creature takes the space | | ☐ | |
+| VS-45d | "Critical Success The creature is unaffected" | No move | | ☐ | |
+| VS-45e | "Success The creature moves 5 feet toward the center" | 5 ft | | ☐ | |
+| VS-45f | "Failure The creature moves 15 feet toward the center" | 15 ft | | ☐ | |
+| VS-45g | "Critical Failure The creature moves 30 feet toward the center" | 30 ft, stopping at the centre | | ☐ | |
+
+### VS-46 · Repulsion
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-46a | "you can make the area any radius you choose, up to 40 feet" | The cast asks for a radius from 5 to 40 ft; the emanation follows the caster | | ☐ | |
+| VS-46b | "A creature must attempt a Will save if it's within the area when you Cast the Spell or as soon as it enters the area while the spell is in effect" | Creatures inside at the cast save; one that enters later saves on entering | | ☐ | |
+| VS-46c | "Once a creature has attempted the save, it uses the same result for that casting of repulsion" | Leaving and coming back asks no new save | | ☐ | |
+| VS-46d | "Any restrictions on a creature's movement apply only if it voluntarily moves toward you" | Moving sideways or away is never stopped | | ☐ | |
+| VS-46e | "if you move closer to a creature, it doesn't then need to move away" | The caster walking up to a creature moves nobody | | ☐ | |
+| VS-46f | "Success The creature treats each square in the area as difficult terrain when moving closer to you" | A step toward the caster inside the aura costs double | | ☐ | |
+| VS-46g | "Failure The creature can't move closer to you within the area" | A move that would end nearer the caster inside the aura is stopped | | ☐ | |
+| VS-46h | "Critical Success The creature's movement is not restricted" | Nothing | | ☐ | |
+
+## Batch 2 — Walls and grasping ground
+
+### VS-47 · Wall of Stone
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-47a | "You create a 1-inch-thick wall of stone up to 120 feet long, and 20 feet high" | A wall up to 120 ft long is drawn, blocking movement and sight | | ☐ | |
+| VS-47b | "You can shape the wall's path, placing each 5 feet of the wall on the border between squares" | The path may bend; every segment lies on a grid line | | ☐ | |
+| VS-47c | "The wall doesn't need to stand vertically, so you can use it to form a bridge or set of stairs" | — | | — | Nothing to automate: a flat map has no bridge or stairs; the table's call |
+| VS-47d | "You must conjure the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A path across an occupied square is refused and the spell is lost | | ☐ | |
+| VS-47e | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 14, and 50 Hit Points" | Each 10-ft section can be attacked and damaged on its own | | ☐ | |
+| VS-47f | "it's immune to critical hits and precision damage" | A critical hit on a section counts as a hit; precision damage does nothing | | ☐ | |
+| VS-47g | "A destroyed section of the wall can be moved through, but the rubble created from it is difficult terrain" | A section at 0 HP opens, and its squares become difficult terrain | | ☐ | |
+| VS-47h | "The Hit Points of each section of the wall increase by 15" | Rank 7: 65 HP | | ☐ | |
+
+### VS-48 · Wall of Thorns
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-48a | "You create a 5-foot-thick wall of brambles and thorns in a straight line up to 60 feet long and 10 feet high" | A straight line of squares up to 60 ft | | ☐ | |
+| VS-48b | "You must create the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A line across an occupied square is refused | | ☐ | |
+| VS-48c | "Everything on each side of the wall has cover from creatures on the opposite side" | An attack across the wall counts cover | | ☐ | |
+| VS-48d | "the wall's spaces are difficult terrain" | Its squares cost double | | ☐ | |
+| VS-48e | "For every move action a creature uses to enter at least one of the wall's spaces, that creature takes 3d4 piercing damage" | 3d4 piercing, no save, once per move action however many of its squares are entered | | ☐ | |
+| VS-48f | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 10, and 20 Hit Points" | Each section can be damaged on its own | | ☐ | |
+| VS-48g | "A destroyed section can be moved through freely" | A destroyed section stops hurting and is no longer difficult terrain | | ☐ | |
+| VS-48h | "The Hit Points of each section of the wall increase by 5, and the piercing damage increases by 1d4" | Rank 4: 25 HP, 4d4 | | ☐ | |
+
+### VS-49 · Hypnotize
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-49a | "Creatures are Dazzled while inside the cloud" | Dazzled on entering the 10-ft burst, gone on leaving it | | ☐ | |
+| VS-49b | "a creature must attempt a Will saving throw if it is inside the cloud when you cast it, when it enters the cloud, when it ends its turn within the cloud" | A Will save at the cast, on entering, and at the end of each turn inside | | ☐ | |
+| VS-49c | "or if it uses a Seek or Interact action on the cloud" | Seeking the cloud asks the save too | | ☐ | |
+| VS-49d | "A creature currently Fascinated by hypnotize doesn't attempt new saves" | No save while it is fascinated by this cloud | | ☐ | |
+| VS-49e | "Success The target is unaffected" | Nothing | | ☐ | |
+| VS-49f | "Failure The target is fascinated by the cloud" | Fascinated | | ☐ | |
+| VS-49g | "While it remains fascinated, it can't use reactions" | A critical failure also takes reactions away while fascinated | | ☐ | |
+
+### VS-50 · Slither
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-50a | "it's Grabbed or Restrained depending on its Reflex save" | Each creature in the 20-ft burst at the cast saves | | ☐ | |
+| VS-50b | "A creature that ends its turn in the area must also attempt this save, even if it's already grabbed or restrained by the snakes" | A save at the end of every turn inside, grabbed or not | | ☐ | |
+| VS-50c | "Failure The creature takes full damage and is grabbed by a snake" | Piercing and persistent poison damage, and grabbed | | ☐ | |
+| VS-50d | "As failure, but the creature takes double damage and is restrained by a snake" | Double damage, restrained | | ☐ | |
+| VS-50e | "The snakes' Escape DC is equal to your spell DC" | An Escape against the caster's spell DC frees it | | ☐ | |
+| VS-50f | "A creature can attack a snake to release the creature" | A snake can be struck (AC = spell DC); 12 damage at once destroys it and frees its creature | | ☐ | |
+| VS-50g | "Success The creature is unaffected" | Nothing | | ☐ | |
+| VS-50h | "You can Dismiss the spell" | Dismissing it frees everyone | | ☐ | |
+| VS-50i | "The persistent poison damage increases by 1d6 and snake HP increases by 6" | Rank 7: 2d6 persistent, 18 to destroy a snake | | ☐ | |
+
+### VS-51 · Tangling Creepers
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-51a | "takes a –10-foot circumstance penalty to its Speeds while in the area" | A creature in the 40-ft burst has –10 ft Speeds, gone on leaving | | ☐ | |
+| VS-51b | "Once per round, you can Sustain the spell to make a vine lash out from any square within the expanse of creepers" | Sustaining (once a round) offers the vine's attack | | ☐ | |
+| VS-51c | "This vine has a 15-foot reach" | A target within 15 ft of the area | | ☐ | |
+| VS-51d | "Make a melee spell attack roll against the target" | The caster's melee spell attack against AC | | ☐ | |
+| VS-51e | "on a success, the vine pulls the target into the creepers" | A target outside the area is moved into it | | ☐ | |
+| VS-51f | "makes it Immobilized for 1 round or until the creature Escapes (against your spell DC), whichever comes first" | Immobilized for a round, with an Escape | | ☐ | |
+
+### VS-52 · Weapon Storm
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-52a | "You swing a weapon you're holding" | No held weapon, no cast | | ☐ | |
+| VS-52b | "Area 30-foot cone or 10-foot emanation" | The cast asks cone or emanation | | ☐ | |
+| VS-52c | "This flurry deals four dice of damage to creatures in the area" | Four dice | | ☐ | |
+| VS-52d | "This damage has the same type as the weapon and uses the same die size" | A longsword's d8 slashing gives 4d8 slashing | | ☐ | |
+| VS-52e | "if you were wielding a two-hand weapon in both hands, you'd use its two-hand damage die" | A bastard sword held in two hands gives 4d12 | | ☐ | |
+| VS-52f | "Critical Failure The target takes double damage and is subject to the weapon's critical specialization effect" | Double damage and the weapon group's critical specialization | | ☐ | |
+| VS-52g | "Add another damage die" | Rank 5: five dice | | ☐ | |
+
+## Batch 3 — Attacks
+
+### VS-53 · Spiritual Armament
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-53a | "Attempt a spell attack roll against the target's AC, dealing 2d8 damage on a hit (or double damage on a critical hit)" | A spell attack; 2d8 on a hit, 4d8 on a critical hit | | ☐ | |
+| VS-53b | "The damage type is the same as the chosen weapon (or any of its types for a versatile weapon)" | The cast asks for a held weapon; its type (or a versatile one) is the damage's | | ☐ | |
+| VS-53c | "The attack deals spirit damage instead if that would be more detrimental to the creature (as determined by the GM)" | The GM may switch to spirit | | ☐ | |
+| VS-53d | "This attack uses and contributes to your multiple attack penalty" | The attack takes and raises the caster's MAP | | ☐ | |
+| VS-53e | "Each time you Sustain the spell, you can repeat the attack against any creature within 120 feet" | Sustain offers a new attack against any creature within 120 ft | | ☐ | |
+| VS-53f | "If you sanctify the spell, the attacks are sanctified as well" | — | | — | Nothing to automate: sanctification is the caster's own trait choice, carried by pf2e |
+| VS-53g | "The damage increases by 1d8" | Rank 4: 3d8 | | ☐ | |
+
+### VS-54 · Telekinetic Maneuver
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-54a | "You can attempt to Disarm, Shove, Reposition, or Trip the target" | The cast asks which of the four | | ☐ | |
+| VS-54b | "using a spell attack roll instead of an Athletics check" | The roll is the caster's spell attack against the maneuver's DC (Reflex for Disarm and Trip, Fortitude for Shove and Reposition) | | ☐ | |
+| VS-54c | "you move a foe or something they carry" | The maneuver's outcome happens: Shove pushes, Trip knocks prone, Disarm penalises or drops, Reposition moves | | ☐ | |
+
+### VS-55 · Blazing Bolt
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-55a | "Make a spell attack roll against a single creature" | One spell attack per ray | | ☐ | |
+| VS-55b | "On a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage" | One action: 2d6, doubled on a critical hit | | ☐ | |
+| VS-55c | "For each additional action you use when Casting the Spell, you can fire an additional ray at a different target" | Two actions, two rays; three, three; each at a different creature | | ☐ | |
+| VS-55d | "to a maximum of three rays targeting three different targets for 3 actions" | Never more than three, never the same creature twice | | ☐ | |
+| VS-55e | "These attacks each increase your multiple attack penalty" | After the rays, the MAP has gone up once per ray | | ☐ | |
+| VS-55f | "you don't increase your multiple attack penalty until after you make all the spell attack rolls for blazing bolt" | Every ray of one cast rolls at the same penalty | | ☐ | |
+| VS-55g | "If you spend 2 or more actions Casting the Spell, the damage increases to 4d6 fire damage on a hit" | Two or three actions: 4d6 per ray | | ☐ | |
+| VS-55h | "The damage to each target increases by 1d6 for the 1-action version, or by 2d6 for the 2-action and 3-action versions" | Rank 3: 3d6 or 6d6 | | ☐ | |
+
+### VS-56 · Live Wire
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-56a | "The wire deals 1d4 slashing damage and 1d4 electricity damage, depending on your spell attack roll against the target's AC" | A spell attack decides the damage | | ☐ | |
+| VS-56b | "Critical Success The target takes double damage" | Both doubled, and persistent electricity | | ☐ | |
+| VS-56c | "Success The target takes full damage" | 1d4 slashing and 1d4 electricity | | ☐ | |
+| VS-56d | "Failure The target takes the electricity damage, but not the slashing damage" | A miss still deals 1d4 electricity | | ☐ | |
+| VS-56e | "Critical Failure The target is unaffected" | Nothing | | ☐ | |
+| VS-56f | "The slashing damage, initial electricity damage, and persistent electricity damage on a critical hit each increase by 1d4" | Heightened to rank 3: 2d4 and 2d4 | | ☐ | |
+
+### VS-57 · Disintegrate
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-57a | "Make a spell attack against the target" | A spell attack first; a miss does nothing | | ☐ | |
+| VS-57b | "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save" | On a hit, a basic Fortitude save against 12d10 untyped | | ☐ | |
+| VS-57c | "If you critically hit, the target gets a result one degree of success worse than the outcome of its Fortitude save" | A critical hit lowers the save one step | | ☐ | |
+| VS-57d | "A creature reduced to 0 HP is blasted to fine powder; its gear remains" | 0 HP is death, not dying | | ☐ | |
+| VS-57e | "If you hit an object or force construct (such as a wall of force), it's destroyed with no save" | A wall section or a placed object hit is destroyed | | ☐ | |
+| VS-57f | "A single casting can destroy no more than a 10-foot cube of matter" | One 10-ft section at most | | ☐ | |
+| VS-57g | "The damage increases by 2d10" | Rank 7: 14d10 | | ☐ | |
+
+### VS-58 · Blister
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-58a | "Success The target grows one blister" | One blister on the target | | ☐ | |
+| VS-58b | "Failure As success, but the target grows two blisters" | Two | | ☐ | |
+| VS-58c | "Critical Failure As success, but the target grows four blisters" | Four | | ☐ | |
+| VS-58d | "Critical Success The target is unaffected" | None | | ☐ | |
+| VS-58e | "You can spend a single action, which has the concentrate trait, to pop a blister" | The caster has a one-action *Pop a Blister* while blisters remain | | ☐ | |
+| VS-58f | "originating from the target takes 7d6 acid damage (basic Fortitude save)" | The target and everyone in a 15-ft cone from it save against 7d6 acid | | ☐ | |
+| VS-58g | "You choose the direction of the cone, which can't include the target" | The caster aims the cone from the target's edge | | ☐ | |
+| VS-58h | "When no blisters are left, the spell ends" | The last pop ends the spell and takes the action away | | ☐ | |
+| VS-58i | "The damage of a popped blister increases by 1d6" | Rank 6: 8d6 | | ☐ | |
+
+## Batch 4 — Saves with lasting consequences
+
+### VS-59 · Spider Sting
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-59a | "You deal 1d4 piercing damage to the touched creature" | 1d4 piercing whatever the save | | ☐ | |
+| VS-59b | "Critical Success The target is unaffected" | Nothing more | | ☐ | |
+| VS-59c | "Success The target takes 1d4[poison] damage" | 1d4 poison, no affliction | | ☐ | |
+| VS-59d | "Failure The target is afflicted with spider venom at stage 1" | The affliction at stage 1: 1d4 poison and enfeebled 1 | | ☐ | |
+| VS-59e | "Critical Failure The target is afflicted with spider venom at stage 2" | Stage 2: 1d4 poison and enfeebled 2 | | ☐ | |
+| VS-59f | "Stage 1 1d4 poison damage and Enfeebled 1 (1 round)" | At the end of each of its turns a Fortitude save moves the stage, and stage 1 deals its damage and condition | | ☐ | |
+| VS-59g | "Stage 2 1d4 poison damage and Enfeebled 2 (1 round)" | Stage 2's damage and condition | | ☐ | |
+| VS-59h | "Maximum Duration 4 rounds" | After four rounds the venom ends | | ☐ | |
+
+### VS-60 · Seal Fate
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-60a | "Choose one type of damage from the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void" | The cast asks for one of the nine | | ☐ | |
+| VS-60b | "Success The target gains weakness 2 to the chosen damage type until the end of your next turn" | Weakness 2 to that type, ending on the caster's next turn | | ☐ | |
+| VS-60c | "Failure As success, but the duration is 1 minute" | One minute | | ☐ | |
+| VS-60d | "If the creature is reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies" | 0 HP from that type kills a creature of level 7 or lower outright | | ☐ | |
+| VS-60e | "Critical Failure As failure, but the duration is unlimited" | No end | | ☐ | |
+| VS-60f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+| VS-60g | "The weakness increases by 1, and the maximum level of creature that can be automatically killed increases by 4" | Rank 6: weakness 3, level 11 | | ☐ | |
+
+### VS-61 · Vision of Death
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-61a | "It takes 8d6 mental damage with a Will save" | A Will save against 8d6 mental | | ☐ | |
+| VS-61b | "If the target is reduced to 0 HP by this spell, its vision becomes reality and kills it instantly" | 0 HP from this spell is death | | ☐ | |
+| VS-61c | "Success The target takes half damage and is Frightened 1" | Half, frightened 1 | | ☐ | |
+| VS-61d | "Failure The target takes full damage and is Frightened 2" | Full, frightened 2 | | ☐ | |
+| VS-61e | "Critical Failure The target takes double damage, is Frightened 4 and is Fleeing for as long as it's frightened" | Double, frightened 4, and fleeing that ends with the frightened | | ☐ | |
+| VS-61f | "The damage increases by 2d6" | Rank 5: 10d6 | | ☐ | |
+
+### VS-62 · Wave of Despair
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-62a | "Success For 1 round, the creature can't use reactions and must attempt another save at the start of its turn" | No reactions for a round, and a Will save at the start of its next turn | | ☐ | |
+| VS-62b | "on a failure, it is Slowed 1 for that turn as it sobs uncontrollably" | A failed turn-start save slows it 1 for that turn only | | ☐ | |
+| VS-62c | "Failure As success, but the duration is 1 minute" | No reactions and a save at each turn start, for a minute | | ☐ | |
+| VS-62d | "Critical Failure As failure, and the creature is automatically slowed 1 for 1 minute" | Slowed 1 for the minute, whatever the turn-start saves | | ☐ | |
+| VS-62e | "Critical Success The creature is unaffected" | Nothing | | ☐ | |
+| VS-62f | "Heightened (7th) The area increases to a 60-foot cone" | A 60-ft cone at rank 7 | | ☐ | |
+
+### VS-63 · Phantasmal Calamity
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-63a | "The vision deals 11d6 mental damage (basic Will save)" | A basic Will save in the 30-ft burst | | ☐ | |
+| VS-63b | "On a critical failure, the creature must also succeed at a reflex save or believe it's trapped" | A critical failure asks a Reflex save next | | ☐ | |
+| VS-63c | "If it fails the second save, it's also Stunned for 1 minute" | A failed Reflex save stuns for a minute | | ☐ | |
+| VS-63d | "It can attempt a new Will save at the end of each of its turns, and on a success, it disbelieves the illusion and recovers from the stunned condition" | A Will save at each turn's end; a success ends the stun | | ☐ | |
+| VS-63e | "The damage increases by 2d6" | Rank 7: 13d6 | | ☐ | |
+
+### VS-64 · Massacre
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-64a | "Each living creature of 17th level or lower in the line must attempt a Fortitude save" | The 60-ft line catches living creatures of level 17 or lower; others don't save | | ☐ | |
+| VS-64b | "If the damage from massacre reduces a creature to 0 Hit Points, that creature dies instantly" | 0 HP from it is death | | ☐ | |
+| VS-64c | "Success The creature takes 9d6 void damage" | 9d6 | | ☐ | |
+| VS-64d | "Failure The creature takes" | 100 void damage | | ☐ | |
+| VS-64e | "Critical Failure The creature dies" | Dead | | ☐ | |
+| VS-64f | "If massacre doesn't kill even a single creature, the void energy hungrily turns backward toward you" | With nobody dead, the backlash follows | | ☐ | |
+| VS-64g | "damage to every living creature in the line (even those above 17th level) and 30 void damage to you" | 30 void to every living creature in the line and 30 to the caster | | ☐ | |
+| VS-64h | "Heightened (10th) The spell can affect living creatures up to 19th level" | Level 19 at rank 10, with 10d6 and 115 | | ☐ | |
+
+## Batch 5 — Reactions and recovery
+
+### VS-65 · Schadenfreude
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-65a | "Trigger You critically fail a saving throw against a foe's effect" | The caster's critical failure against a foe's effect offers the reaction, aimed at that foe | | ☐ | |
+| VS-65b | "Success The creature is distracted by its amusement and takes a -1 status penalty on Perception checks and Will saves for 1 round" | –1 to Perception and Will for a round | | ☐ | |
+| VS-65c | "Failure The creature is overcome by its amusement and is Stupefied 1 for 1 round" | Stupefied 1 for a round | | ☐ | |
+| VS-65d | "Critical Failure The creature is lost in its amusement and is Stupefied 2 for 1 round and Stunned 1" | Stupefied 2 and stunned 1 | | ☐ | |
+| VS-65e | "Critical Success The creature is unaffected" | Nothing | | ☐ | |
+
+### VS-66 · Blinding Fury
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-66a | "Trigger A creature damages you" | Damage to the caster offers the reaction, aimed at the one who dealt it | | ☐ | |
+| VS-66b | "Success The target can't Observe you until the end of its turn, and if you're currently observed by it, you become Hidden to it" | The caster is hidden to it until the end of its turn | | ☐ | |
+| VS-66c | "Failure As success, and for 1 minute, every time the target damages you, it can't observe you until the end of its turn" | For a minute, each time it hurts the caster, the caster is hidden to it again | | ☐ | |
+| VS-66d | "Critical Failure As success, and for an unlimited duration, the first time each round the target damages a creature, it can't observe that creature until the end of its turn" | Forever: the first creature it damages each round is hidden to it | | ☐ | |
+| VS-66e | "If it damages several creatures at once, the creature it can't perceive is chosen randomly among those creatures" | A random pick among several | | ☐ | |
+| VS-66f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+
+### VS-67 · Breath of Life
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-67a | "Trigger A living creature within range would die" | When a living creature within 60 ft would die, the caster is offered the reaction before it does | | ☐ | |
+| VS-67b | "You prevent the target from dying and restore 5d8 Hit Points to the target" | It lives, at 5d8 HP | | ☐ | |
+| VS-67c | "You can't use breath of life if the triggering effect was a death effect or an effect that leaves no remains, such as Disintegrate" | No offer for a death effect or *Disintegrate* | | ☐ | |
+| VS-67d | "The healing increases by 1d8" | Rank 7: 6d8 | | ☐ | |
+
+### VS-68 · Stabilize
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-68a | "The target loses the Dying condition" | Dying gone (and wounded rises, as losing dying always does) | | ☐ | |
+| VS-68b | "though it remains Unconscious at 0 Hit Points" | Still unconscious, still at 0 HP | | ☐ | |
+
+### VS-69 · Sound Body
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-69a | "Attempt to counteract an effect of your choice imposing one of these conditions on the target: Blinded, Dazzled, Deafened, Enfeebled, or Sickened" | A card offers the effects imposing those conditions; a counteract check ends the one chosen | | ☐ | |
+| VS-69b | "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead suppress the effect until the beginning of your next turn" | A near miss suppresses it until the caster's next turn | | ☐ | |
+| VS-69c | "The effect's duration doesn't elapse while it's suppressed" | The suppressed effect's clock stops | | ☐ | |
+| VS-69d | "This spell can't counteract or suppress curses, diseases, or conditions that are part of the target's normal state" | Curses and diseases are not offered | | ☐ | |
+| VS-69e | "Heightened (4th) Add Drained and Slowed to the list of conditions" | Rank 4 offers drained and slowed | | ☐ | |
+| VS-69f | "Heightened (6th) As 4th rank, plus add Petrified" | Rank 6, petrified | | ☐ | |
+| VS-69g | "Heightened (8th) As 4th rank, plus add petrified and Stunned" | Rank 8, stunned | | ☐ | |
+
+### VS-70 · Cleanse Affliction
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-70a | "Choose an affliction on the target, such as a curse, disease, or poison" | A card offers the target's afflictions | | ☐ | |
+| VS-70b | "If it has advanced past stage one, reduce the stage by one" | Stage 2 → 1; stage 1 stays | | ☐ | |
+| VS-70c | "This reduction can be applied only once to a given case of an affliction" | A second casting doesn't lower the same case again | | ☐ | |
+| VS-70d | "Heightened (3rd) Attempt to counteract the affliction if it is a disease or poison" | Rank 3 counteracts a disease or poison | | ☐ | |
+| VS-70e | "Heightened (4th) Attempt to counteract the affliction if it is a curse, disease, or poison" | Rank 4 adds curses | | ☐ | |
+
+## Batch 6 — Bodies and movement
+
+### VS-71 · Enlarge
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-71a | "the target grows to size Large" | The creature and its token are Large | | ☐ | |
+| VS-71b | "The creature is Clumsy 1" | Clumsy 1 while it lasts | | ☐ | |
+| VS-71c | "Its reach increases by 5 feet (or by 10 feet if it started out Tiny)" | Reach +5 ft | | ☐ | |
+| VS-71d | "it gains a +2 status bonus to damage rolls on melee Strikes" | +2 to melee damage | | ☐ | |
+| VS-71e | "This spell has no effect on a Large or larger creature" | A Large creature is unchanged | | ☐ | |
+| VS-71f | "Heightened (4th) The creature instead grows to size Huge" | Rank 4: Huge, +4, reach +10 ft | | ☐ | |
+| VS-71g | "Heightened (6th) Choose either the 2nd-rank or 4th-rank version of this spell and apply its effects to up to 10 willing creatures" | Rank 6: a choice, and up to ten targets | | ☐ | |
+| VS-71h | "Its equipment grows with it but returns to natural size if removed" | — | | — | Nothing to automate: equipment size is description |
+
+### VS-72 · Animal Form
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-72a | "When you Cast this Spell, choose a listed battle form" | The cast asks for one of the forms | | ☐ | |
+| VS-72b | "You can decide the specific type of animal" | — | | — | Nothing to automate: flavour |
+| VS-72c | "While in this form, you gain the animal trait" | The animal trait | | ☐ | |
+| VS-72d | "AC = 16 + your level" | AC 16 + level, unless the caster's own is higher | | ☐ | |
+| VS-72e | "5 temporary Hit Points" | 5 temporary HP | | ☐ | |
+| VS-72f | "Low-light vision and imprecise scent 30 feet" | Both senses | | ☐ | |
+| VS-72g | "which are the only attacks you can Strike with" | The form's attacks replace every other Strike | | ☐ | |
+| VS-72h | "Your attack modifier is +9, and your damage bonus is +1" | +9 and +1, unless the caster's unarmed bonus is higher | | ☐ | |
+| VS-72i | "Athletics modifier of +9, unless your own modifier is higher" | Athletics +9 or the caster's own | | ☐ | |
+| VS-72j | "You also gain specific abilities based on the type of animal you choose" | The chosen form's Speeds and attacks | | ☐ | |
+| VS-72k | "You can Dismiss the spell" | Dismissing it ends the form | | ☐ | |
+| VS-72l | "Heightened (3rd) You instead gain 10 temporary HP, AC = 17 + your level, attack modifier +14, damage bonus +5, and Athletics +14" | Rank 3's numbers | | ☐ | |
+| VS-72m | "Heightened (4th) Your battle form is Large and your attacks have 10-foot reach" | Rank 4: Large, reach 10 ft | | ☐ | |
+
+### VS-73 · Fly
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-73a | "gaining a fly Speed equal to its Speed or 20 feet, whichever is greater" | A fly Speed of the creature's Speed, at least 20 ft | | ☐ | |
+| VS-73b | "Heightened (7th) The duration increases to 1 hour" | Rank 7 lasts an hour | | ☐ | |
+
+### VS-74 · Earthbind
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-74a | "you hamper a target's flight" | Only a flying creature can be targeted | | ☐ | |
+| VS-74b | "Success The target falls safely up to 120 feet" | It drops up to 120 ft (elevation) | | ☐ | |
+| VS-74c | "If the creature reaches the ground safely, it doesn't take falling damage" | No falling damage | | ☐ | |
+| VS-74d | "it can't Fly, levitate, or otherwise leave the ground for 1 round" | On a failure, grounded for a round | | ☐ | |
+| VS-74e | "it can't Fly, levitate, or otherwise leave the ground for 1 minute" | On a critical failure, for a minute | | ☐ | |
+| VS-74f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+
+### VS-75 · Levitate
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-75a | "levitate the target 5 feet off the ground" | Elevation 5 ft | | ☐ | |
+| VS-75b | "You can Sustain the spell to move the target up or down 10 feet" | Each Sustain moves it 10 ft up or down | | ☐ | |
+| VS-75c | "A creature floating in the air from levitate takes a –2 circumstance penalty to attack rolls" | –2 to its attacks | | ☐ | |
+| VS-75d | "A floating creature can spend an Interact action to stabilize itself and negate this penalty for the remainder of its turn" | An Interact removes the penalty until its turn ends | | ☐ | |
+| VS-75e | "it can move across the surface by climbing" | — | | — | Nothing to automate: which surfaces hold is the GM's call |
+
+### VS-76 · Vapor Form
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-76a | "It loses any item bonus to AC and all other effects and bonuses from armor, and it uses its proficiency modifier for unarmored defense" | AC from unarmored proficiency, armor ignored | | ☐ | |
+| VS-76b | "It gains resistance 8 to physical damage and is immune to precision damage" | Resistance 8 physical, precision immunity | | ☐ | |
+| VS-76c | "It can't cast spells, activate items, or use actions that have the attack or manipulate trait" | Its casts and attacks are refused | | ☐ | |
+| VS-76d | "It gains a fly Speed of 10 feet" | Fly 10 ft | | ☐ | |
+| VS-76e | "The target can Dismiss the spell" | Dismissing it ends the form | | ☐ | |
+
+## Batch 7 — Protection
+
+### VS-77 · Resist Energy
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-77a | "Choose acid, cold, electricity, fire, or sonic damage" | The cast asks for one of five | | ☐ | |
+| VS-77b | "The target and its gear gain resistance 5 against the damage type you chose" | Resistance 5 to that type | | ☐ | |
+| VS-77c | "Heightened (4th) The resistance increases to 10, and you can target up to two creatures" | Rank 4: 10, two targets | | ☐ | |
+| VS-77d | "Heightened (7th) The resistance increases to 15, and you can target up to five creatures" | Rank 7: 15, five targets | | ☐ | |
+
+### VS-78 · Mountain Resilience
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-78a | "It gains resistance 5 to physical damage, except adamantine" | Resistance 5 physical, adamantine excepted | | ☐ | |
+| VS-78b | "Each time the target is hit by a bludgeoning, piercing, or slashing attack, mountain resilience 's duration decreases by 1 minute" | Every physical hit takes a minute off its 20 | | ☐ | |
+| VS-78c | "Heightened (6th) The resistance increases to 10" | Rank 6: 10 | | ☐ | |
+
+### VS-79 · Protection
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-79a | "The target gains a +1 status bonus to Armor Class and saving throws" | +1 AC and saves | | ☐ | |
+| VS-79b | "You can choose to have the benefits also affect all your allies in a 10-foot emanation around the target" | From rank 3, a choice: the bonus also reaches the caster's allies within 10 ft of the target, moving with it | | ☐ | |
+
+### VS-80 · Fire Shield
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-80a | "its heat grants you cold resistance 5" | Cold resistance 5 | | ☐ | |
+| VS-80b | "makes you immune to mild and severe environmental cold" | — | | — | Nothing to automate: environmental cold is the GM's |
+| VS-80c | "You can Raise a Shield with the fire shield as a normal shield to gain a +1 circumstance bonus to AC" | Raise a Shield gives +1 AC | | ☐ | |
+| VS-80d | "You can use the Shield Block reaction with the fire shield , which has Hardness 10, is immune to fire, and has 40 HP (with no Broken Threshold)" | Shield Block with Hardness 10 and 40 HP; fire passes through it untouched | | ☐ | |
+| VS-80e | "its Hardness is halved against effects that have the water trait" | Hardness 5 against water | | ☐ | |
+| VS-80f | "If you Shield Block a melee attack that is either an unarmed attack or made by an adjacent attacker, the attacker takes 2d6 fire damage" | Blocking such an attack burns the attacker for 2d6 | | ☐ | |
+| VS-80g | "The cold resistance increases by 5, the HP increase by 10, and the fire damage increases by 1d6" | Rank 6: 10, 50 HP, 3d6 | | ☐ | |
+
+### VS-81 · Share Life
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-81a | "The target takes half damage from all effects that deal Hit Point damage, and you take the remainder of the damage" | The target takes half (rounded down); the caster takes the rest | | ☐ | |
+| VS-81b | "When you take damage through this link, you don't apply any resistances, weaknesses, or other abilities you have to that damage" | The caster's half ignores the caster's resistances and weaknesses | | ☐ | |
+| VS-81c | "The spell ends if the target is ever more than 30 feet away from you" | Moving apart beyond 30 ft ends it | | ☐ | |
+| VS-81d | "If either you or the target is reduced to 0 Hit Points, any damage from this spell is resolved and then the spell ends" | 0 HP on either side ends it after the blow | | ☐ | |
+
+### VS-82 · Protector Tree
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-82a | "A Medium tree suddenly grows in an unoccupied square within range" | A tree is placed in an empty square within 30 ft | | ☐ | |
+| VS-82b | "The tree has AC 10 and 10 Hit Points" | AC 10, 10 HP | | ☐ | |
+| VS-82c | "Whenever an ally adjacent to the tree is hit by a Strike, the tree interposes its branches and takes the damage first" | A Strike on an adjacent ally hurts the tree first | | ☐ | |
+| VS-82d | "Any additional damage beyond what it takes to reduce the tree to 0 Hit Points is dealt to the original target" | What the tree can't take goes on to the ally | | ☐ | |
+| VS-82e | "The tree isn't large enough to impede movement through its square" | Its square can be walked through | | ☐ | |
+| VS-82f | "The tree has an additional 10 Hit Points" | Rank 2: 20 HP | | ☐ | |
+
+## Batch 8 — One roll, one weapon
+
+### VS-83 · Guidance
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-83a | "granting the target a +1 status bonus to one attack roll, Perception check, saving throw, or skill check the target attempts before the duration ends" | +1 to one such roll before the caster's next turn | | ☐ | |
+| VS-83b | "The target chooses which roll to use the bonus on before rolling" | The bonus is a choice on the roll, not automatic | | ☐ | |
+| VS-83c | "If the target uses the bonus, the spell ends" | Used once, it's gone | | ☐ | |
+| VS-83d | "Either way, the target is then temporarily immune for 1 hour" | A second *Guidance* within the hour does nothing | | ☐ | |
+
+### VS-84 · Nudge Fate
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-84a | "a +1 status bonus would turn a critical failure into a failure, or failure into a success" | Only when one more would change the degree | | ☐ | |
+| VS-84b | "you grant the target a +1 status bonus to the check retroactively, changing the outcome appropriately" | The roll's outcome is raised after it falls | | ☐ | |
+| VS-84c | "The spell then ends" | Once used, gone | | ☐ | |
+| VS-84d | "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends" | Casting it again ends the old one | | ☐ | |
+
+### VS-85 · Runic Weapon
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-85a | "The target becomes a +1 striking weapon , gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | The chosen weapon's Strikes: +1 to hit, two dice | | ☐ | |
+| VS-85b | "Heightened (6th) The weapon is +2 greater striking" | Rank 6: +2, three dice | | ☐ | |
+| VS-85c | "Heightened (9th) The weapon is +3 major striking" | Rank 9: +3, four dice | | ☐ | |
+
+### VS-86 · Infuse Vitality
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-86a | "The number of targets is equal to the number of actions you spent casting this spell" | One, two or three targets by the actions spent | | ☐ | |
+| VS-86b | "Each target's unarmed and weapon Strikes deal an extra 1d4 vitality damage" | +1d4 vitality on their Strikes | | ☐ | |
+| VS-86c | "If you have the holy trait, you can add that trait to this spell and to the Strikes affected by the spell" | A holy caster may make the Strikes holy | | ☐ | |
+| VS-86d | "Heightened (3rd) The damage increases to 2d4 damage" | Rank 3: 2d4 | | ☐ | |
+
+### VS-87 · Moon Frenzy
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-87a | "Targets gain 5 temporary Hit Points, a +10-foot status bonus to their Speeds, and weakness 5 to silver" | All three | | ☐ | |
+| VS-87b | "The fangs deal 2d8 piercing damage; the claws deal 2d6 slashing damage and have the agile and finesse traits" | Two new Strikes | | ☐ | |
+| VS-87c | "The targets use their highest weapon or unarmed attack proficiency with these attacks" | Their best proficiency | | ☐ | |
+| VS-87d | "On a critical hit with one of these unarmed attacks, the creature struck takes 1d4 persistent bleed damage" | Bleed on a critical hit | | ☐ | |
+| VS-87e | "The targets can't use concentrate actions unless those actions also have the rage trait, with the exception of Seek" | Their concentrate actions are refused, Seek and rage excepted | | ☐ | |
+| VS-87f | "A creature can attempt to end the spell's effect on itself by using a single action, which has the rage trait, to attempt a Will save against your spell DC" | An action to save its way out | | ☐ | |
+| VS-87g | "If a target is in the light of a full moon, it also grows by one size if it were Medium or smaller" | — | | — | Nothing to automate: the moon is the GM's |
+| VS-87h | "Heightened (6th) The temporary Hit Points increase to 10, the silver weakness to 10, and the damage dealt by the attacks to three dice" | Rank 6's numbers | | ☐ | |
+
+### VS-88 · Evil Eye
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-88a | "The target becomes Sickened 1 if it fails a Will save (or sickened 2 on a critical failure)" | Sickened 1 or 2 | | ☐ | |
+| VS-88b | "This condition value can't be reduced below 1 while the spell is active and you can see the target" | Retching or anything else can't take it below 1 while the hex is Sustained | | ☐ | |
+
+## Batch 9 — Limits and summons
+
+### VS-89 · Unfettered Movement
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-89a | "the target ignores effects that would give them a circumstance penalty to Speed" | Circumstance penalties to its Speed don't apply | | ☐ | |
+| VS-89b | "When they attempt to Escape an effect that has them Immobilized, Grabbed, or Restrained, they automatically succeed unless the effect is magical and of a higher rank than the unfettered movement spell" | Its Escape succeeds without a roll, unless the hold is magic of a higher rank | | ☐ | |
+
+### VS-90 · Planar Tether
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-90a | "the spell attempts to counteract any teleportation effect that would move the target" | A teleport on it rolls a counteract first, and is stopped on a success | | ☐ | |
+| VS-90b | "or any effect that would transport it to a different plane" | *Banishment* on it is counteracted the same way | | ☐ | |
+| VS-90c | "Success The effect's duration is 1 minute" | One minute | | ☐ | |
+| VS-90d | "Failure The effect's duration is 10 minutes" | Ten | | ☐ | |
+| VS-90e | "Critical Failure The effect's duration is 1 hour" | An hour | | ☐ | |
+| VS-90f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+
+### VS-91 · Blur
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-91a | "It becomes Concealed" | An attack on it rolls a DC 5 flat check first; a failure misses | | ☐ | |
+| VS-91b | "the target can't use this concealment to Hide or Sneak" | — | | — | Nothing to automate: Hide and Sneak are the table's |
+
+### VS-92 · Silence
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-92a | "The target can't use sonic attacks, nor can it use actions with the auditory trait" | Its auditory actions are refused | | ☐ | |
+| VS-92b | "This prevents it from casting spells due to the magical words involved in casting, with the exception of subtle spells" | Its casts are refused unless the spell is subtle | | ☐ | |
+| VS-92c | "The target makes no sound, preventing creatures from noticing it using hearing alone" | — | | — | Nothing to automate: noticing by hearing is the table's |
+| VS-92d | "Heightened (4th) The spell creates an aura in a 10-foot emanation around the touched creature" | Rank 4: everyone within 10 ft of it is silenced too, moving with it | | ☐ | |
+
+### VS-93 · Summon Animal
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-93a | "You summon a creature that has the animal trait and whose level is –1 to fight for you" | The cast offers animals of level –1 from pf2e's bestiaries and places the chosen one within 30 ft, a minion of the caster | | ☐ | |
+| VS-93b | "Heightened As listed in the summon trait" | The level allowed grows with the rank (1 at 2nd, 2 at 3rd, 3 at 4th, 5 at 5th…) | | ☐ | |
+
+### VS-94 · Final Sacrifice
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-94a | "The target is immediately slain" | Only a minion the caster summoned can be chosen; it dies | | ☐ | |
+| VS-94b | "the explosion deals 6d6 fire damage to creatures within 20 feet of it with a basic Reflex save" | A 20-ft emanation from the minion, basic Reflex against 6d6 fire | | ☐ | |
+| VS-94c | "If the target has the cold or water trait, the spell deals cold damage and has the cold trait instead of the fire trait" | A cold or water minion makes it cold | | ☐ | |
+| VS-94d | "Attempting to cast this spell targeting a creature that you temporarily seized control of" | — | | — | Nothing to automate: nothing here seizes control of a creature |
+| VS-94e | "The damage increases by 2d6" | Rank 3: 8d6 | | ☐ | |
+
+## Batch 10 — Senses and light
+
+### VS-95 · Darkvision
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-95a | "You gain Darkvision" | The caster has darkvision, and its token sees in darkness | | ☐ | |
+| VS-95b | "Heightened (3rd) The spell's range is touch and it targets 1 willing creature" | Rank 3: another creature | | ☐ | |
+| VS-95c | "The duration is until the next time you make your daily preparations" | Rank 5 lasts until the next preparations | | ☐ | |
+
+### VS-96 · See the Unseen
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-96a | "You can see invisible creatures as though they weren't invisible, although their features are blurred, making them Concealed" | Invisible creatures show to the caster's token, and count as concealed to it | | ☐ | |
+| VS-96b | "Subtler clues also grant you a +2 status bonus to checks you make to disbelieve illusions" | +2 to disbelieve | | ☐ | |
+| VS-96c | "You can also see incorporeal creatures, like ghosts, phased through an object from within 10 feet" | — | | — | Nothing to automate: a creature inside an object is the GM's |
+| VS-96d | "Heightened (5th) This spell has a duration of 8 hours" | Rank 5 lasts 8 hours | | ☐ | |
+
+### VS-97 · Revealing Light
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-97a | "A creature affected by revealing light is Dazzled" | Dazzled | | ☐ | |
+| VS-97b | "If the creature was Invisible, it becomes Concealed instead" | An invisible creature becomes concealed and can be seen | | ☐ | |
+| VS-97c | "If the creature was already concealed for any other reason, it is no longer concealed" | Its concealment (*Blur*, *Mist*) no longer counts | | ☐ | |
+| VS-97d | "Success The light affects the creature for 2 rounds" | Two rounds | | ☐ | |
+| VS-97e | "Failure The light affects the creature for 1 minute" | A minute | | ☐ | |
+| VS-97f | "Critical Failure The light affects the creature for 10 minutes" | Ten minutes | | ☐ | |
+
+### VS-98 · Light
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-98a | "You create an orb of light that sheds bright light in a 20-foot radius (and dim light for the next 20 feet)" | A light placed within 120 ft: bright 20 ft, dim 40 ft | | ☐ | |
+| VS-98b | "in a color you choose" | The cast asks for a colour | | ☐ | |
+| VS-98c | "If you create the light in the same space as a willing creature, you can attach the light to the creature, causing it to float near that creature as it moves" | Placed on a creature, it follows its token | | ☐ | |
+| VS-98d | "You can Sustain the spell to move the light up to 60 feet; you can attach or detach it from a creature as part of this movement" | Sustain moves it up to 60 ft, onto or off a creature | | ☐ | |
+| VS-98e | "You can Dismiss the spell" | Dismissing it puts the light out | | ☐ | |
+| VS-98f | "If you Cast the Spell while you already have four light spells active, you must choose one of the existing spells to end" | A fifth asks which of the four to end | | ☐ | |
+| VS-98g | "Heightened (4th) The orb sheds light in a 60-foot radius (and dim light for the next 60 feet)" | Rank 4: 60 and 120 ft | | ☐ | |
+
+### VS-99 · Detect Magic
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-99a | "You send out a pulse that registers the presence of magic" | The caster is told whether magic is within 30 ft | | ☐ | |
+| VS-99b | "You receive no information beyond the presence or absence of magic" | Nothing more at rank 1 | | ☐ | |
+| VS-99c | "You can choose to ignore magic you're fully aware of, such as the magic items and ongoing spells of you and your allies" | The caster's and allies' own magic items and effects can be left out | | ☐ | |
+| VS-99d | "You detect illusion magic only if that magic's effect has a lower rank than the rank of your detect magic spell" | An illusion of equal or higher rank isn't found | | ☐ | |
+| VS-99e | "Heightened (3rd) You learn the rank or level of the most powerful magical effect the spell detects" | Rank 3 names the highest rank or level | | ☐ | |
+| VS-99f | "Heightened (4th) As 3rd rank, but you also pinpoint the source of the highest-rank magic" | Rank 4 names where it is | | ☐ | |
+
+### VS-100 · Vital Beacon
+
+| ID | Clause | Must happen | Static check | Status | Evidence |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| VS-100a | "Once per round, either you or an ally can use an Interact action to supplicate and lay hands upon you to regain Hit Points" | The caster or an adjacent ally can take the beacon's healing, once a round | | ☐ | |
+| VS-100b | "Each time the beacon heals someone, it decreases in strength" | d10s, then d8s, then d6s, then d4s, one die per rank | | ☐ | |
+| VS-100c | "after which the spell ends" | After the fourth healing it's gone | | ☐ | |
+| VS-100d | "You can have only one vital beacon active at a time" | A second beacon ends the first | | ☐ | |
+| VS-100e | "The beacon restores one additional die of Hit Points each time it heals, using the same die size as the others for that step" | Rank 5: 5d10, 5d8, 5d6, 5d4 | | ☐ | |
+
+## Counts
+
+| Status | Count |
+| :-- | --: |
+| ☐ not yet driven | 325 |
+| ✅ | 0 |
+| ⚠️ | 0 |
+| ❌ | 0 |
+| 🔧 | 0 |
+| — | 11 |
+| **Total** | **336** |
