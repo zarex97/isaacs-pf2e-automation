@@ -53,7 +53,7 @@ and `npm test` fails if this table and that switch disagree.
 
 | `type` | What it does |
 | :-- | :-- |
-| `condition` | Applies a pf2e condition. With a `duration` it becomes a generated effect that expires on its own; without one it is a plain condition for the table to clear. `max` caps a cumulative one. `escapeDc` grants the captive an Escape action against that DC, and `escapeStatistic` names the one skill it is rolled with instead of the better of Acrobatics and Athletics. |
+| `condition` | Applies a pf2e condition. With a `duration` it becomes a generated effect that expires on its own; without one it is a plain condition for the table to clear. `max` caps a cumulative one. `withoutGrants` takes off conditions the condition would bring with it (*Sleep*'s unconscious without prone). `escapeDc` grants the captive an Escape action against that DC, and `escapeStatistic` names the one skill it is rolled with instead of the better of Acrobatics and Athletics. |
 | `effect` | Applies an effect item by UUID — or one written out, with `label` and `rules` and no `uuid`. `stack: true` walks a counter badge up instead of adding a second icon. `endsOnLeaving` ends it when the creature leaves the lingering area whose check gave it. `escapeDc` grants an Escape, and `escapeAll` makes that Escape release everything the ability left. `sustain: { step }` gives the holder a *Sustain* action that adds `step` to the badge, once per round and not in the round it was cast. |
 | `damage` | Rolls real damage, so immunities and resistances apply, and posts it to chat. |
 | `persistent-damage` | Applies a bleed or a burn. `perCounter` scales it by a counter the target already carries. |
