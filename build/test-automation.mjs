@@ -720,6 +720,20 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  An Escape that removes everything the ability left (VS-10)                                   */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { Escape } = await import("../scripts/riders/escape.mjs");
+    const from = (id, source, type = "effect") => ({ id, type, flags: { [LIB_ID]: { rider: { source } } } });
+    const deleted = [];
+    const items = [from("penalty", "Spell.flora"), from("held", "Spell.flora"), from("other", "Spell.web"), { id: "own", type: "effect", flags: {} }];
+    const actor = { items: Object.assign(items, { has: () => false, get: () => null }), deleteEmbeddedDocuments: async (_, ids) => deleted.push(...ids) };
+    await Escape.release(actor, { id: "escape" }, { all: true, source: "Spell.flora", conditions: [] });
+    check("an Escape from \"these effects\" takes off all that ability left, and nothing else", deleted, ["penalty", "held"]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  A check the creature chooses (VS-09)                                                         */
 /* -------------------------------------------------------------------------------------------- */
 

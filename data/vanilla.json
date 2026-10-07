@@ -144,6 +144,56 @@
                 "maxTargets": 2
             }
         },
+        "entangling-flora": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.entangling-flora.Flora",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "difficultTerrain": 2,
+                "events": [
+                    "tokenTurnStart"
+                ],
+                "save": {
+                    "statistic": "reflex",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure",
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "effect",
+                                "uuid": "Compendium.pf2e.spell-effects.Item.rjM25qfw5BKj9h97",
+                                "once": true,
+                                "endsOnLeaving": true,
+                                "escapeDc": "spell",
+                                "escapeAll": true
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "duration": {
+                                "value": 1,
+                                "unit": "rounds",
+                                "expiry": "turn-start"
+                            },
+                            "apply": {
+                                "type": "condition",
+                                "slug": "immobilized"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "fear": {
             "areaTargeting": {
                 "maxTargets": 1,
