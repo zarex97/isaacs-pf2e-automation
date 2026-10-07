@@ -1217,6 +1217,45 @@
                 }
             ]
         },
+        "phantom-pain": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "1d4",
+                        "perStep": "1d4",
+                        "damageType": "mental",
+                        "endsWith": [
+                            "sickened"
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "sickened",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "sickened",
+                        "value": 2
+                    }
+                }
+            ]
+        },
         "scatter-scree": {
             "areaTargeting": {
                 "affects": "all"

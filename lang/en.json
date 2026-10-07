@@ -163,6 +163,9 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "EndsWith": {
+            "Ended": "{actor} is no longer {slug}: {what} ends."
+        },
         "Climb": {
             "Now": "{actor} is now {slug} {value}.",
             "Gone": "{actor} is no longer {slug}."

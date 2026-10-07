@@ -21,7 +21,7 @@ import { AreaTargeting } from "./targeting/index.mjs";
 import { Lingering } from "./targeting/lingering.mjs";
 import { Inside } from "./targeting/inside.mjs";
 import { Sustain } from "./riders/sustain.mjs";
-import { registerTargetTiming } from "./riders/apply.mjs";
+import { registerTargetTiming, registerEndsWith } from "./riders/apply.mjs";
 import { Overlap } from "./targeting/overlap.mjs";
 import { CastShape } from "./targeting/cast-shape.mjs";
 import { MoveCaster } from "./targeting/move-caster.mjs";
@@ -63,6 +63,7 @@ export const RIDER_INIT = [
     ["areas held while inside", () => Inside.registerHooks()],
     ["sustaining a spell that grows", () => Sustain.registerHooks()],
     ["effects timed to their target's turn", () => registerTargetTiming()],
+    ["what ends with a condition", () => registerEndsWith()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],
