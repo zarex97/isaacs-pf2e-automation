@@ -2245,6 +2245,15 @@ export function growByStep(base, perStep, steps) {
     if (baseDice && perDice && baseDice[2] === perDice[2]) {
         return `${(Number(baseDice[1]) || 1) + (Number(perDice[1]) || 1) * steps}d${baseDice[2]}`;
     }
+    // Dice and a flat part both growing — *Soothe*'s "1d10+4", "+1d10+4" per rank: 3d10+12 at rank 3.
+    const mixed = /^(\d*)d(\d+)\s*([+-])\s*(\d+)$/;
+    const b = mixed.exec(String(base).trim());
+    const p = mixed.exec(String(perStep).trim());
+    if (b && p && b[2] === p[2]) {
+        const dice = (Number(b[1]) || 1) + (Number(p[1]) || 1) * steps;
+        const flat = Number(`${b[3]}${b[4]}`) + Number(`${p[3]}${p[4]}`) * steps;
+        return `${dice}d${b[2]}${flat < 0 ? "" : "+"}${flat}`;
+    }
     return base;
 }
 
