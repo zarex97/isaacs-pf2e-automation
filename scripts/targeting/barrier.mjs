@@ -23,6 +23,26 @@ import { CheckPipeline } from "../lib/check-pipeline.mjs";
  */
 
 const FLAG = "barrier";
+const INTERPOSED = Symbol.for(`${LIB_ID}.interposed`);
+
+/**
+ * How much of a blow a section that `interposes` takes first, and what is left for the creature it shields. *Protector
+ * Tree*: "the tree interposes its branches and takes the damage first. Any additional damage beyond what it takes to
+ * reduce the tree to 0 Hit Points is dealt to the original target."
+ */
+export function interposed(total, treeHp) {
+    const taken = Math.max(0, Math.min(Number(total) || 0, Number(treeHp) || 0));
+    return { taken, left: Math.max(0, (Number(total) || 0) - taken) };
+}
+
+/** Is this damage call a Strike that hit? Only those are caught. */
+export function isStrikeHit(params) {
+    const item = params?.item;
+    const damage = params?.damage;
+    if (!item?.isOfType?.("weapon", "melee") || params.final) return false;
+    if (!["success", "criticalSuccess"].includes(params.outcome)) return false;
+    return !!damage && typeof damage !== "number" && typeof damage.alter === "function" && (Number(damage.total) || 0) > 0;
+}
 
 /** The run as placed, put on the grid: the start on a grid point, the direction a multiple of `snapDeg`. */
 export function snappedRun(start, rotationDeg, feet, gridSize, gridDistance, snapDeg) {
@@ -158,7 +178,10 @@ export const Barrier = {
                 at = { x: piece[0].x, y: piece[0].y };
             }
             const tokenData = (await hazard.getTokenDocument({ x: at.x, y: at.y, actorLink: false, name: t("Barrier.Section", { name: config.item.name }) })).toObject();
-            tokenData.flags = foundry.utils.mergeObject(tokenData.flags ?? {}, { [LIB_ID]: { [FLAG]: { castId, kind, wallIds, regionId, rubble: spec.rubble === true, cover: spec.cover === true, piece, expiresAt, hazardId: hazard.id } } });
+            tokenData.flags = foundry.utils.mergeObject(tokenData.flags ?? {}, { [LIB_ID]: { [FLAG]: { castId, kind, wallIds, regionId, rubble: spec.rubble === true, cover: spec.cover === true, piece, expiresAt, hazardId: hazard.id,
+                // *Protector Tree*: it takes a Strike's damage for the caster's allies beside it.
+                ...(spec.interposes ? { interposes: true, casterUuid: config.item.actor?.uuid ?? null } : {}) } } });
+            if (spec.name) tokenData.name = game.i18n.localize(spec.name);
             tokens.push(tokenData);
         }
         await scene.createEmbeddedDocuments("Token", tokens);
@@ -213,6 +236,30 @@ export const Barrier = {
             const token = actor?.token;
             if (!flagOf(token) || (actor.hitPoints?.value ?? 1) > 0) return;
             await Barrier.breach(token);
+        });
+        // A Strike that hits an ally of the caster beside a section that `interposes`: the section takes it first.
+        DamageBus.before("a tree that takes the blow first", 4, (actor, params) => {
+            if (!isStrikeHit(params) || !canvas?.scene) return;
+            const own = actor.getActiveTokens?.(true, false)?.at(0);
+            if (!own) return;
+            const shield = canvas.tokens.placeables.find((tk) => {
+                const spec = flagOf(tk.document);
+                if (!spec?.interposes || (tk.actor?.hitPoints?.value ?? 0) <= 0) return false;
+                const caster = spec.casterUuid ? fromUuidSync(spec.casterUuid) : null;
+                return caster && caster !== actor && actor.isAllyOf?.(caster) && tk.distanceTo(own) <= 5;
+            });
+            if (!shield) return;
+            const { taken, left } = interposed(params.damage.total, shield.actor.hitPoints.value);
+            params.damage = left === 0 ? params.damage.alter(0, 0) : params.damage.alter(1, -taken);
+            params[INTERPOSED] = { tokenUuid: shield.document.uuid, taken, left };
+        });
+        DamageBus.after("a tree that takes the blow first", 89, async (actor, params) => {
+            const caught = params?.[INTERPOSED];
+            if (!caught) return;
+            const token = fromUuidSync(caught.tokenUuid);
+            if (!token?.actor) return;
+            await ChatMessage.create({ content: `<p>${t("Barrier.Interposes", { name: token.name, actor: actor.name, taken: caught.taken, left: caught.left })}</p>` });
+            await token.actor.applyDamage({ damage: caught.taken, token, final: true });
         });
         Hooks.on("updateWorldTime", () => Barrier.sweep());
         Hooks.on("pf2e.startTurn", () => Barrier.sweep());

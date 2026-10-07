@@ -63,6 +63,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Phantasmal Calamity | 6 |  | crit. failure: save |  |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
 | Protection | 1 |  | spell-effect-protection; protection emanation (1 minutes) |  |
+| Protector Tree | 1 | choose: 5-ft line, all, placed, no targets |  | a wall of squares, in 5-ft sections: AC 10, Hardness 0, 10 HP (+10 per rank), takes a Strike first for your allies beside it, 1 minutes |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |

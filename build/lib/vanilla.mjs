@@ -80,7 +80,7 @@ export function docs(built, index, en) {
             l.replacesPrevious ? "ends your previous one" : null,
             l.until === "originTurnStart" ? "until your next turn" : null,
             l.followsCaster ? "moves with you" : null,
-            l.barrier ? `a wall of ${l.barrier.kind === "squares" ? "squares" : "borders"}, in ${l.barrier.sectionFeet ?? 10}-ft sections: AC ${l.barrier.ac}, Hardness ${l.barrier.hardness}, ${l.barrier.hp} HP${l.barrier.hpPerStep ? ` (+${l.barrier.hpPerStep} per ${l.barrier.hpPerStepInterval > 1 ? `${l.barrier.hpPerStepInterval} ranks` : "rank"})` : ""}${l.barrier.rubble ? ", rubble when breached" : ""}${l.barrier.cover ? ", cover across it" : ""}` : null,
+            l.barrier ? `a wall of ${l.barrier.kind === "squares" ? "squares" : "borders"}, in ${l.barrier.sectionFeet ?? 10}-ft sections: AC ${l.barrier.ac}, Hardness ${l.barrier.hardness}, ${l.barrier.hp} HP${l.barrier.hpPerStep ? ` (+${l.barrier.hpPerStep} per ${l.barrier.hpPerStepInterval > 1 ? `${l.barrier.hpPerStepInterval} ranks` : "rank"})` : ""}${l.barrier.rubble ? ", rubble when breached" : ""}${l.barrier.cover ? ", cover across it" : ""}${l.barrier.interposes ? ", takes a Strike first for your allies beside it" : ""}` : null,
             l.repels ? `repels: a ${l.repels.statistic ?? "will"} save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in` : null,
             l.drifts ? `drifts ${l.drifts.feet} ft away from you each round` : null,
             l.dismiss ? "Dismiss" : null,

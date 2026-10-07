@@ -183,12 +183,13 @@
             "NoBolt": "no bolt"
         },
         "Barrier": {
-            "Lost": "{name} is lost: its wall would pass through {names}.",
+            "Lost": "{name} is lost: {names} stand where it would go.",
             "Section": "{name} (section)",
             "Rubble": "{name} is destroyed; its rubble is difficult terrain.",
             "Breached": "{name} is destroyed.",
             "RubbleName": "Rubble",
-            "Cover": "cover from {name}"
+            "Cover": "cover from {name}",
+            "Interposes": "{name} takes the blow for {actor}: {taken} damage to it, {left} to {actor}."
         },
         "Repels": {
             "Barred": "{name} can't move closer to {caster} within {area}."
@@ -567,6 +568,10 @@
             },
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
+            },
+            "protector-tree": {
+                "Tree": "Protector Tree",
+                "Ground": "protector tree"
             },
             "share-life": {
                 "Link": "life linked"

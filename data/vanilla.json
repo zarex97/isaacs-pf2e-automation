@@ -3072,6 +3072,36 @@
                 }
             ]
         },
+        "protector-tree": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 5
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.protector-tree.Ground",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "events": [],
+                "barrier": {
+                    "kind": "squares",
+                    "sectionFeet": 5,
+                    "ac": 10,
+                    "hardness": 0,
+                    "hp": 10,
+                    "hpPerStep": 10,
+                    "interposes": true,
+                    "name": "ISAACS_AUTOMATION.Vanilla.protector-tree.Tree"
+                }
+            }
+        },
         "regenerate": {
             "riders": [
                 {

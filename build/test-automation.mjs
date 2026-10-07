@@ -1342,4 +1342,12 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("only a rolled blow is split — not a final number, healing, or one past IWR", [splittable({ damage: roll }), splittable({ damage: 12 }), splittable({ damage: { total: -5, alter: () => null } }), splittable({ damage: roll, final: true }), splittable({ damage: roll, skipIWR: true })], [true, false, false, false, false]);
 }
 
+{
+    const { interposed, isStrikeHit } = await import("../scripts/targeting/barrier.mjs");
+    check("a tree takes the blow first, up to its Hit Points; the rest goes on", [interposed(7, 10), interposed(15, 10), interposed(4, 0)], [{ taken: 7, left: 0 }, { taken: 10, left: 5 }, { taken: 0, left: 4 }]);
+    const strike = { isOfType: (...types) => types.includes("weapon") };
+    const roll = { total: 9, alter: () => null };
+    check("only a Strike that hit is caught", [isStrikeHit({ item: strike, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "failure", damage: roll }), isStrikeHit({ item: { isOfType: () => false }, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "criticalSuccess", damage: 9 })], [true, false, false, false]);
+}
+
 report("Automation tests");

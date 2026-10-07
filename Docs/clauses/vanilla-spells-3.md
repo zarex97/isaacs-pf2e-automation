@@ -570,12 +570,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-82a | "A Medium tree suddenly grows in an unoccupied square within range" | A tree is placed in an empty square within 30 ft | | ☐ | |
-| VS-82b | "The tree has AC 10 and 10 Hit Points" | AC 10, 10 HP | | ☐ | |
-| VS-82c | "Whenever an ally adjacent to the tree is hit by a Strike, the tree interposes its branches and takes the damage first" | A Strike on an adjacent ally hurts the tree first | | ☐ | |
-| VS-82d | "Any additional damage beyond what it takes to reduce the tree to 0 Hit Points is dealt to the original target" | What the tree can't take goes on to the ally | | ☐ | |
-| VS-82e | "The tree isn't large enough to impede movement through its square" | Its square can be walked through | | ☐ | |
-| VS-82f | "The tree has an additional 10 Hit Points" | Rank 2: 20 HP | | ☐ | |
+| VS-82a | "A Medium tree suddenly grows in an unoccupied square within range" | A tree is placed in an empty square within 30 ft | `content/vanilla/protector-tree.json`: a 5-ft line, `placeOnly`; `lingering.barrier` of squares in 5-ft sections — one hazard token; an occupied square is refused | ✅ | Placed on Leo's square: "Drive: Protector Tree is lost" — nothing built. Placed in the free square beside Leo, 10 ft from Aries: a **Protector Tree** token there |
+| VS-82b | "The tree has AC 10 and 10 Hit Points" | AC 10, 10 HP | `barrier.ac` 10, `hp` 10 | ✅ | The tree: **AC 10, 10/10 HP** |
+| VS-82c | "Whenever an ally adjacent to the tree is hit by a Strike, the tree interposes its branches and takes the damage first" | A Strike on an adjacent ally hurts the tree first | `interposes: true` (`scripts/targeting/barrier.mjs`): a damage stage catches a Strike that hit an ally of the caster within 5 ft of the tree; the tree takes it, `final` | ✅ | A sword hit for 7 on Leo beside it: **Leo −0, tree 10 → 3**. Not caught: a miss (Leo −7), damage with no Strike (Leo −7), a hit on the caster Aries beside it (−7) |
+| VS-82d | "Any additional damage beyond what it takes to reduce the tree to 0 Hit Points is dealt to the original target" | What the tree can't take goes on to the ally | The blow is altered by what the tree took; the rest lands on the ally; the tree at 0 is removed | ✅ | A hit for 15: "Protector Tree takes the blow for Leo: 3 damage to it, 12 to Leo" — **Leo −12**, tree destroyed; the next hit for 5: Leo −5 |
+| VS-82e | "The tree isn't large enough to impede movement through its square" | Its square can be walked through | A section of squares builds no `Wall` and no movement-cost Region | ✅ | The cast left **0 walls** and no Region with a movement behavior — only the token in the square |
+| VS-82f | "The tree has an additional 10 Hit Points" | Rank 2: 20 HP | `hpPerStep` 10 | ✅ | Rank 2: the tree **20/20 HP** |
 
 ## Batch 8 — One roll, one weapon
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 78 |
-| ✅ | 238 |
+| ☐ not yet driven | 72 |
+| ✅ | 244 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |
