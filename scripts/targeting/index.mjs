@@ -5,6 +5,7 @@ import { key, t } from "../i18n.mjs";
 import { catchTokens } from "./catch.mjs";
 import { canRotate, configFor, describe, originTokenFor } from "./config.mjs";
 import { Extensions } from "./extensions.mjs";
+import { CastShape } from "./cast-shape.mjs";
 import { discardArea, originOf, pinnedToCaster, placeArea } from "./place.mjs";
 import { REAIM, reviewTargets } from "./review.mjs";
 
@@ -105,6 +106,10 @@ export const AreaTargeting = {
         // nothing — the Focus Point is spent after this returns.
         let shape = await chooseShape(cast);
         if (shape === false) return false;
+        // "Choosing an area or target": a choice of no area at all casts the ordinary way, at whatever
+        // the caster targeted by hand. Either way the card is told which, so riders can tell them apart.
+        if (shape) CastShape.expect(cast, shape);
+        if (shape?.type === "none") return true;
         // A named overlay is a whole second spell pf2e already knows how to post. Loading it here means
         // the card, the range and the area all say the same thing, and the pipeline casts the variant
         // rather than the original — see `CastPipeline`, which reads it back off `options`.

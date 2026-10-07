@@ -75,7 +75,8 @@ export function docs(built, index, en) {
             }).join("; ");
         // An entry that aims the spell's own area names it, so the row says what is placed.
         const own = entry.areaTargeting && !entry.areaTargeting.area && spell?.area ? `${spell.area.value}-ft ${spell.area.type} (pf2e's)` : "";
-        const areaCell = [[own, area(entry.areaTargeting)].filter(Boolean).join(", "), variants && `variant — ${variants}`].filter(Boolean).join("; ");
+        const shapes = (entry.areaTargetingShapes ?? []).map((c) => (c.type === "none" ? "no area" : `${c.value}-ft ${c.type}`)).join(" or ");
+        const areaCell = [[shapes ? `choose: ${shapes}` : own, area(entry.areaTargeting)].filter(Boolean).join(", "), variants && `variant — ${variants}`].filter(Boolean).join("; ");
         return `| ${spell?.name ?? slug} | ${spell?.rank ?? ""} | ${areaCell} | ${(entry.riders ?? []).map(rider).join("; ")} | ${linger(entry.lingering)} |`;
     });
     const aliases = Object.entries(built.aliases).map(([legacy, remaster]) => `- \`${legacy}\` → ${index.spells[remaster]?.name ?? remaster}`);
@@ -133,6 +134,10 @@ export function problemsWith(slug, entry, ctx) {
             if (area.anchor !== undefined && !["self", "free", "caster"].includes(area.anchor)) at(`${where} areaTargeting.anchor`, `"${area.anchor}" is not self, free or caster`);
             if (area.affects && !ctx.affects.includes(area.affects)) at(`${where} areaTargeting.affects`, `"${area.affects}" is not one of ${ctx.affects.join(", ")}`);
             for (const n of ["maxTargets", "range"]) if (area[n] !== undefined && !(Number(area[n]) > 0)) at(`${where} areaTargeting.${n}`, "a positive number");
+        }
+        for (const [i, choice] of (Array.isArray(object.areaTargetingShapes) ? object.areaTargetingShapes : []).entries()) {
+            if (choice.type !== "none" && !ctx.areaShapes.includes(choice.type)) at(`${where} areaTargetingShapes[${i}]`, `"${choice.type}" is not a shape or none`);
+            if (choice.type !== "none" && !(Number(choice.value) > 0)) at(`${where} areaTargetingShapes[${i}]`, "a size in feet");
         }
         if (object.riders !== undefined && object.riders !== false) {
             if (!Array.isArray(object.riders)) at(`${where} riders`, "a list");

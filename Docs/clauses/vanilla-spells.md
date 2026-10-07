@@ -33,7 +33,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-01 | `lightning-bolt` | 3 | A line, aimed | "A bolt of lightning strikes outward from your hand" | A 120-ft line is aimed from the caster's edge and targets everything it crosses | `content/vanilla/lightning-bolt.json` (`anchor: "caster"`); `fromCaster` / `pinnedToCaster` geometry tests | ✅ | Aries cast it from an innate entry: the line started on Aries' west edge (3800, 2850; centre 3850) and turned with the pointer, snapped to 5°, never moving its start. Aimed due west, it targeted all 10 creatures in that row within 120 ft; *ZZ Zan L2*, dead at the same 90 ft as an included *ZZ Ryu L2*, was left out. **Control:** with no entry, `configFor` gave nothing under the default scope. Two engine gaps found and fixed on the way: a line placed where the pointer was and travelled with it; and pf2e's `placeRegion` replaces any `onMove` it is given. |
 | VS-02 | `fireball` | 3 | No entry: pf2e's own area | "detonates at a spot you designate" | No table entry; aims under **every spell with an area**, not under the default scope | None by design; `VS-02 Fireball stays out of the table` in `npm test` | ✅ | **Default scope (control):** `configFor` gave nothing, and the cast posted straight to chat with no placement. **Every spell with an area:** a 20-ft burst within 500 ft was placed; centred at (2900, 2900), it targeted the 12 creatures inside, and the card carried 12 save rows. Scope restored to the default. Found: a cast is aimed before pf2e refuses it for spent uses (#14). |
-| VS-03 | `grease` | 1 | Area *or* a target | "choosing an area or target" | The caster chooses: four 5-ft squares (prone on a failed save) or one object (no area, no aiming) | | ☐ | |
+| VS-03 | `grease` | 1 | Area *or* a target | "choosing an area or target" | The caster chooses: four 5-ft squares (prone on a failed save) or one object (no area, no aiming) | `content/vanilla/grease.json` (`areaTargetingShapes` with `none`, riders on `rider:cast:shape:*`, lingering save); cast-shape and after-aim tests | ✅ | **Area:** the choice dialog offered both; a 10-ft square was placed over D6 (dead, so left out — control); the card and the spell were stamped `square`; the **library's own** after-aim step left a lingering *Grease* Region. Capricorn's Reflex from the card failed → **prone**, the receipt naming just that. **Object:** no aiming, no Region, stamped `none`; Capricorn succeeded (nothing), crit-succeeded (nothing), then failed → the GM note about the greased object and **no prone**. **Ground:** Leo moved onto it → Reflex at the spell's DC 34, failed → the Balance note to the GM. Approximations: "four contiguous squares" is a 10-ft square; Step and Crawl are not yet exempt (#16). Fixed on the way: native-save riders could not see the card's shape; lingering and overlap were created only by the homebrew; a lingering save's notes and prompts were never posted. |
 | VS-04 | `chain-lightning` | 6 | A chain of targets | "arcs to another creature within 30 feet of the first target" | Each target after the first is within 30 ft of the one before; no creature twice; line of effect to all | | ☐ | |
 | VS-05 | `translocate` | 4 | The caster moves | "transport yourself … to an unoccupied space within range you can see" | The caster's token moves to a chosen unoccupied point within 120 ft; anyone carried makes it fail | | ☐ | |
 
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 38 |
-| ✅ | 2 |
+| ☐ not yet driven | 37 |
+| ✅ | 3 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

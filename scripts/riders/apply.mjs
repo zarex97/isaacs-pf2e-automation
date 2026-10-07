@@ -1,6 +1,7 @@
 import { flagOf, mergedFlag } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
 import { RerollCarry } from "./reroll-carry.mjs";
+import { shapeOptions } from "../targeting/cast-shape.mjs";
 import { describeActor, describeDamage, riderOptions, testPredicate } from "../lib/roll-options.mjs";
 import { catchTokens } from "../targeting/catch.mjs";
 import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, stepsFor, thresholdsCrossed, valueAtLevel } from "../targeting/heightening.mjs";
@@ -110,7 +111,7 @@ async function applyToTarget(target, candidates, context, payload) {
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
         item: context.item ?? context.messageItem ?? context.eventItem,
-        extra: payload.damage ? describeDamage(payload.damage) : [],
+        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem)],
     });
 
     // Most riders are chosen against the snapshot. A `live` rider is chosen against the world as this pass
@@ -175,7 +176,7 @@ async function applyToTarget(target, candidates, context, payload) {
             originActor: context.originActor,
             targetActor: actor,
             item: context.item ?? context.messageItem ?? context.eventItem,
-            extra: payload.damage ? describeDamage(payload.damage) : [],
+            extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem)],
         });
         const liveChosen = await gateByRound(
             selectRiders(live, { outcome: payload.outcome ?? null, options: now }),
@@ -2435,7 +2436,7 @@ function riderFlags(rider, { message, item, outcome }) {
  * a prompt — "Teleported 250 feet in a direction of the Saint's choice" — and is now an event, so it is
  * announced to everyone rather than murmured to the GM, who no longer has anything to act on.
  */
-async function postNotes({ notes, item, originActor, actor, outcome }) {
+export async function postNotes({ notes, item, originActor, actor, outcome }) {
     const lines = notes.filter((text) => text).map((text) => `<li>${text}</li>`).join("");
     if (!lines) return;
     const name = item?.name ?? originActor?.name ?? t("Rider.Name");
@@ -2453,7 +2454,7 @@ async function postNotes({ notes, item, originActor, actor, outcome }) {
  * about which 15 feet — which depends on walls, allies and where the caster was standing. Automating the
  * half that is a condition and whispering the half that is not is more honest than guessing.
  */
-async function postPrompts({ prompts, item, originActor, actor, outcome }) {
+export async function postPrompts({ prompts, item, originActor, actor, outcome }) {
     const lines = prompts.filter((text) => text).map((text) => `<li>${text}</li>`).join("");
     if (!lines) return;
     const name = item?.name ?? originActor?.name ?? t("Rider.Name");
