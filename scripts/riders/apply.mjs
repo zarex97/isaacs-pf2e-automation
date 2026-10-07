@@ -112,7 +112,7 @@ async function applyToTarget(target, candidates, context, payload) {
         targetActor: actor,
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
-        item: context.item ?? context.messageItem ?? context.eventItem,
+        item: castItemOf(context) ?? context.eventItem,
         extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem)],
     });
 
@@ -177,7 +177,7 @@ async function applyToTarget(target, candidates, context, payload) {
         const now = riderOptions({
             originActor: context.originActor,
             targetActor: actor,
-            item: context.item ?? context.messageItem ?? context.eventItem,
+            item: castItemOf(context) ?? context.eventItem,
             extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem)],
         });
         const liveChosen = await gateByRound(
@@ -1741,7 +1741,7 @@ async function applyEffect(rider, context) {
     if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome);
     // *Heroism*'s +1 / +2 / +3 reads `@item.level` — the effect's own level, which pf2e sets to the spell's rank
     // when the effect is taken from a cast. Taken from the compendium, it is whatever the effect was saved at.
-    const castRank = Number((context.item ?? context.riderItem)?.rank);
+    const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
     source.system.start = startData(context.actor);
@@ -1820,8 +1820,22 @@ async function crossThresholds(source, was, now, context) {
  * steps are counted the usual way and then divided, so a rank-7 cast earns six increments and three
  * extra dice rather than six.
  */
+/**
+ * The spell as it was cast. `context.item` is the spell on the sheet, at its own rank; a heightened cast's
+ * card carries the heightened copy — *Invisibility* cast at rank 4 is `item:rank:4` only there. When the
+ * message names the same spell, its copy is the one that was cast.
+ */
+export function castItemOf(context) {
+    const item = context?.item ?? context?.riderItem ?? null;
+    const cast = context?.messageItem ?? null;
+    if (!cast) return item;
+    if (!item) return cast;
+    const same = (cast.original ?? cast).id === (item.original ?? item).id && (cast.actor ?? null) === (item.actor ?? null);
+    return same ? cast : item;
+}
+
 export function riderSteps(rider, context) {
-    const source = context.item;
+    const source = castItemOf(context);
     const steps = stepsFor({
         baseRank: source?.baseRank ?? source?.system?.level?.value,
         castRank: source?.rank,
@@ -2531,6 +2545,8 @@ function effectSource(label, rules, rider, context) {
         if (spell) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sustainedBy: { origin: context.originActor.uuid, spell } } });
     }
     onTargetsTurn(source, rider, context);
+    // "If the target uses a hostile action, the spell ends" — *Invisibility*. See `registerHostileEnd`.
+    if (rider.apply?.endsOnHostile) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnHostile: true } });
     // Riders the effect takes with it — *Paralyze*'s "at the end of each of its turns, a new Will save".
     if (Array.isArray(rider.apply?.carries)) {
         const dc = RiderExtensions.resolveDC(undefined, context);
@@ -2649,6 +2665,41 @@ export function registerEndsWith() {
 /** Does this item end now that `slug` is gone? */
 export function endsWithGone(endsWith, slug) {
     return Array.isArray(endsWith) && endsWith.includes(slug);
+}
+
+/**
+ * Was this message a hostile action by its speaker? An attack or a damage roll is; so is an action or a spell
+ * aimed at a creature on the other side. A heal for a friend, a Stride, a recall knowledge are not.
+ */
+export function isHostileUse({ type, fromItem, targets = [], actor }) {
+    if (type === "attack-roll" || type === "damage-roll") return true;
+    if (!fromItem) return false;
+    return targets.some((target) => target && target !== actor && (target.isEnemyOf?.(actor) ?? false));
+}
+
+/**
+ * Ending what ends on a hostile action, once the action is done. Run where the action was taken — that
+ * client knows what its user had targeted — and the creature's owner may take its own effects off.
+ */
+export function registerHostileEnd() {
+    Hooks.on("createChatMessage", async (message, _options, userId) => {
+        if (userId !== game.user?.id) return;
+        const actor = message.actor;
+        const ending = actor?.items?.filter((i) => i.flags?.[LIB_ID]?.endsOnHostile) ?? [];
+        if (ending.length === 0) return;
+        const hostile = isHostileUse({
+            type: message.flags?.pf2e?.context?.type ?? null,
+            fromItem: !!message.flags?.pf2e?.origin?.uuid,
+            targets: [...(game.user?.targets ?? [])].map((t) => t.actor),
+            actor,
+        });
+        if (!hostile) return;
+        await actor.deleteEmbeddedDocuments("Item", ending.map((i) => i.id));
+        await ChatMessage.create({
+            speaker: ChatMessage.getSpeaker({ actor }),
+            content: `<p>${t("Hostile.Ended", { actor: actor.name, what: ending.map((i) => i.name).join(", ") })}</p>`,
+        });
+    });
 }
 
 /** Write a target-timed effect's start back after pf2e's own creation step has set it. */

@@ -164,6 +164,9 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "Hostile": {
+            "Ended": "{actor} acted with hostility: {what} ends."
+        },
         "EndsWith": {
             "Ended": "{actor} is no longer {slug}: {what} ends."
         },
