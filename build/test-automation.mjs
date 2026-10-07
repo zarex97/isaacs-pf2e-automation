@@ -737,6 +737,23 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  Until the target's next turn begins (VS-17)                                                  */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { forTargetsTurn } = await import("../scripts/riders/apply.mjs");
+    const { combatOf } = await import("../scripts/lib/combat.mjs");
+    const leo = { id: "leo" };
+    const old = { id: "old", started: true, active: false, combatants: [{ actorId: "leo" }] };
+    const fight = { id: "fight", started: true, active: true, combatants: [{ actorId: "leo" }] };
+    check("a creature's encounter is the active one it is in, not the first or the viewed", [combatOf(leo, [old, fight], old)?.id, combatOf(leo, [old], null)?.id, combatOf(leo, [{ ...fight, started: false }], null)], ["fight", "old", null]);
+    const combat = { started: true, turn: 1, turns: [{ id: "a" }, { id: "caster" }, { id: "b" }] };
+    check("a target yet to act this round loses it at this round's turn", forTargetsTurn({ value: 1 }, combat, { id: "b", initiative: 5 }), { value: 0, initiative: 5 });
+    check("…one that has acted, at next round's", forTargetsTurn({ value: 1 }, combat, { id: "a", initiative: 20 }), { value: 1, initiative: 20 });
+    check("…and out of combat it is a round", forTargetsTurn({ value: 1 }, null, null), { value: 1, initiative: null });
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Sustaining a spell that grows (VS-13)                                                        */
 /* -------------------------------------------------------------------------------------------- */
 

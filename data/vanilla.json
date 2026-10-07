@@ -21,6 +21,100 @@
                 }
             ]
         },
+        "blindness": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "predicate": [
+                        {
+                            "not": "target:effect:blindness-immunity"
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start",
+                        "of": "target"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "blinded"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "predicate": [
+                        {
+                            "not": "target:effect:blindness-immunity"
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "blinded"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "not": "target:effect:blindness-immunity"
+                        }
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "blinded"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalSuccess",
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "not": "target:effect:blindness-immunity"
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blindness.Immune",
+                        "slug": "blindness-immunity",
+                        "rules": []
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalSuccess",
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        "target:effect:blindness-immunity"
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.blindness.AlreadyImmune"
+                    }
+                }
+            ]
+        },
         "calm": {
             "areaTargeting": {
                 "affects": "all"

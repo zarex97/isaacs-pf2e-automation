@@ -1,5 +1,6 @@
 import { t } from "../i18n.mjs";
 import { LIB_ID } from "../id.mjs";
+import { combatOf } from "../lib/combat.mjs";
 
 /**
  * Sustaining a spell that grows.
@@ -28,8 +29,7 @@ export function canSustain({ castRound = null, lastRound = null } = {}, round = 
  * the caster's own.
  */
 export function roundFor(actor, combats = game.combats) {
-    const fighting = combats?.find?.((c) => c.started && c.combatants.some((cb) => cb.actor === actor || cb.actorId === actor?.id));
-    return fighting ? fighting.round : null;
+    return combatOf(actor, combats, null)?.round ?? null;
 }
 
 /** The granted action, as a plain source object. */

@@ -11,6 +11,7 @@ import { Banish, durationSeconds } from "./banish.mjs";
 import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
+import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
 const outcomeLabel = (outcome) => t(`Outcome.${outcome}`);
@@ -1684,9 +1685,10 @@ async function applyEffect(rider, context) {
 
     applySubstitutions(source, rider.apply.substitutions, context);
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
-    source.system.start = startData();
+    source.system.start = startData(context.actor);
     if (rider.duration) source.system.duration = durationData(RiderExtensions.duration(rider, context));
     source.system.context = contextData(context);
+    onTargetsTurn(source, rider, context);
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, riderFlags(rider, context));
     // "Until it leaves the area" — *Entangling Flora*'s penalty, pf2e's own effect with no end of its own. A
     // save rolled from the spell's card has no area in hand; the one this caster left with this spell is it.
@@ -2428,7 +2430,7 @@ function resolveFromOrigin(expression, context) {
 function effectSource(label, rules, rider, context) {
     const item = context.item ?? context.riderItem;
     const name = item?.name ?? context.originActor?.name ?? t("Rider.Name");
-    return {
+    const source = {
         type: "effect",
         name: `${name}: ${label}`,
         img: item?.img ?? "icons/svg/aura.svg",
@@ -2441,14 +2443,60 @@ function effectSource(label, rules, rider, context) {
             },
             duration: durationData(rider.duration),
             level: { value: item?.level ?? item?.system?.level?.value ?? 1 },
-            start: startData(),
+            start: startData(context.actor),
             tokenIcon: { show: true },
             traits: { value: [], rarity: "common" },
             context: contextData(context),
             rules,
+            // A slug a predicate can name — *Blindness*'s "temporarily immune" is read back as
+            // `target:effect:blindness-immunity` the next time it is cast.
+            ...(rider.apply?.slug ? { slug: rider.apply.slug } : {}),
         },
         flags: riderFlags(rider, context),
     };
+    onTargetsTurn(source, rider, context);
+    return source;
+}
+
+/**
+ * "Until its next turn begins": *Blindness*'s success ends on the **target's** turn. pf2e ends a turn-start
+ * effect at the start of its origin's turn — the caster's, which is right for "for 1 round" and wrong here —
+ * so an effect timed to the target drops its origin and starts from the target's own initiative.
+ */
+function onTargetsTurn(source, rider, context) {
+    if (rider.duration?.of !== "target") return;
+    const combat = combatOf(context.actor);
+    const combatant = combatantOf(context.actor, combat);
+    const timing = forTargetsTurn(rider.duration, combat, combatant);
+    source.system.duration = { ...source.system.duration, value: timing.value };
+    source.system.start = { ...source.system.start, initiative: timing.initiative };
+    source.system.context = null;
+    // pf2e sets an effect's start itself as it is created — from the viewed encounter's current turn — so the
+    // target's own initiative is written back just after (`registerTargetTiming`).
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { targetInitiative: timing.initiative } });
+}
+
+/** Write a target-timed effect's start back after pf2e's own creation step has set it. */
+export function registerTargetTiming() {
+    Hooks.on("createItem", (item, _options, userId) => {
+        if (userId !== game.user?.id) return;
+        const initiative = item.flags?.[LIB_ID]?.targetInitiative;
+        if (initiative === undefined || initiative === null) return;
+        if (item.system?.start?.initiative === initiative) return;
+        item.update({ "system.start.initiative": initiative }).catch(() => {});
+    });
+}
+
+/**
+ * How long "until its next turn begins" is, in pf2e's terms: none at all if the target has yet to act this
+ * round (its turn this round is the next one), one round if it already has. Out of combat, a round.
+ */
+export function forTargetsTurn(duration, combat, combatant) {
+    const rounds = Number(duration?.value) || 1;
+    if (!combat?.started || !combatant) return { value: rounds, initiative: null };
+    const at = combat.turns.findIndex((c) => c.id === combatant.id);
+    const yetToAct = at > combat.turn;
+    return { value: yetToAct ? rounds - 1 : rounds, initiative: combatant.initiative ?? null };
 }
 
 function outcomeSuffix(context) {
@@ -2494,8 +2542,10 @@ function durationData(duration) {
     };
 }
 
-function startData() {
-    return { value: game.time.worldTime, initiative: game.combat?.combatant?.initiative ?? null };
+function startData(actor = null) {
+    // The turn in the encounter this creature is fighting in, not whichever one the GM is viewing.
+    const combat = combatOf(actor) ?? game.combat;
+    return { value: game.time.worldTime, initiative: combat?.combatant?.initiative ?? null };
 }
 
 /** Lets the effect's own rules resolve against the creature that caused it, the way an aura's would. */
