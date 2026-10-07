@@ -2452,6 +2452,64 @@
                 }
             }
         },
+        "wall-of-stone": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 120,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Straight120"
+                },
+                {
+                    "type": "line",
+                    "value": 60,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Straight60"
+                },
+                {
+                    "type": "line",
+                    "value": 30,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Straight30"
+                },
+                {
+                    "type": "line",
+                    "value": 60,
+                    "areas": 2,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Two60"
+                },
+                {
+                    "type": "line",
+                    "value": 40,
+                    "areas": 3,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Three40"
+                },
+                {
+                    "type": "line",
+                    "value": 30,
+                    "areas": 4,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Four30"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Wall",
+                "barrier": {
+                    "kind": "border",
+                    "sectionFeet": 10,
+                    "ac": 10,
+                    "hardness": 14,
+                    "hp": 50,
+                    "hpPerStep": 15,
+                    "hpPerStepInterval": 2,
+                    "immunities": [
+                        "critical-hits",
+                        "precision"
+                    ],
+                    "rubble": true
+                }
+            }
+        },
         "web": {
             "areaTargeting": {
                 "affects": "all",

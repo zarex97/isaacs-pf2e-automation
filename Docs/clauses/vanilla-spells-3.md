@@ -172,14 +172,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-47a | "You create a 1-inch-thick wall of stone up to 120 feet long, and 20 feet high" | A wall up to 120 ft long is drawn, blocking movement and sight | | ☐ | |
-| VS-47b | "You can shape the wall's path, placing each 5 feet of the wall on the border between squares" | The path may bend; every segment lies on a grid line | | ☐ | |
+| VS-47a | "You create a 1-inch-thick wall of stone up to 120 feet long, and 20 feet high" | A wall up to 120 ft long is drawn, blocking movement and sight | `content/vanilla/wall-of-stone.json` (`lingering.barrier`, kind `border`); `scripts/targeting/barrier.mjs` | ✅ | Cast at rank 5, the spell offered its runs (120, 60 or 30 ft straight; 2×60, 3×40, 4×30 with bends). A 60-ft run aimed east from (4000, 1210) built **six** wall segments along y = 1200, 4000 → 5200, each blocking movement and sight (Foundry's collision tests, through the wall: blocked). The run was handed to the builder directly — the canvas kept re-panning under the cursor, so the click itself was not reliable to script; the placement it stands in for is the same line placement Wall of Fire (VS-06) drove |
+| VS-47b | "You can shape the wall's path, placing each 5 feet of the wall on the border between squares" | The path may bend; every segment lies on a grid line | `snappedRun`, `borderSections` tests | ✅ | A run started at (4000, 1210) pointing 3° was laid from the grid point (4000, 1200) straight along the grid line — every segment on a border between squares. Bends are runs placed one after another (the 2-, 3- and 4-run choices), each snapped the same way |
 | VS-47c | "The wall doesn't need to stand vertically, so you can use it to form a bridge or set of stairs" | — | | — | Nothing to automate: a flat map has no bridge or stairs; the table's call |
-| VS-47d | "You must conjure the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A path across an occupied square is refused and the spell is lost | | ☐ | |
-| VS-47e | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 14, and 50 Hit Points" | Each 10-ft section can be attacked and damaged on its own | | ☐ | |
-| VS-47f | "it's immune to critical hits and precision damage" | A critical hit on a section counts as a hit; precision damage does nothing | | ☐ | |
-| VS-47g | "A destroyed section of the wall can be moved through, but the rubble created from it is difficult terrain" | A section at 0 HP opens, and its squares become difficult terrain | | ☐ | |
-| VS-47h | "The Hit Points of each section of the wall increase by 15" | Rank 7: 65 HP | | ☐ | |
+| VS-47d | "You must conjure the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A path across an occupied square is refused and the spell is lost | `crossesInterior` test; the build checks every segment against every creature | ✅ | With Leo made Large and standing across y = 1200, the same run built nothing: "Drive: Wall of Stone is lost: its wall would pass through Leo." — no walls, no sections. A creature merely beside the line (Capricorn, below it) did not stop it |
+| VS-47e | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 14, and 50 Hit Points" | Each 10-ft section can be attacked and damaged on its own | one hazard actor per cast; one unlinked hazard token per 10-ft section (`sectionHp`) | ✅ | Six section tokens, each its own Hit Points: **AC 10, Hardness 14, 50 HP**. 40 bludgeoning on the second section took **26** (Hardness off), the others untouched |
+| VS-47f | "it's immune to critical hits and precision damage" | A critical hit on a section counts as a hit; precision damage does nothing | the hazard's immunities: `critical-hits`, `precision` (pf2e's own IWR) | ✅ | A critical Strike from Leo (2 × (1d4 + 1) = 6) on a section, its Hardness set to 0 for the test: **3** taken — pf2e undid the doubling. 30 + 10 precision slashing: **16** taken (30 − 14), the precision ignored |
+| VS-47g | "A destroyed section of the wall can be moved through, but the rubble created from it is difficult terrain" | A section at 0 HP opens, and its squares become difficult terrain | a DamageBus stage at 0 HP (`Barrier.breach`), rubble as a difficult-terrain Region | ✅ | The second blow took the section to 0: "Drive: Wall of Stone (section) is destroyed; its rubble is difficult terrain." Its wall segment and token gone, the gap no longer blocks movement, and a **Rubble** Region (the four squares either side of it) costs **10** ft to step into |
+| VS-47h | "The Hit Points of each section of the wall increase by 15" | Rank 7: 65 HP | `sectionHp` (+15 every two ranks) | ✅ | Built at **rank 7**: a section's Hit Points **65** |
 
 ### VS-48 · Wall of Thorns
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 285 |
-| ✅ | 39 |
+| ☐ not yet driven | 278 |
+| ✅ | 46 |
 | ⚠️ | 1 |
 | ❌ | 0 |
 | 🔧 | 0 |

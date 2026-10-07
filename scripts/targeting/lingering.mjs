@@ -12,6 +12,7 @@ import { RiderExtensions } from "../riders/extensions.mjs";
 import { combatOf } from "../lib/combat.mjs";
 import { Relay } from "../riders/relay.mjs";
 import { Repels } from "./repels.mjs";
+import { Barrier } from "./barrier.mjs";
 
 export const FLAG = "lingering";
 
@@ -122,6 +123,18 @@ export const Lingering = {
         // more per heightening step, and each of them stands on its own square for its own round.
         // "If you cast this spell again, any previous scatter scree you've cast ends."
         if (specs.some((spec) => spec.replacesPrevious)) await Lingering.endPrevious(config.item);
+
+        // A wall of sections — *Wall of Stone*, *Wall of Thorns* — is built along the placed runs (`barrier.mjs`); a
+        // wall of squares gives each section its own patch of the spell's ground.
+        const walled = specs.find((spec) => spec.barrier);
+        if (walled) {
+            const { barrier, ...ground } = walled;
+            const seconds = walled.duration ? (Number(walled.duration.value) || 1) * (UNIT_SECONDS[walled.duration.unit ?? "minutes"] ?? 60) : null;
+            return Barrier.build(barrier, config, placed, originToken, {
+                expiresAt: seconds ? game.time.worldTime + seconds : null,
+                makeRegion: (shapes) => Lingering.createOne(ground, config, { shapes, color: placed[0].color, toObject: () => ({ shapes }) }, originToken, { first: false }),
+            });
+        }
 
         // The areas of one cast know each other: *Lightning Storm*'s two clouds are one storm, with one Sustain.
         const castId = foundry.utils.randomID();

@@ -12,6 +12,7 @@ import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
 import { CastZones } from "./targeting/zones.mjs";
 import { Repels } from "./targeting/repels.mjs";
+import { Barrier } from "./targeting/barrier.mjs";
 import { MovementCost } from "./lib/movement-cost.mjs";
 import { FastHealing } from "./lib/fast-healing.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
@@ -58,6 +59,7 @@ export const INIT = [
     ["the shape a cast chose, on its card", () => CastShape.registerHooks()],
     ["who stands where in the areas, on its card", () => CastZones.register()],
     ["an aura that keeps creatures off its caster", () => { Repels.registerHooks(); Repels.register(); }],
+    ["walls of breakable sections", () => Barrier.registerHooks()],
     ["a spell that moves its caster", () => MoveCaster.register()],
 ];
 

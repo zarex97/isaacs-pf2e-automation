@@ -176,6 +176,13 @@
             "Bolted": "a bolt falls on {name}",
             "NoBolt": "no bolt"
         },
+        "Barrier": {
+            "Lost": "{name} is lost: its wall would pass through {names}.",
+            "Section": "{name} (section)",
+            "Rubble": "{name} is destroyed; its rubble is difficult terrain.",
+            "Breached": "{name} is destroyed.",
+            "RubbleName": "Rubble"
+        },
         "Repels": {
             "Barred": "{name} can't move closer to {caster} within {area}."
         },
@@ -453,6 +460,15 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "wall-of-stone": {
+                "Wall": "Wall of Stone",
+                "Straight120": "One straight run, 120 feet",
+                "Straight60": "One straight run, 60 feet",
+                "Straight30": "One straight run, 30 feet",
+                "Two60": "Two runs of 60 feet (one bend)",
+                "Three40": "Three runs of 40 feet (two bends)",
+                "Four30": "Four runs of 30 feet (three bends)"
             },
             "repulsion": {
                 "Aura": "Repulsion"
