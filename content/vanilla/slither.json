@@ -1,0 +1,193 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "3d6",
+                "damageType": "piercing"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "persistent-damage",
+                "formula": "1d6",
+                "perStep": "1d6",
+                "perStepInterval": 2,
+                "damageType": "poison"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "encasement",
+                "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                "ac": "spell",
+                "hp": 12,
+                "hpPerStep": 6,
+                "hpPerStepInterval": 2,
+                "atOnce": true,
+                "conditions": [
+                    "grabbed"
+                ],
+                "escapeDc": "spell",
+                "withArea": true,
+                "onePerTarget": true
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "3d6",
+                "damageType": "piercing",
+                "multiplier": 2
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "persistent-damage",
+                "formula": "2d6",
+                "perStep": "2d6",
+                "perStepInterval": 2,
+                "damageType": "poison"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "encasement",
+                "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                "ac": "spell",
+                "hp": 12,
+                "hpPerStep": 6,
+                "hpPerStepInterval": 2,
+                "atOnce": true,
+                "conditions": [
+                    "restrained"
+                ],
+                "escapeDc": "spell",
+                "withArea": true,
+                "onePerTarget": true
+            }
+        }
+    ],
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.slither.Snakes",
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "dismiss": true,
+        "events": [
+            "tokenTurnEnd"
+        ],
+        "save": {
+            "statistic": "reflex",
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "3d6",
+                        "damageType": "piercing"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "1d6",
+                        "perStep": "1d6",
+                        "perStepInterval": 2,
+                        "damageType": "poison"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "encasement",
+                        "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                        "ac": "spell",
+                        "hp": 12,
+                        "hpPerStep": 6,
+                        "hpPerStepInterval": 2,
+                        "atOnce": true,
+                        "conditions": [
+                            "grabbed"
+                        ],
+                        "escapeDc": "spell",
+                        "withArea": true,
+                        "onePerTarget": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "3d6",
+                        "damageType": "piercing",
+                        "multiplier": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "2d6",
+                        "perStep": "2d6",
+                        "perStepInterval": 2,
+                        "damageType": "poison"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "encasement",
+                        "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                        "ac": "spell",
+                        "hp": 12,
+                        "hpPerStep": 6,
+                        "hpPerStepInterval": 2,
+                        "atOnce": true,
+                        "conditions": [
+                            "restrained"
+                        ],
+                        "escapeDc": "spell",
+                        "withArea": true,
+                        "onePerTarget": true
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -920,10 +920,20 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { darknessSource, firstForMovement, followed } = await import("../scripts/targeting/lingering.mjs");
     const emanation = { type: "emanation", radius: 200, base: { type: "token", x: 3700, y: 1500, width: 1, height: 1 } };
     check("an emanation follows its caster by its base square", followed(emanation, { x: 3550, y: 1550 }, { x: 3500, y: 1500 }).base, { ...emanation.base, x: 3500, y: 1500 });
-    const { sweptPath, overlaps, alreadyBurned, drifted } = await import("../scripts/targeting/lingering.mjs");
+    const { sweptPath, overlaps, alreadyBurned, drifted, reachOf } = await import("../scripts/targeting/lingering.mjs");
+    check("a vine reaches 15 ft beyond the creepers' edge", [reachOf({ x: 900, y: 0, width: 1, height: 1 }, { x: 0, y: 50, radius: 600 }, 100), reachOf({ x: 300, y: 0, width: 1, height: 1 }, { x: 0, y: 50, radius: 600 }, 100)], [300, 0]);
     const { tooClose } = await import("../scripts/targeting/index.mjs");
     const { withinOfAny } = await import("../scripts/targeting/zones.mjs");
     const { pullSteps, pullFeet } = await import("../scripts/riders/pull.mjs");
+    const { snappedRun, borderSections, squareSections, crossesInterior, sectionHp, crossesAny } = await import("../scripts/targeting/barrier.mjs");
+    check("an attack across a wall of squares crosses it; one beside it doesn't", [crossesAny({ x: 150, y: 50 }, { x: 150, y: 350 }, [{ x: 100, y: 100 }, { x: 200, y: 100 }], 100), crossesAny({ x: 50, y: 50 }, { x: 50, y: 350 }, [{ x: 100, y: 100 }, { x: 200, y: 100 }], 100)], [true, false]);
+    const run = snappedRun({ x: 1010, y: 990 }, 2, 30, 100, 5, 90);
+    check("a run of borders starts on a grid point and goes along a grid line", [run.a, run.b, run.steps], [{ x: 1000, y: 1000 }, { x: 1600, y: 1000 }, 6]);
+    check("…cut into 10-ft sections", borderSections(run, 2, 100).map((s) => [s.a.x, s.b.x]), [[1000, 1200], [1200, 1400], [1400, 1600]]);
+    const diag = snappedRun({ x: 1000, y: 1000 }, 44, 20, 100, 5, 45);
+    check("a run of squares may go diagonally, a square a step", squareSections(diag, 2, 100), [[{ x: 1000, y: 1000 }, { x: 1100, y: 1100 }], [{ x: 1200, y: 1200 }, { x: 1300, y: 1300 }]]);
+    check("a wall along a creature's edge doesn't pass through it; one across its middle does", [crossesInterior({ a: { x: 0, y: 100 }, b: { x: 300, y: 100 } }, { x: 100, y: 100, w: 100, h: 100 }), crossesInterior({ a: { x: 0, y: 200 }, b: { x: 300, y: 200 } }, { x: 100, y: 100, w: 200, h: 200 })], [false, true]);
+    check("a section's Hit Points grow every two ranks", [sectionHp({ hp: 50, hpPerStep: 15, hpPerStepInterval: 2 }, 0), sectionHp({ hp: 50, hpPerStep: 15, hpPerStepInterval: 2 }, 1), sectionHp({ hp: 50, hpPerStep: 15, hpPerStepInterval: 2 }, 2)], [50, 50, 65]);
     const { movesCloser, barsApproach, centreAt } = await import("../scripts/targeting/repels.mjs");
     check("closing in is a move that ends nearer the caster; sideways and away are not", [movesCloser({ x: 500, y: 0 }, { x: 400, y: 0 }, { x: 0, y: 0 }), movesCloser({ x: 500, y: 0 }, { x: 500, y: 100 }, { x: 0, y: 0 }), movesCloser({ x: 400, y: 0 }, { x: 500, y: 0 }, { x: 0, y: 0 })], [true, false, false]);
     check("a failure or worse bars it; a success or better does not", ["criticalFailure", "failure", "success", "criticalSuccess", undefined].map(barsApproach), [true, true, false, false, false]);
@@ -935,6 +945,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const tok = (id, x, y) => ({ id, center: { x, y } });
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals } = await import("../scripts/riders/apply.mjs");
+    const { dieAsHeld, heldWeapons } = await import("../scripts/riders/weapon.mjs");
+    const sword = { system: { damage: { die: "d8" }, traits: { value: ["two-hand-d12"] }, equipped: { carryType: "held", handsHeld: 1 } } };
+    check("a two-hand weapon uses its two-hand die only when held in both hands", [dieAsHeld(sword), dieAsHeld({ ...sword, system: { ...sword.system, equipped: { carryType: "held", handsHeld: 2 } } })], ["d8", "d12"]);
+    check("only weapons in hand are held", heldWeapons({ itemTypes: { weapon: [sword, { system: { equipped: { carryType: "worn", handsHeld: 0 } } }] } }).length, 1);
     const parts = [{ total: 30, type: "bludgeoning", zone: "centre" }, { total: 48, type: "fire", zone: null }];
     check("a part with a zone reaches only that zone; a part without reaches everyone", [areaParts(parts, { centre: ["a"] }, "a").length, areaParts(parts, { centre: ["a"] }, "b").map((p) => p.type), areaParts(parts, undefined, "a").map((p) => p.type)], [2, ["fire"], ["fire"]]);
     check("several typed totals are one roll of several instances", [typedTotals(parts), typedTotals([parts[1]])], ["{30[bludgeoning],48[fire]}", "48[fire]"]);

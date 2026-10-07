@@ -1063,6 +1063,119 @@
                 }
             ]
         },
+        "hypnotize": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.Fascinated",
+                        "withArea": true,
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                "onDeleteActions": {
+                                    "grantee": "restrict"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.NoReactions",
+                        "withArea": true,
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                "onDeleteActions": {
+                                    "grantee": "restrict"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.hypnotize.Cloud",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "sustain": {
+                    "lapses": true
+                },
+                "inside": {
+                    "conditions": [
+                        "dazzled"
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.hypnotize.Dazzled"
+                },
+                "events": [
+                    "tokenMoveIn",
+                    "tokenTurnEnd"
+                ],
+                "targetPredicate": [
+                    {
+                        "not": "target:condition:fascinated"
+                    }
+                ],
+                "save": {
+                    "statistic": "will",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "effect",
+                                "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.Fascinated",
+                                "withArea": true,
+                                "rules": [
+                                    {
+                                        "key": "GrantItem",
+                                        "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                        "onDeleteActions": {
+                                            "grantee": "restrict"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "effect",
+                                "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.NoReactions",
+                                "withArea": true,
+                                "rules": [
+                                    {
+                                        "key": "GrantItem",
+                                        "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                        "onDeleteActions": {
+                                            "grantee": "restrict"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "ice-storm": {
             "areaTargeting": {
                 "affects": "all",
@@ -1976,6 +2089,199 @@
                 }
             ]
         },
+        "slither": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "3d6",
+                        "damageType": "piercing"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "1d6",
+                        "perStep": "1d6",
+                        "perStepInterval": 2,
+                        "damageType": "poison"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "encasement",
+                        "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                        "ac": "spell",
+                        "hp": 12,
+                        "hpPerStep": 6,
+                        "hpPerStepInterval": 2,
+                        "atOnce": true,
+                        "conditions": [
+                            "grabbed"
+                        ],
+                        "escapeDc": "spell",
+                        "withArea": true,
+                        "onePerTarget": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "3d6",
+                        "damageType": "piercing",
+                        "multiplier": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "2d6",
+                        "perStep": "2d6",
+                        "perStepInterval": 2,
+                        "damageType": "poison"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "encasement",
+                        "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                        "ac": "spell",
+                        "hp": 12,
+                        "hpPerStep": 6,
+                        "hpPerStepInterval": 2,
+                        "atOnce": true,
+                        "conditions": [
+                            "restrained"
+                        ],
+                        "escapeDc": "spell",
+                        "withArea": true,
+                        "onePerTarget": true
+                    }
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.slither.Snakes",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "dismiss": true,
+                "events": [
+                    "tokenTurnEnd"
+                ],
+                "save": {
+                    "statistic": "reflex",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "damage",
+                                "formula": "3d6",
+                                "damageType": "piercing"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "persistent-damage",
+                                "formula": "1d6",
+                                "perStep": "1d6",
+                                "perStepInterval": 2,
+                                "damageType": "poison"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "encasement",
+                                "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                                "ac": "spell",
+                                "hp": 12,
+                                "hpPerStep": 6,
+                                "hpPerStepInterval": 2,
+                                "atOnce": true,
+                                "conditions": [
+                                    "grabbed"
+                                ],
+                                "escapeDc": "spell",
+                                "withArea": true,
+                                "onePerTarget": true
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "damage",
+                                "formula": "3d6",
+                                "damageType": "piercing",
+                                "multiplier": 2
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "persistent-damage",
+                                "formula": "2d6",
+                                "perStep": "2d6",
+                                "perStepInterval": 2,
+                                "damageType": "poison"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "encasement",
+                                "name": "ISAACS_AUTOMATION.Vanilla.slither.Snake",
+                                "ac": "spell",
+                                "hp": 12,
+                                "hpPerStep": 6,
+                                "hpPerStepInterval": 2,
+                                "atOnce": true,
+                                "conditions": [
+                                    "restrained"
+                                ],
+                                "escapeDc": "spell",
+                                "withArea": true,
+                                "onePerTarget": true
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "slow": {
             "areaTargeting": {
                 "maxTargets": 1,
@@ -2308,6 +2614,53 @@
                 }
             ]
         },
+        "tangling-creepers": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.tangling-creepers.Creepers",
+                "duration": {
+                    "value": 10,
+                    "unit": "minutes"
+                },
+                "inside": {
+                    "rules": [
+                        {
+                            "key": "FlatModifier",
+                            "selector": [
+                                "land-speed",
+                                "climb-speed",
+                                "swim-speed"
+                            ],
+                            "type": "circumstance",
+                            "value": -10,
+                            "label": "ISAACS_AUTOMATION.Vanilla.tangling-creepers.Creepers"
+                        }
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.tangling-creepers.Slowed"
+                },
+                "sustain": {
+                    "vine": {
+                        "reach": 15,
+                        "riders": [
+                            {
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "rounds"
+                                },
+                                "apply": {
+                                    "type": "condition",
+                                    "slug": "immobilized",
+                                    "escapeDc": "spell"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
         "toxic-cloud": {
             "areaTargeting": {
                 "affects": "all",
@@ -2451,6 +2804,154 @@
                     "persistent": false
                 }
             }
+        },
+        "wall-of-stone": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 120,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Straight120"
+                },
+                {
+                    "type": "line",
+                    "value": 60,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Straight60"
+                },
+                {
+                    "type": "line",
+                    "value": 30,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Straight30"
+                },
+                {
+                    "type": "line",
+                    "value": 60,
+                    "areas": 2,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Two60"
+                },
+                {
+                    "type": "line",
+                    "value": 40,
+                    "areas": 3,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Three40"
+                },
+                {
+                    "type": "line",
+                    "value": 30,
+                    "areas": 4,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Four30"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.wall-of-stone.Wall",
+                "barrier": {
+                    "kind": "border",
+                    "sectionFeet": 10,
+                    "ac": 10,
+                    "hardness": 14,
+                    "hp": 50,
+                    "hpPerStep": 15,
+                    "hpPerStepInterval": 2,
+                    "immunities": [
+                        "critical-hits",
+                        "precision"
+                    ],
+                    "rubble": true
+                }
+            }
+        },
+        "wall-of-thorns": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 60,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Line60"
+                },
+                {
+                    "type": "line",
+                    "value": 30,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Line30"
+                },
+                {
+                    "type": "line",
+                    "value": 10,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Line10"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Wall",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "difficultTerrain": 2,
+                "events": [
+                    "tokenMoveIn"
+                ],
+                "damage": {
+                    "formula": "3d4",
+                    "perStep": "1d4",
+                    "type": "piercing",
+                    "persistent": false
+                },
+                "barrier": {
+                    "kind": "squares",
+                    "sectionFeet": 10,
+                    "ac": 10,
+                    "hardness": 10,
+                    "hp": 20,
+                    "hpPerStep": 5,
+                    "immunities": [
+                        "critical-hits",
+                        "precision"
+                    ],
+                    "cover": true
+                }
+            }
+        },
+        "weapon-storm": {
+            "requires": "held-weapon",
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster"
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "cone",
+                    "value": 30,
+                    "overlay": "mAZRhujP3gA9tb4m",
+                    "label": "ISAACS_AUTOMATION.Vanilla.weapon-storm.Cone"
+                },
+                {
+                    "type": "emanation",
+                    "value": 10,
+                    "overlay": "9Ly51UbFomNFSkwE",
+                    "label": "ISAACS_AUTOMATION.Vanilla.weapon-storm.Emanation"
+                }
+            ],
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "area-damage",
+                        "save": "reflex",
+                        "critSpecialization": true,
+                        "parts": [
+                            {
+                                "weaponDice": 4,
+                                "perStepDice": 1
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "web": {
             "areaTargeting": {

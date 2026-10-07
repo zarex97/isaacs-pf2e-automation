@@ -172,76 +172,76 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-47a | "You create a 1-inch-thick wall of stone up to 120 feet long, and 20 feet high" | A wall up to 120 ft long is drawn, blocking movement and sight | | ☐ | |
-| VS-47b | "You can shape the wall's path, placing each 5 feet of the wall on the border between squares" | The path may bend; every segment lies on a grid line | | ☐ | |
+| VS-47a | "You create a 1-inch-thick wall of stone up to 120 feet long, and 20 feet high" | A wall up to 120 ft long is drawn, blocking movement and sight | `content/vanilla/wall-of-stone.json` (`lingering.barrier`, kind `border`); `scripts/targeting/barrier.mjs` | ✅ | Cast at rank 5, the spell offered its runs (120, 60 or 30 ft straight; 2×60, 3×40, 4×30 with bends). A 60-ft run aimed east from (4000, 1210) built **six** wall segments along y = 1200, 4000 → 5200, each blocking movement and sight (Foundry's collision tests, through the wall: blocked). The run was handed to the builder directly — the canvas kept re-panning under the cursor, so the click itself was not reliable to script; the placement it stands in for is the same line placement Wall of Fire (VS-06) drove |
+| VS-47b | "You can shape the wall's path, placing each 5 feet of the wall on the border between squares" | The path may bend; every segment lies on a grid line | `snappedRun`, `borderSections` tests | ✅ | A run started at (4000, 1210) pointing 3° was laid from the grid point (4000, 1200) straight along the grid line — every segment on a border between squares. Bends are runs placed one after another (the 2-, 3- and 4-run choices), each snapped the same way |
 | VS-47c | "The wall doesn't need to stand vertically, so you can use it to form a bridge or set of stairs" | — | | — | Nothing to automate: a flat map has no bridge or stairs; the table's call |
-| VS-47d | "You must conjure the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A path across an occupied square is refused and the spell is lost | | ☐ | |
-| VS-47e | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 14, and 50 Hit Points" | Each 10-ft section can be attacked and damaged on its own | | ☐ | |
-| VS-47f | "it's immune to critical hits and precision damage" | A critical hit on a section counts as a hit; precision damage does nothing | | ☐ | |
-| VS-47g | "A destroyed section of the wall can be moved through, but the rubble created from it is difficult terrain" | A section at 0 HP opens, and its squares become difficult terrain | | ☐ | |
-| VS-47h | "The Hit Points of each section of the wall increase by 15" | Rank 7: 65 HP | | ☐ | |
+| VS-47d | "You must conjure the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A path across an occupied square is refused and the spell is lost | `crossesInterior` test; the build checks every segment against every creature | ✅ | With Leo made Large and standing across y = 1200, the same run built nothing: "Drive: Wall of Stone is lost: its wall would pass through Leo." — no walls, no sections. A creature merely beside the line (Capricorn, below it) did not stop it |
+| VS-47e | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 14, and 50 Hit Points" | Each 10-ft section can be attacked and damaged on its own | one hazard actor per cast; one unlinked hazard token per 10-ft section (`sectionHp`) | ✅ | Six section tokens, each its own Hit Points: **AC 10, Hardness 14, 50 HP**. 40 bludgeoning on the second section took **26** (Hardness off), the others untouched |
+| VS-47f | "it's immune to critical hits and precision damage" | A critical hit on a section counts as a hit; precision damage does nothing | the hazard's immunities: `critical-hits`, `precision` (pf2e's own IWR) | ✅ | A critical Strike from Leo (2 × (1d4 + 1) = 6) on a section, its Hardness set to 0 for the test: **3** taken — pf2e undid the doubling. 30 + 10 precision slashing: **16** taken (30 − 14), the precision ignored |
+| VS-47g | "A destroyed section of the wall can be moved through, but the rubble created from it is difficult terrain" | A section at 0 HP opens, and its squares become difficult terrain | a DamageBus stage at 0 HP (`Barrier.breach`), rubble as a difficult-terrain Region | ✅ | The second blow took the section to 0: "Drive: Wall of Stone (section) is destroyed; its rubble is difficult terrain." Its wall segment and token gone, the gap no longer blocks movement, and a **Rubble** Region (the four squares either side of it) costs **10** ft to step into |
+| VS-47h | "The Hit Points of each section of the wall increase by 15" | Rank 7: 65 HP | `sectionHp` (+15 every two ranks) | ✅ | Built at **rank 7**: a section's Hit Points **65** |
 
 ### VS-48 · Wall of Thorns
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-48a | "You create a 5-foot-thick wall of brambles and thorns in a straight line up to 60 feet long and 10 feet high" | A straight line of squares up to 60 ft | | ☐ | |
-| VS-48b | "You must create the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A line across an occupied square is refused | | ☐ | |
-| VS-48c | "Everything on each side of the wall has cover from creatures on the opposite side" | An attack across the wall counts cover | | ☐ | |
-| VS-48d | "the wall's spaces are difficult terrain" | Its squares cost double | | ☐ | |
-| VS-48e | "For every move action a creature uses to enter at least one of the wall's spaces, that creature takes 3d4 piercing damage" | 3d4 piercing, no save, once per move action however many of its squares are entered | | ☐ | |
-| VS-48f | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 10, and 20 Hit Points" | Each section can be damaged on its own | | ☐ | |
-| VS-48g | "A destroyed section can be moved through freely" | A destroyed section stops hurting and is no longer difficult terrain | | ☐ | |
-| VS-48h | "The Hit Points of each section of the wall increase by 5, and the piercing damage increases by 1d4" | Rank 4: 25 HP, 4d4 | | ☐ | |
+| VS-48a | "You create a 5-foot-thick wall of brambles and thorns in a straight line up to 60 feet long and 10 feet high" | A straight line of squares up to 60 ft | `content/vanilla/wall-of-thorns.json` (`lingering.barrier`, kind `squares`; a line of 60, 30 or 10 ft) | ✅ | A 60-ft line east from (4000, 1200) — handed to the builder, as for VS-47 — became **twelve squares** in a straight row, six 10-ft sections of two squares each, every section its own Region of the spell's ground and a hazard token |
+| VS-48b | "You must create the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A line across an occupied square is refused | the build checks every square against every creature | ✅ | With Capricorn standing on the row: "Drive: Wall of Thorns is lost: its wall would pass through Capricorn." — nothing built. Moved off it, the wall stood |
+| VS-48c | "Everything on each side of the wall has cover from creatures on the opposite side" | An attack across the wall counts cover | a check-pipeline stage, `cover from a wall of squares` (`crossesAny` test) | ✅ | Leo struck Capricorn across the wall: the attack was against **DC 36** — Capricorn's AC 34 with standard cover's +2. The same Strike with Capricorn beside Leo, nothing between: **DC 34** |
+| VS-48d | "the wall's spaces are difficult terrain" | Its squares cost double | `difficultTerrain: 2` on each section's Region | ✅ | Capricorn stepping from below the wall into it: Foundry's path cost **10** ft for the one square |
+| VS-48e | "For every move action a creature uses to enter at least one of the wall's spaces, that creature takes 3d4 piercing damage" | 3d4 piercing, no save, once per move action however many of its squares are entered | `events: [tokenMoveIn]`, `damage` 3d4 piercing (no save); `firstForMovement` keyed on the wall, not the section | ✅ | One move action into the wall and along it through **two** sections: **one** "Wall of Thorns — Capricorn" 3d4 piercing = 8. Out, then a second move action back in: 3d4 = 10 again |
+| VS-48f | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 10, and 20 Hit Points" | Each section can be damaged on its own | `sectionHp`; the hazard's AC, Hardness, immunities | ✅ | Each section: **AC 10, Hardness 10, 20 HP**, immune to critical hits and precision (the same hazard as VS-47, whose immunities were driven there) |
+| VS-48g | "A destroyed section can be moved through freely" | A destroyed section stops hurting and is no longer difficult terrain | `Barrier.breach` (no rubble for a wall of squares) | ✅ | 30 slashing on a section (20 after Hardness) destroyed it: its token and its Region gone, no rubble. Stepping into its squares then cost **5** ft and dealt no damage. Found on the way: a section's Region and the wall's own expiry could be deleted twice on the same tick, and one failed delete left the rest of the wall standing — each removal is now its own, and quietly past one already gone |
+| VS-48h | "The Hit Points of each section of the wall increase by 5, and the piercing damage increases by 1d4" | Rank 4: 25 HP, 4d4 | `hpPerStep: 5`; the damage's `perStep: 1d4` | ✅ | Built at **rank 4**: a section's Hit Points **25**, its damage **4d4**. The 1-minute duration: a fresh 30-ft wall still stood after 30 seconds and was entirely gone — sections, Regions and hazard — after the minute |
 
 ### VS-49 · Hypnotize
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-49a | "Creatures are Dazzled while inside the cloud" | Dazzled on entering the 10-ft burst, gone on leaving it | | ☐ | |
-| VS-49b | "a creature must attempt a Will saving throw if it is inside the cloud when you cast it, when it enters the cloud, when it ends its turn within the cloud" | A Will save at the cast, on entering, and at the end of each turn inside | | ☐ | |
-| VS-49c | "or if it uses a Seek or Interact action on the cloud" | Seeking the cloud asks the save too | | ☐ | |
-| VS-49d | "A creature currently Fascinated by hypnotize doesn't attempt new saves" | No save while it is fascinated by this cloud | | ☐ | |
-| VS-49e | "Success The target is unaffected" | Nothing | | ☐ | |
-| VS-49f | "Failure The target is fascinated by the cloud" | Fascinated | | ☐ | |
-| VS-49g | "While it remains fascinated, it can't use reactions" | A critical failure also takes reactions away while fascinated | | ☐ | |
+| VS-49a | "Creatures are Dazzled while inside the cloud" | Dazzled on entering the 10-ft burst, gone on leaving it | `content/vanilla/hypnotize.json` (`lingering.inside`: dazzled) | ✅ | Aries cast it (rank 3) on a 10-ft burst at (4100, 1500) — placed through Foundry's own placement, the shape put at that point and confirmed. Capricorn and ZZ Victim inside were **dazzled**; Leo outside wasn't. Leo walked in: dazzled. Capricorn walked out: no longer dazzled |
+| VS-49b | "a creature must attempt a Will saving throw if it is inside the cloud when you cast it, when it enters the cloud, when it ends its turn within the cloud" | A Will save at the cast, on entering, and at the end of each turn inside | the cast's save (pf2e's card, `riders`); lingering `save` on `tokenMoveIn` and `tokenTurnEnd` | ✅ | At the cast, the card's Will save for the two inside (critical failure, failure). Leo entering: a Will save on the way in (success). At the end of Leo's turn inside: another (success) |
+| VS-49c | "or if it uses a Seek or Interact action on the cloud" | Seeking the cloud asks the save too | — | ⚠️ | **Gap:** a Seek or Interact *aimed at the cloud* asks no save — pf2e's Seek and Interact name no area as their object, so there is nothing to recognise one by. Left to the table |
+| VS-49d | "A creature currently Fascinated by hypnotize doesn't attempt new saves" | No save while it is fascinated by this cloud | `targetPredicate`: not `target:condition:fascinated` | ✅ | Capricorn and ZZ Victim, fascinated, ended their turns inside the cloud: **no** save for either; Leo, not fascinated, saved at the end of his |
+| VS-49e | "Success The target is unaffected" | Nothing | no rider on success | ✅ | Leo's successes left him only the dazzled the cloud gives anyone inside |
+| VS-49f | "Failure The target is fascinated by the cloud" | Fascinated | an effect granting pf2e's *Fascinated*, `withArea` | ✅ | Capricorn, failure: "fascinated by the cloud" — fascinated, and still fascinated after walking out of the cloud. When the spell ended, the fascination went with it, inside or out |
+| VS-49g | "While it remains fascinated, it can't use reactions" | A critical failure also takes reactions away while fascinated | the critical failure's effect: "fascinated by the cloud: no reactions" | ⚠️ | ZZ Victim, critical failure: fascinated, with the effect naming the lost reactions, both ending with the cloud. **Gap:** pf2e has no way to refuse a reaction, so the "can't use reactions" is a label on the sheet, not enforced |
 
 ### VS-50 · Slither
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-50a | "it's Grabbed or Restrained depending on its Reflex save" | Each creature in the 20-ft burst at the cast saves | | ☐ | |
-| VS-50b | "A creature that ends its turn in the area must also attempt this save, even if it's already grabbed or restrained by the snakes" | A save at the end of every turn inside, grabbed or not | | ☐ | |
-| VS-50c | "Failure The creature takes full damage and is grabbed by a snake" | Piercing and persistent poison damage, and grabbed | | ☐ | |
-| VS-50d | "As failure, but the creature takes double damage and is restrained by a snake" | Double damage, restrained | | ☐ | |
-| VS-50e | "The snakes' Escape DC is equal to your spell DC" | An Escape against the caster's spell DC frees it | | ☐ | |
-| VS-50f | "A creature can attack a snake to release the creature" | A snake can be struck (AC = spell DC); 12 damage at once destroys it and frees its creature | | ☐ | |
-| VS-50g | "Success The creature is unaffected" | Nothing | | ☐ | |
-| VS-50h | "You can Dismiss the spell" | Dismissing it frees everyone | | ☐ | |
-| VS-50i | "The persistent poison damage increases by 1d6 and snake HP increases by 6" | Rank 7: 2d6 persistent, 18 to destroy a snake | | ☐ | |
+| VS-50a | "it's Grabbed or Restrained depending on its Reflex save" | Each creature in the 20-ft burst at the cast saves | `content/vanilla/slither.json` (riders by the save's outcome) | ✅ | Aries cast it (rank 5) on a 20-ft burst at (4100, 1500), placed through Foundry's placement: Capricorn and ZZ Victim inside were targeted, Leo outside wasn't. Each rolled the card's Reflex save against DC 34 (ZZ Victim critical failure, Capricorn failure) |
+| VS-50b | "A creature that ends its turn in the area must also attempt this save, even if it's already grabbed or restrained by the snakes" | A save at the end of every turn inside, grabbed or not | lingering `save` on `tokenTurnEnd`; `onePerTarget` | ✅ | At the end of their turns inside: Capricorn (freed by then) failure → held again; ZZ Victim, already restrained, critical failure → damaged again, still **one** snake on him |
+| VS-50c | "Failure The creature takes full damage and is grabbed by a snake" | Piercing and persistent poison damage, and grabbed | failure riders: 3d6 piercing, 1d6 persistent poison, a snake that grabs | ✅ | Capricorn: 13 piercing (200 → 187), persistent poison **1d6**, **grabbed**, an Escape action, and a *shadow snake* hazard holding him |
+| VS-50d | "As failure, but the creature takes double damage and is restrained by a snake" | Double damage, restrained | critical failure riders: damage ×2, 2d6 persistent, a snake that restrains | ✅ | ZZ Victim: 20 piercing, persistent poison **2d6**, **restrained**, and its own snake |
+| VS-50e | "The snakes' Escape DC is equal to your spell DC" | An Escape against the caster's spell DC frees it | `encasement` with `escapeDc: "spell"` | ✅ | ZZ Victim's *Escape shadow snake*: Athletics against **DC 34** — the spell DC — critical failure, "does not break free", still restrained |
+| VS-50f | "A creature can attack a snake to release the creature" | A snake can be struck (AC = spell DC); 12 damage at once destroys it and frees its creature | `encasement` with `ac: "spell"`, `hp: 12`, `atOnce` | ✅ | Each snake: **AC 34** (the spell DC), 12 HP. 11 slashing on Capricorn's snake: back to **12** — no harm done. 12 at once: destroyed, and Capricorn released (no grabbed, no Escape left) |
+| VS-50g | "Success The creature is unaffected" | Nothing | no rider on success | ✅ | The success and critical-success branches carry nothing; Leo, outside the area, was never asked. (Both creatures inside failed or worse on every roll of the drive.) |
+| VS-50h | "You can Dismiss the spell" | Dismissing it frees everyone | `dismiss: true`; the snakes `withArea` | ✅ | *Dismiss Drive: Slither*: "Aries dismisses Slither.", then "ZZ Victim breaks free of shadow snake.", "Capricorn breaks free of shadow snake." — the snakes, their holds and their Escape actions gone |
+| VS-50i | "The persistent poison damage increases by 1d6 and snake HP increases by 6" | Rank 7: 2d6 persistent, 18 to destroy a snake | `perStep` with `perStepInterval: 2`; `hpPerStep: 6`, `hpPerStepInterval: 2` | ✅ | Cast at **rank 7**: ZZ Victim's critical failure brought **4d6** persistent poison (2 × 2d6) and a snake of **18** HP |
 
 ### VS-51 · Tangling Creepers
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-51a | "takes a –10-foot circumstance penalty to its Speeds while in the area" | A creature in the 40-ft burst has –10 ft Speeds, gone on leaving | | ☐ | |
-| VS-51b | "Once per round, you can Sustain the spell to make a vine lash out from any square within the expanse of creepers" | Sustaining (once a round) offers the vine's attack | | ☐ | |
-| VS-51c | "This vine has a 15-foot reach" | A target within 15 ft of the area | | ☐ | |
-| VS-51d | "Make a melee spell attack roll against the target" | The caster's melee spell attack against AC | | ☐ | |
-| VS-51e | "on a success, the vine pulls the target into the creepers" | A target outside the area is moved into it | | ☐ | |
-| VS-51f | "makes it Immobilized for 1 round or until the creature Escapes (against your spell DC), whichever comes first" | Immobilized for a round, with an Escape | | ☐ | |
+| VS-51a | "takes a –10-foot circumstance penalty to its Speeds while in the area" | A creature in the 40-ft burst has –10 ft Speeds, gone on leaving | `content/vanilla/tangling-creepers.json` (`lingering.inside`: a –10 ft circumstance penalty to land, climb and swim Speeds) | ✅ | Aries cast it (rank 6) on a 40-ft burst at (4100, 1500), 10 minutes. Capricorn inside: land Speed **15**; walked out: **25**; back in: 15 again. The penalty is to land, climb and swim — not fly |
+| VS-51b | "Once per round, you can Sustain the spell to make a vine lash out from any square within the expanse of creepers" | Sustaining (once a round) offers the vine's attack | `sustain.vine`; `canSustain` | ✅ | Round 2, Sustain: "Tangling Creepers: a vine" offered the creatures within its reach. A second Sustain that round: "Tangling Creepers has already been Sustained this round." — no vine |
+| VS-51c | "This vine has a 15-foot reach" | A target within 15 ft of the area | `reachOf` test (edge to edge, 15 ft) | ✅ | Offered: Capricorn and D5 (inside), ZZ Victim (5 ft outside the edge). Leo, 40 ft out, was not |
+| VS-51d | "Make a melee spell attack roll against the target" | The caster's melee spell attack against AC | the spell's own spellcasting statistic, against the target's AC | ✅ | "the vine's spell attack" against ZZ Victim: **DC 10** (his AC), success; against Capricorn: **DC 34** (his AC), success |
+| VS-51e | "on a success, the vine pulls the target into the creepers" | A target outside the area is moved into it | a hit outside the area pulls the target square by square toward its middle until inside (`forcedMovement`) | ✅ | ZZ Victim, outside at (5000, 1500): pulled to (4800, 1500), **inside** the creepers. Capricorn, already inside, stayed where he was |
+| VS-51f | "makes it Immobilized for 1 round or until the creature Escapes (against your spell DC), whichever comes first" | Immobilized for a round, with an Escape | `vine.riders`: immobilized, 1 round, `escapeDc: "spell"` | ✅ | ZZ Victim: *Immobilized* for **1 round** and *Escape Drive: Tangling Creepers* — Athletics against **DC 34** (the spell DC), critical failure. One round on, at the end of Aries' next turn, the immobilized ended by itself |
 
 ### VS-52 · Weapon Storm
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-52a | "You swing a weapon you're holding" | No held weapon, no cast | | ☐ | |
-| VS-52b | "Area 30-foot cone or 10-foot emanation" | The cast asks cone or emanation | | ☐ | |
-| VS-52c | "This flurry deals four dice of damage to creatures in the area" | Four dice | | ☐ | |
-| VS-52d | "This damage has the same type as the weapon and uses the same die size" | A longsword's d8 slashing gives 4d8 slashing | | ☐ | |
-| VS-52e | "if you were wielding a two-hand weapon in both hands, you'd use its two-hand damage die" | A bastard sword held in two hands gives 4d12 | | ☐ | |
-| VS-52f | "Critical Failure The target takes double damage and is subject to the weapon's critical specialization effect" | Double damage and the weapon group's critical specialization | | ☐ | |
-| VS-52g | "Add another damage die" | Rank 5: five dice | | ☐ | |
+| VS-52a | "You swing a weapon you're holding" | No held weapon, no cast | `content/vanilla/weapon-storm.json` (`requires: "held-weapon"`); a cast stage, `what a spell needs` (`scripts/vanilla/requires.mjs`) | ✅ | Aries with nothing in hand: "Drive: Weapon Storm needs a weapon in hand." — nothing posted, nothing aimed. With a longsword in hand, the cast went ahead. Holding a bastard sword and a club, the cast asked **which weapon** (both offered); the club gave 4d6 bludgeoning |
+| VS-52b | "Area 30-foot cone or 10-foot emanation" | The cast asks cone or emanation | `areaTargetingShapes`: pf2e's own *Cone* and *Emanation* variants; `anchor: "caster"` | ✅ | The cast offered **A 30-foot cone / A 10-foot emanation**. The cone opened from Aries' edge toward the aim and caught ZZ Victim and Capricorn; the emanation went on no cursor and caught Capricorn, 10 ft away. Found on the way: one `anchor` for both shapes put the emanation on the cursor — "from the caster" is now an emanation's own self-anchoring |
+| VS-52c | "This flurry deals four dice of damage to creatures in the area" | Four dice | `area-damage` with `weaponDice: 4`, rolled once for the cast | ✅ | Longsword: **4d8** = 21, one roll for everyone it reached |
+| VS-52d | "This damage has the same type as the weapon and uses the same die size" | A longsword's d8 slashing gives 4d8 slashing | `dieAsHeld` (the weapon's die and damage type) | ✅ | Longsword (d8 slashing) → **4d8 slashing**; club (d6 bludgeoning) → **4d6 bludgeoning** |
+| VS-52e | "if you were wielding a two-hand weapon in both hands, you'd use its two-hand damage die" | A bastard sword held in two hands gives 4d12 | `dieAsHeld` test (two-hand die only in both hands) | ✅ | Bastard sword held in **two** hands, rank 5: **5d12 slashing** — its two-hand d12, not its d8 |
+| VS-52f | "Critical Failure The target takes double damage and is subject to the weapon's critical specialization effect" | Double damage and the weapon group's critical specialization | `critSpecialization` (`CRITICAL_SPECIALIZATIONS` in `scripts/riders/weapon.mjs`, pf2e's text for the rest) | ⚠️ | Critical failures: with the **longsword**, ZZ Victim took 42 (double) and was **off-guard until the start of Aries' next turn** (sword); with the **club**, 20 and **pushed 10 feet** away (club); with a **battle axe**, 36 and pf2e's own text for the axe's specialization posted. **Gap:** groups whose effect needs a choice the table makes — axe (a second creature), bow (a surface), pick, bomb, grenade, sniper — and the persistent-damage groups are said, not applied; the effects of sword, spear, cryo, hammer, flail, brawling, firearm, sling, shock, laser, mental, poison, projectile, sonic, club, shield and polearm are applied |
+| VS-52g | "Add another damage die" | Rank 5: five dice | `perStepDice: 1` | ✅ | Rank **5**: five dice (5d12 with the bastard sword in both hands) |
 
 ## Batch 3 — Attacks
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 285 |
-| ✅ | 39 |
-| ⚠️ | 1 |
+| ☐ not yet driven | 241 |
+| ✅ | 80 |
+| ⚠️ | 4 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

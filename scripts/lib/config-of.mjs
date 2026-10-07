@@ -15,6 +15,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "overlap",
     "bypass",
     "counterThresholds",
+    // What a spell needs before it is cast — *Weapon Storm*'s "a weapon you're holding" (`vanilla/requires.mjs`).
+    "requires",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

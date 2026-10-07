@@ -3,7 +3,7 @@ import { flagOf } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
 import { targetingOptions, testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
-import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
+import { applyRiderList, growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
 import { LIB_ID } from "../id.mjs";
 import { Inside, insidePayload } from "./inside.mjs";
 import { Sustain } from "../riders/sustain.mjs";
@@ -12,6 +12,8 @@ import { RiderExtensions } from "../riders/extensions.mjs";
 import { combatOf } from "../lib/combat.mjs";
 import { Relay } from "../riders/relay.mjs";
 import { Repels } from "./repels.mjs";
+import { Barrier } from "./barrier.mjs";
+import { pullSteps } from "../riders/pull.mjs";
 
 export const FLAG = "lingering";
 
@@ -50,6 +52,9 @@ export const Lingering = {
             const sustain = flagOf(region, FLAG)?.sustain;
             if (sustain?.move) return Lingering.fly(region);
             if (sustain?.bolt) return Lingering.bolt(region);
+            if (sustain?.vine) return Lingering.vine(region);
+            // Sustained only to keep it going — *Hypnotize*.
+            if (!Number(sustain?.radius)) return t("Lingering.Kept");
             return Lingering.grow(region);
         };
         Relay.register("lingeringBolt", (payload) => Lingering.strike(payload));
@@ -123,6 +128,18 @@ export const Lingering = {
         // "If you cast this spell again, any previous scatter scree you've cast ends."
         if (specs.some((spec) => spec.replacesPrevious)) await Lingering.endPrevious(config.item);
 
+        // A wall of sections — *Wall of Stone*, *Wall of Thorns* — is built along the placed runs (`barrier.mjs`); a
+        // wall of squares gives each section its own patch of the spell's ground.
+        const walled = specs.find((spec) => spec.barrier);
+        if (walled) {
+            const { barrier, ...ground } = walled;
+            const seconds = walled.duration ? (Number(walled.duration.value) || 1) * (UNIT_SECONDS[walled.duration.unit ?? "minutes"] ?? 60) : null;
+            return Barrier.build(barrier, config, placed, originToken, {
+                expiresAt: seconds ? game.time.worldTime + seconds : null,
+                makeRegion: (shapes, castId) => Lingering.createOne(ground, config, { shapes, color: placed[0].color, toObject: () => ({ shapes }) }, originToken, { castId, first: false, section: true }),
+            });
+        }
+
         // The areas of one cast know each other: *Lightning Storm*'s two clouds are one storm, with one Sustain.
         const castId = foundry.utils.randomID();
         const created = [];
@@ -173,7 +190,7 @@ export const Lingering = {
         return Lingering.create({ item, steps, area: { type: areaType }, affected }, regions, originToken);
     },
 
-    async createOne(spec, config, region, originToken, { castId = null, first = true } = {}) {
+    async createOne(spec, config, region, originToken, { castId = null, first = true, section = false } = {}) {
         const seconds = (Number(spec.duration?.value) || 1) * (UNIT_SECONDS[spec.duration?.unit ?? "minutes"] ?? 60);
         const behaviors = [];
 
@@ -252,6 +269,8 @@ export const Lingering = {
                             followsCaster: spec.followsCaster === true,
                             drifts: spec.drifts ?? null,
                             castId,
+                            // A section of a wall of squares: the wall is one wall to a move (`firstForMovement`).
+                            section,
                             repels: spec.repels ?? null,
                             repelled: {},
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
@@ -525,6 +544,46 @@ export const Lingering = {
         return t("Lingering.Bolted", { name: token?.name ?? "" });
     },
 
+    /**
+     * A vine from the creepers. *Tangling Creepers*: "Once per round, you can Sustain the spell to make a vine lash out
+     * from any square within the expanse of creepers. This vine has a 15-foot reach. Make a melee spell attack roll
+     * against the target; on a success, the vine pulls the target into the creepers and makes it Immobilized for 1
+     * round or until the creature Escapes." The caster picks a creature within reach of the area; the attack is the
+     * spell's own spell attack; a hit pulls an outside target in, square by square toward the middle, and applies
+     * `vine.riders`.
+     */
+    async vine(region) {
+        const payload = flagOf(region, FLAG);
+        const scene = region.parent;
+        const vine = payload?.sustain?.vine;
+        if (!vine || !scene) return null;
+        const grid = scene.grid.size;
+        const shape = region.shapes?.[0];
+        const reach = ((Number(vine.reach) || 15) / (scene.grid.distance || 5)) * grid;
+        const originActor = payload.originUuid ? await fromUuid(payload.originUuid) : null;
+        const inReach = scene.tokens.filter((token) => token.actor && token.actor !== originActor
+            && reachOf(token, shape, grid) <= reach + 0.5);
+        const tokenId = await chooseBoltTarget(payload.name ?? region.name, inReach, "Lingering.VineTitle", "Lingering.VineHint");
+        if (!tokenId) return t("Lingering.NoBolt");
+        const token = scene.tokens.get(tokenId);
+        const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
+        const attack = item?.spellcasting?.statistic ?? originActor?.spellcasting?.find?.((entry) => entry.statistic)?.statistic;
+        const roll = attack ? await attack.roll({ dc: { value: token.actor.armorClass?.value ?? 10 }, skipDialog: true, item, traits: ["attack"], extraRollOptions: ["attack", "melee", "spell-attack-roll"], label: t("Lingering.VineAttack", { name: payload.name ?? region.name }) }) : null;
+        if ((roll?.degreeOfSuccess ?? 0) < 2) return t("Lingering.VineMissed", { name: token.name });
+        // "Pulls the target into the creepers."
+        if (!region.tokens?.has?.(token) && Number.isFinite(shape?.x)) {
+            const size = { w: token.width * grid, h: token.height * grid };
+            let at = { x: token.x, y: token.y };
+            for (const next of pullSteps(at, size, { x: shape.x, y: shape.y }, 99, grid)) {
+                at = next;
+                if (Math.hypot(at.x + size.w / 2 - shape.x, at.y + size.h / 2 - shape.y) <= (Number(shape.radius) || 0)) break;
+            }
+            await token.update({ x: at.x, y: at.y }, { animate: false, forcedMovement: true });
+        }
+        await applyRiderList(vine.riders, { ...saveWork(token, originActor, item, region), outcome: "success", created: [] });
+        return t("Lingering.VineCaught", { name: token.name });
+    },
+
     /** GM: the bolt falls on a creature that is inside a cloud of this storm. */
     async strike({ regionUuid, tokenUuid }) {
         const region = await fromUuid(regionUuid);
@@ -553,7 +612,11 @@ export const Lingering = {
             // Scenery first: a Region deleted while its walls are still standing leaves nothing behind to
             // say the walls were ever ours.
             for (const region of stale) await Lingering.clearScenery(scene, flagOf(region, FLAG));
-            await scene.deleteEmbeddedDocuments("Region", stale.map((region) => region.id));
+            // One at a time, and quietly past one already gone: a wall's own sweep (`barrier.mjs`) may take a
+            // section's Region on the same tick, and one failed id would otherwise keep every other one standing.
+            for (const region of stale) {
+                if (scene.regions.has(region.id)) await scene.deleteEmbeddedDocuments("Region", [region.id]).catch(() => null);
+            }
         }
     },
 };
@@ -668,11 +731,20 @@ async function burnAlong(tokens, damage, item, originActor, name, flavor = "Ling
     }
 }
 
+/** How far a token's nearest edge is from a circular area's edge, in pixels — 0 inside it. */
+export function reachOf(token, shape, gridSize) {
+    if (!shape || !Number.isFinite(shape.x)) return Infinity;
+    const half = (Math.max(token.width, token.height) * gridSize) / 2;
+    const cx = (token._source?.x ?? token.x) + (token.width * gridSize) / 2;
+    const cy = (token._source?.y ?? token.y) + (token.height * gridSize) / 2;
+    return Math.max(0, Math.hypot(cx - shape.x, cy - shape.y) - (Number(shape.radius) || 0) - half);
+}
+
 /** Which creature inside the storm a bolt falls on, or none. */
-async function chooseBoltTarget(name, tokens) {
+async function chooseBoltTarget(name, tokens, title = "Lingering.BoltTitle", hint = "Lingering.BoltHint") {
     const choice = await foundry.applications.api.DialogV2.wait({
-        window: { title: t("Lingering.BoltTitle", { name }) },
-        content: `<p>${t("Lingering.BoltHint", { name })}</p>`,
+        window: { title: t(title, { name }) },
+        content: `<p>${t(hint, { name })}</p>`,
         buttons: [
             ...tokens.map((token) => ({ action: token.id, label: token.name })),
             { action: "none", label: t("Lingering.BoltNone") },
@@ -838,7 +910,9 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         // One move action is one check, however many times Foundry reports it: a long drag into *Web* comes
         // as "moved in" and then "moved within", and both used to roll Athletics.
-        if (!firstForMovement(region?.uuid, event)) {
+        // A wall of squares is one wall however many sections a move crosses: "for every move action a creature uses
+        // to enter at least one of the wall's spaces".
+        if (!firstForMovement(payload.section ? payload.castId : region?.uuid, event)) {
             if (event.name === CONST.REGION_EVENTS.TOKEN_MOVE_OUT) await Inside.leave(region, event.data.token);
             return;
         }

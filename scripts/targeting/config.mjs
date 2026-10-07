@@ -123,7 +123,8 @@ export function configFor(item, override = {}) {
         // An authored anchor wins, because "centred on you" is a fact about the Technique rather than
         // about the shape: *Rozan Shō Ryū Ha* is a cylinder that climbs out of the Saint's own square, and
         // putting it on the cursor asks the player to aim something that has only one place to be.
-        anchor: flag?.anchor ?? (area?.type === "emanation" ? "self" : "free"),
+        // "From the caster" for an emanation is its own self-anchoring: *Weapon Storm*'s cone and emanation share one flag.
+        anchor: area?.type === "emanation" && flag?.anchor === "caster" ? "self" : (flag?.anchor ?? (area?.type === "emanation" ? "self" : "free")),
         maxTargets: grown.maxTargets,
         // The flag's range when it has one — *Another Dimension* declares 60 feet and grows it ten a step —
         // and the spell's own otherwise. Every area Technique in the module states its reach in

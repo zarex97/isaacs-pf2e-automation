@@ -32,6 +32,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
 | Heroism | 3 |  | spell-effect-heroism |  |
 | Hydraulic Push | 1 |  | success: pushed 5 ft away; crit. success: pushed 10 ft away |  |
+| Hypnotize | 3 | 10-ft burst (pf2e's), all | failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area) | ends if not Sustained, while inside: dazzled, will on entering / turn end — failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area), 1 minutes |
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
 | Ignition | 1 | variant — Ignition (Melee): crit. success: 1d6 (+1d6 per rank) persistent fire | crit. success: 1d4 (+1d4 per rank) persistent fire |  |
 | Ill Omen | 1 |  | failure / crit. failure: spell-effect-ill-omen |  |
@@ -51,16 +52,21 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |
+| Slither | 5 | 20-ft burst (pf2e's), all | failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area) | Dismiss, reflex on turn end — failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area), 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Soothe | 1 |  | heals 1d10+4 (+1d10+4 per rank); spell-effect-soothe |  |
 | Spirit Link | 1 |  | transfer; spirit link (10 minutes, carries turn-start transfer, on you) |  |
 | Sure Strike | 1 |  | spell-effect-sure-strike (on you); temporarily immune to sure strike (10 minutes, on you); GM note: “You are temporarily immune to sure strike: this casting has no effect.” (on you) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
+| Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
+| Wall of Stone | 5 | choose: 120-ft line or 60-ft line or 30-ft line or 2 × 60-ft line or 3 × 40-ft line or 4 × 30-ft line, all, placed, no targets |  | a wall of borders, in 10-ft sections: AC 10, Hardness 14, 50 HP (+15 per 2 ranks), rubble when breached |
+| Wall of Thorns | 3 | choose: 60-ft line or 30-ft line or 10-ft line, all, placed, no targets |  | difficult terrain, a wall of squares, in 10-ft sections: AC 10, Hardness 10, 20 HP (+5 per rank), cover across it, 3d4 piercing on entering, 1 minutes |
+| Weapon Storm | 4 | choose: 30-ft cone or 10-ft emanation, from you, all | rolled once: 4 dice of the held weapon (+1 per rank), one basic reflex each, critical specialization on a critical failure |  |
 | Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
 
 ## Legacy names

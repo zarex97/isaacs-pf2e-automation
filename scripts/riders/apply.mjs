@@ -13,6 +13,7 @@ import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
 import { applyPull } from "./pull.mjs";
+import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -343,6 +344,11 @@ async function applyFlatCheck(rider, context) {
     }
 }
 
+
+/** Riders applied in order outside any event — what a lingering area's own action does to whoever it reaches. */
+export async function applyRiderList(riders, context) {
+    for (const rider of riders ?? []) await applyOne(rider, context);
+}
 
 async function applyOne(rider, context) {
     const apply = rider.apply ?? {};
@@ -1733,6 +1739,18 @@ async function applyExpire(rider, context) {
     }
 }
 
+/** The area this cast left on the board — its lingering Region, newest first — for an effect that ends with it. */
+function areaOfCast(context) {
+    const item = castItemOf(context);
+    const itemUuid = (item?.original ?? item)?.uuid;
+    const origin = context.originActor?.uuid;
+    for (const scene of [canvas?.scene, ...(game.scenes ?? [])].filter(Boolean)) {
+        const found = scene.regions.contents.filter((r) => r.flags?.[LIB_ID]?.lingering?.itemUuid === itemUuid && r.flags[LIB_ID].lingering.originUuid === origin).at(-1);
+        if (found) return found.uuid;
+    }
+    return null;
+}
+
 /** An authored effect from a pack — the riders that are more than a condition with a timer. */
 async function applyEffect(rider, context) {
     // An effect written out in the content — *Web*'s "–10-foot circumstance penalty to its Speeds" — when
@@ -1743,6 +1761,12 @@ async function applyEffect(rider, context) {
         // "A creature that gets out of the web ceases to take a circumstance penalty": an effect given by a
         // lingering area's check can end on leaving it, the way an area held while inside does.
         if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { inside: context.region } });
+        // "Fascinated by the cloud" lasts as long as the cloud does — *Hypnotize*: it ends with the area, wherever its
+        // holder is (`inside.mjs` takes it off when the Region goes).
+        if (rider.apply.withArea) {
+            const area = context.region ?? areaOfCast(context);
+            if (area) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { withArea: area } });
+        }
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
         await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });
@@ -2351,9 +2375,15 @@ async function applyAreaDamage(rider, context) {
             const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
             const steps = riderSteps(rider, context);
             const rolled = [];
+            // *Weapon Storm*: dice of "the same type as the weapon and … the same die size" — a weapon the caster holds.
+            const weapon = (rider.apply.parts ?? []).some((part) => part.weaponDice) ? await chooseHeldWeapon(context.originActor, item?.name ?? "") : null;
+            rolled.weapon = weapon;
             for (const part of rider.apply.parts ?? []) {
-                const type = (part.typeFromSpell && item?.system?.damage?.[part.typeFromSpell]?.type) || part.type || "untyped";
-                const formula = part.perStep ? growByStep(part.formula, part.perStep, steps) : part.formula;
+                if (part.weaponDice && !weapon) continue;
+                const type = part.weaponDice ? weapon.system.damage.damageType
+                    : (part.typeFromSpell && item?.system?.damage?.[part.typeFromSpell]?.type) || part.type || "untyped";
+                const formula = part.weaponDice ? `${Number(part.weaponDice) + (Number(part.perStepDice) || 0) * steps}${dieAsHeld(weapon)}`
+                    : part.perStep ? growByStep(part.formula, part.perStep, steps) : part.formula;
                 const roll = await new DamageRoll(`(${formula})[${type}]`).evaluate();
                 await roll.toMessage({ flavor: t("AreaDamage.Flavor", { item: item?.name ?? t("Rider.Name"), type }), speaker: ChatMessage.getSpeaker({ actor: context.originActor }) });
                 rolled.push({ total: roll.total, type, zone: part.zone ?? null });
@@ -2372,6 +2402,14 @@ async function applyAreaDamage(rider, context) {
     const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
     const roll = await new DamageRoll(typedTotals(reaching)).evaluate();
     await actor.applyDamage({ damage: multiplier === 1 ? roll : roll.alter(multiplier, 0), token, item });
+    // "And is subject to the weapon's critical specialization effect" — what is a plain effect on the creature is
+    // applied (`weapon.mjs`); the rest is pf2e's own text, said.
+    if (save?.degreeOfSuccess === 0 && rider.apply.critSpecialization && rolled.weapon) {
+        const group = rolled.weapon.system?.group;
+        const riders = CRITICAL_SPECIALIZATIONS[group];
+        if (riders) await applyRiderList(riders, { ...context, outcome: "criticalFailure" });
+        else context.notes.push(t("Weapon.CritSpec", { name: actor.name, weapon: rolled.weapon.name, text: criticalSpecializationText(group) ?? group ?? "" }));
+    }
 }
 
 export function growByStep(base, perStep, steps) {

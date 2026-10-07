@@ -3,6 +3,8 @@ import { flagOf } from "../lib/flags.mjs";
 import { bonusStepsFrom, stepsFor } from "../targeting/heightening.mjs";
 import { LIB_ID } from "../id.mjs";
 import { escapeDcFor } from "./escape.mjs";
+import { RiderExtensions } from "./extensions.mjs";
+import { DamageBus } from "../lib/damage-bus.mjs";
 
 export const FLAG = "encasement";
 
@@ -43,11 +45,34 @@ export const Encasement = {
                   bonusSteps: bonusStepsFrom(context.originActor?.getRollOptions?.() ?? []),
               })
             : 0;
+        // *Slither*'s snakes grow "every 2 ranks" — `hpPerStepInterval`.
+        const hpSteps = Math.floor(steps / Math.max(1, Number(spec.hpPerStepInterval) || 1));
+        const source = (context.item?.original ?? context.item)?.uuid ?? null;
         const grown = {
             ...spec,
+            // "A snake's AC is equal to your spell DC": `ac` may name a DC the way a save's `dc` does.
+            ac: typeof spec.ac === "string" ? (RiderExtensions.resolveDC(spec.ac, context) ?? 10) : spec.ac,
             hardness: (Number(spec.hardness) || 0) + (Number(spec.hardnessPerStep) || 0) * steps,
-            hp: (Number(spec.hp) || 0) + (Number(spec.hpPerStep) || 0) * steps,
+            hp: (Number(spec.hp) || 0) + (Number(spec.hpPerStep) || 0) * hpSteps,
+            source,
+            withArea: spec.withArea ? (context.region ?? areaOf(source, context.originActor?.uuid)) : null,
         };
+
+        // One hold per spell per creature: a creature already held by this spell that fails again stays held, and
+        // what the new result adds — *Slither*'s critical failure, restrained — is added to the hold it has.
+        if (spec.onePerTarget) {
+            const held = game.actors.find((a) => flagOf(a, FLAG)?.targetUuid === target.uuid && flagOf(a, FLAG)?.source === source);
+            if (held) {
+                for (const slug of [spec.conditions].flat().filter(Boolean)) {
+                    if (target.hasCondition(slug)) continue;
+                    const had = new Set(target.itemTypes.condition.map((c) => c.id));
+                    await target.increaseCondition(slug);
+                    for (const c of target.itemTypes.condition) if (!had.has(c.id)) context.created?.push(c.id);
+                }
+                await held.setFlag(LIB_ID, `${FLAG}.conditions`, [...new Set([...(flagOf(held, FLAG).conditions ?? []), ...[spec.conditions].flat().filter(Boolean)])]);
+                return;
+            }
+        }
 
         const hazard = await createHazard(grown, target, token);
         if (!hazard) return;
@@ -104,6 +129,19 @@ export const Encasement = {
 
     /** An encased creature reduced to 0 Hit Points is a creature no longer encased. */
     registerHooks() {
+        // "Destroyed if it takes 12 or more damage at once": a blow that doesn't break it leaves it whole.
+        DamageBus.after("a hold that only breaks all at once", 88, async (actor) => {
+            if (game.users.activeGM?.id !== game.user.id) return;
+            const spec = flagOf(actor, FLAG);
+            if (!spec?.atOnce) return;
+            const hp = actor.hitPoints;
+            if (hp && hp.value > 0 && hp.value < hp.max) await actor.update({ "system.attributes.hp.value": hp.max });
+        });
+        // What a spell's area holds lets go when the area goes — *Slither*'s snakes, dismissed or out of time.
+        Hooks.on("deleteRegion", async (region) => {
+            if (game.users.activeGM?.id !== game.user.id) return;
+            for (const hazard of game.actors.filter((a) => flagOf(a, FLAG)?.withArea === region.uuid)) await Encasement.destroy(hazard, { freed: true });
+        });
         Hooks.on("updateActor", async (actor) => {
             if (game.users.activeGM?.id !== game.user.id) return;
             if (!flagOf(actor, FLAG)) return;
@@ -112,6 +150,13 @@ export const Encasement = {
         });
     },
 };
+
+/** The lingering area a cast of this spell left, newest last. */
+function areaOf(itemUuid, originUuid) {
+    if (!itemUuid) return null;
+    const found = canvas?.scene?.regions?.contents?.filter((r) => r.flags?.[LIB_ID]?.lingering?.itemUuid === itemUuid && r.flags[LIB_ID].lingering.originUuid === originUuid).at(-1);
+    return found?.uuid ?? null;
+}
 
 async function createHazard(spec, target, token) {
     const level = spec.level ?? target.level ?? 1;
@@ -135,6 +180,9 @@ async function createHazard(spec, target, token) {
                             name: spec.name ?? null,
                             targetUuid: target.uuid,
                             conditions: spec.conditions ?? [],
+                            source: spec.source ?? null,
+                            atOnce: spec.atOnce === true,
+                            withArea: spec.withArea ?? null,
                         },
                     },
                 },

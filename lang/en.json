@@ -169,12 +169,26 @@
             "Flew": "moved {feet} ft. {direction}, over {count} creature(s)",
             "FlewFlavor": "{name} — its flight",
             "Stayed": "left where it is",
+            "Kept": "it goes on",
+            "VineTitle": "{name}: a vine",
+            "VineHint": "Which creature does the vine lash at? Everyone within its reach of the creepers is offered.",
+            "VineAttack": "{name}: the vine's spell attack",
+            "VineMissed": "the vine misses {name}",
+            "VineCaught": "the vine catches {name}",
             "BoltTitle": "{name}: a bolt",
             "BoltHint": "Where does the bolt fall? Every creature inside the storm is offered; the bolt strikes the one you choose.",
             "BoltNone": "On no one",
             "BoltFlavor": "{name} — a lightning bolt",
             "Bolted": "a bolt falls on {name}",
             "NoBolt": "no bolt"
+        },
+        "Barrier": {
+            "Lost": "{name} is lost: its wall would pass through {names}.",
+            "Section": "{name} (section)",
+            "Rubble": "{name} is destroyed; its rubble is difficult terrain.",
+            "Breached": "{name} is destroyed.",
+            "RubbleName": "Rubble",
+            "Cover": "cover from {name}"
         },
         "Repels": {
             "Barred": "{name} can't move closer to {caster} within {area}."
@@ -184,6 +198,13 @@
         },
         "AreaDamage": {
             "Flavor": "{item} — {type}, rolled once for everyone it reaches"
+        },
+        "Weapon": {
+            "Choose": "Which weapon do you swing?",
+            "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}"
+        },
+        "Requires": {
+            "HeldWeapon": "{name} needs a weapon in hand."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -453,6 +474,39 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "weapon-storm": {
+                "Cone": "A 30-foot cone",
+                "Emanation": "A 10-foot emanation"
+            },
+            "tangling-creepers": {
+                "Creepers": "Tangling Creepers",
+                "Slowed": "–10 feet to land, climb and swim Speeds among the creepers."
+            },
+            "slither": {
+                "Snakes": "Slither",
+                "Snake": "shadow snake"
+            },
+            "hypnotize": {
+                "Cloud": "Hypnotize",
+                "Fascinated": "fascinated by the cloud",
+                "NoReactions": "fascinated by the cloud: no reactions",
+                "Dazzled": "Dazzled inside the cloud."
+            },
+            "wall-of-thorns": {
+                "Wall": "Wall of Thorns",
+                "Line60": "A straight line, 60 feet",
+                "Line30": "A straight line, 30 feet",
+                "Line10": "A straight line, 10 feet"
+            },
+            "wall-of-stone": {
+                "Wall": "Wall of Stone",
+                "Straight120": "One straight run, 120 feet",
+                "Straight60": "One straight run, 60 feet",
+                "Straight30": "One straight run, 30 feet",
+                "Two60": "Two runs of 60 feet (one bend)",
+                "Three40": "Three runs of 40 feet (two bends)",
+                "Four30": "Four runs of 30 feet (three bends)"
             },
             "repulsion": {
                 "Aura": "Repulsion"
