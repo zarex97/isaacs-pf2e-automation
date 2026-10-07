@@ -389,6 +389,10 @@
             "malediction": {
                 "Area": "Malediction"
             },
+            "sure-strike": {
+                "Immune": "temporarily immune to sure strike",
+                "AlreadyImmune": "You are temporarily immune to sure strike: this casting has no effect."
+            },
             "banishment": {
                 "Week": "It can't return by any means to the plane it was banished from for 1 week.",
                 "Cost": "Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane."

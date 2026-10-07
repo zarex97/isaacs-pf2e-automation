@@ -84,7 +84,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-29 | `sure-strike` | 1 | An effect on the caster, then immunity | "You are then temporarily immune to sure strike for 10 minutes" | Casting it puts its effect on the caster, then refuses a second cast for 10 minutes | | ☐ | |
+| VS-29 | `sure-strike` | 1 | An effect on the caster, then immunity | "You are then temporarily immune to sure strike for 10 minutes" | Casting it puts its effect on the caster, then refuses a second cast for 10 minutes | `content/vanilla/sure-strike.json` (no aiming; self `action-used` riders, predicated on not having `sure-strike-immunity`: pf2e's *Spell Effect: Sure Strike* and a 10-minute immunity marker; a note when already immune) | ✅ | **Cast:** no placement; Aries held *Spell Effect: Sure Strike* (until the end of the turn) and "temporarily immune to sure strike" for 10 minutes. **Strike:** rolled `2d20kh + 29`, after which pf2e used the effect up. **Cast again** within the 10 minutes → "You are temporarily immune to sure strike: this casting has no effect", no new effect. RAW reading: being immune makes the casting do nothing rather than forbidding it, so the cast is not blocked. The marker's own expiry is pf2e's (it is checked as turns pass). |
 | VS-30 | `heroism` | 3 | An ally's effect that grows by rank | "Heightened (6th) The status bonus increases to +2" | The effect lands on the chosen ally; +2 from rank 6, +3 from rank 9 | | ☐ | |
 | VS-31 | `haste` | 3 | Allies, more from a rank | "Heightened (7th) You can target up to 6 creatures" | Quickened on one ally, up to six from rank 7 | | ☐ | |
 | VS-32 | `soothe` | 1 | Healing plus an effect | "regains 1d10+4 Hit Points … and gains a +2 status bonus" | The ally regains the healing and gains the effect | | ☐ | |
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 12 |
-| ✅ | 28 |
+| ☐ not yet driven | 11 |
+| ✅ | 29 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

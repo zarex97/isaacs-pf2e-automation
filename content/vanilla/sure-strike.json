@@ -1,0 +1,49 @@
+{
+    "areaTargeting": false,
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "not": "target:effect:sure-strike-immunity"
+                }
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.fpGDAz2v5PG0zUSl",
+                "replace": true
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "not": "target:effect:sure-strike-immunity"
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.sure-strike.Immune",
+                "slug": "sure-strike-immunity",
+                "rules": []
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "target:effect:sure-strike-immunity"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.sure-strike.AlreadyImmune"
+            }
+        }
+    ]
+}
