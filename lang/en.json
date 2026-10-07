@@ -199,6 +199,13 @@
         "AreaDamage": {
             "Flavor": "{item} — {type}, rolled once for everyone it reaches"
         },
+        "Weapon": {
+            "Choose": "Which weapon do you swing?",
+            "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}"
+        },
+        "Requires": {
+            "HeldWeapon": "{name} needs a weapon in hand."
+        },
         "Dismiss": {
             "Name": "Dismiss {name}",
             "Description": "Dismiss {name}: the area it left ends.",
@@ -467,6 +474,10 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "weapon-storm": {
+                "Cone": "A 30-foot cone",
+                "Emanation": "A 10-foot emanation"
             },
             "tangling-creepers": {
                 "Creepers": "Tangling Creepers",

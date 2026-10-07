@@ -45,7 +45,7 @@ export function docs(built, index, en) {
             : a.type === "heal" ? `heals ${a.formula ?? a.value}${a.perStep ? ` (+${a.perStep} per rank)` : ""}`
             : a.type === "banish" ? (r.duration?.unit === "unlimited" ? "banished for good" : "banished")
             : a.type === "pull" ? `pulled toward the centre on a ${a.save ?? "reflex"} save: ${Object.entries(a.feet ?? {}).map(([o, f]) => `${o} ${f} ft`).join(", ")}`
-            : a.type === "area-damage" ? `rolled once: ${(a.parts ?? []).map((p) => `${p.formula} ${p.typeFromSpell ? "(chosen energy)" : p.type}${p.zone ? ` (${p.zone} only)` : ""}`).join(" + ")}, one basic ${a.save ?? "reflex"} each`
+            : a.type === "area-damage" ? `rolled once: ${(a.parts ?? []).map((p) => p.weaponDice ? `${p.weaponDice} dice of the held weapon (+${p.perStepDice ?? 0} per rank)` : `${p.formula} ${p.typeFromSpell ? "(chosen energy)" : p.type}${p.zone ? ` (${p.zone} only)` : ""}`).join(" + ")}, one basic ${a.save ?? "reflex"} each${a.critSpecialization ? ", critical specialization on a critical failure" : ""}`
             : a.type === "damage" ? `${typeof a.formula === "object" ? `${a.formula.base}${a.formula.perStep ? ` (+${a.formula.perStep} per rank)` : ""}` : a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");

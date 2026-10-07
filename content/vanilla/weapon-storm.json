@@ -1,0 +1,37 @@
+{
+    "requires": "held-weapon",
+    "areaTargeting": {
+        "affects": "all",
+        "anchor": "caster"
+    },
+    "areaTargetingShapes": [
+        {
+            "type": "cone",
+            "value": 30,
+            "overlay": "mAZRhujP3gA9tb4m",
+            "label": "ISAACS_AUTOMATION.Vanilla.weapon-storm.Cone"
+        },
+        {
+            "type": "emanation",
+            "value": 10,
+            "overlay": "9Ly51UbFomNFSkwE",
+            "label": "ISAACS_AUTOMATION.Vanilla.weapon-storm.Emanation"
+        }
+    ],
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "area-damage",
+                "save": "reflex",
+                "critSpecialization": true,
+                "parts": [
+                    {
+                        "weaponDice": 4,
+                        "perStepDice": 1
+                    }
+                ]
+            }
+        }
+    ]
+}

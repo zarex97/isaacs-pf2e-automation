@@ -235,13 +235,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-52a | "You swing a weapon you're holding" | No held weapon, no cast | | ☐ | |
-| VS-52b | "Area 30-foot cone or 10-foot emanation" | The cast asks cone or emanation | | ☐ | |
-| VS-52c | "This flurry deals four dice of damage to creatures in the area" | Four dice | | ☐ | |
-| VS-52d | "This damage has the same type as the weapon and uses the same die size" | A longsword's d8 slashing gives 4d8 slashing | | ☐ | |
-| VS-52e | "if you were wielding a two-hand weapon in both hands, you'd use its two-hand damage die" | A bastard sword held in two hands gives 4d12 | | ☐ | |
-| VS-52f | "Critical Failure The target takes double damage and is subject to the weapon's critical specialization effect" | Double damage and the weapon group's critical specialization | | ☐ | |
-| VS-52g | "Add another damage die" | Rank 5: five dice | | ☐ | |
+| VS-52a | "You swing a weapon you're holding" | No held weapon, no cast | `content/vanilla/weapon-storm.json` (`requires: "held-weapon"`); a cast stage, `what a spell needs` (`scripts/vanilla/requires.mjs`) | ✅ | Aries with nothing in hand: "Drive: Weapon Storm needs a weapon in hand." — nothing posted, nothing aimed. With a longsword in hand, the cast went ahead. Holding a bastard sword and a club, the cast asked **which weapon** (both offered); the club gave 4d6 bludgeoning |
+| VS-52b | "Area 30-foot cone or 10-foot emanation" | The cast asks cone or emanation | `areaTargetingShapes`: pf2e's own *Cone* and *Emanation* variants; `anchor: "caster"` | ✅ | The cast offered **A 30-foot cone / A 10-foot emanation**. The cone opened from Aries' edge toward the aim and caught ZZ Victim and Capricorn; the emanation went on no cursor and caught Capricorn, 10 ft away. Found on the way: one `anchor` for both shapes put the emanation on the cursor — "from the caster" is now an emanation's own self-anchoring |
+| VS-52c | "This flurry deals four dice of damage to creatures in the area" | Four dice | `area-damage` with `weaponDice: 4`, rolled once for the cast | ✅ | Longsword: **4d8** = 21, one roll for everyone it reached |
+| VS-52d | "This damage has the same type as the weapon and uses the same die size" | A longsword's d8 slashing gives 4d8 slashing | `dieAsHeld` (the weapon's die and damage type) | ✅ | Longsword (d8 slashing) → **4d8 slashing**; club (d6 bludgeoning) → **4d6 bludgeoning** |
+| VS-52e | "if you were wielding a two-hand weapon in both hands, you'd use its two-hand damage die" | A bastard sword held in two hands gives 4d12 | `dieAsHeld` test (two-hand die only in both hands) | ✅ | Bastard sword held in **two** hands, rank 5: **5d12 slashing** — its two-hand d12, not its d8 |
+| VS-52f | "Critical Failure The target takes double damage and is subject to the weapon's critical specialization effect" | Double damage and the weapon group's critical specialization | `critSpecialization` (`CRITICAL_SPECIALIZATIONS` in `scripts/riders/weapon.mjs`, pf2e's text for the rest) | ⚠️ | Critical failures: with the **longsword**, ZZ Victim took 42 (double) and was **off-guard until the start of Aries' next turn** (sword); with the **club**, 20 and **pushed 10 feet** away (club); with a **battle axe**, 36 and pf2e's own text for the axe's specialization posted. **Gap:** groups whose effect needs a choice the table makes — axe (a second creature), bow (a surface), pick, bomb, grenade, sniper — and the persistent-damage groups are said, not applied; the effects of sword, spear, cryo, hammer, flail, brawling, firearm, sling, shock, laser, mental, poison, projectile, sonic, club, shield and polearm are applied |
+| VS-52g | "Add another damage die" | Rank 5: five dice | `perStepDice: 1` | ✅ | Rank **5**: five dice (5d12 with the bastard sword in both hands) |
 
 ## Batch 3 — Attacks
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 248 |
-| ✅ | 74 |
-| ⚠️ | 3 |
+| ☐ not yet driven | 241 |
+| ✅ | 80 |
+| ⚠️ | 4 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

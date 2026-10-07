@@ -13,6 +13,7 @@ import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
 import { applyPull } from "./pull.mjs";
+import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -2374,9 +2375,15 @@ async function applyAreaDamage(rider, context) {
             const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
             const steps = riderSteps(rider, context);
             const rolled = [];
+            // *Weapon Storm*: dice of "the same type as the weapon and … the same die size" — a weapon the caster holds.
+            const weapon = (rider.apply.parts ?? []).some((part) => part.weaponDice) ? await chooseHeldWeapon(context.originActor, item?.name ?? "") : null;
+            rolled.weapon = weapon;
             for (const part of rider.apply.parts ?? []) {
-                const type = (part.typeFromSpell && item?.system?.damage?.[part.typeFromSpell]?.type) || part.type || "untyped";
-                const formula = part.perStep ? growByStep(part.formula, part.perStep, steps) : part.formula;
+                if (part.weaponDice && !weapon) continue;
+                const type = part.weaponDice ? weapon.system.damage.damageType
+                    : (part.typeFromSpell && item?.system?.damage?.[part.typeFromSpell]?.type) || part.type || "untyped";
+                const formula = part.weaponDice ? `${Number(part.weaponDice) + (Number(part.perStepDice) || 0) * steps}${dieAsHeld(weapon)}`
+                    : part.perStep ? growByStep(part.formula, part.perStep, steps) : part.formula;
                 const roll = await new DamageRoll(`(${formula})[${type}]`).evaluate();
                 await roll.toMessage({ flavor: t("AreaDamage.Flavor", { item: item?.name ?? t("Rider.Name"), type }), speaker: ChatMessage.getSpeaker({ actor: context.originActor }) });
                 rolled.push({ total: roll.total, type, zone: part.zone ?? null });
@@ -2395,6 +2402,14 @@ async function applyAreaDamage(rider, context) {
     const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
     const roll = await new DamageRoll(typedTotals(reaching)).evaluate();
     await actor.applyDamage({ damage: multiplier === 1 ? roll : roll.alter(multiplier, 0), token, item });
+    // "And is subject to the weapon's critical specialization effect" — what is a plain effect on the creature is
+    // applied (`weapon.mjs`); the rest is pf2e's own text, said.
+    if (save?.degreeOfSuccess === 0 && rider.apply.critSpecialization && rolled.weapon) {
+        const group = rolled.weapon.system?.group;
+        const riders = CRITICAL_SPECIALIZATIONS[group];
+        if (riders) await applyRiderList(riders, { ...context, outcome: "criticalFailure" });
+        else context.notes.push(t("Weapon.CritSpec", { name: actor.name, weapon: rolled.weapon.name, text: criticalSpecializationText(group) ?? group ?? "" }));
+    }
 }
 
 export function growByStep(base, perStep, steps) {

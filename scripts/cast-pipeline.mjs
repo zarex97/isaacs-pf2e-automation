@@ -11,6 +11,7 @@ import { AreaTargeting, VARIANT } from "./targeting/index.mjs";
  * to be turned away by any check before it must not have paid for it.
  */
 export const CAST_PRIORITY = {
+    requires: 5,
     aim: 10,
     spellFrequency: 50,
 };
@@ -73,6 +74,8 @@ export const CastPipeline = {
 
     /** This pipeline's own stages: aiming the area, and spending a spell's Frequency. */
     registerDefaults() {
+        // What a spell needs in hand, before anything is asked or aimed.
+        CastPipeline.before("what a spell needs", CAST_PRIORITY.requires, async (spell) => (await import("./vanilla/requires.mjs")).checkRequirements(spell));
         CastPipeline.before("area targeting", CAST_PRIORITY.aim, (spell, options) => AreaTargeting.run(spell, options));
         // pf2e never spends a *spell's* Frequency, so a spell that says "once per round" was limited by
         // nothing until this step existed.
