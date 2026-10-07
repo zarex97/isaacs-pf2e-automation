@@ -78,6 +78,9 @@ export const Lingering = {
         // Every placement leaves its own patch behind, not just the first. Gemini and Cancer place one area
         // each, so this was a single region for two Cloths; *Lightning Crown* erupts three pillars and gains
         // more per heightening step, and each of them stands on its own square for its own round.
+        // "If you cast this spell again, any previous scatter scree you've cast ends."
+        if (specs.some((spec) => spec.replacesPrevious)) await Lingering.endPrevious(config.item);
+
         const created = [];
         for (const region of placed) {
             for (const spec of specs) {
@@ -179,6 +182,7 @@ export const Lingering = {
                             expiresAt: game.time.worldTime + seconds,
                             name: spec.name ?? config.item.name,
                             itemUuid: config.item.uuid ?? null,
+                            slug: config.item.slug ?? null,
                             originUuid: config.item.actor?.uuid ?? null,
                             damage: spec.damage ? scaledDamage(spec.damage, config.steps ?? 0) : null,
                             save: spec.save ? scaledSave(spec.save, config.steps ?? 0) : null,
@@ -269,6 +273,23 @@ export const Lingering = {
         }
 
         return { lightIds, wallIds };
+    },
+
+    /**
+     * The areas this caster left with this spell before, on every scene — ended because it was cast again.
+     * Matched on the caster and the spell's slug, so a second copy of the spell on the same sheet counts.
+     */
+    async endPrevious(item) {
+        const originUuid = item?.actor?.uuid;
+        const slug = item?.slug ?? null;
+        if (!originUuid || !slug) return;
+        for (const scene of game.scenes) {
+            const previous = scene.regions.filter((region) => {
+                const payload = flagOf(region, FLAG);
+                return payload?.originUuid === originUuid && payload?.slug === slug;
+            });
+            if (previous.length > 0) await scene.deleteEmbeddedDocuments("Region", previous.map((region) => region.id));
+        }
     },
 
     /** Areas whose minute is up. Active GM only: this deletes documents. */

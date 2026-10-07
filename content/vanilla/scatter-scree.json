@@ -1,0 +1,14 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.scatter-scree.Scree",
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "difficultTerrain": 2,
+        "replacesPrevious": true
+    }
+}

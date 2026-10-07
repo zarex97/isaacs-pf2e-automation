@@ -68,6 +68,7 @@ export function docs(built, index, en) {
     const linger = (spec) => [spec ?? []].flat().map((l) => [
             ...rankFrom(l.predicate),
             l.difficultTerrain ? "difficult terrain" : null,
+            l.replacesPrevious ? "ends your previous one" : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
             l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l)} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
@@ -153,6 +154,7 @@ export function problemsWith(slug, entry, ctx) {
         }
         for (const [i, spec] of [object.lingering ?? []].flat().entries()) {
             if (spec?.darkness !== undefined && spec.darkness !== true) at(`${where} lingering.darkness`.trim(), "true or absent");
+            if (spec?.replacesPrevious !== undefined && spec.replacesPrevious !== true) at(`${where} lingering.replacesPrevious`.trim(), "true or absent");
             if (spec?.save) {
                 const asked = [spec.save.statistic ?? spec.save.statistics ?? []].flat();
                 if (asked.length === 0 || asked.some((s) => !STATISTICS.includes(s))) at(`${where} lingering.save`.trim(), `a save names its statistic, or the statistics to choose between, from ${STATISTICS.join(", ")}`);

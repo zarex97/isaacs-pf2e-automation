@@ -531,8 +531,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         saveNone: wrong("web", { lingering: { save: { riders: [] } } }),
         saveRider: wrong("web", { lingering: { save: { statistic: "reflex", riders: [{ apply: { type: "condition", slug: "stuck" } }] } } }),
         inlineNoLabel: wrong("web", { riders: [{ apply: { type: "effect", rules: [{ key: "FlatModifier" }] } }] }),
+        replaces: wrong("scatter-scree", { lingering: { replacesPrevious: "yes" } }),
         inlineNoKey: wrong("web", { riders: [{ apply: { type: "effect", label: "ISAACS_AUTOMATION.Vanilla.web.Slowed", rules: [{ value: -10 }] } }] }),
-    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0, webSave: 0, saveStatistic: 1, saveNone: 1, saveRider: 1, inlineNoLabel: 1, inlineNoKey: 1 });
+    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0, webSave: 0, saveStatistic: 1, saveNone: 1, saveRider: 1, inlineNoLabel: 1, replaces: 1, inlineNoKey: 1 });
     check("an alias to nothing, or over a live slug, is caught", V.aliasProblems({ "magic-missile": "force-barrage", fear: "calm" }, { calm: {} }, index).length, 2);
 
     // The words a table entry names by key are read back translated; an item's own text is left alone.

@@ -338,6 +338,9 @@
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
             },
+            "scatter-scree": {
+                "Scree": "Scatter Scree"
+            },
             "entangling-flora": {
                 "Flora": "Entangling Flora"
             },
