@@ -3,7 +3,7 @@
 *Spell tracker. Forty pf2e spells, each chosen for a **shape** the pilot (`Docs/vanilla.md`, 1.2.0) did not
 exercise — one row per spell, each naming what has to happen at the table for that shape to work.*
 
-**Tracker issue:** see the issue that links this file · **Source:** pf2e 8.4.1's own spell text
+**Tracker issue:** #12 · **Source:** pf2e 8.4.1's own spell text
 (`npm run index:pf2e` indexes the slugs; the text is the spell's description in the system compendium).
 
 ## How a row is marked
