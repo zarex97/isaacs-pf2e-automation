@@ -120,7 +120,7 @@ async function applyToTarget(target, candidates, context, payload) {
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
         item: castItemOf(context) ?? context.eventItem,
-        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem)],
+        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context)],
     });
 
     // Most riders are chosen against the snapshot. A `live` rider is chosen against the world as this pass
@@ -461,6 +461,8 @@ async function applyOne(rider, context) {
             return Dismiss.apply(rider, context);
         case "spend-charge":
             return OriginAction.spend(rider, context);
+        case "cast":
+            return applyCast(rider, context);
         case "aftermath":
             return Aftermath.open(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath-mark":
@@ -2558,6 +2560,32 @@ async function destroyObject(token, spell, context) {
     if (actor.hitPoints?.value > 0) await actor.update({ "system.attributes.hp.value": 0 });
     context.notes.push(t("Rays.Destroyed", { name: spell.name, actor: token.name }));
     return true;
+}
+
+/**
+ * Cast the rider's own spell at the rider's creature — a reaction that is a spell. *Schadenfreude*: "Trigger You
+ * critically fail a saving throw against a foe's effect" — answered by casting it at that foe (`trigger: true` on a
+ * reaction's nested rider). The creature is targeted and the spell cast as its card would be; its save and what
+ * follows are the spell's own riders.
+ */
+async function applyCast(_rider, context) {
+    const spell = context.riderItem ?? context.item;
+    if (spell?.type !== "spell" || !spell.spellcasting) return;
+    const token = context.target?.object ?? context.target;
+    if (typeof token?.setTarget === "function") token.setTarget(true, { releaseOthers: true, groupSelection: false });
+    await spell.spellcasting.cast(spell, {});
+}
+
+/**
+ * Which side the event's other end is on, from the origin's: `rider:trigger:enemy` / `rider:trigger:ally`. A `self`
+ * rider's own target is its origin, so `rider:target:…` cannot say it — *Schadenfreude*'s "a foe's effect" is about
+ * the creature that forced the save, the one a nested `trigger: true` rider reaches.
+ */
+function triggerSide(context) {
+    const origin = context.originActor;
+    const other = context.target?.actor ?? null;
+    if (!origin || !other || origin === other || typeof origin.isAllyOf !== "function") return [];
+    return [origin.isAllyOf(other) ? "rider:trigger:ally" : "rider:trigger:enemy"];
 }
 
 /** The parts of a damage roll of the named types, as one formula — null when none is left. */

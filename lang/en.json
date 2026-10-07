@@ -532,6 +532,9 @@
             "seal-fate": {
                 "Choose": "Which damage will be its end?"
             },
+            "schadenfreude": {
+                "Amused": "amused: –1 to Perception and Will"
+            },
             "spider-sting": {
                 "Venom": "Spider Venom"
             },

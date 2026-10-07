@@ -220,11 +220,13 @@ export const Sources = {
      */
     async onSaveMessage(message, context) {
         if (!OUTCOMES.includes(context?.outcome)) return;
+        const riderSave = context.options?.includes(`${LIB_ID}:rider-save`);
 
         // The loop guard. A save this module rolled itself (`runSave`) produces a message like any other,
         // and its riders have already been dispatched by the rider that asked for the save — dispatching
         // them again from here is how *Aurora Execution* forces a save that forces a save forever.
-        if (context.options?.includes(`${LIB_ID}:rider-save`)) return;
+        // (Checked below, once the creatures are known: the saver's own `save-made` is a different event, and
+        // fires for a save this module rolled as much as for one rolled from a card.)
 
         // The origin is on the roll's own context, put there by pf2e when the save knows what it is against.
         // A save rolled off a character sheet has none, and is not an event this module has anything to say
@@ -241,12 +243,26 @@ export const Sources = {
         const target = message.token ?? message.actor?.getActiveTokens(true, true).at(0);
         if (!origin?.uuid || !target?.uuid) return;
 
+        if (!riderSave) {
+            await Relay.request({
+                action: "applyRiders",
+                event: "save-rolled",
+                messageId: message.id,
+                originUuid: origin.uuid,
+                targetUuid: target.uuid,
+                outcome: context.outcome,
+            });
+        }
+
+        // The mirror image, as `strike-received` mirrors `strike-resolved`: the creature that saved gets its own
+        // items looked at, aimed back at whoever forced the save — *Schadenfreude*'s "You critically fail a saving
+        // throw against a foe's effect".
         await Relay.request({
             action: "applyRiders",
-            event: "save-rolled",
+            event: "save-made",
             messageId: message.id,
-            originUuid: origin.uuid,
-            targetUuid: target.uuid,
+            originUuid: target.uuid,
+            targetUuid: origin.uuid,
             outcome: context.outcome,
         });
     },

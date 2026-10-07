@@ -2527,6 +2527,93 @@
                 "replacesPrevious": true
             }
         },
+        "schadenfreude": {
+            "riders": [
+                {
+                    "event": "save-made",
+                    "self": true,
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        "rider:trigger:enemy"
+                    ],
+                    "apply": {
+                        "type": "reaction",
+                        "riders": [
+                            {
+                                "trigger": true,
+                                "apply": {
+                                    "type": "cast"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.schadenfreude.Amused",
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": [
+                                    "perception",
+                                    "will"
+                                ],
+                                "type": "status",
+                                "value": -1
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stupefied",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stupefied",
+                        "value": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stunned",
+                        "value": 1
+                    }
+                }
+            ]
+        },
         "seal-fate": {
             "castChoice": {
                 "flag": "damageType",

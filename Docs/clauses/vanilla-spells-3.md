@@ -393,11 +393,11 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-65a | "Trigger You critically fail a saving throw against a foe's effect" | The caster's critical failure against a foe's effect offers the reaction, aimed at that foe | | ☐ | |
-| VS-65b | "Success The creature is distracted by its amusement and takes a -1 status penalty on Perception checks and Will saves for 1 round" | –1 to Perception and Will for a round | | ☐ | |
-| VS-65c | "Failure The creature is overcome by its amusement and is Stupefied 1 for 1 round" | Stupefied 1 for a round | | ☐ | |
-| VS-65d | "Critical Failure The creature is lost in its amusement and is Stupefied 2 for 1 round and Stunned 1" | Stupefied 2 and stunned 1 | | ☐ | |
-| VS-65e | "Critical Success The creature is unaffected" | Nothing | | ☐ | |
+| VS-65a | "Trigger You critically fail a saving throw against a foe's effect" | The caster's critical failure against a foe's effect offers the reaction, aimed at that foe | `save-made` event (`Sources.onSaveMessage`'s mirror; test); `rider:trigger:enemy`; `reaction` → nested `cast` with `trigger: true` | ✅ | ZZ Victim (opposition) cast *Fear* at Aries; Aries critically failed its Will save (23 against DC 60): "Drive: Schadenfreude can be used as a reaction. Spend it?" Using it cast *Schadenfreude* targeted at **ZZ Victim** (one use spent, 30 → 29). Leo (party) casting the same at Aries, critically failed: no offer |
+| VS-65b | "Success The creature is distracted by its amusement and takes a -1 status penalty on Perception checks and Will saves for 1 round" | –1 to Perception and Will for a round | `success` → a written-out effect, –1 status to Perception and Will, 1 round | ✅ | ZZ Victim's success (with +30 Will): *amused: –1 to Perception and Will* for 1 round — Will +30 → **+29**, Perception 0 → **–1** |
+| VS-65c | "Failure The creature is overcome by its amusement and is Stupefied 1 for 1 round" | Stupefied 1 for a round | `failure` → stupefied 1 for 1 round | ✅ | A failure: **stupefied 1** for 1 round (Will and Perception –1) |
+| VS-65d | "Critical Failure The creature is lost in its amusement and is Stupefied 2 for 1 round and Stunned 1" | Stupefied 2 and stunned 1 | `criticalFailure` → stupefied 2 for 1 round, and stunned 1 | ✅ | A critical failure: **stupefied 2** for 1 round and **stunned 1** |
+| VS-65e | "Critical Success The creature is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success: nothing |
 
 ### VS-66 · Blinding Fury
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 162 |
-| ✅ | 156 |
+| ☐ not yet driven | 157 |
+| ✅ | 161 |
 | ⚠️ | 7 |
 | ❌ | 0 |
 | 🔧 | 0 |

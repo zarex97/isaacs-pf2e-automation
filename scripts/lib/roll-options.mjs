@@ -37,6 +37,10 @@ export function targetingOptions(originActor, targetActor, item) {
 export function riderOptions({ originActor, targetActor, item, extra = [] } = {}) {
     const options = targetingOptions(originActor, targetActor, item);
     for (const option of describeActor(targetActor, "target")) options.add(option);
+    // Which side the target is on, from the origin's — *Schadenfreude*'s "a foe's effect".
+    if (originActor && targetActor && originActor !== targetActor && typeof originActor.isAllyOf === "function") {
+        options.add(originActor.isAllyOf(targetActor) ? `${RIDER}:target:ally` : `${RIDER}:target:enemy`);
+    }
     for (const option of extra) options.add(option);
     return options;
 }
