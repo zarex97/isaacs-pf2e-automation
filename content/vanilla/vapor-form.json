@@ -1,0 +1,17 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.sILRkGTwoBywy0BU",
+                "forbids": [
+                    "cast",
+                    "attack",
+                    "manipulate"
+                ],
+                "dismissable": "holder"
+            }
+        }
+    ]
+}

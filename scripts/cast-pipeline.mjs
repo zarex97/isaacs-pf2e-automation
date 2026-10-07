@@ -11,6 +11,7 @@ import { AreaTargeting, VARIANT } from "./targeting/index.mjs";
  * to be turned away by any check before it must not have paid for it.
  */
 export const CAST_PRIORITY = {
+    forbids: 4,
     requires: 5,
     weaponVariant: 7,
     actionVariant: 8,
@@ -78,6 +79,8 @@ export const CastPipeline = {
     /** This pipeline's own stages: aiming the area, and spending a spell's Frequency. */
     registerDefaults() {
         // What a spell needs in hand, before anything is asked or aimed.
+        // A form that can't cast — *Vapor Form*.
+        CastPipeline.before("what a form forbids", CAST_PRIORITY.forbids, async (spell) => (await import("./riders/forbids.mjs")).Forbids.castAllowed(spell));
         CastPipeline.before("what a spell needs", CAST_PRIORITY.requires, async (spell) => (await import("./vanilla/requires.mjs")).checkRequirements(spell));
         // A spell whose damage type is a weapon's: the matching pf2e variant, chosen before anything is aimed.
         CastPipeline.before("a variant from the weapon in hand", CAST_PRIORITY.weaponVariant, async (spell, options) => (await import("./vanilla/requires.mjs")).weaponVariant(spell, options));
@@ -118,6 +121,8 @@ export const CastPipeline = {
         wrap(
             "CONFIG.PF2E.Item.documentClasses.action.prototype.toMessage",
             async function (wrapped, event, options = {}) {
+                // An action its holder's form forbids — *Vapor Form*'s manipulate and attack actions.
+                if ((await import("./riders/forbids.mjs")).actionForbidden(this)) return undefined;
                 if (configFor(this) && !(await AreaTargeting.run(this, {}))) return undefined;
                 return wrapped(event, options);
             },

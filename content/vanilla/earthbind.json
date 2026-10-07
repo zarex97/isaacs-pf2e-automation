@@ -1,0 +1,40 @@
+{
+    "requires": "flying-target",
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "fall",
+                "feet": 120
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "fall",
+                "feet": 120,
+                "grounded": {
+                    "value": 1,
+                    "unit": "rounds"
+                }
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "fall",
+                "feet": 120,
+                "grounded": {
+                    "value": 1,
+                    "unit": "minutes"
+                }
+            }
+        }
+    ]
+}

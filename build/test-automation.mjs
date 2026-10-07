@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.forbids} what a form forbids`, `${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -891,7 +891,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { stopShortOfWalls, compassVector, preselected } = await import("../scripts/riders/apply.mjs");
     const omen = [{ key: "ChoiceSet", flag: "illOmen", choices: [] }, { key: "RollTwice", keep: "lower" }];
     check("a ChoiceSet answered from the choice made as the spell was cast", preselected([{ key: "ChoiceSet", flag: "damageType" }], { damageType: "$cast" }, "failure", { damageType: "fire" })[0].selection, "fire");
-    const { withCast } = await import("../scripts/riders/apply.mjs");
+    const { withCast, choiceValue } = await import("../scripts/riders/apply.mjs");
+    const enlarge = { key: "ChoiceSet", choices: [{ value: { damage: 4, reach: 15, size: "huge" } }, { value: { damage: 2, reach: 10, size: "large" } }] };
+    check("an answer names an object-valued choice by one of its values; a plain one is itself", [choiceValue(enlarge, "large"), choiceValue({ choices: [{ value: "fire" }] }, "fire"), choiceValue(enlarge, "tiny")], [{ damage: 2, reach: 10, size: "large" }, "fire", "tiny"]);
     check("riders an effect carries are bound to the cast: its choice, and a level that grows by rank",
         withCast([{ predicate: ["rider:damage:type:$cast:damageType"], apply: { type: "death", maxLevel: 7, maxLevelPerStep: 4 } }], { damageType: "cold" }, 1),
         [{ predicate: ["rider:damage:type:cold"], apply: { type: "death", maxLevel: 11 } }]);
@@ -953,6 +955,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
     const { conditionsAt } = await import("../scripts/riders/apply.mjs");
     const { counteractKinds, isAffliction } = await import("../scripts/riders/cleanse.mjs");
+    const { fallTo, elevationAfter } = await import("../scripts/riders/fall.mjs");
+    check("Levitate: 5 feet up, then 10 up or down a Sustain, never below the ground", [elevationAfter(0, { set: 5 }), elevationAfter(5, { by: 10 }), elevationAfter(5, { by: -10 })], [5, 15, 0]);
+    check("a safe fall of up to 120 feet stops at the ground", [fallTo(60, 120), fallTo(200, 120), fallTo(0, 120)], [0, 80, 0]);
     check("Cleanse Affliction counteracts nothing at 2, a disease or poison at 3, a curse too at 4", [counteractKinds(2), counteractKinds(3), counteractKinds(4)], [[], ["disease", "poison"], ["disease", "poison", "curse"]]);
     check("an affliction is this module's, or an effect with the curse, disease or poison trait", [isAffliction({ type: "effect", flags: { [LIB_ID]: { affliction: {} } }, system: { traits: { value: [] } } }), isAffliction({ type: "effect", flags: {}, system: { traits: { value: ["curse"] } } }), isAffliction({ type: "effect", flags: {}, system: { traits: { value: ["fire"] } } })], [true, true, false]);
     const { resumedStart } = await import("../scripts/riders/set-aside.mjs");

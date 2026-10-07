@@ -217,6 +217,17 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Forbids": {
+            "Refused": "{actor} can't use {name}: {effect} forbids it.",
+            "Attack": "an attack"
+        },
+        "Fall": {
+            "Fell": "{actor} falls {feet} feet, safely; still {left} feet up.",
+            "Landed": "{actor} falls {feet} feet to the ground, safely.",
+            "Grounded": "{name}: can't leave the ground",
+            "Refused": "{actor} can't leave the ground.",
+            "Elevation": "{actor} floats {feet} feet up."
+        },
         "Cleanse": {
             "Title": "Cleanse",
             "Prompt": "Which affliction?",
@@ -255,11 +266,12 @@
             "PenaltyOne": "{name}'s multiple attack penalty now counts one more attack."
         },
         "Requires": {
-            "HeldWeapon": "{name} needs a weapon in hand."
+            "HeldWeapon": "{name} needs a weapon in hand.",
+            "FlyingTarget": "{name} needs a target in the air."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
-            "Description": "Dismiss {name}: the area it left ends.",
+            "Description": "Dismiss {name}: what it left — an area, or an effect — ends.",
             "Done": "{actor} dismisses {name}."
         },
         "TempHp": {
@@ -546,6 +558,31 @@
             },
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
+            },
+            "levitate": {
+                "Sustain": "Sustain Levitate",
+                "Way": "Move it up or down 10 feet?",
+                "Up": "Up 10 feet",
+                "Down": "Down 10 feet"
+            },
+            "animal-form": {
+                "Prompt": "Which battle form?",
+                "Ape": "Ape",
+                "Bear": "Bear",
+                "Bull": "Bull",
+                "Canine": "Canine",
+                "Cat": "Cat",
+                "Crab": "Crab",
+                "Crocodile": "Crocodile",
+                "Deer": "Deer",
+                "Frog": "Frog",
+                "Orca": "Orca",
+                "Seal": "Seal",
+                "Shark": "Shark",
+                "Snake": "Snake"
+            },
+            "enlarge": {
+                "Choose": "Which version: Large, or Huge?"
             },
             "seal-fate": {
                 "Choose": "Which damage will be its end?"

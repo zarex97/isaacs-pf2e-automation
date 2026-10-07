@@ -7,6 +7,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Spell | Rank | Area and targets | Riders | Lingering |
 | :-- | :-- | :-- | :-- | :-- |
 | Acid Grip | 2 |  | success: pushed 5 ft in a direction you choose; failure / crit. failure: 1d6 (+1d6 per 2 ranks) persistent acid; failure / crit. failure: spell-effect-acid-grip; failure: pushed 10 ft in a direction you choose; crit. failure: pushed 20 ft in a direction you choose |  |
+| Animal Form | 2 |  | choice (on you) |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
@@ -23,12 +24,15 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Disintegrate | 6 |  | rays (on you) |  |
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
+| Earthbind | 3 |  | success: fall; failure: fall; crit. failure: fall |  |
 | Electric Arc | 1 | up to 2 |  |  |
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
+| Enlarge | 2 | up to 1, +9 at rank 6 | spell-effect-enlarge (below rank 4); spell-effect-enlarge (from rank 4) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Floating Flame | 2 | 5-ft square (pf2e's), all |  | ends if not Sustained, Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
+| Fly | 4 |  | spell-effect-fly (below rank 7); spell-effect-fly (1 hours, from rank 7) |  |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
@@ -44,6 +48,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Ill Omen | 1 |  | failure / crit. failure: spell-effect-ill-omen |  |
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
+| Levitate | 3 |  | elevation; spell-effect-levitate (carries turn-end toggle) |  |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Live Wire | 1 |  | rays (on you) |  |
@@ -79,6 +84,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
+| Vapor Form | 4 |  | spell-effect-vapor-form |  |
 | Vision of Death | 4 |  | success: 8d6 mental; success: death; success: frightened 1; failure: 8d6 mental; failure: death; failure: frightened 2; crit. failure: 8d6 mental; crit. failure: death; crit. failure: frightened 4; crit. failure: fleeing (no end) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
 | Wall of Stone | 5 | choose: 120-ft line or 60-ft line or 30-ft line or 2 × 60-ft line or 3 × 40-ft line or 4 × 30-ft line, all, placed, no targets |  | a wall of borders, in 10-ft sections: AC 10, Hardness 14, 50 HP (+15 per 2 ranks), rubble when breached |

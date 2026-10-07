@@ -454,70 +454,70 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-71a | "the target grows to size Large" | The creature and its token are Large | | ☐ | |
-| VS-71b | "The creature is Clumsy 1" | Clumsy 1 while it lasts | | ☐ | |
-| VS-71c | "Its reach increases by 5 feet (or by 10 feet if it started out Tiny)" | Reach +5 ft | | ☐ | |
-| VS-71d | "it gains a +2 status bonus to damage rolls on melee Strikes" | +2 to melee damage | | ☐ | |
-| VS-71e | "This spell has no effect on a Large or larger creature" | A Large creature is unchanged | | ☐ | |
-| VS-71f | "Heightened (4th) The creature instead grows to size Huge" | Rank 4: Huge, +4, reach +10 ft | | ☐ | |
-| VS-71g | "Heightened (6th) Choose either the 2nd-rank or 4th-rank version of this spell and apply its effects to up to 10 willing creatures" | Rank 6: a choice, and up to ten targets | | ☐ | |
+| VS-71a | "the target grows to size Large" | The creature and its token are Large | `content/vanilla/enlarge.json`: pf2e's *Spell Effect: Enlarge* (`CreatureSize`, its token linked to the actor's size), `atCastRank` | ✅ | Rank 2 on Leo (Medium): **Large**, his token resized to **2×2** |
+| VS-71b | "The creature is Clumsy 1" | Clumsy 1 while it lasts | pf2e's effect: `GrantItem` Clumsy | ✅ | Leo **clumsy 1** while it lasts |
+| VS-71c | "Its reach increases by 5 feet (or by 10 feet if it started out Tiny)" | Reach +5 ft | pf2e's effect: reach override 10 (15 at Huge) | ✅ | Leo's reach **10** feet (from 5) |
+| VS-71d | "it gains a +2 status bonus to damage rolls on melee Strikes" | +2 to melee damage | pf2e's effect: `FlatModifier` status, `melee-strike-damage` | ✅ | "Enlarge: +2" on Leo's melee Strike damage |
+| VS-71e | "This spell has no effect on a Large or larger creature" | A Large creature is unchanged | each rider predicated on `target:size` (below Large; below Huge from 4th rank) | ✅ | ZZ Victim made Large, cast on at rank 2: no effect, still Large, no clumsy, reach unchanged |
+| VS-71f | "Heightened (4th) The creature instead grows to size Huge" | Rank 4: Huge, +4, reach +10 ft | pf2e's effect at level 4: Huge, +4, reach 15 | ✅ | Rank 4 on Capricorn: **Huge**, token **3×3**, reach **15**, "Enlarge: +4", clumsy 1 |
+| VS-71g | "Heightened (6th) Choose either the 2nd-rank or 4th-rank version of this spell and apply its effects to up to 10 willing creatures" | Rank 6: a choice, and up to ten targets | `castChoice` with `fromRank: 6`, `preselect: "$cast"` (`choiceValue` test); `areaTargeting.maxTargets` 1, 10 from rank 6 | ✅ | Rank 6, three targets: "Which version: Large, or Huge?" — Large — and Leo, Capricorn and ZZ Victim each **Large**, the choice already made on every effect (no prompt per creature). At rank 2, two targeted: "2 targeted, and it reaches 1. Cast anyway?" |
 | VS-71h | "Its equipment grows with it but returns to natural size if removed" | — | | — | Nothing to automate: equipment size is description |
 
 ### VS-72 · Animal Form
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-72a | "When you Cast this Spell, choose a listed battle form" | The cast asks for one of the forms | | ☐ | |
+| VS-72a | "When you Cast this Spell, choose a listed battle form" | The cast asks for one of the forms | `content/vanilla/animal-form.json`: a `choice` of pf2e's 13 *Spell Effect: Animal Form* effects | ✅ | The cast asked "Which battle form?" — Ape, Bear, Bull, Canine, Cat, Crab, Crocodile, Deer, Frog, Orca, Seal, Shark, Snake. Bear chosen: *Spell Effect: Animal Form (Bear)* on Aries, at the cast's rank |
 | VS-72b | "You can decide the specific type of animal" | — | | — | Nothing to automate: flavour |
-| VS-72c | "While in this form, you gain the animal trait" | The animal trait | | ☐ | |
-| VS-72d | "AC = 16 + your level" | AC 16 + level, unless the caster's own is higher | | ☐ | |
-| VS-72e | "5 temporary Hit Points" | 5 temporary HP | | ☐ | |
-| VS-72f | "Low-light vision and imprecise scent 30 feet" | Both senses | | ☐ | |
-| VS-72g | "which are the only attacks you can Strike with" | The form's attacks replace every other Strike | | ☐ | |
-| VS-72h | "Your attack modifier is +9, and your damage bonus is +1" | +9 and +1, unless the caster's unarmed bonus is higher | | ☐ | |
-| VS-72i | "Athletics modifier of +9, unless your own modifier is higher" | Athletics +9 or the caster's own | | ☐ | |
-| VS-72j | "You also gain specific abilities based on the type of animal you choose" | The chosen form's Speeds and attacks | | ☐ | |
-| VS-72k | "You can Dismiss the spell" | Dismissing it ends the form | | ☐ | |
-| VS-72l | "Heightened (3rd) You instead gain 10 temporary HP, AC = 17 + your level, attack modifier +14, damage bonus +5, and Athletics +14" | Rank 3's numbers | | ☐ | |
-| VS-72m | "Heightened (4th) Your battle form is Large and your attacks have 10-foot reach" | Rank 4: Large, reach 10 ft | | ☐ | |
+| VS-72c | "While in this form, you gain the animal trait" | The animal trait | pf2e's `BattleForm`: traits | ✅ | Aries has the **animal** trait in Bear form, not before |
+| VS-72d | "AC = 16 + your level" | AC 16 + level, unless the caster's own is higher | pf2e's `BattleForm`: AC `16 + @actor.level` | ✅ | AC 34 → **36** (16 + level 20) |
+| VS-72e | "5 temporary Hit Points" | 5 temporary HP | pf2e's `BattleForm`: tempHP | ✅ | **5** temporary Hit Points |
+| VS-72f | "Low-light vision and imprecise scent 30 feet" | Both senses | pf2e's `BattleForm`: senses | ✅ | **low-light vision** and **scent (imprecise, 30 feet)** added to Aries' own lifesense |
+| VS-72g | "which are the only attacks you can Strike with" | The form's attacks replace every other Strike | pf2e's `BattleForm`: strikes replace the rest | ✅ | Aries' Strikes became **Claw** and **Jaws** only — *Ghost Touch Fist* and *Unarmed Attack* gone while in form |
+| VS-72h | "Your attack modifier is +9, and your damage bonus is +1" | +9 and +1, unless the caster's unarmed bonus is higher | pf2e's `BattleForm`: +9 / +1, or the creature's own if higher | ✅ | Claw and Jaws at **+29** — Aries' own unarmed modifier, higher than +9 |
+| VS-72i | "Athletics modifier of +9, unless your own modifier is higher" | Athletics +9 or the caster's own | pf2e's `BattleForm`: Athletics +9 unless higher | ✅ | Athletics stayed **+25**, Aries' own |
+| VS-72j | "You also gain specific abilities based on the type of animal you choose" | The chosen form's Speeds and attacks | pf2e's per-form effects: each form its own Speeds and attacks | ✅ | Bear: Claw (1d8 slashing, agile) and Jaws (2d8 piercing), land Speed 30 |
+| VS-72k | "You can Dismiss the spell" | Dismissing it ends the form | `dismissable` on the effect: the caster's *Dismiss* action (`Dismiss.grantForEffect`) | ✅ | With the form came **Dismiss Drive: Animal Form**; using it: "Aries dismisses Spell Effect: Animal Form (Bear)." — the form gone (AC 34, its own Strikes back), the action gone with it |
+| VS-72l | "Heightened (3rd) You instead gain 10 temporary HP, AC = 17 + your level, attack modifier +14, damage bonus +5, and Athletics +14" | Rank 3's numbers | pf2e's brackets at level 3; `atCastRank` | ✅ | Rank 3: AC **37**, **10** temporary Hit Points (attack +14 and Athletics +14 below Aries' own) |
+| VS-72m | "Heightened (4th) Your battle form is Large and your attacks have 10-foot reach" | Rank 4: Large, reach 10 ft | pf2e's brackets at level 4: Large, reach | ✅ | Rank 4: **Large**, token **2×2**, Claw and Jaws with **reach**; the rank-3 form replaced, not stacked |
 
 ### VS-73 · Fly
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-73a | "gaining a fly Speed equal to its Speed or 20 feet, whichever is greater" | A fly Speed of the creature's Speed, at least 20 ft | | ☐ | |
-| VS-73b | "Heightened (7th) The duration increases to 1 hour" | Rank 7 lasts an hour | | ☐ | |
+| VS-73a | "gaining a fly Speed equal to its Speed or 20 feet, whichever is greater" | A fly Speed of the creature's Speed, at least 20 ft | `content/vanilla/fly.json`: pf2e's *Spell Effect: Fly* (`BaseSpeed` fly = max(20, land)) on the target | ✅ | Leo (land 25): **fly 25**. ZZ Victim slowed to land 15: **fly 20** — the minimum |
+| VS-73b | "Heightened (7th) The duration increases to 1 hour" | Rank 7 lasts an hour | a rank-7 rider (`item:rank` ≥ 7) with a 1-hour duration | ✅ | Rank 4: the effect for 5 minutes; **rank 7**: **1 hour** |
 
 ### VS-74 · Earthbind
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-74a | "you hamper a target's flight" | Only a flying creature can be targeted | | ☐ | |
-| VS-74b | "Success The target falls safely up to 120 feet" | It drops up to 120 ft (elevation) | | ☐ | |
-| VS-74c | "If the creature reaches the ground safely, it doesn't take falling damage" | No falling damage | | ☐ | |
-| VS-74d | "it can't Fly, levitate, or otherwise leave the ground for 1 round" | On a failure, grounded for a round | | ☐ | |
-| VS-74e | "it can't Fly, levitate, or otherwise leave the ground for 1 minute" | On a critical failure, for a minute | | ☐ | |
-| VS-74f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+| VS-74a | "you hamper a target's flight" | Only a flying creature can be targeted | `content/vanilla/earthbind.json`: `requires: "flying-target"` (a cast stage, `what a spell needs`) | ✅ | Cast at ZZ Victim on the ground: refused, nothing posted. At 60 feet up: cast |
+| VS-74b | "Success The target falls safely up to 120 feet" | It drops up to 120 ft (elevation) | `fall` (`scripts/riders/fall.mjs`, `fallTo` test): up to 120 feet, never below the ground | ✅ | A success at 60 feet: "ZZ Victim falls 60 feet to the ground, safely." A failure at 200 feet: "falls 120 feet, safely; still 80 feet up." |
+| VS-74c | "If the creature reaches the ground safely, it doesn't take falling damage" | No falling damage | `fall` deals no damage | ✅ | Every fall: no damage roll, Hit Points unchanged |
+| VS-74d | "it can't Fly, levitate, or otherwise leave the ground for 1 round" | On a failure, grounded for a round | `failure`: `grounded` 1 round, only on landing; a `preUpdateToken` hook refuses a rise | ✅ | A failure at 60 feet: landed, and *Earthbind: can't leave the ground* for **1 round**; lifting the token to 30 feet was **refused**. A failure at 200 feet: still 80 feet up, so not grounded |
+| VS-74e | "it can't Fly, levitate, or otherwise leave the ground for 1 minute" | On a critical failure, for a minute | `criticalFailure`: `grounded` 1 minute | ✅ | A critical failure at 60 feet: landed, can't leave the ground for **1 minute** |
+| VS-74f | "Critical Success The target is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): no fall, no effect |
 
 ### VS-75 · Levitate
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-75a | "levitate the target 5 feet off the ground" | Elevation 5 ft | | ☐ | |
-| VS-75b | "You can Sustain the spell to move the target up or down 10 feet" | Each Sustain moves it 10 ft up or down | | ☐ | |
-| VS-75c | "A creature floating in the air from levitate takes a –2 circumstance penalty to attack rolls" | –2 to its attacks | | ☐ | |
-| VS-75d | "A floating creature can spend an Interact action to stabilize itself and negate this penalty for the remainder of its turn" | An Interact removes the penalty until its turn ends | | ☐ | |
+| VS-75a | "levitate the target 5 feet off the ground" | Elevation 5 ft | `content/vanilla/levitate.json`: `elevation` `set: 5` (`scripts/riders/fall.mjs`, `elevationAfter` test) | ✅ | Cast at Leo: his token at **5 feet** |
+| VS-75b | "You can Sustain the spell to move the target up or down 10 feet" | Each Sustain moves it 10 ft up or down | pf2e's effect with an `originAction` (`spends: false`): the caster's *Sustain Levitate*, a choice of `elevation` ±10 on the effect's holder | ✅ | Aries got **Sustain Levitate**; using it asked "Move it up or down 10 feet?" — Up: "Leo floats 15 feet up." The effect and the action stayed. The once-a-turn limit of Sustaining is the table's |
+| VS-75c | "A creature floating in the air from levitate takes a –2 circumstance penalty to attack rolls" | –2 to its attacks | pf2e's *Spell Effect: Levitate*: –2 circumstance to attacks unless `stabilized` | ✅ | Leo's Strike: "Levitate –2" |
+| VS-75d | "A floating creature can spend an Interact action to stabilize itself and negate this penalty for the remainder of its turn" | An Interact removes the penalty until its turn ends | pf2e's `stabilized` toggle; a carried `turn-end` `toggle` (`value: false`) | ✅ | Stabilized: the –2 gone. At the end of Leo's turn the toggle went off and the **–2** came back |
 | VS-75e | "it can move across the surface by climbing" | — | | — | Nothing to automate: which surfaces hold is the GM's call |
 
 ### VS-76 · Vapor Form
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-76a | "It loses any item bonus to AC and all other effects and bonuses from armor, and it uses its proficiency modifier for unarmored defense" | AC from unarmored proficiency, armor ignored | | ☐ | |
-| VS-76b | "It gains resistance 8 to physical damage and is immune to precision damage" | Resistance 8 physical, precision immunity | | ☐ | |
-| VS-76c | "It can't cast spells, activate items, or use actions that have the attack or manipulate trait" | Its casts and attacks are refused | | ☐ | |
-| VS-76d | "It gains a fly Speed of 10 feet" | Fly 10 ft | | ☐ | |
-| VS-76e | "The target can Dismiss the spell" | Dismissing it ends the form | | ☐ | |
+| VS-76a | "It loses any item bonus to AC and all other effects and bonuses from armor, and it uses its proficiency modifier for unarmored defense" | AC from unarmored proficiency, armor ignored | pf2e's *Spell Effect: Vapor Form*: `AdjustModifier` suppresses item bonuses to AC | ⚠️ | The effect suppresses any item bonus to AC (pf2e's rule; Aries, unarmored, stayed at 34). **Gap:** an armored creature keeps its armor's proficiency and other armor effects; swapping them for its unarmored defense is the table's |
+| VS-76b | "It gains resistance 8 to physical damage and is immune to precision damage" | Resistance 8 physical, precision immunity | pf2e's effect: `Resistance` physical 8, `Immunity` precision | ✅ | Aries: **resistance physical 8**, **immune precision** |
+| VS-76c | "It can't cast spells, activate items, or use actions that have the attack or manipulate trait" | Its casts and attacks are refused | `forbids: [cast, attack, manipulate]` (`scripts/riders/forbids.mjs`): a cast stage, a check gate, the action wrap | ✅ | In vapor form: casting *Fly* — refused, nothing posted; a Strike — refused; an action with the manipulate trait — refused. After the form ended, the same Strike rolled |
+| VS-76d | "It gains a fly Speed of 10 feet" | Fly 10 ft | pf2e's effect: `BaseSpeed` fly 10 | ✅ | **fly 10** |
+| VS-76e | "The target can Dismiss the spell" | Dismissing it ends the form | `dismissable: "holder"`: the Dismiss given to the target | ✅ | Aries (the target) got **Dismiss Drive: Vapor Form**; using it: "Aries dismisses Spell Effect: Vapor Form." — resistance, immunity and fly gone |
 
 ## Batch 7 — Protection
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 133 |
-| ✅ | 184 |
-| ⚠️ | 8 |
+| ☐ not yet driven | 97 |
+| ✅ | 219 |
+| ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

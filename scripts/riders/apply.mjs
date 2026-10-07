@@ -18,6 +18,7 @@ import { Aftermath } from "./aftermath.mjs";
 import { Unobserved } from "./unobserved.mjs";
 import { setAside } from "./set-aside.mjs";
 import { Cleanse } from "./cleanse.mjs";
+import { Fall, elevate } from "./fall.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -468,6 +469,10 @@ async function applyOne(rider, context) {
             return applyCast(rider, context);
         case "unobserve":
             return Unobserved.apply(rider, context);
+        case "fall":
+            return Fall.apply(rider, context);
+        case "elevation":
+            return elevate(rider, context);
         case "cleanse":
             return Cleanse.offer(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath":
@@ -656,8 +661,20 @@ export function preselected(rules, preselect, outcome, cast = {}) {
         if (rule?.key !== "ChoiceSet" || !key) return rule;
         // `"$cast"`: what the caster chose as the spell was cast — *Seal Fate*'s damage type.
         const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key];
-        return answer === null ? rule : { ...rule, selection: answer };
+        return answer === null ? rule : { ...rule, selection: choiceValue(rule, answer) };
     });
+}
+
+/**
+ * The ChoiceSet value an answer names: the choice whose value is the answer, or — for pf2e's object-valued choices,
+ * *Enlarge*'s `{ size, reach, damage }` — the one with the answer among its values. Otherwise the answer itself.
+ */
+export function choiceValue(rule, answer) {
+    if (!Array.isArray(rule?.choices) || typeof answer !== "string") return answer;
+    const exact = rule.choices.find((choice) => choice?.value === answer);
+    if (exact) return exact.value;
+    const within = rule.choices.find((choice) => choice?.value && typeof choice.value === "object" && Object.values(choice.value).includes(answer));
+    return within ? within.value : answer;
 }
 
 /** A compass point as a direction on the grid (y grows downwards). */
@@ -1921,6 +1938,8 @@ async function applyEffect(rider, context) {
     }
     // *Shield*: the spell ends when its shield blocks (`shield-block.mjs`).
     if (rider.apply.endsOnBlock) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnBlock: rider.apply.endsOnBlock } });
+    // What the form forbids its holder — *Vapor Form* (`forbids.mjs`).
+    if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids } });
     const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
@@ -1946,6 +1965,20 @@ async function applyEffect(rider, context) {
 
     const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
     record(context, created);
+    // "You can Dismiss the spell" — *Animal Form*: its caster is given the action that ends it; "The target can Dismiss
+    // the spell" — *Vapor Form*: its holder (`dismissable: "holder"`).
+    if (created && rider.apply.dismissable) {
+        const who = rider.apply.dismissable === "holder" ? context.actor : context.originActor;
+        if (who) await Dismiss.grantForEffect(who, castItemOf(context) ?? context.item, created);
+    }
+    // …or an action that does something with it (`origin-action.mjs`) — *Levitate*'s Sustain to move it.
+    if (created && rider.apply.originAction) {
+        await OriginAction.grant(created, rider.apply.originAction, context, {
+            item: castItemOf(context) ?? context.item,
+            steps: riderSteps({ apply: {} }, context),
+            dc: RiderExtensions.resolveDC("spell", context),
+        });
+    }
 
     // Whatever has to follow an effect's arrival — an Arm put into the hands that were just granted it.
     await RiderExtensions.afterEffect(rider, context, created);
