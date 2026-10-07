@@ -327,6 +327,11 @@
             },
             "translocate": {
                 "Alone": "If this would bring another creature along — even inside an extradimensional container — the spell is lost."
+            },
+            "wall-of-fire": {
+                "Line": "A wall: a straight line up to 60 feet",
+                "Ring": "A ring: 10-foot radius",
+                "Wall": "Wall of Fire"
             }
         }
     }

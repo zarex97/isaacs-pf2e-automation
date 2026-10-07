@@ -172,6 +172,14 @@ export const AreaTargeting = {
                 const handled = await Extensions.aimed(config, regions, originToken);
                 if (handled !== undefined) return handled;
 
+                // A wall of fire burns whoever crosses it later, not whoever it was put down on: nobody is
+                // targeted, and what it leaves behind is still built from the placement.
+                if (config.placeOnly) {
+                    canvas.tokens.setTargets([]);
+                    await Extensions.afterAim(config, regions, originToken);
+                    return true;
+                }
+
                 // An emanation is never placed — it is centred on the caster's own space, so re-aiming it
                 // would put the identical area back in the identical spot. Offering a button that visibly
                 // does nothing is worse than not offering one.

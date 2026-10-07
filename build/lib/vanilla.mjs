@@ -53,6 +53,7 @@ export function docs(built, index, en) {
         if (a.includesSelf) parts.push("includes you");
         if (a.maxTargets) parts.push(`up to ${a.maxTargets}`);
         if (a.chain) parts.push(`a chain, each within ${a.chain.link} ft of the last`);
+        if (a.placeOnly) parts.push("placed, no targets");
         if (a.moveCaster) parts.push(a.moveCaster.seeBelowRank ? `you move there (seen, until rank ${a.moveCaster.seeBelowRank})` : "you move there");
         for (const [rank, gains] of Object.entries(a.heightening?.atRank ?? {})) {
             if (gains.maxTargets) parts.push(`+${gains.maxTargets} at rank ${rank}`);
@@ -63,7 +64,7 @@ export function docs(built, index, en) {
     const linger = (l) => (l
         ? [
             l.difficultTerrain ? "difficult terrain" : null,
-            l.damage ? `${l.damage.formula} ${l.damage.type ?? ""} at turn end`.trim() : null,
+            l.damage ? `${l.damage.formula}${l.damage.persistent === false ? "" : " persistent"} ${l.damage.type ?? ""} on ${(l.events ?? ["tokenMoveIn", "tokenTurnEnd"]).map((e) => ({ tokenMoveIn: "entering", tokenTurnStart: "turn start", tokenTurnEnd: "turn end" })[e] ?? e).join(" / ")}`.trim() : null,
             l.duration ? `${l.duration.value} ${l.duration.unit}` : null,
         ].filter(Boolean).join(", ")
         : "");
@@ -136,6 +137,7 @@ export function problemsWith(slug, entry, ctx) {
             if (area.anchor !== undefined && !["self", "free", "caster"].includes(area.anchor)) at(`${where} areaTargeting.anchor`, `"${area.anchor}" is not self, free or caster`);
             if (area.affects && !ctx.affects.includes(area.affects)) at(`${where} areaTargeting.affects`, `"${area.affects}" is not one of ${ctx.affects.join(", ")}`);
             for (const n of ["maxTargets", "range"]) if (area[n] !== undefined && !(Number(area[n]) > 0)) at(`${where} areaTargeting.${n}`, "a positive number");
+            if (area.placeOnly !== undefined && typeof area.placeOnly !== "boolean") at(`${where} areaTargeting.placeOnly`, "true or false");
             if (area.moveCaster !== undefined && (typeof area.moveCaster !== "object" || area.moveCaster === null)) at(`${where} areaTargeting.moveCaster`, "an object: { seeBelowRank? }");
             if (area.chain !== undefined && !(Number(area.chain?.link) > 0)) at(`${where} areaTargeting.chain`, "a chain names its link in feet");
         }
