@@ -737,6 +737,18 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  An effect that carries its own save, which shortens it (VS-18)                               */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { carried, shortened } = await import("../scripts/riders/apply.mjs");
+    const riders = carried([{ event: "turn-end", self: true, apply: { type: "save", statistic: "will", riders: [{ apply: { type: "shorten", rounds: 1 } }] } }], 34);
+    check("a carried save takes the caster's DC with it", riders[0].apply.dc, 34);
+    check("…and keeps a DC it already names", carried([{ apply: { type: "save", dc: 20 } }], 34)[0].apply.dc, 20);
+    check("a success takes a round off; the last round, or a critical success, ends it", [shortened({ value: 4 }, 1), shortened({ value: 1 }, 1), shortened({ value: 4 }, "all")], [3, null, null]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Until the target's next turn begins (VS-17)                                                  */
 /* -------------------------------------------------------------------------------------------- */
 

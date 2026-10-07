@@ -1,0 +1,72 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "stunned",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "paralyzed"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 4,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "paralyzed",
+                "carries": [
+                    {
+                        "event": "turn-end",
+                        "self": true,
+                        "apply": {
+                            "type": "save",
+                            "statistic": "will",
+                            "riders": [
+                                {
+                                    "outcomes": [
+                                        "success"
+                                    ],
+                                    "apply": {
+                                        "type": "shorten",
+                                        "rounds": 1
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "criticalSuccess"
+                                    ],
+                                    "apply": {
+                                        "type": "shorten",
+                                        "rounds": "all"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
