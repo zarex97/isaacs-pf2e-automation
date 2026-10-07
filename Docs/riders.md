@@ -69,6 +69,7 @@ and `npm test` fails if this table and that switch disagree.
 | `escape` | Offers an escape attempt against something holding the target. |
 | `expire` | Takes a named effect back off before its own timer would. |
 | `sustain` | The *Sustain* action an effect with `sustain` grants; not written by hand. |
+| `climb` | Moves a valued condition by `by` (negative to lower it) within `[0, max]`; reaching `max` runs the riders in `onMax`, reaching 0 those in `onZero` — *Petrify*'s slowed that turns to stone. |
 | `shorten` | Takes `rounds` off the effect that carries this rider, or ends it with `rounds: "all"` — *Paralyze*'s save at the end of each turn. |
 | `strikes` | Rolls a volley, dealt round-robin across the confirmed targets. `mapIndex` picks the variant. Follows through to damage. |
 | `toggle` | Flips a roll option on the **target**, unless the rider is `self`. |

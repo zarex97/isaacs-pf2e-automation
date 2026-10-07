@@ -44,7 +44,7 @@ export function docs(built, index, en) {
             : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
-        const lasting = [r.duration ? (r.duration.of === "target" ? "until its next turn" : `${r.duration.value} ${r.duration.unit}`) : (a.type === "condition" && !a.value ? "no end" : null), a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, a.carries?.length ? `carries ${a.carries.map((c) => `${c.event ?? ""} ${c.apply?.type === "save" ? `${c.apply.statistic} save` : c.apply?.type}`.trim()).join(", ")}` : null, a.withoutGrants?.length ? `without ${a.withoutGrants.join(", ")}` : null, ...rankFromRider(r.predicate), r.self ? "on you" : null].filter(Boolean);
+        const lasting = [r.duration ? (r.duration.of === "target" ? "until its next turn" : r.duration.unit === "unlimited" ? "until it ends" : `${r.duration.value} ${r.duration.unit}`) : (a.type === "condition" && !a.value ? "no end" : null), a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, a.carries?.length ? `carries ${a.carries.map((c) => `${c.event ?? ""} ${c.apply?.type === "save" ? `${c.apply.statistic} save` : c.apply?.type}`.trim()).join(", ")}` : null, a.withoutGrants?.length ? `without ${a.withoutGrants.join(", ")}` : null, ...rankFromRider(r.predicate), r.self ? "on you" : null].filter(Boolean);
         const lastingText = lasting.length ? ` (${lasting.join(", ")})` : "";
         return `${when ? `${when}: ` : ""}${what}${lastingText}`;
     };
@@ -198,7 +198,7 @@ export function problemsWith(slug, entry, ctx) {
         if (inline && (!apply.label || apply.rules.some((r) => typeof r?.key !== "string"))) at(`${where}.apply`, "an effect written out names a label and rules that each have a key");
         if (apply.type === "effect" && !inline && !Object.values(ctx.index.effects).includes(apply.uuid)) at(`${where}.apply`, `no pf2e spell effect ${apply.uuid}`);
         if (apply.type === "save" && !["fortitude", "reflex", "will"].includes(apply.statistic)) at(`${where}.apply`, `a save is fortitude, reflex or will, not "${apply.statistic}"`);
-        for (const list of ["riders", "onAllHit", "carries"]) (apply[list] ?? []).forEach((r, i) => checkRider(`${where}.apply.${list}[${i}]`, r));
+        for (const list of ["riders", "onAllHit", "carries", "onMax", "onZero"]) (apply[list] ?? []).forEach((r, i) => checkRider(`${where}.apply.${list}[${i}]`, r));
         (apply.options ?? []).forEach((o, i) => (o.riders ?? []).forEach((r, j) => checkRider(`${where}.apply.options[${i}].riders[${j}]`, r)));
     }
 

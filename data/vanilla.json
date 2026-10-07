@@ -957,6 +957,204 @@
                 }
             ]
         },
+        "petrify": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": -1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.petrify.Spell",
+                        "slug": "petrify",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "turn-end",
+                                "self": true,
+                                "apply": {
+                                    "type": "save",
+                                    "statistic": "fortitude",
+                                    "riders": [
+                                        {
+                                            "outcomes": [
+                                                "criticalSuccess",
+                                                "success"
+                                            ],
+                                            "apply": {
+                                                "type": "climb",
+                                                "slug": "slowed",
+                                                "by": -1,
+                                                "max": 3,
+                                                "onMax": [
+                                                    {
+                                                        "apply": {
+                                                            "type": "condition",
+                                                            "slug": "petrified"
+                                                        }
+                                                    },
+                                                    {
+                                                        "apply": {
+                                                            "type": "condition",
+                                                            "slug": "slowed",
+                                                            "remove": true
+                                                        }
+                                                    },
+                                                    {
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ],
+                                                "onZero": [
+                                                    {
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "outcomes": [
+                                                "failure"
+                                            ],
+                                            "apply": {
+                                                "type": "climb",
+                                                "slug": "slowed",
+                                                "by": 1,
+                                                "max": 3,
+                                                "onMax": [
+                                                    {
+                                                        "apply": {
+                                                            "type": "condition",
+                                                            "slug": "petrified"
+                                                        }
+                                                    },
+                                                    {
+                                                        "apply": {
+                                                            "type": "condition",
+                                                            "slug": "slowed",
+                                                            "remove": true
+                                                        }
+                                                    },
+                                                    {
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ],
+                                                "onZero": [
+                                                    {
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "outcomes": [
+                                                "criticalFailure"
+                                            ],
+                                            "apply": {
+                                                "type": "climb",
+                                                "slug": "slowed",
+                                                "by": 2,
+                                                "max": 3,
+                                                "onMax": [
+                                                    {
+                                                        "apply": {
+                                                            "type": "condition",
+                                                            "slug": "petrified"
+                                                        }
+                                                    },
+                                                    {
+                                                        "apply": {
+                                                            "type": "condition",
+                                                            "slug": "slowed",
+                                                            "remove": true
+                                                        }
+                                                    },
+                                                    {
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ],
+                                                "onZero": [
+                                                    {
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.petrify.Incapacitation"
+                    }
+                }
+            ]
+        },
         "scatter-scree": {
             "areaTargeting": {
                 "affects": "all"
