@@ -1350,4 +1350,10 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("only a Strike that hit is caught", [isStrikeHit({ item: strike, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "failure", damage: roll }), isStrikeHit({ item: { isOfType: () => false }, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "criticalSuccess", damage: 9 })], [true, false, false, false]);
 }
 
+{
+    const { statusBonusCounts, NUDGE_PREDICATE } = await import("../scripts/riders/nudge.mjs");
+    check("a retroactive +1 status bonus counts unless an enabled status bonus is already there", [statusBonusCounts([{ type: "item", modifier: 2, enabled: true }]), statusBonusCounts([{ type: "status", modifier: 1, enabled: true }]), statusBonusCounts([{ type: "status", modifier: 1, enabled: false }]), statusBonusCounts([{ type: "status", modifier: -1, enabled: true }])], [true, false, true, true]);
+    check("a nudge applies one point short of success, or of failure — not where a natural 20 or 1 undoes it", NUDGE_PREDICATE, [{ or: [{ and: ["check:total:delta:-1", { not: "check:total:natural:20" }] }, { and: ["check:total:delta:-10", { not: "check:total:natural:1" }] }] }]);
+}
+
 report("Automation tests");

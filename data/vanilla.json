@@ -2694,6 +2694,25 @@
                 }
             ]
         },
+        "nudge-fate": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.nudge-fate.Nudge",
+                        "slug": "nudge-fate",
+                        "rules": [],
+                        "endsPrevious": true,
+                        "nudge": true
+                    }
+                }
+            ]
+        },
         "paralyze": {
             "riders": [
                 {

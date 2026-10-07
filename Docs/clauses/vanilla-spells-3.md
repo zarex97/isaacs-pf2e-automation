@@ -592,10 +592,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-84a | "a +1 status bonus would turn a critical failure into a failure, or failure into a success" | Only when one more would change the degree | | ☐ | |
-| VS-84b | "you grant the target a +1 status bonus to the check retroactively, changing the outcome appropriately" | The roll's outcome is raised after it falls | | ☐ | |
-| VS-84c | "The spell then ends" | Once used, gone | | ☐ | |
-| VS-84d | "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends" | Casting it again ends the old one | | ☐ | |
+| VS-84a | "a +1 status bonus would turn a critical failure into a failure, or failure into a success" | Only when one more would change the degree | `nudge` (`scripts/riders/nudge.mjs`): a check stage adds a pf2e degree adjustment, +1 step, predicated on `check:total:delta:-1` (not a natural 20) or `-10` (not a natural 1); none when an enabled status bonus is already on the check | ✅ | ZZ Victim (Fortitude +0, DC 15): a 10 — failure, **untouched**, the effect stayed. With a +1 status bonus already on, a 14 total — failure, **untouched** |
+| VS-84b | "you grant the target a +1 status bonus to the check retroactively, changing the outcome appropriately" | The roll's outcome is raised after it falls | pf2e's own `DegreeOfSuccess` applies the adjustment, so the card shows the raised outcome | ✅ | A 14: **failure → success**. A 5: **critical failure → failure** |
+| VS-84c | "The spell then ends" | Once used, gone | A `createChatMessage` hook ends the effect when the posted check's outcome was raised by it | ✅ | After each raise: "ZZ Victim's roll was nudged, and the spell ends" — effect gone; the untouched failure left it in place |
+| VS-84d | "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends" | Casting it again ends the old one | `endsPrevious` with `slug: nudge-fate`: the caster's earlier effect of that slug, on anyone, ends as the new one is made | ✅ | Cast on ZZ, then on Leo: **ZZ 0, Leo 1** |
 
 ### VS-85 · Runic Weapon
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 68 |
-| ✅ | 248 |
+| ☐ not yet driven | 64 |
+| ✅ | 252 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

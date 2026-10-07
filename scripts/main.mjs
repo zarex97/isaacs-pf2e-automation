@@ -10,6 +10,7 @@ import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
 import { SpellShield } from "./riders/spell-shield.mjs";
 import { ShareDamage } from "./riders/share-damage.mjs";
+import { Nudge } from "./riders/nudge.mjs";
 import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
 import { OriginAction } from "./riders/origin-action.mjs";
@@ -61,6 +62,7 @@ export const INIT = [
     ["a shield that ends when it blocks", () => ShieldBlock.register()],
     ["a shield a spell makes", () => SpellShield.register()],
     ["damage shared with a caster", () => { ShareDamage.register(); ShareDamage.registerHooks(); }],
+    ["a nudge after the die falls", () => Nudge.register()],
     ["fast healing and regeneration, applied", () => FastHealing.registerHooks()],
     // Not awaited: nothing reads the table before a cast, and a failed fetch leaves vanilla content as it was.
     ["the vanilla table", () => void Vanilla.load()],

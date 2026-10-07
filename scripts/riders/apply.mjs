@@ -1865,6 +1865,8 @@ async function applyEffect(rider, context) {
         }
         // A count the effect carries — *Blister*'s one, two or four blisters.
         if (Number(rider.apply.badge) > 0) source.system.badge = { type: "counter", value: Number(rider.apply.badge) };
+        // "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends."
+        if (rider.apply.endsPrevious && rider.apply.slug) await endPreviousEffects(rider.apply.slug, context.originActor);
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
         // …and the action its caster spends it with (`origin-action.mjs`), at the cast's DC and rank.
@@ -3080,6 +3082,8 @@ function effectSource(label, rules, rider, context) {
         const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
     }
+    // *Nudge Fate*: a degree raised after the die falls (`nudge.mjs`).
+    if (rider.apply?.nudge) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { nudge: rider.apply.nudge === true ? {} : rider.apply.nudge } });
     // *Share Life*: its holder's damage halved, the rest to its caster (`share-damage.mjs`).
     if (rider.apply?.shareDamage && context.originActor) {
         const { share = 0.5, range = null } = rider.apply.shareDamage;
@@ -3088,6 +3092,15 @@ function effectSource(label, rules, rider, context) {
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
+}
+
+/** End the effects with this slug that this caster left on any creature in the scene — a previous casting. */
+async function endPreviousEffects(slug, caster) {
+    if (!caster || !canvas?.tokens) return;
+    for (const token of canvas.tokens.placeables) {
+        const stale = (token.actor?.itemTypes?.effect ?? []).filter((e) => e.slug === slug && e.system?.context?.origin?.actor === caster.uuid);
+        if (stale.length > 0) await token.actor.deleteEmbeddedDocuments("Item", stale.map((e) => e.id));
+    }
 }
 
 /**
