@@ -597,6 +597,21 @@
                 }
             ]
         },
+        "blur": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "concealed"
+                    }
+                }
+            ]
+        },
         "breath-of-life": {
             "riders": [
                 {
@@ -1287,6 +1302,17 @@
                     }
                 }
             ]
+        },
+        "final-sacrifice": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "sacrifice": {
+                "element": {
+                    "cold": "cold",
+                    "water": "cold"
+                }
+            }
         },
         "fire-shield": {
             "riders": [
@@ -3193,6 +3219,55 @@
                 }
             ]
         },
+        "planar-tether": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.planar-tether.Tether",
+                        "rules": [],
+                        "tether": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.planar-tether.Tether",
+                        "rules": [],
+                        "tether": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.planar-tether.Tether",
+                        "rules": [],
+                        "tether": true
+                    }
+                }
+            ]
+        },
         "protection": {
             "castChoice": {
                 "flag": "extent",
@@ -3669,6 +3744,27 @@
                     "apply": {
                         "type": "prompt",
                         "text": "ISAACS_AUTOMATION.Vanilla.shield.Immune"
+                    }
+                }
+            ]
+        },
+        "silence": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.mmJNE57hC7G3SPae",
+                        "atCastRank": true,
+                        "forbids": [
+                            "cast",
+                            "auditory"
+                        ],
+                        "forbidsExcept": {
+                            "traits": [
+                                "subtle"
+                            ]
+                        }
                     }
                 }
             ]
@@ -4323,6 +4419,20 @@
                 }
             ]
         },
+        "summon-animal": {
+            "areaTargeting": {
+                "area": {
+                    "type": "square",
+                    "value": 5
+                },
+                "range": 30,
+                "summon": {
+                    "traits": [
+                        "animal"
+                    ]
+                }
+            }
+        },
         "sure-strike": {
             "areaTargeting": false,
             "riders": [
@@ -4863,6 +4973,28 @@
                     "apply": {
                         "type": "prompt",
                         "text": "ISAACS_AUTOMATION.Vanilla.translocate.Alone"
+                    }
+                }
+            ]
+        },
+        "unfettered-movement": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.CdAyAiMGESvgNQtz",
+                        "unfettered": true,
+                        "addRules": [
+                            {
+                                "key": "AdjustModifier",
+                                "predicate": [
+                                    "penalty:type:circumstance"
+                                ],
+                                "selector": "all-speeds",
+                                "suppress": true
+                            }
+                        ]
                     }
                 }
             ]

@@ -287,6 +287,32 @@
             "Off": "{actor} took acid or fire damage: no regeneration this turn.",
             "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
         },
+        "Sacrifice": {
+            "NotMinion": "{name} needs one target: a minion you summoned.",
+            "Slain": "{name} is slain."
+        },
+        "Summon": {
+            "Choose": "Which creature? (level {level} at most)",
+            "Ok": "Summon",
+            "None": "{name}: nothing in the Monster Cores can be summoned at this rank.",
+            "Occupied": "That space is taken by {names}: a summoned creature appears in an open space.",
+            "Folder": "Summoned",
+            "Effect": "{spell}: {name}",
+            "Arrives": "{caster} summons {name}.",
+            "Gone": "{name} is gone."
+        },
+        "Concealed": {
+            "FlatPassed": "{attacker} targets {target}, concealed: the DC 5 flat check succeeds.",
+            "FlatFailed": "{attacker} targets {target}, concealed: the DC 5 flat check fails, and the attack misses."
+        },
+        "Tether": {
+            "Check": "Counteract — {name}",
+            "Held": "{name} holds {actor} in place: {spell} is counteracted.",
+            "Slipped": "{name} fails to hold {actor}: {spell} goes ahead."
+        },
+        "Unfettered": {
+            "Label": "{name}"
+        },
         "Floor": {
             "Held": "{actor}'s {name} can't go below {value} while {effect} lasts."
         },
@@ -485,6 +511,7 @@
             "VariantFromWeapon": "Its damage type from the weapon in hand",
             "ActionVariants": "Cast with {counts} actions, the variant for each",
             "TargetsPerAction": "A creature for each action spent",
+            "Sacrifice": "A minion you summoned, slain to explode",
             "SameAttackPenalty": "Every attack of the cast at one penalty",
             "CastChoice": "One of {count} choices, made as it is cast",
             "Key": {
@@ -500,7 +527,8 @@
                 "actionVariants": "Actions spent",
                 "targetsPerAction": "Targets per action",
                 "sameAttackPenalty": "One attack penalty",
-                "castChoice": "A choice as it is cast"
+                "castChoice": "A choice as it is cast",
+                "sacrifice": "A minion spent"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -578,6 +606,9 @@
             },
             "moon-frenzy": {
                 "Shake": "Shake Off the Moon Frenzy"
+            },
+            "planar-tether": {
+                "Tether": "tethered"
             },
             "nudge-fate": {
                 "Nudge": "nudge fate"

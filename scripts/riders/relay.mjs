@@ -12,6 +12,7 @@ const HANDLERS = {
     applyCounteract: resolveCounteract,
     applyReaction: resolveReaction,
     applyCleanse: (payload) => Cleanse.resolve(payload),
+    summon: async (payload) => (await import("../targeting/summon.mjs")).Summon.create(payload),
 };
 
 /**

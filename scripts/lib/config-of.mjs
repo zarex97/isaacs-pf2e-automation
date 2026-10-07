@@ -25,6 +25,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "sameAttackPenalty",
     // A choice made as the spell is cast, for its riders — *Seal Fate*'s damage type (`vanilla/requires.mjs`).
     "castChoice",
+    // A minion spent — *Final Sacrifice* (`vanilla/sacrifice.mjs`).
+    "sacrifice",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

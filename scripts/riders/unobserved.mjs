@@ -73,6 +73,21 @@ export const Unobserved = {
             });
             return passed;
         });
+        // An attack on a concealed creature — *Blur*: "When you target a concealed creature, you must succeed at a DC 5
+        // flat check before you roll your check. If you fail, you don't affect the target."
+        CheckPipeline.gate("an attack on a concealed creature", 21, async (_check, context) => {
+            if (context?.type !== "attack-roll") return true;
+            const attacker = (context.origin?.actor ?? context.actor);
+            const target = context.target?.actor;
+            if (!target?.hasCondition?.("concealed")) return true;
+            const roll = await new Roll("1d20").evaluate();
+            const passed = roll.total >= 5;
+            await roll.toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: attacker }),
+                flavor: t(passed ? "Concealed.FlatPassed" : "Concealed.FlatFailed", { attacker: attacker?.name ?? "", target: target.name }),
+            });
+            return passed;
+        });
         // …and that creature's own attacks find it off-guard.
         CheckPipeline.before("off-guard to a creature it can't observe", 31, (_check, context) => {
             if (context?.type !== "attack-roll" || !context.dc?.value) return;

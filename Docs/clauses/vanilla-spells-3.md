@@ -640,52 +640,52 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-89a | "the target ignores effects that would give them a circumstance penalty to Speed" | Circumstance penalties to its Speed don't apply | | ☐ | |
-| VS-89b | "When they attempt to Escape an effect that has them Immobilized, Grabbed, or Restrained, they automatically succeed unless the effect is magical and of a higher rank than the unfettered movement spell" | Its Escape succeeds without a roll, unless the hold is magic of a higher rank | | ☐ | |
+| VS-89a | "the target ignores effects that would give them a circumstance penalty to Speed" | Circumstance penalties to its Speed don't apply | pf2e's *Spell Effect: Unfettered Movement* (`AdjustModifier` suppressing circumstance penalties on `land-speed`); `addRules`: the same on `all-speeds` | ✅ | Leo with a −10 circumstance penalty to every Speed: land 15, fly 10. After the spell: **land 25, fly 20** |
+| VS-89b | "When they attempt to Escape an effect that has them Immobilized, Grabbed, or Restrained, they automatically succeed unless the effect is magical and of a higher rank than the unfettered movement spell" | Its Escape succeeds without a roll, unless the hold is magic of a higher rank | `unfettered` (`scripts/riders/unfettered.mjs`): a check stage raises a failed `action:escape` check to a success unless it carries `escape:magical-rank:<n>` above the cast's rank; this module's Escape adds `action:escape` and the holding spell's rank (`holdOption`) | ✅ | An Athletics check with `action:escape`, 25 vs DC 45: **critical failure → success**; with a rank-4 magical hold, success; with a rank-9 one, **stays a critical failure**; without `action:escape`, untouched. Tangle Vine (a cantrip, rank 10 from a level-20 caster) on Leo with Unfettered at rank 4: Leo's granted Escape critically failed and **held** (the hold is the higher rank); with Unfettered at rank 10: "Leo breaks free of Drive: Tangle Vine" — **critical failure → success**, the effect gone |
 
 ### VS-90 · Planar Tether
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-90a | "the spell attempts to counteract any teleportation effect that would move the target" | A teleport on it rolls a counteract first, and is stopped on a success | | ☐ | |
-| VS-90b | "or any effect that would transport it to a different plane" | *Banishment* on it is counteracted the same way | | ☐ | |
-| VS-90c | "Success The effect's duration is 1 minute" | One minute | | ☐ | |
-| VS-90d | "Failure The effect's duration is 10 minutes" | Ten | | ☐ | |
-| VS-90e | "Critical Failure The effect's duration is 1 hour" | An hour | | ☐ | |
-| VS-90f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+| VS-90a | "the spell attempts to counteract any teleportation effect that would move the target" | A teleport on it rolls a counteract first, and is stopped on a success | `tether` (`scripts/riders/tether.mjs`): before a `teleport` rider moves its holder by a spell with the teleportation trait — and before `moveCaster` moves a caster by one (*Translocate*) — the tether's caster rolls spellcasting against that spell's DC; rank +1/+3/−1 by degree against the spell's rank | ✅ | Aries tethered (rank 4) casting *Translocate* (rank 4, teleportation): counteract a success — "holds Aries in place", **not moved**; a failure — "fails to hold", **moved**. ZZ tethered, a copy of *Hydraulic Push* given the teleportation trait: a critical success — **not moved**; a failure — **moved 10 ft**. The plain *Hydraulic Push*: moved, **no check** |
+| VS-90b | "or any effect that would transport it to a different plane" | *Banishment* on it is counteracted the same way | The same check before a `banish` rider | ✅ | A tethered stand-in critically failed against *Banishment* (rank 5): counteract a critical success (46 vs 34) — "holds … in place", the token **stayed**; a critical failure (32) — "fails to hold", **banished**. (Banishment's critical-failure note still posts when the tether holds — that note is its own rider) |
+| VS-90c | "Success The effect's duration is 1 minute" | One minute | `content/vanilla/planar-tether.json`: success, a 1-minute tether | ✅ | Leo, Will 37 vs 34: **1 minute** |
+| VS-90d | "Failure The effect's duration is 10 minutes" | Ten | failure, 10 minutes | ✅ | ZZ, a natural 20 (20 vs 34, a failure): **10 minutes**; Leo 32 vs 34: **10 minutes** |
+| VS-90e | "Critical Failure The effect's duration is 1 hour" | An hour | critical failure, 1 hour | ✅ | ZZ, a natural 1: **1 hour** |
+| VS-90f | "Critical Success The target is unaffected" | Nothing | no rider on a critical success | ✅ | Leo, a natural 20 (42): **no tether** |
 
 ### VS-91 · Blur
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-91a | "It becomes Concealed" | An attack on it rolls a DC 5 flat check first; a failure misses | | ☐ | |
+| VS-91a | "It becomes Concealed" | An attack on it rolls a DC 5 flat check first; a failure misses | `content/vanilla/blur.json`: *concealed* for 1 minute; a check gate (`unobserved.mjs`, "an attack on a concealed creature") rolls the DC 5 flat check before any attack on a concealed target | ✅ | Leo: an effect *Blur: Concealed* (1 minute) with the condition. The Ghoul's Claw at Leo: flat check **3** — "the DC 5 flat check fails, and the attack misses", **no attack rolled**; **12** — "succeeds", the attack rolled. Concealed gone: the Claw rolled with no check |
 | VS-91b | "the target can't use this concealment to Hide or Sneak" | — | | — | Nothing to automate: Hide and Sneak are the table's |
 
 ### VS-92 · Silence
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-92a | "The target can't use sonic attacks, nor can it use actions with the auditory trait" | Its auditory actions are refused | | ☐ | |
-| VS-92b | "This prevents it from casting spells due to the magical words involved in casting, with the exception of subtle spells" | Its casts are refused unless the spell is subtle | | ☐ | |
+| VS-92a | "The target can't use sonic attacks, nor can it use actions with the auditory trait" | Its auditory actions are refused | pf2e's *Spell Effect: Silence* (`emitsSound` false); `forbids: [cast, auditory]` (`forbids.mjs`, any trait now) | ✅ | Aries silenced: `emitsSound` **false**; an action with the auditory trait — **refused**; a plain action — posted |
+| VS-92b | "This prevents it from casting spells due to the magical words involved in casting, with the exception of subtle spells" | Its casts are refused unless the spell is subtle | `forbidsExcept: { traits: [subtle] }` on `cast` | ✅ | Silenced, Aries casting *Guidance* — **refused**; casting *Silence* (subtle) — **cast**. The effect gone: *Guidance* cast |
 | VS-92c | "The target makes no sound, preventing creatures from noticing it using hearing alone" | — | | — | Nothing to automate: noticing by hearing is the table's |
-| VS-92d | "Heightened (4th) The spell creates an aura in a 10-foot emanation around the touched creature" | Rank 4: everyone within 10 ft of it is silenced too, moving with it | | ☐ | |
+| VS-92d | "Heightened (4th) The spell creates an aura in a 10-foot emanation around the touched creature" | Rank 4: everyone within 10 ft of it is silenced too, moving with it | pf2e's `Aura` at level 4 copies the effect within 10 ft; `forbidsOf` gives the copy the forbids of the effect radiating it | ✅ | Rank 4 on Aries, Leo in the same square: Leo got *Spell Effect: Silence* from the aura, **silent**, Leo's auditory action **refused**. Leo moved 30 ft away: the copy **gone**, the action posted |
 
 ### VS-93 · Summon Animal
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-93a | "You summon a creature that has the animal trait and whose level is –1 to fight for you" | The cast offers animals of level –1 from pf2e's bestiaries and places the chosen one within 30 ft, a minion of the caster | | ☐ | |
-| VS-93b | "Heightened As listed in the summon trait" | The level allowed grows with the rank (1 at 2nd, 2 at 3rd, 3 at 4th, 5 at 5th…) | | ☐ | |
+| VS-93a | "You summon a creature that has the animal trait and whose level is –1 to fight for you" | The cast offers animals of level –1 from pf2e's bestiaries and places the chosen one within 30 ft, a minion of the caster | `areaTargeting.summon: { traits: [animal] }` (`scripts/targeting/summon.mjs`): the placement is a 5-ft square within 30 ft (snapped, refused when occupied); after the cast a list of common creatures with the traits from pf2e's Monster Cores; the active GM imports the one chosen into *Summoned*, puts an unlinked token there (minion, summoned, the caster's owners) and gives the caster a Sustained effect for it — gone, the creature goes; the creature gone, the effect ends | ✅ | Rank 1: "Which creature? (level -1 at most)" — 9 animals (Compsognathus, Eagle, … Trilobite); the Guard Dog: **level −1, traits animal, minion, summoned**, owned as Aries, the Sustained 1-minute effect and *Sustain Drive: Summon Animal* on Aries. The effect deleted: "Guard Dog is gone.", the token too |
+| VS-93b | "Heightened As listed in the summon trait" | The level allowed grows with the rank (1 at 2nd, 2 at 3rd, 3 at 4th, 5 at 5th…) | `SUMMON_LEVELS`: the summon trait's table (−1, 1, 2, 3, 5, 7, … 15) | ✅ | Rank 2: **35** animals, Camel (1) … Viper (−1); the Wolf (level 1) on the snapped square |
 
 ### VS-94 · Final Sacrifice
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-94a | "The target is immediately slain" | Only a minion the caster summoned can be chosen; it dies | | ☐ | |
-| VS-94b | "the explosion deals 6d6 fire damage to creatures within 20 feet of it with a basic Reflex save" | A 20-ft emanation from the minion, basic Reflex against 6d6 fire | | ☐ | |
-| VS-94c | "If the target has the cold or water trait, the spell deals cold damage and has the cold trait instead of the fire trait" | A cold or water minion makes it cold | | ☐ | |
+| VS-94a | "The target is immediately slain" | Only a minion the caster summoned can be chosen; it dies | `sacrifice` (`scripts/vanilla/sacrifice.mjs`): the cast stage "a minion sacrificed" (6) needs one target the caster summoned; after the cast the minion is slain and its token goes | ✅ | At Leo: **refused**, nothing posted. At Aries' summoned Wolf: cast, "Wolf is slain.", its token and Aries' effect for it **gone** |
+| VS-94b | "the explosion deals 6d6 fire damage to creatures within 20 feet of it with a basic Reflex save" | A 20-ft emanation from the minion, basic Reflex against 6d6 fire | `areaTargeting` with an origin resolver: pf2e's 20-ft emanation measured from the minion; pf2e's basic Reflex and 6d6 | ✅ | Targets: every creature within 20 ft of the **Wolf** — one 20 ft from it (30 ft from Aries) caught, one 25 ft from it (15 ft from Aries) not. The card: **6d6 fire**, basic Reflex |
+| VS-94c | "If the target has the cold or water trait, the spell deals cold damage and has the cold trait instead of the fire trait" | A cold or water minion makes it cold | `sacrifice.element: { cold: cold, water: cold }`: a variant with the damage and the trait retyped, kept on the card (`casting.embeddedSpell`) so its damage rolls the same | ✅ | A Wolf given the water trait: the card **Cold** in its traits, damage **8d6 cold** (rank 3). (The first try retyped only the cast: pf2e rebuilt the card's spell from Aries' own item and rolled fire — the card now carries the retyped spell) |
 | VS-94d | "Attempting to cast this spell targeting a creature that you temporarily seized control of" | — | | — | Nothing to automate: nothing here seizes control of a creature |
-| VS-94e | "The damage increases by 2d6" | Rank 3: 8d6 | | ☐ | |
+| VS-94e | "The damage increases by 2d6" | Rank 3: 8d6 | pf2e's heightening (+2d6 a rank) | ✅ | Rank 3: **8d6**; rank 2: **6d6** |
 
 ## Batch 10 — Senses and light
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 48 |
-| ✅ | 267 |
+| ☐ not yet driven | 30 |
+| ✅ | 285 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |

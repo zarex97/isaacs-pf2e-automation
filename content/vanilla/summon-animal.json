@@ -1,0 +1,14 @@
+{
+    "areaTargeting": {
+        "area": {
+            "type": "square",
+            "value": 5
+        },
+        "range": 30,
+        "summon": {
+            "traits": [
+                "animal"
+            ]
+        }
+    }
+}

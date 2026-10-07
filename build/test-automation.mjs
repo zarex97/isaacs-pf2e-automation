@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.forbids} what a form forbids`, `${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.forbids} what a form forbids`, `${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.sacrifice} a minion sacrificed`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -1375,6 +1375,42 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     const has = (...slugs) => ({ hasCondition: (s) => slugs.includes(s) });
     check("a caster sees the creature unless blinded, or it is invisible, undetected or unnoticed", [canSee(has(), has()), canSee(has("blinded"), has()), canSee(has(), has("invisible")), canSee(null, has())], [true, false, false, false]);
     check("a lowered condition is held at its floor", [clamped(0, 1), clamped(1, 1), clamped(2, 1)], [1, 1, 2]);
+}
+
+{
+    const { freesFrom, holdOption, magicalRank } = await import("../scripts/riders/unfettered.mjs");
+    check("an unfettered Escape: any grab, and a magical hold no higher than the spell", [freesFrom(["action:escape"], 4), freesFrom(["action:escape", "escape:magical-rank:4"], 4), freesFrom(["action:escape", "escape:magical-rank:5"], 4), freesFrom(["action:stride"], 4)], [true, true, false, false]);
+    check("a hold's Escape names its rank when a spell or something magical holds", [holdOption({ type: "spell", rank: 3, system: { traits: { value: [] } } }), holdOption({ type: "action", system: { traits: { value: ["magical"] }, level: { value: 9 } } }), holdOption({ type: "action", system: { traits: { value: [] } } }), magicalRank(["escape:magical-rank:7"])], ["escape:magical-rank:3", "escape:magical-rank:5", null, 7]);
+}
+
+{
+    const { counteracts, tethers } = await import("../scripts/riders/tether.mjs");
+    check("a tether's counteract: rank +1 on a success, +3 on a critical, −1 on a failure", [counteracts("success", 4, 5), counteracts("success", 4, 6), counteracts("criticalSuccess", 4, 7), counteracts("failure", 4, 3), counteracts("criticalFailure", 4, 1)], [true, false, true, true, false]);
+    check("a tether answers teleportation and banishment, not a push", [tethers({ system: { traits: { value: ["teleportation"] } } }, "teleport"), tethers({ system: { traits: { value: ["air"] } } }, "teleport"), tethers(null, "banish")], [true, false, true]);
+}
+
+{
+    const { forbidsOf } = await import("../scripts/riders/forbids.mjs");
+    const L = "isaacs-pf2e-automation";
+    const radiating = { sourceId: "pf2e.silence", flags: { [L]: { forbids: ["cast", "auditory"], forbidsExcept: { traits: ["subtle"] } } } };
+    const origin = { itemTypes: { effect: [radiating] } };
+    const copy = { sourceId: "pf2e.silence", flags: { pf2e: { aura: { origin: "Actor.x", slug: "s" } } } };
+    check("an aura's copy forbids what the effect radiating it forbids", [forbidsOf(copy, () => origin)?.forbids, forbidsOf({ sourceId: "other", flags: { pf2e: { aura: { origin: "Actor.x" } } } }, () => origin), forbidsOf(radiating).except], [["cast", "auditory"], null, { traits: ["subtle"] }]);
+}
+
+{
+    const { summonLevel, eligible } = await import("../scripts/targeting/summon.mjs");
+    check("the summon trait's levels by rank", [1, 2, 3, 4, 5, 6, 10].map(summonLevel), [-1, 1, 2, 3, 5, 7, 15]);
+    const wolf = { type: "npc", system: { details: { level: { value: 1 } }, traits: { value: ["animal"], rarity: "common" } } };
+    check("a summonable creature: an NPC, common, with the traits, at most the level", [eligible(wolf, { traits: ["animal"], maxLevel: 1 }), eligible(wolf, { traits: ["animal"], maxLevel: -1 }), eligible(wolf, { traits: ["fey"], maxLevel: 5 }), eligible({ ...wolf, system: { ...wolf.system, traits: { value: ["animal"], rarity: "uncommon" } } }, { traits: ["animal"], maxLevel: 5 }), eligible({ ...wolf, type: "hazard" }, { traits: [], maxLevel: 5 })], [true, false, false, false, false]);
+}
+
+{
+    const { elementFor, retyped } = await import("../scripts/vanilla/sacrifice.mjs");
+    check("a cold or water minion makes it cold; another, nothing", [elementFor(["animal", "water"], { cold: "cold", water: "cold" }), elementFor(["animal"], { cold: "cold", water: "cold" })], ["cold", null]);
+    const src = { system: { damage: { 0: { formula: "6d6", type: "fire" } }, traits: { value: ["concentrate", "fire", "manipulate"] } } };
+    const out = retyped(src, "fire", "cold");
+    check("…its fire damage and trait made cold", [out.system.damage[0].type, out.system.traits.value], ["cold", ["concentrate", "cold", "manipulate"]]);
 }
 
 report("Automation tests");

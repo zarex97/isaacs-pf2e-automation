@@ -13,6 +13,7 @@ import { AreaTargeting, VARIANT } from "./targeting/index.mjs";
 export const CAST_PRIORITY = {
     forbids: 4,
     requires: 5,
+    sacrifice: 6,
     weaponVariant: 7,
     actionVariant: 8,
     castChoice: 9,
@@ -82,6 +83,8 @@ export const CastPipeline = {
         // A form that can't cast — *Vapor Form*.
         CastPipeline.before("what a form forbids", CAST_PRIORITY.forbids, async (spell) => (await import("./riders/forbids.mjs")).Forbids.castAllowed(spell));
         CastPipeline.before("what a spell needs", CAST_PRIORITY.requires, async (spell) => (await import("./vanilla/requires.mjs")).checkRequirements(spell));
+        // A minion spent — *Final Sacrifice*: its target must be the caster's summon, and its element sets the spell's.
+        CastPipeline.before("a minion sacrificed", CAST_PRIORITY.sacrifice, async (spell, options) => (await import("./vanilla/sacrifice.mjs")).sacrificeBefore(spell, options));
         // A spell whose damage type is a weapon's: the matching pf2e variant, chosen before anything is aimed.
         CastPipeline.before("a variant from the weapon in hand", CAST_PRIORITY.weaponVariant, async (spell, options) => (await import("./vanilla/requires.mjs")).weaponVariant(spell, options));
         // A spell cast with 1 to 3 actions: how many, and pf2e's variant for that many.

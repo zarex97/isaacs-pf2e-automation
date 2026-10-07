@@ -32,6 +32,8 @@ import { offerReaction } from "./reactions.mjs";
 import { gateByRound } from "./round-gate.mjs";
 import { selectRiders } from "./select.mjs";
 import { spellShieldSource } from "./spell-shield.mjs";
+import { holdOption } from "./unfettered.mjs";
+import { PlanarTether } from "./tether.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
 const DEGREES = ["criticalFailure", "failure", "success", "criticalSuccess"];
@@ -740,6 +742,7 @@ async function applyTeleport(rider, context) {
     const token = context.target;
     const scene = token?.parent;
     if (!token || !scene) return;
+    if (await tetherHolds(context, "teleport")) return;
 
     const feet = Number(rider.apply.distance) || 0;
     if (feet <= 0) return;
@@ -1075,6 +1078,7 @@ async function followUp(rider, context, { token, outcome }) {
 async function applyBanish(rider, context) {
     const seconds = durationSeconds(rider.duration ?? rider.apply.duration);
     if (seconds <= 0) return;
+    if (await tetherHolds(context, "banish")) return;
 
     const record = await Banish.take(context.target, {
         seconds,
@@ -1248,7 +1252,11 @@ async function applyEscape(rider, context) {
     // The ability's own name, kept on the action at grant time rather than recovered from the action's
     // title: a GM who renames "Escape Sai — Restrain" on a sheet should not change what the chat says.
     const held = hazard?.name ?? rider.apply.name ?? t("Escape.Grip");
-    const roll = await statistic.roll({ dc: { value: Number(dc) || 0 }, skipDialog: true, label: t("Escape.Check") });
+    // An Escape, as pf2e's own is — and, when a spell or something magical holds the creature, its rank, for
+    // *Unfettered Movement*'s "unless the effect is magical and of a higher rank" (`unfettered.mjs`).
+    const holder = rider.apply.source ? await fromUuid(rider.apply.source).catch(() => null) : null;
+    const extraRollOptions = ["action:escape", holdOption(holder)].filter(Boolean);
+    const roll = await statistic.roll({ dc: { value: Number(dc) || 0 }, skipDialog: true, label: t("Escape.Check"), extraRollOptions });
     const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
     if (outcome === "success" || outcome === "criticalSuccess") {
         if (hazard) {
@@ -1953,6 +1961,8 @@ async function applyEffect(rider, context) {
     // Rules added to a pf2e effect — *Moon Frenzy*'s "+10-foot status bonus to their Speeds", where pf2e's has only the land Speed.
     if (Array.isArray(rider.apply.addRules)) source.system.rules = [...(source.system?.rules ?? []), ...rider.apply.addRules];
     const castRank = Number(castItemOf(context)?.rank);
+    // *Unfettered Movement*: its holder's Escapes succeed (`unfettered.mjs`), up to the spell's rank.
+    if (rider.apply.unfettered) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { unfettered: { rank: castRank > 0 ? castRank : 1 } } });
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
     source.system.start = startData(context.actor);
@@ -3091,6 +3101,8 @@ function effectSource(label, rules, rider, context) {
     }
     // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
     if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
+    // *Planar Tether*: the caster and rank that counteract a teleport or a banishment (`tether.mjs`).
+    if (rider.apply?.tether && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { tether: { casterUuid: context.originActor.uuid, rank: Number(castItemOf(context)?.rank) || 1, statistic: rider.apply.tether?.statistic ?? "spellcasting" } } });
     // *Nudge Fate*: a degree raised after the die falls (`nudge.mjs`).
     if (rider.apply?.nudge) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { nudge: rider.apply.nudge === true ? {} : rider.apply.nudge } });
     // *Share Life*: its holder's damage halved, the rest to its caster (`share-damage.mjs`).
@@ -3101,6 +3113,12 @@ function effectSource(label, rules, rider, context) {
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
+}
+
+/** *Planar Tether*: does a tether on the creature hold it against this move (`tether.mjs`)? */
+async function tetherHolds(context, kind) {
+    const item = castItemOf(context);
+    return PlanarTether.holds(context, kind, { item, dc: RiderExtensions.resolveDC("spell", context), rank: Number(item?.rank) || null });
 }
 
 /** End the effects with this slug that this caster left on any creature in the scene — a previous casting. */
