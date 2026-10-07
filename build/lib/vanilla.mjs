@@ -40,8 +40,8 @@ export function docs(built, index, en) {
         const what = a.type === "condition" ? [a.slug, a.value].filter((x) => x !== undefined && x !== null).join(" ")
             : a.type === "effect" ? (a.uuid ? Object.entries(index.effects).find(([, uuid]) => uuid === a.uuid)?.[0] ?? "effect" : words(a.label ?? "effect"))
             : a.type === "prompt" ? `GM note: “${words(a.text)}”`
-            : a.type === "teleport" ? `${a.stopsAtWalls ? "pushed" : "moved"} ${a.distance} ft${a.direction === "toward" ? " closer" : " away"}`
-            : a.type === "persistent-damage" ? `${a.formula}${a.perStep ? ` (+${a.perStep}/rank)` : ""} persistent ${a.damageType ?? ""}${a.endsWith ? `, ends with ${a.endsWith.join("/")}` : ""}`
+            : a.type === "teleport" ? `${a.stopsAtWalls ? "pushed" : "moved"} ${a.distance} ft${a.direction === "toward" ? " closer" : a.direction === "choose" ? " in a direction you choose" : " away"}`
+            : a.type === "persistent-damage" ? `${a.formula}${a.perStep ? ` (+${a.perStep} per ${a.perStepInterval > 1 ? `${a.perStepInterval} ranks` : "rank"})` : ""} persistent ${a.damageType ?? ""}${a.endsWith ? `, ends with ${a.endsWith.join("/")}` : ""}`
             : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");

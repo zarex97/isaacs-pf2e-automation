@@ -223,6 +223,12 @@
             "DragShort": "{name} is pulled {feet} feet closer — the {travel}-foot drag ran out of map.",
             "ThrowShort": "{name} is pulled {feet} feet away — the {travel}-foot throw ran out of map.",
             "Push": "{name} is pushed {feet} feet.",
+            "ChooseTitle": "Move {name} up to {feet} feet",
+            "ChooseHint": "Which way does {name} go?",
+            "Direction": {
+                "n": "North", "ne": "North-east", "e": "East", "se": "South-east", "s": "South", "sw": "South-west", "w": "West", "nw": "North-west",
+                "away": "Away from you", "toward": "Toward you", "stay": "Leave it"
+            },
             "PushShort": "{name} is pushed {feet} feet — something stopped the {travel}-foot push.",
             "Occupied": "that space is occupied by {names}",
             "Unseen": "you can't see that space"
