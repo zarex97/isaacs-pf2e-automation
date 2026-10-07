@@ -681,11 +681,11 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-94a | "The target is immediately slain" | Only a minion the caster summoned can be chosen; it dies | | ☐ | |
-| VS-94b | "the explosion deals 6d6 fire damage to creatures within 20 feet of it with a basic Reflex save" | A 20-ft emanation from the minion, basic Reflex against 6d6 fire | | ☐ | |
-| VS-94c | "If the target has the cold or water trait, the spell deals cold damage and has the cold trait instead of the fire trait" | A cold or water minion makes it cold | | ☐ | |
+| VS-94a | "The target is immediately slain" | Only a minion the caster summoned can be chosen; it dies | `sacrifice` (`scripts/vanilla/sacrifice.mjs`): the cast stage "a minion sacrificed" (6) needs one target the caster summoned; after the cast the minion is slain and its token goes | ✅ | At Leo: **refused**, nothing posted. At Aries' summoned Wolf: cast, "Wolf is slain.", its token and Aries' effect for it **gone** |
+| VS-94b | "the explosion deals 6d6 fire damage to creatures within 20 feet of it with a basic Reflex save" | A 20-ft emanation from the minion, basic Reflex against 6d6 fire | `areaTargeting` with an origin resolver: pf2e's 20-ft emanation measured from the minion; pf2e's basic Reflex and 6d6 | ✅ | Targets: every creature within 20 ft of the **Wolf** — one 20 ft from it (30 ft from Aries) caught, one 25 ft from it (15 ft from Aries) not. The card: **6d6 fire**, basic Reflex |
+| VS-94c | "If the target has the cold or water trait, the spell deals cold damage and has the cold trait instead of the fire trait" | A cold or water minion makes it cold | `sacrifice.element: { cold: cold, water: cold }`: a variant with the damage and the trait retyped, kept on the card (`casting.embeddedSpell`) so its damage rolls the same | ✅ | A Wolf given the water trait: the card **Cold** in its traits, damage **8d6 cold** (rank 3). (The first try retyped only the cast: pf2e rebuilt the card's spell from Aries' own item and rolled fire — the card now carries the retyped spell) |
 | VS-94d | "Attempting to cast this spell targeting a creature that you temporarily seized control of" | — | | — | Nothing to automate: nothing here seizes control of a creature |
-| VS-94e | "The damage increases by 2d6" | Rank 3: 8d6 | | ☐ | |
+| VS-94e | "The damage increases by 2d6" | Rank 3: 8d6 | pf2e's heightening (+2d6 a rank) | ✅ | Rank 3: **8d6**; rank 2: **6d6** |
 
 ## Batch 10 — Senses and light
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 34 |
-| ✅ | 281 |
+| ☐ not yet driven | 30 |
+| ✅ | 285 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -31,7 +31,7 @@ stages by ascending `priority` (leave gaps), refuses a second stage with the sam
 | `actorPreparation` | character `prepareDerivedData` | `after(name, priority, fn)` | `(actor)`, synchronous, after the system's own preparation. Isolated |
 | `detectionModes` | `TokenDocument#_prepareDetectionModes` | `after(name, priority, fn)` | `(tokenDocument)`, synchronous; edit `detectionModes` in place. Isolated |
 
-The cast pipeline's own stages: **what a form forbids** at `4` *(1.4.0)*, **what a spell needs** at `5` *(1.4.0)*, **a variant from the weapon in hand** at `7` *(1.4.0)*, **the actions spent** at `8` *(1.4.0)*, **a choice made as it is cast** at `9` *(1.4.0)*, **area targeting** at `10`, **spell frequency** at `50`
+The cast pipeline's own stages: **what a form forbids** at `4` *(1.4.0)*, **what a spell needs** at `5` *(1.4.0)*, **a minion sacrificed** at `6` *(1.4.0)*, **a variant from the weapon in hand** at `7` *(1.4.0)*, **the actions spent** at `8` *(1.4.0)*, **a choice made as it is cast** at `9` *(1.4.0)*, **area targeting** at `10`, **spell frequency** at `50`
 (`api.castPipeline` exports them as `CAST_PRIORITY` in the source; the numbers are the contract).
 
 Characters prepared before `setup` — every one in the world, at load — have not been through

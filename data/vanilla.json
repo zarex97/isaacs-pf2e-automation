@@ -1303,6 +1303,17 @@
                 }
             ]
         },
+        "final-sacrifice": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "sacrifice": {
+                "element": {
+                    "cold": "cold",
+                    "water": "cold"
+                }
+            }
+        },
         "fire-shield": {
             "riders": [
                 {

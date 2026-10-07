@@ -45,6 +45,7 @@ import { Overlap } from "./targeting/overlap.mjs";
 import { CastShape } from "./targeting/cast-shape.mjs";
 import { MoveCaster } from "./targeting/move-caster.mjs";
 import { Summon } from "./targeting/summon.mjs";
+import { Sacrifice } from "./vanilla/sacrifice.mjs";
 import { Coexistence } from "./vanilla/coexistence.mjs";
 import { Indicator } from "./vanilla/indicator.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
@@ -79,6 +80,7 @@ export const INIT = [
     ["walls of breakable sections", () => Barrier.registerHooks()],
     ["a spell that moves its caster", () => MoveCaster.register()],
     ["a creature summoned", () => { Summon.register(); Summon.registerHooks(); }],
+    ["a minion sacrificed", () => Sacrifice.register()],
 ];
 
 /**

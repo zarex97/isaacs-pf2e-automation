@@ -33,6 +33,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Evil Eye | 1 |  | failure: sickened 1; crit. failure: sickened 2; failure / crit. failure: evil eye (1 minutes, while Sustained) |  |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
+| Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |
 | Floating Flame | 2 | 5-ft square (pf2e's), all |  | ends if not Sustained, Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
 | Fly | 4 |  | spell-effect-fly (below rank 7); spell-effect-fly (1 hours, from rank 7) |  |

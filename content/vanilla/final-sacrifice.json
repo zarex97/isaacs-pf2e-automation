@@ -1,0 +1,11 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "sacrifice": {
+        "element": {
+            "cold": "cold",
+            "water": "cold"
+        }
+    }
+}
