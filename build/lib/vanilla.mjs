@@ -48,6 +48,7 @@ export function docs(built, index, en) {
         if (!a) return "";
         const parts = [];
         if (a.area) parts.push(`${a.area.value}-ft ${a.area.type}`);
+        if (a.anchor === "caster") parts.push("from you");
         if (a.affects) parts.push(a.affects);
         if (a.includesSelf) parts.push("includes you");
         if (a.maxTargets) parts.push(`up to ${a.maxTargets}`);
@@ -72,7 +73,9 @@ export function docs(built, index, en) {
                 const named = overlay?.name ?? (overlay?.area ? `${overlay.area.value}-ft ${overlay.area.type} version` : id);
                 return `${named}: ${area(v.areaTargeting)}`;
             }).join("; ");
-        const areaCell = [area(entry.areaTargeting), variants && `variant — ${variants}`].filter(Boolean).join("; ");
+        // An entry that aims the spell's own area names it, so the row says what is placed.
+        const own = entry.areaTargeting && !entry.areaTargeting.area && spell?.area ? `${spell.area.value}-ft ${spell.area.type} (pf2e's)` : "";
+        const areaCell = [[own, area(entry.areaTargeting)].filter(Boolean).join(", "), variants && `variant — ${variants}`].filter(Boolean).join("; ");
         return `| ${spell?.name ?? slug} | ${spell?.rank ?? ""} | ${areaCell} | ${(entry.riders ?? []).map(rider).join("; ")} | ${linger(entry.lingering)} |`;
     });
     const aliases = Object.entries(built.aliases).map(([legacy, remaster]) => `- \`${legacy}\` → ${index.spells[remaster]?.name ?? remaster}`);
@@ -127,6 +130,7 @@ export function problemsWith(slug, entry, ctx) {
         if (area !== undefined && area !== false) {
             if (area.area && !ctx.areaShapes.includes(area.area.type)) at(`${where} areaTargeting.area`, `unknown shape "${area.area.type}"`);
             if (area.area && !(Number(area.area.value) > 0)) at(`${where} areaTargeting.area`, "a size in feet");
+            if (area.anchor !== undefined && !["self", "free", "caster"].includes(area.anchor)) at(`${where} areaTargeting.anchor`, `"${area.anchor}" is not self, free or caster`);
             if (area.affects && !ctx.affects.includes(area.affects)) at(`${where} areaTargeting.affects`, `"${area.affects}" is not one of ${ctx.affects.join(", ")}`);
             for (const n of ["maxTargets", "range"]) if (area[n] !== undefined && !(Number(area[n]) > 0)) at(`${where} areaTargeting.${n}`, "a positive number");
         }

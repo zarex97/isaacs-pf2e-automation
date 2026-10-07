@@ -497,6 +497,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("a sound entry has no problems", V.problemsWith("fear", sound, ctx), []);
     const heal = Object.keys(index.spells.heal?.overlays ?? {})[0];
     const wrong = (slug, entry) => V.problemsWith(slug, entry, ctx).length;
+    check("an anchor that is not self, free or caster is caught", wrong("lightning-bolt", { areaTargeting: { anchor: "hand" } }), 1);
     check("each mistake is caught", {
         slug: wrong("not-a-spell", {}),
         key: wrong("fear", { ridersApplied: {} }),
@@ -613,6 +614,24 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     Vanilla.setRiderDeferral(null);
     Vanilla.setTable({ aliases: {}, entries: {} });
     Object.assign(globalThis, saved);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  A line or cone from the caster (VS-01)                                                       */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { fromCaster, pinnedToCaster } = await import("../scripts/targeting/place.mjs");
+    const token = { center: { x: 1000, y: 1000 }, w: 100, h: 100 };
+    const round = (p) => ({ x: Math.round(p.x), y: Math.round(p.y), rotation: Math.round(p.rotation) });
+    check("aimed east, it starts on the east edge of the caster's square", round(fromCaster(token, { x: 2000, y: 1000 })), { x: 1050, y: 1000, rotation: 0 });
+    check("aimed north, the north edge", round(fromCaster(token, { x: 1000, y: 0 })), { x: 1000, y: 950, rotation: 270 });
+    check("aimed on the diagonal, the corner", round(fromCaster(token, { x: 2000, y: 2000 })), { x: 1050, y: 1050, rotation: 45 });
+    const large = { center: { x: 1000, y: 1000 }, w: 200, h: 200 };
+    check("a Large caster's edge is a square further out", round(fromCaster(large, { x: 0, y: 1000 })), { x: 900, y: 1000, rotation: 180 });
+    check("a snapped direction is honoured: due west, from the west edge", round(fromCaster(token, { x: 0, y: 1040 }, 180)), { x: 950, y: 1000, rotation: 180 });
+    check("only lines and cones are pinned to the caster", ["line", "cone", "burst", "emanation"].map((type) => pinnedToCaster({ anchor: "caster", area: { type } })), [true, true, false, false]);
+    check("…and only when the anchor says so", pinnedToCaster({ anchor: "free", area: { type: "line" } }), false);
 }
 
 /* -------------------------------------------------------------------------------------------- */

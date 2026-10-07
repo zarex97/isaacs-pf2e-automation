@@ -209,6 +209,12 @@
                 }
             }
         },
+        "lightning-bolt": {
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster"
+            }
+        },
         "slow": {
             "areaTargeting": {
                 "maxTargets": 1,

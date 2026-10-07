@@ -31,7 +31,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-01 | `lightning-bolt` | 3 | A line, aimed | "A bolt of lightning strikes outward from your hand" | A 120-ft line is aimed from the caster's edge and targets everything it crosses | | ☐ | |
+| VS-01 | `lightning-bolt` | 3 | A line, aimed | "A bolt of lightning strikes outward from your hand" | A 120-ft line is aimed from the caster's edge and targets everything it crosses | `content/vanilla/lightning-bolt.json` (`anchor: "caster"`); `fromCaster` / `pinnedToCaster` geometry tests | ✅ | Aries cast it from an innate entry: the line started on Aries' west edge (3800, 2850; centre 3850) and turned with the pointer, snapped to 5°, never moving its start. Aimed due west, it targeted all 10 creatures in that row within 120 ft; *ZZ Zan L2*, dead at the same 90 ft as an included *ZZ Ryu L2*, was left out. **Control:** with no entry, `configFor` gave nothing under the default scope. Two engine gaps found and fixed on the way: a line placed where the pointer was and travelled with it; and pf2e's `placeRegion` replaces any `onMove` it is given. |
 | VS-02 | `fireball` | 3 | No entry: pf2e's own area | "detonates at a spot you designate" | No table entry; aims under **every spell with an area**, not under the default scope | | ☐ | |
 | VS-03 | `grease` | 1 | Area *or* a target | "choosing an area or target" | The caster chooses: four 5-ft squares (prone on a failed save) or one object (no area, no aiming) | | ☐ | |
 | VS-04 | `chain-lightning` | 6 | A chain of targets | "arcs to another creature within 30 feet of the first target" | Each target after the first is within 30 ft of the one before; no creature twice; line of effect to all | | ☐ | |
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 40 |
-| ✅ | 0 |
+| ☐ not yet driven | 39 |
+| ✅ | 1 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |
