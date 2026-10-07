@@ -592,6 +592,19 @@ function areaLeftBy(originActor, item) {
     return region?.uuid ?? null;
 }
 
+/**
+ * An effect's ChoiceSets answered before it lands, so no dialog stops the rider. `preselect` maps a ChoiceSet's
+ * `flag` to its answer; `""` is the save's degree as pf2e spells it (`critical-failure`).
+ */
+export function preselected(rules, preselect, outcome) {
+    const degree = { criticalSuccess: "critical-success", success: "success", failure: "failure", criticalFailure: "critical-failure" }[outcome] ?? null;
+    return (rules ?? []).map((rule) => {
+        if (rule?.key !== "ChoiceSet" || !rule.flag || !(rule.flag in preselect)) return rule;
+        const answer = preselect[rule.flag] === "$outcome" ? degree : preselect[rule.flag];
+        return answer === null ? rule : { ...rule, selection: answer };
+    });
+}
+
 /** A compass point as a direction on the grid (y grows downwards). */
 export function compassVector(point) {
     return ({ n: { x: 0, y: -1 }, ne: { x: 1, y: -1 }, e: { x: 1, y: 0 }, se: { x: 1, y: 1 }, s: { x: 0, y: 1 }, sw: { x: -1, y: 1 }, w: { x: -1, y: 0 }, nw: { x: -1, y: -1 } })[point] ?? null;
@@ -1722,6 +1735,8 @@ async function applyEffect(rider, context) {
     }
 
     applySubstitutions(source, rider.apply.substitutions, context);
+    // A pf2e effect that asks — *Ill Omen*'s "failure or critical failure?" — is told instead, from the outcome.
+    if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome);
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
     source.system.start = startData(context.actor);
     if (rider.duration) source.system.duration = durationData(RiderExtensions.duration(rider, context));
