@@ -6,6 +6,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 
 | Spell | Rank | Area and targets | Riders | Lingering |
 | :-- | :-- | :-- | :-- | :-- |
+| Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
@@ -25,7 +26,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
-| Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” |  |
+| Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
 | Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
 

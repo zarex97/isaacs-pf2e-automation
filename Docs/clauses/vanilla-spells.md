@@ -53,7 +53,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-13 | `bless` | 1 | An aura for allies, grows on Sustain | "Sustain the spell to increase the emanation's radius by 10 feet" | Allies within it have +1 status to attack; each Sustain widens it 10 ft | | ☐ | |
+| VS-13 | `bless` | 1 | An aura for allies, grows on Sustain | "Sustain the spell to increase the emanation's radius by 10 feet" | Allies within it have +1 status to attack; each Sustain widens it 10 ft | `content/vanilla/bless.json` (no aiming; a self `action-used` rider puts pf2e's *Spell Effect: Bless* — whose own Aura reads its radius off the badge — on the caster, `replace`, `sustain: { step: 1 }`); `scripts/riders/sustain.mjs` (`canSustain`, `roundFor`, the granted action); tests | ✅ | **Cast:** no placement; Aries held *Spell Effect: Bless* at badge 1 (15 ft) and a *Sustain Drive: Bless* action. pf2e's aura put Bless on Capricorn (adjacent; its Strike gained **+1 status**, slug `bless`) and **not** on Leo, 20 ft away (control). **Sustain:** in a combat, recast in round 1 → Sustaining that round: "can't be Sustained in the round it was cast"; round 2 → "now 25 ft.", badge 2, and **Leo received Bless**; again in round 2 → "already been Sustained this round". **End:** deleting the effect took the Sustain action off Aries and pf2e took Bless off Leo and Capricorn. Found on the way: rounds were read off `game.combat` — the GM's viewed encounter (round 27 here) — instead of the caster's own. Not automated: Bless counteracting *Bane*. |
 | VS-14 | `malediction` | 1 | An aura with a save, grows on Sustain | "force enemies in the area that weren't yet affected to attempt a saving throw" | Enemies save once; −1 AC while inside; a Sustain widens it and asks only the newly caught | | ☐ | |
 
 ## Saves with something new in their outcomes
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 28 |
-| ✅ | 12 |
+| ☐ not yet driven | 27 |
+| ✅ | 13 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

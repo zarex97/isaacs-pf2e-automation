@@ -4,6 +4,23 @@
         "magic-missile": "force-barrage"
     },
     "entries": {
+        "bless": {
+            "areaTargeting": false,
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.Gqy7K6FnbLtwGpud",
+                        "replace": true,
+                        "sustain": {
+                            "step": 1
+                        }
+                    }
+                }
+            ]
+        },
         "calm": {
             "areaTargeting": {
                 "affects": "all"
