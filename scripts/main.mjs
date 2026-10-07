@@ -7,6 +7,7 @@ import { CheckPipeline } from "./lib/check-pipeline.mjs";
 import { DamageBus } from "./lib/damage-bus.mjs";
 import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage } from "./lib/encounter-damage.mjs";
+import { ShieldBlock } from "./riders/shield-block.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { Banish } from "./riders/banish.mjs";
 import { registerRollBypass } from "./riders/bypass.mjs";
@@ -42,6 +43,7 @@ export const INIT = [
     ["spell frequency", () => SpellFrequency.registerHooks()],
     ["feat and action frequency", () => FrequencyGuard.registerHooks()],
     ["damaged this encounter", () => EncounterDamage.registerHooks()],
+    ["a shield that ends when it blocks", () => ShieldBlock.register()],
     // Not awaited: nothing reads the table before a cast, and a failed fetch leaves vanilla content as it was.
     ["the vanilla table", () => void Vanilla.load()],
     ["the vanilla riders setting", () => Coexistence.registerSettings()],
