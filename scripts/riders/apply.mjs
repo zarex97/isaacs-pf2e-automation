@@ -430,6 +430,8 @@ async function applyOne(rider, context) {
             return applyEscape(rider, context);
         case "sustain":
             return Sustain.apply(rider, context);
+        case "shorten":
+            return applyShorten(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2455,7 +2457,51 @@ function effectSource(label, rules, rider, context) {
         flags: riderFlags(rider, context),
     };
     onTargetsTurn(source, rider, context);
+    // Riders the effect takes with it — *Paralyze*'s "at the end of each of its turns, a new Will save".
+    if (Array.isArray(rider.apply?.carries)) {
+        const dc = RiderExtensions.resolveDC(undefined, context);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, dc) } });
+    }
     return source;
+}
+
+/**
+ * The riders an effect carries, with the caster's DC written in. They fire on the *holder's* turn, where the
+ * holder is the only actor in sight — "against your spell DC" has to be a number by then.
+ */
+export function carried(riders, dc) {
+    const fix = (rider) => {
+        const apply = rider.apply ?? {};
+        const own = apply.type === "save" && (apply.dc === undefined || apply.dc === null || apply.dc === "spell") && Number.isFinite(dc) ? { dc } : {};
+        return { ...rider, apply: { ...apply, ...own, ...(apply.riders ? { riders: apply.riders.map(fix) } : {}) } };
+    };
+    return riders.map(fix);
+}
+
+/**
+ * Take rounds off the effect that carries this rider, or end it. *Paralyze*: a success "reduces the
+ * remaining duration by 1 round", a critical success "ends it entirely".
+ */
+async function applyShorten(rider, context) {
+    const effect = context.riderItem ?? context.item;
+    if (!effect?.actor || effect.type !== "effect") return;
+    const label = effect.name;
+    const left = shortened(effect.system?.duration, rider.apply.rounds);
+    if (left === null) {
+        await effect.delete();
+        context.notes.push(t("Shorten.Ended", { name: label, actor: effect.actor.name }));
+        return;
+    }
+    await effect.update({ "system.duration.value": left });
+    context.notes.push(t("Shorten.Shortened", { name: label, actor: effect.actor.name, left }));
+}
+
+/** What is left of a duration once `rounds` are taken off it — null when nothing is. */
+export function shortened(duration, rounds) {
+    if (rounds === "all") return null;
+    const value = Number(duration?.value) || 0;
+    const left = value - (Number(rounds) || 1);
+    return left > 0 ? left : null;
 }
 
 /**

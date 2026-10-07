@@ -163,6 +163,10 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "Shorten": {
+            "Shortened": "{name} on {actor}: {left} rounds left.",
+            "Ended": "{name} on {actor} ends."
+        },
         "Sustain": {
             "Name": "Sustain {name}",
             "Description": "Sustain {name}: its effect grows one step. Once per round, and not in the round it was cast.",

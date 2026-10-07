@@ -54,7 +54,7 @@ and `npm test` fails if this table and that switch disagree.
 | `type` | What it does |
 | :-- | :-- |
 | `condition` | Applies a pf2e condition. With a `duration` it becomes a generated effect that expires on its own; without one it is a plain condition for the table to clear. `max` caps a cumulative one. A `duration` with `of: "target"` ends on the **target's** turn ("until its next turn begins") rather than the caster's. `withoutGrants` takes off conditions the condition would bring with it (*Sleep*'s unconscious without prone). `escapeDc` grants the captive an Escape action against that DC, and `escapeStatistic` names the one skill it is rolled with instead of the better of Acrobatics and Athletics. |
-| `effect` | Applies an effect item by UUID — or one written out, with `label` and `rules` and no `uuid`. `stack: true` walks a counter badge up instead of adding a second icon. `endsOnLeaving` ends it when the creature leaves the lingering area whose check gave it. `escapeDc` grants an Escape, and `escapeAll` makes that Escape release everything the ability left. A written-out effect may name a `slug` for predicates to read (`target:effect:<slug>`). `sustain: { step }` gives the holder a *Sustain* action that adds `step` to the badge, once per round and not in the round it was cast. |
+| `effect` | Applies an effect item by UUID — or one written out, with `label` and `rules` and no `uuid`. `stack: true` walks a counter badge up instead of adding a second icon. `endsOnLeaving` ends it when the creature leaves the lingering area whose check gave it. `escapeDc` grants an Escape, and `escapeAll` makes that Escape release everything the ability left. An effect or a timed condition can `carries` riders of its own, which fire on its holder's events; a save among them with no DC, or `"spell"`, is given the caster's DC when the effect is made. A written-out effect may name a `slug` for predicates to read (`target:effect:<slug>`). `sustain: { step }` gives the holder a *Sustain* action that adds `step` to the badge, once per round and not in the round it was cast. |
 | `damage` | Rolls real damage, so immunities and resistances apply, and posts it to chat. |
 | `persistent-damage` | Applies a bleed or a burn. `perCounter` scales it by a counter the target already carries. |
 | `heal` | Heals. Lands on the origin when the rider is `self`. |
@@ -69,6 +69,7 @@ and `npm test` fails if this table and that switch disagree.
 | `escape` | Offers an escape attempt against something holding the target. |
 | `expire` | Takes a named effect back off before its own timer would. |
 | `sustain` | The *Sustain* action an effect with `sustain` grants; not written by hand. |
+| `shorten` | Takes `rounds` off the effect that carries this rider, or ends it with `rounds: "all"` — *Paralyze*'s save at the end of each turn. |
 | `strikes` | Rolls a volley, dealt round-robin across the confirmed targets. `mapIndex` picks the variant. Follows through to damage. |
 | `toggle` | Flips a roll option on the **target**, unless the rider is `self`. |
 | `reaction` | Offers the actor a reaction, as buttons on a card. |
