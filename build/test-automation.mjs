@@ -554,6 +554,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("every row carries one of the six marks", rows.filter((r) => !MARKS.includes(r.mark)).map((r) => `${r.id} ${r.mark}`), []);
     check("a ✅ row has a table entry behind it, or says why it needs none",
         rows.filter((r) => r.mark === "✅" && !fs.existsSync(path.join(ROOT, "content", "vanilla", `${r.slug}.json`)) && !r.staticCheck).map((r) => r.id), []);
+    // VS-02: a spell pf2e already gives an area aims through the scope setting alone — an entry would
+    // promote it to the registered tier and quietly change what the default scope means (Q27).
+    check("VS-02 Fireball stays out of the table", fs.existsSync(path.join(ROOT, "content", "vanilla", "fireball.json")), false);
     const counted = Object.fromEntries(MARKS.map((mark) => [mark, rows.filter((r) => r.mark === mark).length]));
     const table = Object.fromEntries(MARKS.map((mark) => [mark, Number(new RegExp(`^\\| ${mark}[^|]*\\| (\\d+) \\|`, "m").exec(text)?.[1])]));
     check("the counts table is the rows counted", table, counted);
