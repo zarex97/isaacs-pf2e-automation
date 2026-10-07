@@ -1,0 +1,26 @@
+{
+    "riders": [
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "teleport",
+                "distance": 5,
+                "stopsAtWalls": true
+            }
+        },
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "criticalSuccess"
+            ],
+            "apply": {
+                "type": "teleport",
+                "distance": 10,
+                "stopsAtWalls": true
+            }
+        }
+    ]
+}
