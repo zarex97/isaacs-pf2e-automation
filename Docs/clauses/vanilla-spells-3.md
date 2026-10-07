@@ -346,12 +346,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-61a | "It takes 8d6 mental damage with a Will save" | A Will save against 8d6 mental | | ☐ | |
-| VS-61b | "If the target is reduced to 0 HP by this spell, its vision becomes reality and kills it instantly" | 0 HP from this spell is death | | ☐ | |
-| VS-61c | "Success The target takes half damage and is Frightened 1" | Half, frightened 1 | | ☐ | |
-| VS-61d | "Failure The target takes full damage and is Frightened 2" | Full, frightened 2 | | ☐ | |
-| VS-61e | "Critical Failure The target takes double damage, is Frightened 4 and is Fleeing for as long as it's frightened" | Double, frightened 4, and fleeing that ends with the frightened | | ☐ | |
-| VS-61f | "The damage increases by 2d6" | Rank 5: 10d6 | | ☐ | |
+| VS-61a | "It takes 8d6 mental damage with a Will save" | A Will save against 8d6 mental | `content/vanilla/vision-of-death.json`: `damage` 8d6 mental by the Will save's result (not a basic save in pf2e, so the shares are riders) | ✅ | pf2e's card's Will save against **DC 34**; a failure (20): **8d6 mental** = 26, ZZ Victim took 26 |
+| VS-61b | "If the target is reduced to 0 HP by this spell, its vision becomes reality and kills it instantly" | 0 HP from this spell is death | `death` (`hpFraction: 0`) after the damage, each result | ✅ | ZZ Victim at 5 HP, failing: 26 mental, then "ZZ Victim is reduced to 0 Hit Points — its vision becomes reality, and it dies." — marked dead |
+| VS-61c | "Success The target takes half damage and is Frightened 1" | Half, frightened 1 | `success`: `multiplier: 0.5`, frightened 1 | ✅ | A success (34, with +30 Will): **8d6 × 0.5** = 13, and **frightened 1** |
+| VS-61d | "Failure The target takes full damage and is Frightened 2" | Full, frightened 2 | `failure`: full, frightened 2 | ✅ | A failure: 26 in full, **frightened 2** |
+| VS-61e | "Critical Failure The target takes double damage, is Frightened 4 and is Fleeing for as long as it's frightened" | Double, frightened 4, and fleeing that ends with the frightened | `criticalFailure`: `multiplier: 2`, frightened 4, fleeing with `endsWith: ["frightened"]` (`registerEndsWith`) | ✅ | A critical failure (2): **8d6 × 2** = 74, **frightened 4** and **fleeing**; with the frightened gone, "ZZ Victim is no longer frightened: Fleeing ends." |
+| VS-61f | "The damage increases by 2d6" | Rank 5: 10d6 | `perStep: "2d6"` | ✅ | Rank 5: **8d6 + 2d6** mental — 10d6 |
 
 ### VS-62 · Wave of Despair
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 187 |
-| ✅ | 132 |
+| ☐ not yet driven | 181 |
+| ✅ | 138 |
 | ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |

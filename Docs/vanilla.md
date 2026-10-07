@@ -71,6 +71,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
+| Vision of Death | 4 |  | success: 8d6 mental; success: death; success: frightened 1; failure: 8d6 mental; failure: death; failure: frightened 2; crit. failure: 8d6 mental; crit. failure: death; crit. failure: frightened 4; crit. failure: fleeing (no end) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
 | Wall of Stone | 5 | choose: 120-ft line or 60-ft line or 30-ft line or 2 × 60-ft line or 3 × 40-ft line or 4 × 30-ft line, all, placed, no targets |  | a wall of borders, in 10-ft sections: AC 10, Hardness 14, 50 HP (+15 per 2 ranks), rubble when breached |
 | Wall of Thorns | 3 | choose: 60-ft line or 30-ft line or 10-ft line, all, placed, no targets |  | difficult terrain, a wall of squares, in 10-ft sections: AC 10, Hardness 10, 20 HP (+5 per rank), cover across it, 3d4 piercing on entering, 1 minutes |

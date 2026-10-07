@@ -520,6 +520,9 @@
             "sanctuary": {
                 "Ward": "sanctuary"
             },
+            "vision-of-death": {
+                "Real": "its vision becomes reality, and it dies."
+            },
             "seal-fate": {
                 "Choose": "Which damage will be its end?"
             },

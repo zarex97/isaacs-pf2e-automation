@@ -1640,6 +1640,12 @@ async function applyCondition(rider, context) {
         const existing = context.actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
         if (!existing) {
             await increaseRecorded(context.actor, slug, value ? { value } : {}, context);
+            // "Fleeing for as long as it's frightened" — *Vision of Death*: it ends with that condition
+            // (`registerEndsWith`).
+            if (Array.isArray(rider.apply.endsWith)) {
+                const made = context.actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
+                await made?.setFlag(LIB_ID, "endsWith", rider.apply.endsWith);
+            }
             await dropGrants(context.actor, slug, rider.apply.withoutGrants);
             await grantEscape(rider, context, { conditions: [slug] });
             return;

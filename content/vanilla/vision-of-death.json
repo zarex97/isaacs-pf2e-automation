@@ -1,0 +1,111 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "8d6",
+                "perStep": "2d6",
+                "damageType": "mental",
+                "multiplier": 0.5
+            }
+        },
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "death",
+                "hpFraction": 0,
+                "text": "ISAACS_AUTOMATION.Vanilla.vision-of-death.Real"
+            }
+        },
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "frightened",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "8d6",
+                "perStep": "2d6",
+                "damageType": "mental"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "death",
+                "hpFraction": 0,
+                "text": "ISAACS_AUTOMATION.Vanilla.vision-of-death.Real"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "frightened",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "8d6",
+                "perStep": "2d6",
+                "damageType": "mental",
+                "multiplier": 2
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "death",
+                "hpFraction": 0,
+                "text": "ISAACS_AUTOMATION.Vanilla.vision-of-death.Real"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "frightened",
+                "value": 4
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "fleeing",
+                "endsWith": [
+                    "frightened"
+                ]
+            }
+        }
+    ]
+}
