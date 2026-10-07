@@ -77,7 +77,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-26 | `hydraulic-push` | 1 | Forced movement on a hit | "knocked back 5 feet" | A hit pushes the target 5 ft away from the caster, 10 ft on a critical hit | `content/vanilla/hydraulic-push.json` (`strike-resolved` riders on the spell's own attack: success pushed 5 ft, critical success 10 ft, away from the caster, `stopsAtWalls`) | ✅ | The Victim 10 ft east of Aries; the card's spell attack: **critical hit** (AC 10) → "ZZ Victim is pushed 10 feet", east, away from Aries. With its AC raised to 32: **hit** → pushed 5 ft; **miss** → not moved (control). The damage is pf2e's card damage. |
-| VS-27 | `ignition` | 1 | Persistent damage on a critical hit | "double damage and 1d4 persistent fire damage" | A critical hit adds persistent fire scaling with rank; the melee choice uses d6s | | ☐ | |
+| VS-27 | `ignition` | 1 | Persistent damage on a critical hit | "double damage and 1d4 persistent fire damage" | A critical hit adds persistent fire scaling with rank; the melee choice uses d6s | `content/vanilla/ignition.json` (`strike-resolved` critical success: 1d4 persistent fire +1d4 per rank; `variants[xYyA7CV1GaFTRjBQ]` — pf2e's *Ignition (Melee)* overlay — the same in d6s) | ✅ | Casting Ignition posts pf2e's own variant chooser; each variant was cast directly. Aries is level 20, so the cantrip heightens to **rank 10**. **Ranged, critical hit** → *Persistent Damage (10d4 fire)*. **Melee overlay, critical hit** → *10d6 fire* — the variant's own riders. **Hit** (AC raised to 32) → no persistent damage (control). Docs now list a variant's riders. |
 | VS-28 | `tangle-vine` | 1 | An attack that grants an Escape | "It can attempt to Escape against your spell DC" | A critical hit immobilizes with −10 ft; the target gets an Escape against the spell DC | | ☐ | |
 
 ## Buffs and effects on others or oneself
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 14 |
-| ✅ | 26 |
+| ☐ not yet driven | 13 |
+| ✅ | 27 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

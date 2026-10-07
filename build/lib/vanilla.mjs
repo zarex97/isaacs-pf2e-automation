@@ -90,7 +90,7 @@ export function docs(built, index, en) {
             .map(([id, v]) => {
                 const overlay = spell?.overlays?.[id];
                 const named = overlay?.name ?? (overlay?.area ? `${overlay.area.value}-ft ${overlay.area.type} version` : id);
-                return `${named}: ${area(v.areaTargeting)}`;
+                return `${named}: ${[area(v.areaTargeting), (v.riders ?? []).map(rider).join("; ")].filter(Boolean).join(", ")}`;
             }).join("; ");
         // An entry that aims the spell's own area names it, so the row says what is placed.
         const own = entry.areaTargeting && !entry.areaTargeting.area && spell?.area ? `${spell.area.value}-ft ${spell.area.type} (pf2e's)` : "";
