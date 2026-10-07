@@ -202,7 +202,9 @@
         "Weapon": {
             "Choose": "Which weapon do you swing?",
             "ChooseType": "Which of {weapon}'s damage types? Spirit instead, if that would be worse for the creature (the GM's call).",
-            "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}"
+            "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}",
+            "NothingHeld": "{name} holds no weapon to disarm.",
+            "Dropped": "{name} drops {weapon}."
         },
         "Requires": {
             "HeldWeapon": "{name} needs a weapon in hand."
@@ -476,6 +478,13 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "telekinetic-maneuver": {
+                "Prompt": "Which maneuver, with your spell attack?",
+                "Disarm": "Disarm",
+                "Shove": "Shove",
+                "Reposition": "Reposition",
+                "Trip": "Trip"
             },
             "spiritual-armament": {
                 "Echo": "Spiritual Armament"

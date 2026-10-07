@@ -261,9 +261,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-54a | "You can attempt to Disarm, Shove, Reposition, or Trip the target" | The cast asks which of the four | | ☐ | |
-| VS-54b | "using a spell attack roll instead of an Athletics check" | The roll is the caster's spell attack against the maneuver's DC (Reflex for Disarm and Trip, Fortitude for Shove and Reposition) | | ☐ | |
-| VS-54c | "you move a foe or something they carry" | The maneuver's outcome happens: Shove pushes, Trip knocks prone, Disarm penalises or drops, Reposition moves | | ☐ | |
+| VS-54a | "You can attempt to Disarm, Shove, Reposition, or Trip the target" | The cast asks which of the four | `content/vanilla/telekinetic-maneuver.json`: a `choice` of four options | ✅ | Casting at ZZ Victim, then at Capricorn, posted "Which maneuver, with your spell attack?" with **Disarm, Shove, Reposition, Trip**; the buttons are spent once one is pressed |
+| VS-54b | "using a spell attack roll instead of an Athletics check" | The roll is the caster's spell attack against the maneuver's DC (Reflex for Disarm and Trip, Fortitude for Shove and Reposition) | `contest` apply type (`statistic: "spell-attack"`, `against`) | ✅ | Every roll was Aries' spell attack, **Expert +24**, the spellcasting entry's. Capricorn given +5 Reflex: Disarm and Trip rolled against **DC 39** (Reflex), Shove and Reposition against **DC 34** (Fortitude). Aries prone rolled 32, the –2 included |
+| VS-54c | "you move a foe or something they carry" | The maneuver's outcome happens: Shove pushes, Trip knocks prone, Disarm penalises or drops, Reposition moves | nested riders by the caster's result; `disarm` apply type; `teleport` (`stopsAtWalls`, `direction: "choose"`); `toOrigin` | ✅ | **Disarm**: crit success, ZZ Victim "drops Longsword" (carried: dropped); success, pf2e's *Effect: Disarm (Success)* on Capricorn's longsword, its Strike –2, with no prompt; crit fail, Aries **off-guard** until the start of its turn. **Shove**: success 5 ft away (4000→4100), crit success 10 ft (→4300), crit fail Aries **prone**. **Reposition**: success asked "Which way does Capricorn go?" (eight directions, away, toward) and South moved it 5 ft; crit fail asked "Move Aries up to 5 feet" and moved Aries. **Trip**: success, Capricorn prone; crit success, prone and **6 bludgeoning** (1d6); crit fail, Aries prone |
 
 ### VS-55 · Blazing Bolt
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 235 |
-| ✅ | 85 |
+| ☐ not yet driven | 232 |
+| ✅ | 88 |
 | ⚠️ | 5 |
 | ❌ | 0 |
 | 🔧 | 0 |

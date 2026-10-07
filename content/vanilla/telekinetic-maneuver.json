@@ -1,0 +1,192 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "choice",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.telekinetic-maneuver.Prompt",
+                "options": [
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-maneuver.Disarm",
+                        "apply": {
+                            "type": "contest",
+                            "statistic": "spell-attack",
+                            "against": "reflex",
+                            "action": "disarm",
+                            "riders": [
+                                {
+                                    "outcomes": [
+                                        "criticalSuccess"
+                                    ],
+                                    "apply": {
+                                        "type": "disarm",
+                                        "mode": "drop"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "success"
+                                    ],
+                                    "apply": {
+                                        "type": "disarm",
+                                        "mode": "loosen"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "criticalFailure"
+                                    ],
+                                    "toOrigin": true,
+                                    "duration": {
+                                        "value": 1,
+                                        "unit": "rounds",
+                                        "expiry": "turn-start"
+                                    },
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "off-guard"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-maneuver.Shove",
+                        "apply": {
+                            "type": "contest",
+                            "statistic": "spell-attack",
+                            "against": "fortitude",
+                            "action": "shove",
+                            "riders": [
+                                {
+                                    "outcomes": [
+                                        "criticalSuccess"
+                                    ],
+                                    "apply": {
+                                        "type": "teleport",
+                                        "distance": 10,
+                                        "stopsAtWalls": true
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "success"
+                                    ],
+                                    "apply": {
+                                        "type": "teleport",
+                                        "distance": 5,
+                                        "stopsAtWalls": true
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "criticalFailure"
+                                    ],
+                                    "toOrigin": true,
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "prone"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-maneuver.Reposition",
+                        "apply": {
+                            "type": "contest",
+                            "statistic": "spell-attack",
+                            "against": "fortitude",
+                            "action": "reposition",
+                            "riders": [
+                                {
+                                    "outcomes": [
+                                        "criticalSuccess"
+                                    ],
+                                    "apply": {
+                                        "type": "teleport",
+                                        "distance": 10,
+                                        "stopsAtWalls": true,
+                                        "direction": "choose"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "success"
+                                    ],
+                                    "apply": {
+                                        "type": "teleport",
+                                        "distance": 5,
+                                        "stopsAtWalls": true,
+                                        "direction": "choose"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "criticalFailure"
+                                    ],
+                                    "toOrigin": true,
+                                    "apply": {
+                                        "type": "teleport",
+                                        "distance": 5,
+                                        "stopsAtWalls": true,
+                                        "direction": "choose"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-maneuver.Trip",
+                        "apply": {
+                            "type": "contest",
+                            "statistic": "spell-attack",
+                            "against": "reflex",
+                            "action": "trip",
+                            "riders": [
+                                {
+                                    "outcomes": [
+                                        "criticalSuccess"
+                                    ],
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "prone"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "criticalSuccess"
+                                    ],
+                                    "apply": {
+                                        "type": "damage",
+                                        "formula": "1d6",
+                                        "damageType": "bludgeoning"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "success"
+                                    ],
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "prone"
+                                    }
+                                },
+                                {
+                                    "outcomes": [
+                                        "criticalFailure"
+                                    ],
+                                    "toOrigin": true,
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "prone"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

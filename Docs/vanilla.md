@@ -61,6 +61,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
 | Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
+| Telekinetic Maneuver | 2 |  | choice |  |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |

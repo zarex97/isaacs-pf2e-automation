@@ -13,7 +13,7 @@ import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
 import { applyPull } from "./pull.mjs";
-import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld } from "./weapon.mjs";
+import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -27,6 +27,7 @@ import { selectRiders } from "./select.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
 const DEGREES = ["criticalFailure", "failure", "success", "criticalSuccess"];
+const DISARM_SUCCESS = "Compendium.pf2e.other-effects.Item.PuDS0DEq0CnaSIFV";
 
 /**
  * Apply the riders an event earned. GM-side; see relay.mjs for why.
@@ -374,6 +375,11 @@ async function applyOne(rider, context) {
     if (rider.trigger === "ally" && context.eventAlly?.actor) {
         context = { ...context, actor: context.eventAlly.actor, target: context.eventAlly };
     }
+    // …and `toOrigin` for the caster: a maneuver's critical failure falls on whoever attempted it — *Telekinetic
+    // Maneuver*'s Trip, "you fall prone".
+    if (rider.toOrigin === true && context.originActor) {
+        context = { ...context, actor: context.originActor, target: context.originToken ?? context.originActor.getActiveTokens?.(true, true).at(0) ?? context.target };
+    }
     switch (apply.type) {
         case "prompt":
             context.prompts.push(apply.text ?? rider.note ?? "");
@@ -454,6 +460,10 @@ async function applyOne(rider, context) {
             return applyAreaDamage(rider, context);
         case "pull":
             return applyPull(rider, context);
+        case "contest":
+            return applyContest(rider, context);
+        case "disarm":
+            return applyDisarm(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2347,6 +2357,64 @@ export function areaParts(parts, zones, tokenId) {
     return parts.filter((part) => !part.zone || (zones?.[part.zone] ?? []).includes(tokenId));
 }
 
+/**
+ * The caster's check against the target's DC, the riders chosen by the caster's result. *Telekinetic Maneuver*: "You can
+ * attempt to Disarm, Shove, Reposition, or Trip the target using a spell attack roll instead of an Athletics check" —
+ * the spell attack (`statistic: "spell-attack"`, the spell's own) against the target's `against` DC (Reflex for Disarm
+ * and Trip, Fortitude for Shove and Reposition). Nested riders land on the target, or on the caster with `toOrigin`.
+ */
+async function applyContest(rider, context) {
+    const origin = context.originActor;
+    const target = context.actor;
+    if (!origin || !target) return;
+    const item = castItemOf(context);
+    const statistic = rider.apply.statistic === "spell-attack" || !rider.apply.statistic
+        ? (item?.spellcasting?.statistic ?? RiderExtensions.statistic(origin, "spellcasting"))
+        : origin.getStatistic?.(rider.apply.statistic);
+    const dc = target.getStatistic?.(rider.apply.against ?? "reflex")?.dc?.value;
+    if (!statistic || !dc) return;
+    const roll = await statistic.roll({ dc: { value: dc }, skipDialog: true, item, traits: ["attack"], extraRollOptions: ["attack", `action:${rider.apply.action ?? "maneuver"}`], label: rider.apply.label ?? item?.name });
+    const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
+    if (!outcome) return;
+    const nested = (rider.apply.riders ?? []).map((r, index) => ({ rider: r, item: context.item, index }));
+    const options = riderOptions({ originActor: origin, targetActor: target, item: context.item });
+    for (const { rider: inner, index } of selectRiders(nested, { outcome, options })) {
+        await applyOne(inner, { ...context, outcome, riderIndex: [context.riderIndex, "riders", index].flat() });
+    }
+}
+
+/**
+ * A grip loosened or broken. Disarm, as *Telekinetic Maneuver* makes it: "Success You weaken your target's grasp on the
+ * item … takes a –2 circumstance penalty to attacks with the item … Critical Success You knock the item out of the
+ * opponent's grasp. It falls to the ground." `mode: "loosen"` is pf2e's own *Effect: Disarm (Success)* with its weapon
+ * already chosen — the –2 on that weapon's attacks, the +2 to the next Disarm, for as long as it is held; `mode:
+ * "drop"` lets go of it. The weapon is the one held — the first, if several.
+ */
+async function applyDisarm(rider, context) {
+    const actor = context.actor;
+    const weapon = heldWeapons(actor)[0];
+    if (!weapon) {
+        context.notes.push(t("Weapon.NothingHeld", { name: actor?.name ?? "" }));
+        return;
+    }
+    if (rider.apply.mode === "drop") {
+        await weapon.update({ "system.equipped.carryType": "dropped", "system.equipped.handsHeld": 0 });
+        context.notes.push(t("Weapon.Dropped", { name: actor.name, weapon: weapon.name }));
+        return;
+    }
+    const effect = await fromUuid(DISARM_SUCCESS);
+    if (!effect) return;
+    const source = effect.toObject();
+    delete source._id;
+    source.name = `${source.name} (${weapon.name})`;
+    // The weapon is already known: the ChoiceSet takes it rather than asking the GM's client.
+    source.system.rules = source.system.rules.map((rule) => (rule.key === "ChoiceSet" ? { ...rule, selection: weapon.id } : rule));
+    source.system.context = contextData(context);
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, riderFlags(rider, context));
+    const [created] = await actor.createEmbeddedDocuments("Item", [source]);
+    record(context, created);
+}
+
 /** One damage formula for several typed totals: pf2e reads a braced list as one roll of several instances. */
 export function typedTotals(parts) {
     const each = parts.map((part) => `${part.total}[${part.type}]`);
@@ -3287,7 +3355,8 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
         .map(
             ({ option, optionIndex }) =>
                 `<button type="button" data-action="isaacs-automation-rider-choice" data-option="${optionIndex}">`
-                + `${foundry.utils.escapeHTML(option.label ?? `Option ${optionIndex + 1}`)}</button>`,
+                // A key is read in the table's language; plain text (homebrew's labels) comes back as it is.
+                + `${foundry.utils.escapeHTML(option.label ? game.i18n.localize(option.label) : `Option ${optionIndex + 1}`)}</button>`,
         )
         .join(" ");
 
@@ -3301,7 +3370,7 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
         whisper: [...recipients],
         flavor: `${item.name} — ${(actor ?? context.actor)?.name}`,
         content:
-            `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? t("Choice.Prompt"))}</p>`
+            `<p>${foundry.utils.escapeHTML(rider.apply.prompt ? game.i18n.localize(rider.apply.prompt) : t("Choice.Prompt"))}</p>`
             + `<div class="isaacs-automation-choice">${buttons}</div>`,
         flags: {
             [LIB_ID]: {
