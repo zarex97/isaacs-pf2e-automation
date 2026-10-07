@@ -1,0 +1,29 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "rays",
+                "objects": "destroy",
+                "save": {
+                    "statistic": "fortitude",
+                    "worseOnCritical": true
+                },
+                "riders": [
+                    {
+                        "outcomes": [
+                            "success",
+                            "criticalSuccess"
+                        ],
+                        "apply": {
+                            "type": "death",
+                            "hpFraction": 0,
+                            "text": "ISAACS_AUTOMATION.Vanilla.disintegrate.Powder"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

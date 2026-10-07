@@ -293,13 +293,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-57a | "Make a spell attack against the target" | A spell attack first; a miss does nothing | | ☐ | |
-| VS-57b | "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save" | On a hit, a basic Fortitude save against 12d10 untyped | | ☐ | |
-| VS-57c | "If you critically hit, the target gets a result one degree of success worse than the outcome of its Fortitude save" | A critical hit lowers the save one step | | ☐ | |
-| VS-57d | "A creature reduced to 0 HP is blasted to fine powder; its gear remains" | 0 HP is death, not dying | | ☐ | |
-| VS-57e | "If you hit an object or force construct (such as a wall of force), it's destroyed with no save" | A wall section or a placed object hit is destroyed | | ☐ | |
-| VS-57f | "A single casting can destroy no more than a 10-foot cube of matter" | One 10-ft section at most | | ☐ | |
-| VS-57g | "The damage increases by 2d10" | Rank 7: 14d10 | | ☐ | |
+| VS-57a | "Make a spell attack against the target" | A spell attack first; a miss does nothing | `content/vanilla/disintegrate.json`: `rays` (one target) — the spell attack first | ✅ | Aries' *Arcane Spell Attack* against Capricorn's AC 34 came first each time; a miss (27) did nothing — no save, no damage, Capricorn at 200 |
+| VS-57b | "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save" | On a hit, a basic Fortitude save against 12d10 untyped | `rays` `save: { statistic: "fortitude" }`: on a hit, the creature's Fortitude against the spell DC, a basic save's share of pf2e's own roll | ✅ | Hit (36): Capricorn's *Fortitude Saving Throw* against **DC 34**, a success (34) → **12d10** = 71 untyped, Capricorn took **35**. ZZ Victim, a critical failure: 79, took **158** |
+| VS-57c | "If you critically hit, the target gets a result one degree of success worse than the outcome of its Fortitude save" | A critical hit lowers the save one step | `worseOnCritical`; `worseDegree` test | ✅ | Critical hit (44), Capricorn's save a success (34): "A critical hit: Capricorn's Success is a Failure." — 65 rolled, **65** taken, full damage |
+| VS-57d | "A creature reduced to 0 HP is blasted to fine powder; its gear remains" | 0 HP is death, not dying | nested `death` (`hpFraction: 0`, its text localized) on a hit; the *automateDeath* setting | ✅ | ZZ Victim (an NPC) at 30 HP, critically hit and failing: 158 damage, "ZZ Victim is reduced to 0 Hit Points — it is blasted to fine powder; its gear remains." and marked **dead**, not dying. A player character gets the GM's prompt instead, as the *automateDeath* setting (NPCs) asks |
+| VS-57e | "If you hit an object or force construct (such as a wall of force), it's destroyed with no save" | A wall section or a placed object hit is destroyed | `objects: "destroy"` (`destroyObject`: a wall section through `Barrier.breach`, a hazard to 0 HP) | ✅ | A hit on a section of Aries' *Wall of Stone*: no save, "Drive: Wall of Stone (section) is destroyed; its rubble is difficult terrain." — its wall and token gone. A hit on a hazard (a statue, 50 HP): "Drive: Disintegrate destroys Drive: Statue.", its HP to **0** |
+| VS-57f | "A single casting can destroy no more than a 10-foot cube of matter" | One 10-ft section at most | one target, one section (`Barrier` sections are 10 feet) | ✅ | The 30-foot wall stood as three 10-foot sections; Disintegrate on the middle one took it alone — the sections at either end stood |
+| VS-57g | "The damage increases by 2d10" | Rank 7: 14d10 | pf2e's own heightening (+2d10) | ✅ | Rank 7: **14d10** (79, Capricorn failing, took 79) |
 
 ### VS-58 · Blister
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 218 |
-| ✅ | 101 |
+| ☐ not yet driven | 211 |
+| ✅ | 108 |
 | ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -944,7 +944,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("how far each degree pulls", ["criticalSuccess", "success", "failure", "criticalFailure"].map((o) => pullFeet({ success: 5, failure: 15, criticalFailure: 30 }, o)), [0, 5, 15, 30]);
     const tok = (id, x, y) => ({ id, center: { x, y } });
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
-    const { areaParts, typedTotals, keptInstances } = await import("../scripts/riders/apply.mjs");
+    const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
+    check("a critical hit worsens the save one degree, never past a critical failure", ["criticalSuccess", "success", "failure", "criticalFailure"].map(worseDegree), ["success", "failure", "criticalFailure", "criticalFailure"]);
     check("a miss keeps only the damage types it still deals",
         [keptInstances([{ type: "slashing", _formula: "1d4[slashing]" }, { type: "electricity", _formula: "1d4[electricity]" }], ["electricity"]), keptInstances([{ type: "slashing", _formula: "1d4[slashing]" }], ["electricity"])],
         ["{1d4[electricity]}", null]);

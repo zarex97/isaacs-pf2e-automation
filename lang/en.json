@@ -220,6 +220,8 @@
         "Rays": {
             "Flavor": "{name} — {actor} ({outcome})",
             "Penalty": "{name}'s multiple attack penalty now counts {count} more attacks.",
+            "Worse": "A critical hit: {actor}'s {from} is a {to}.",
+            "Destroyed": "{name} destroys {actor}.",
             "PenaltyOne": "{name}'s multiple attack penalty now counts one more attack."
         },
         "Requires": {
@@ -504,6 +506,9 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "disintegrate": {
+                "Powder": "it is blasted to fine powder; its gear remains."
             },
             "telekinetic-maneuver": {
                 "Prompt": "Which maneuver, with your spell attack?",

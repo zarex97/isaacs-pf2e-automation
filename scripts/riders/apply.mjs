@@ -2125,7 +2125,7 @@ async function applyDeath(rider, context) {
     const playerOwned = context.actor.hasPlayerOwner;
 
     if (mode === "off" || (mode === "npcs" && playerOwned)) {
-        context.prompts.push(rider.apply.text ?? t("Death.Prompt"));
+        context.prompts.push(rider.apply.text ? game.i18n.localize(rider.apply.text) : t("Death.Prompt"));
         return;
     }
 
@@ -2152,7 +2152,7 @@ async function applyDeath(rider, context) {
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
         flavor: context.item?.name ?? context.originActor?.name ?? t("Rider.Name"),
-        content: `<p>${t("Death.Dies", { actor: context.actor.name, text: rider.apply.text ?? t("Death.Text") })}</p>`,
+        content: `<p>${t("Death.Dies", { actor: context.actor.name, text: rider.apply.text ? game.i18n.localize(rider.apply.text) : t("Death.Text") })}</p>`,
     });
 }
 
@@ -2439,7 +2439,25 @@ async function applyRays(rider, context) {
         const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
         if (!outcome) continue;
         const hit = outcome === "success" || outcome === "criticalSuccess";
-        if (hit || (outcome === "failure" && onFailure.length > 0)) {
+        // *Disintegrate*: "If you hit an object or force construct (such as a wall of force), it's destroyed with no
+        // save … A single casting can destroy no more than a 10-foot cube of matter" — one wall section, one hazard.
+        if (hit && rider.apply.objects === "destroy" && (await destroyObject(token, spell, context))) continue;
+        // *Disintegrate*: "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save.
+        // If you critically hit, the target gets a result one degree of success worse" — `save` on a hit.
+        if (hit && rider.apply.save) {
+            const save = await raySave(rider.apply.save, spell, token, outcome, context);
+            if (save === null) continue;
+            const damage = await spell.getDamage({ target: token, skipDialog: true });
+            const dealt = await damage?.template?.damage?.roll?.evaluate?.();
+            const multiplier = BASIC_SAVE_MULTIPLIER[save];
+            if (dealt && multiplier > 0) {
+                await dealt.toMessage(
+                    { speaker: ChatMessage.getSpeaker({ actor: context.originActor }), flavor: t("Rays.Flavor", { name: spell.name, actor: token.actor.name, outcome: outcomeLabel(save) }) },
+                    { rollMode: game.settings.get("core", "rollMode") },
+                );
+                await token.actor.applyDamage({ damage: multiplier === 1 ? dealt : dealt.alter(multiplier, 0), token });
+            }
+        } else if (hit || (outcome === "failure" && onFailure.length > 0)) {
             const damage = await spell.getDamage({ target: token, skipDialog: true });
             // pf2e's own roll, unevaluated, as its damage button would evaluate it: its formula is display text.
             const full = damage?.template?.damage?.roll;
@@ -2463,6 +2481,50 @@ async function applyRays(rider, context) {
     }
     // "These attacks each increase your multiple attack penalty" — pf2e keeps no count, so it is said.
     context.notes.push(t(targets.length === 1 ? "Rays.PenaltyOne" : "Rays.Penalty", { name: context.originActor?.name ?? "", count: targets.length }));
+}
+
+/** A basic save's share of the damage, by the save's own result. */
+const BASIC_SAVE_MULTIPLIER = { criticalSuccess: 0, success: 0.5, failure: 1, criticalFailure: 2 };
+
+/** One degree worse, never below a critical failure. */
+export function worseDegree(outcome) {
+    return DEGREES[Math.max(0, DEGREES.indexOf(outcome) - 1)];
+}
+
+/**
+ * The creature a ray hit saves against the caster's spell DC; a critical hit makes the result one degree worse when
+ * `worseOnCritical`. Its own result, from the creature's side — null when it could not roll.
+ */
+async function raySave(spec, spell, token, attack, context) {
+    const statistic = token.actor?.getStatistic?.(spec.statistic ?? "fortitude");
+    const dc = spell.spellcasting?.statistic?.dc?.value;
+    if (!statistic || !dc) return null;
+    const roll = await statistic.roll({ dc: { value: dc }, item: spell, origin: context.originActor, skipDialog: true });
+    const rolled = DEGREES[roll?.degreeOfSuccess ?? -1];
+    if (!rolled) return null;
+    if (attack === "criticalSuccess" && spec.worseOnCritical) {
+        const worse = worseDegree(rolled);
+        if (worse !== rolled) context.notes.push(t("Rays.Worse", { actor: token.actor.name, from: outcomeLabel(rolled), to: outcomeLabel(worse) }));
+        return worse;
+    }
+    return rolled;
+}
+
+/**
+ * A ray that hits an object destroys it: a section of a wall this module raised breaks as if brought to 0 Hit Points,
+ * and a hazard with Hit Points goes to 0. True when the target was an object.
+ */
+async function destroyObject(token, spell, context) {
+    const { Barrier, isSection } = await import("../targeting/barrier.mjs");
+    if (isSection(token)) {
+        await Barrier.breach(token);
+        return true;
+    }
+    const actor = token.actor;
+    if (actor?.type !== "hazard") return false;
+    if (actor.hitPoints?.value > 0) await actor.update({ "system.attributes.hp.value": 0 });
+    context.notes.push(t("Rays.Destroyed", { name: spell.name, actor: token.name }));
+    return true;
 }
 
 /** The parts of a damage roll of the named types, as one formula — null when none is left. */
