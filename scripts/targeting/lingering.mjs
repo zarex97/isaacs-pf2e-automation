@@ -132,7 +132,7 @@ export const Lingering = {
             const seconds = walled.duration ? (Number(walled.duration.value) || 1) * (UNIT_SECONDS[walled.duration.unit ?? "minutes"] ?? 60) : null;
             return Barrier.build(barrier, config, placed, originToken, {
                 expiresAt: seconds ? game.time.worldTime + seconds : null,
-                makeRegion: (shapes) => Lingering.createOne(ground, config, { shapes, color: placed[0].color, toObject: () => ({ shapes }) }, originToken, { first: false }),
+                makeRegion: (shapes, castId) => Lingering.createOne(ground, config, { shapes, color: placed[0].color, toObject: () => ({ shapes }) }, originToken, { castId, first: false }),
             });
         }
 
@@ -566,7 +566,11 @@ export const Lingering = {
             // Scenery first: a Region deleted while its walls are still standing leaves nothing behind to
             // say the walls were ever ours.
             for (const region of stale) await Lingering.clearScenery(scene, flagOf(region, FLAG));
-            await scene.deleteEmbeddedDocuments("Region", stale.map((region) => region.id));
+            // One at a time, and quietly past one already gone: a wall's own sweep (`barrier.mjs`) may take a
+            // section's Region on the same tick, and one failed id would otherwise keep every other one standing.
+            for (const region of stale) {
+                if (scene.regions.has(region.id)) await scene.deleteEmbeddedDocuments("Region", [region.id]).catch(() => null);
+            }
         }
     },
 };
@@ -851,7 +855,9 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         // One move action is one check, however many times Foundry reports it: a long drag into *Web* comes
         // as "moved in" and then "moved within", and both used to roll Athletics.
-        if (!firstForMovement(region?.uuid, event)) {
+        // A wall of squares is one wall however many sections a move crosses: "for every move action a creature uses
+        // to enter at least one of the wall's spaces".
+        if (!firstForMovement(payload.castId ?? region?.uuid, event)) {
             if (event.name === CONST.REGION_EVENTS.TOKEN_MOVE_OUT) await Inside.leave(region, event.data.token);
             return;
         }

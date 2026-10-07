@@ -1,6 +1,7 @@
 import { LIB_ID } from "../id.mjs";
 import { t } from "../i18n.mjs";
 import { DamageBus } from "../lib/damage-bus.mjs";
+import { CheckPipeline } from "../lib/check-pipeline.mjs";
 
 /**
  * A wall of sections, each one breakable on its own.
@@ -152,12 +153,12 @@ export const Barrier = {
                 at = { x: Math.round(((piece.a.x + piece.b.x) / 2 - grid / 2) / (grid / 2)) * (grid / 2), y: Math.round(((piece.a.y + piece.b.y) / 2 - grid / 2) / (grid / 2)) * (grid / 2) };
             } else {
                 const shapes = piece.map((sq) => ({ type: "rectangle", x: sq.x, y: sq.y, width: grid, height: grid }));
-                const region = makeRegion ? await makeRegion(shapes) : null;
+                const region = makeRegion ? await makeRegion(shapes, castId) : null;
                 regionId = region?.id ?? null;
                 at = { x: piece[0].x, y: piece[0].y };
             }
             const tokenData = (await hazard.getTokenDocument({ x: at.x, y: at.y, actorLink: false, name: t("Barrier.Section", { name: config.item.name }) })).toObject();
-            tokenData.flags = foundry.utils.mergeObject(tokenData.flags ?? {}, { [LIB_ID]: { [FLAG]: { castId, kind, wallIds, regionId, rubble: spec.rubble === true, piece, expiresAt, hazardId: hazard.id } } });
+            tokenData.flags = foundry.utils.mergeObject(tokenData.flags ?? {}, { [LIB_ID]: { [FLAG]: { castId, kind, wallIds, regionId, rubble: spec.rubble === true, cover: spec.cover === true, piece, expiresAt, hazardId: hazard.id } } });
             tokens.push(tokenData);
         }
         await scene.createEmbeddedDocuments("Token", tokens);
@@ -169,13 +170,16 @@ export const Barrier = {
         const spec = flagOf(token);
         const scene = token?.parent;
         if (!spec || !scene) return;
+        // Each piece on its own, and a piece already gone is no error: the area's own expiry sweep (`lingering.mjs`)
+        // may take a section's Region on the same tick this does.
+        const gone = (promise) => promise.catch(() => null);
         const wallIds = (spec.wallIds ?? []).filter((id) => scene.walls.has(id));
-        if (wallIds.length > 0) await scene.deleteEmbeddedDocuments("Wall", wallIds);
-        if (spec.regionId && scene.regions.has(spec.regionId)) await scene.deleteEmbeddedDocuments("Region", [spec.regionId]);
+        if (wallIds.length > 0) await gone(scene.deleteEmbeddedDocuments("Wall", wallIds));
+        if (spec.regionId && scene.regions.has(spec.regionId)) await gone(scene.deleteEmbeddedDocuments("Region", [spec.regionId]));
         if (rubble && spec.rubble && spec.kind === "border") await placeRubble(scene, spec.piece);
-        if (scene.tokens.has(token.id)) await scene.deleteEmbeddedDocuments("Token", [token.id]);
+        if (scene.tokens.has(token.id)) await gone(scene.deleteEmbeddedDocuments("Token", [token.id]));
         const left = scene.tokens.some((tk) => flagOf(tk)?.castId === spec.castId);
-        if (!left && spec.hazardId && game.actors.has(spec.hazardId)) await game.actors.get(spec.hazardId).delete();
+        if (!left && spec.hazardId && game.actors.has(spec.hazardId)) await gone(game.actors.get(spec.hazardId).delete());
         if (rubble) await ChatMessage.create({ content: `<p>${t(spec.rubble ? "Barrier.Rubble" : "Barrier.Breached", { name: token.name })}</p>` });
     },
 
@@ -191,6 +195,19 @@ export const Barrier = {
     },
 
     registerHooks() {
+        // *Wall of Thorns*: "Everything on each side of the wall has cover from creatures on the opposite side." An
+        // attack whose line crosses a standing section of such a wall is made against the target's AC with standard
+        // cover's +2.
+        CheckPipeline.before("cover from a wall of squares", 30, (_check, context) => {
+            if (context?.type !== "attack-roll" || !context.dc?.value) return;
+            const from = (context.origin?.token ?? context.token)?.object?.center;
+            const to = context.target?.token?.object?.center;
+            if (!from || !to || !canvas?.scene) return;
+            const covering = canvas.scene.tokens.find((tk) => flagOf(tk)?.cover && crossesAny(from, to, flagOf(tk).piece, canvas.grid.size));
+            if (!covering) return;
+            const label = t("Barrier.Cover", { name: covering.name });
+            return { ...context, dc: { ...context.dc, value: context.dc.value + 2, ...(context.dc.label ? { label: `${context.dc.label} (+2 ${label})` } : {}) } };
+        });
         DamageBus.after("a wall section at 0 Hit Points is breached", 90, async (actor) => {
             if (game.users?.activeGM?.id !== game.user?.id) return;
             const token = actor?.token;
@@ -201,6 +218,12 @@ export const Barrier = {
         Hooks.on("pf2e.startTurn", () => Barrier.sweep());
     },
 };
+
+/** Does the line between two points pass through any of these squares? */
+export function crossesAny(from, to, squares, gridSize) {
+    if (!Array.isArray(squares)) return false;
+    return squares.some((sq) => crossesInterior({ a: from, b: to }, { x: sq.x, y: sq.y, w: gridSize, h: gridSize }));
+}
 
 function flagOf(token) {
     return token?.flags?.[LIB_ID]?.[FLAG] ?? null;

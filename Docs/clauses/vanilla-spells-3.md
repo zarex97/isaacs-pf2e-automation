@@ -185,14 +185,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-48a | "You create a 5-foot-thick wall of brambles and thorns in a straight line up to 60 feet long and 10 feet high" | A straight line of squares up to 60 ft | | ☐ | |
-| VS-48b | "You must create the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A line across an occupied square is refused | | ☐ | |
-| VS-48c | "Everything on each side of the wall has cover from creatures on the opposite side" | An attack across the wall counts cover | | ☐ | |
-| VS-48d | "the wall's spaces are difficult terrain" | Its squares cost double | | ☐ | |
-| VS-48e | "For every move action a creature uses to enter at least one of the wall's spaces, that creature takes 3d4 piercing damage" | 3d4 piercing, no save, once per move action however many of its squares are entered | | ☐ | |
-| VS-48f | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 10, and 20 Hit Points" | Each section can be damaged on its own | | ☐ | |
-| VS-48g | "A destroyed section can be moved through freely" | A destroyed section stops hurting and is no longer difficult terrain | | ☐ | |
-| VS-48h | "The Hit Points of each section of the wall increase by 5, and the piercing damage increases by 1d4" | Rank 4: 25 HP, 4d4 | | ☐ | |
+| VS-48a | "You create a 5-foot-thick wall of brambles and thorns in a straight line up to 60 feet long and 10 feet high" | A straight line of squares up to 60 ft | `content/vanilla/wall-of-thorns.json` (`lingering.barrier`, kind `squares`; a line of 60, 30 or 10 ft) | ✅ | A 60-ft line east from (4000, 1200) — handed to the builder, as for VS-47 — became **twelve squares** in a straight row, six 10-ft sections of two squares each, every section its own Region of the spell's ground and a hazard token |
+| VS-48b | "You must create the wall in an unbroken open space so its edges don't pass through any creatures or objects, or the spell is lost" | A line across an occupied square is refused | the build checks every square against every creature | ✅ | With Capricorn standing on the row: "Drive: Wall of Thorns is lost: its wall would pass through Capricorn." — nothing built. Moved off it, the wall stood |
+| VS-48c | "Everything on each side of the wall has cover from creatures on the opposite side" | An attack across the wall counts cover | a check-pipeline stage, `cover from a wall of squares` (`crossesAny` test) | ✅ | Leo struck Capricorn across the wall: the attack was against **DC 36** — Capricorn's AC 34 with standard cover's +2. The same Strike with Capricorn beside Leo, nothing between: **DC 34** |
+| VS-48d | "the wall's spaces are difficult terrain" | Its squares cost double | `difficultTerrain: 2` on each section's Region | ✅ | Capricorn stepping from below the wall into it: Foundry's path cost **10** ft for the one square |
+| VS-48e | "For every move action a creature uses to enter at least one of the wall's spaces, that creature takes 3d4 piercing damage" | 3d4 piercing, no save, once per move action however many of its squares are entered | `events: [tokenMoveIn]`, `damage` 3d4 piercing (no save); `firstForMovement` keyed on the wall, not the section | ✅ | One move action into the wall and along it through **two** sections: **one** "Wall of Thorns — Capricorn" 3d4 piercing = 8. Out, then a second move action back in: 3d4 = 10 again |
+| VS-48f | "Each 10-foot-by-10-foot section of the wall has AC 10, Hardness 10, and 20 Hit Points" | Each section can be damaged on its own | `sectionHp`; the hazard's AC, Hardness, immunities | ✅ | Each section: **AC 10, Hardness 10, 20 HP**, immune to critical hits and precision (the same hazard as VS-47, whose immunities were driven there) |
+| VS-48g | "A destroyed section can be moved through freely" | A destroyed section stops hurting and is no longer difficult terrain | `Barrier.breach` (no rubble for a wall of squares) | ✅ | 30 slashing on a section (20 after Hardness) destroyed it: its token and its Region gone, no rubble. Stepping into its squares then cost **5** ft and dealt no damage. Found on the way: a section's Region and the wall's own expiry could be deleted twice on the same tick, and one failed delete left the rest of the wall standing — each removal is now its own, and quietly past one already gone |
+| VS-48h | "The Hit Points of each section of the wall increase by 5, and the piercing damage increases by 1d4" | Rank 4: 25 HP, 4d4 | `hpPerStep: 5`; the damage's `perStep: 1d4` | ✅ | Built at **rank 4**: a section's Hit Points **25**, its damage **4d4**. The 1-minute duration: a fresh 30-ft wall still stood after 30 seconds and was entirely gone — sections, Regions and hazard — after the minute |
 
 ### VS-49 · Hypnotize
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 278 |
-| ✅ | 46 |
+| ☐ not yet driven | 270 |
+| ✅ | 54 |
 | ⚠️ | 1 |
 | ❌ | 0 |
 | 🔧 | 0 |

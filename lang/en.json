@@ -181,7 +181,8 @@
             "Section": "{name} (section)",
             "Rubble": "{name} is destroyed; its rubble is difficult terrain.",
             "Breached": "{name} is destroyed.",
-            "RubbleName": "Rubble"
+            "RubbleName": "Rubble",
+            "Cover": "cover from {name}"
         },
         "Repels": {
             "Barred": "{name} can't move closer to {caster} within {area}."
@@ -460,6 +461,12 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "wall-of-thorns": {
+                "Wall": "Wall of Thorns",
+                "Line60": "A straight line, 60 feet",
+                "Line30": "A straight line, 30 feet",
+                "Line10": "A straight line, 10 feet"
             },
             "wall-of-stone": {
                 "Wall": "Wall of Stone",

@@ -2510,6 +2510,59 @@
                 }
             }
         },
+        "wall-of-thorns": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 60,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Line60"
+                },
+                {
+                    "type": "line",
+                    "value": 30,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Line30"
+                },
+                {
+                    "type": "line",
+                    "value": 10,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Line10"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.wall-of-thorns.Wall",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "difficultTerrain": 2,
+                "events": [
+                    "tokenMoveIn"
+                ],
+                "damage": {
+                    "formula": "3d4",
+                    "perStep": "1d4",
+                    "type": "piercing",
+                    "persistent": false
+                },
+                "barrier": {
+                    "kind": "squares",
+                    "sectionFeet": 10,
+                    "ac": 10,
+                    "hardness": 10,
+                    "hp": 20,
+                    "hpPerStep": 5,
+                    "immunities": [
+                        "critical-hits",
+                        "precision"
+                    ],
+                    "cover": true
+                }
+            }
+        },
         "web": {
             "areaTargeting": {
                 "affects": "all",
