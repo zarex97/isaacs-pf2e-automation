@@ -32,6 +32,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
 | Heroism | 3 |  | spell-effect-heroism |  |
 | Hydraulic Push | 1 |  | success: pushed 5 ft away; crit. success: pushed 10 ft away |  |
+| Hypnotize | 3 | 10-ft burst (pf2e's), all | failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area) | ends if not Sustained, while inside: dazzled, will on entering / turn end — failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area), 1 minutes |
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
 | Ignition | 1 | variant — Ignition (Melee): crit. success: 1d6 (+1d6 per rank) persistent fire | crit. success: 1d4 (+1d4 per rank) persistent fire |  |
 | Ill Omen | 1 |  | failure / crit. failure: spell-effect-ill-omen |  |

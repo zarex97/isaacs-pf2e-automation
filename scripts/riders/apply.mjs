@@ -1733,6 +1733,18 @@ async function applyExpire(rider, context) {
     }
 }
 
+/** The area this cast left on the board — its lingering Region, newest first — for an effect that ends with it. */
+function areaOfCast(context) {
+    const item = castItemOf(context);
+    const itemUuid = (item?.original ?? item)?.uuid;
+    const origin = context.originActor?.uuid;
+    for (const scene of [canvas?.scene, ...(game.scenes ?? [])].filter(Boolean)) {
+        const found = scene.regions.contents.filter((r) => r.flags?.[LIB_ID]?.lingering?.itemUuid === itemUuid && r.flags[LIB_ID].lingering.originUuid === origin).at(-1);
+        if (found) return found.uuid;
+    }
+    return null;
+}
+
 /** An authored effect from a pack — the riders that are more than a condition with a timer. */
 async function applyEffect(rider, context) {
     // An effect written out in the content — *Web*'s "–10-foot circumstance penalty to its Speeds" — when
@@ -1743,6 +1755,12 @@ async function applyEffect(rider, context) {
         // "A creature that gets out of the web ceases to take a circumstance penalty": an effect given by a
         // lingering area's check can end on leaving it, the way an area held while inside does.
         if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { inside: context.region } });
+        // "Fascinated by the cloud" lasts as long as the cloud does — *Hypnotize*: it ends with the area, wherever its
+        // holder is (`inside.mjs` takes it off when the Region goes).
+        if (rider.apply.withArea) {
+            const area = context.region ?? areaOfCast(context);
+            if (area) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { withArea: area } });
+        }
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
         await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });

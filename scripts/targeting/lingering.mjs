@@ -51,6 +51,8 @@ export const Lingering = {
             const sustain = flagOf(region, FLAG)?.sustain;
             if (sustain?.move) return Lingering.fly(region);
             if (sustain?.bolt) return Lingering.bolt(region);
+            // Sustained only to keep it going — *Hypnotize*.
+            if (!Number(sustain?.radius)) return t("Lingering.Kept");
             return Lingering.grow(region);
         };
         Relay.register("lingeringBolt", (payload) => Lingering.strike(payload));

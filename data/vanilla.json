@@ -1063,6 +1063,119 @@
                 }
             ]
         },
+        "hypnotize": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.Fascinated",
+                        "withArea": true,
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                "onDeleteActions": {
+                                    "grantee": "restrict"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.NoReactions",
+                        "withArea": true,
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                "onDeleteActions": {
+                                    "grantee": "restrict"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.hypnotize.Cloud",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "sustain": {
+                    "lapses": true
+                },
+                "inside": {
+                    "conditions": [
+                        "dazzled"
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.hypnotize.Dazzled"
+                },
+                "events": [
+                    "tokenMoveIn",
+                    "tokenTurnEnd"
+                ],
+                "targetPredicate": [
+                    {
+                        "not": "target:condition:fascinated"
+                    }
+                ],
+                "save": {
+                    "statistic": "will",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "effect",
+                                "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.Fascinated",
+                                "withArea": true,
+                                "rules": [
+                                    {
+                                        "key": "GrantItem",
+                                        "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                        "onDeleteActions": {
+                                            "grantee": "restrict"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "effect",
+                                "label": "ISAACS_AUTOMATION.Vanilla.hypnotize.NoReactions",
+                                "withArea": true,
+                                "rules": [
+                                    {
+                                        "key": "GrantItem",
+                                        "uuid": "Compendium.pf2e.conditionitems.Item.AdPVz7rbaVSRxHFg",
+                                        "onDeleteActions": {
+                                            "grantee": "restrict"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "ice-storm": {
             "areaTargeting": {
                 "affects": "all",

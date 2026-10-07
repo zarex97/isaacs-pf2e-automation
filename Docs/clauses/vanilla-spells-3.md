@@ -198,13 +198,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-49a | "Creatures are Dazzled while inside the cloud" | Dazzled on entering the 10-ft burst, gone on leaving it | | ☐ | |
-| VS-49b | "a creature must attempt a Will saving throw if it is inside the cloud when you cast it, when it enters the cloud, when it ends its turn within the cloud" | A Will save at the cast, on entering, and at the end of each turn inside | | ☐ | |
-| VS-49c | "or if it uses a Seek or Interact action on the cloud" | Seeking the cloud asks the save too | | ☐ | |
-| VS-49d | "A creature currently Fascinated by hypnotize doesn't attempt new saves" | No save while it is fascinated by this cloud | | ☐ | |
-| VS-49e | "Success The target is unaffected" | Nothing | | ☐ | |
-| VS-49f | "Failure The target is fascinated by the cloud" | Fascinated | | ☐ | |
-| VS-49g | "While it remains fascinated, it can't use reactions" | A critical failure also takes reactions away while fascinated | | ☐ | |
+| VS-49a | "Creatures are Dazzled while inside the cloud" | Dazzled on entering the 10-ft burst, gone on leaving it | `content/vanilla/hypnotize.json` (`lingering.inside`: dazzled) | ✅ | Aries cast it (rank 3) on a 10-ft burst at (4100, 1500) — placed through Foundry's own placement, the shape put at that point and confirmed. Capricorn and ZZ Victim inside were **dazzled**; Leo outside wasn't. Leo walked in: dazzled. Capricorn walked out: no longer dazzled |
+| VS-49b | "a creature must attempt a Will saving throw if it is inside the cloud when you cast it, when it enters the cloud, when it ends its turn within the cloud" | A Will save at the cast, on entering, and at the end of each turn inside | the cast's save (pf2e's card, `riders`); lingering `save` on `tokenMoveIn` and `tokenTurnEnd` | ✅ | At the cast, the card's Will save for the two inside (critical failure, failure). Leo entering: a Will save on the way in (success). At the end of Leo's turn inside: another (success) |
+| VS-49c | "or if it uses a Seek or Interact action on the cloud" | Seeking the cloud asks the save too | — | ⚠️ | **Gap:** a Seek or Interact *aimed at the cloud* asks no save — pf2e's Seek and Interact name no area as their object, so there is nothing to recognise one by. Left to the table |
+| VS-49d | "A creature currently Fascinated by hypnotize doesn't attempt new saves" | No save while it is fascinated by this cloud | `targetPredicate`: not `target:condition:fascinated` | ✅ | Capricorn and ZZ Victim, fascinated, ended their turns inside the cloud: **no** save for either; Leo, not fascinated, saved at the end of his |
+| VS-49e | "Success The target is unaffected" | Nothing | no rider on success | ✅ | Leo's successes left him only the dazzled the cloud gives anyone inside |
+| VS-49f | "Failure The target is fascinated by the cloud" | Fascinated | an effect granting pf2e's *Fascinated*, `withArea` | ✅ | Capricorn, failure: "fascinated by the cloud" — fascinated, and still fascinated after walking out of the cloud. When the spell ended, the fascination went with it, inside or out |
+| VS-49g | "While it remains fascinated, it can't use reactions" | A critical failure also takes reactions away while fascinated | the critical failure's effect: "fascinated by the cloud: no reactions" | ⚠️ | ZZ Victim, critical failure: fascinated, with the effect naming the lost reactions, both ending with the cloud. **Gap:** pf2e has no way to refuse a reaction, so the "can't use reactions" is a label on the sheet, not enforced |
 
 ### VS-50 · Slither
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 270 |
-| ✅ | 54 |
-| ⚠️ | 1 |
+| ☐ not yet driven | 263 |
+| ✅ | 59 |
+| ⚠️ | 3 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

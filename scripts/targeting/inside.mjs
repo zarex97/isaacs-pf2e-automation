@@ -79,6 +79,11 @@ export const Inside = {
         Hooks.on("deleteRegion", (region) => {
             if (!isActiveGM() || !flagOf(region, LINGERING)) return;
             for (const token of region.parent?.tokens ?? []) Inside.leave(region, token);
+            // What lasts as long as the area does (`withArea`), on anyone, inside it or not.
+            for (const token of region.parent?.tokens ?? []) {
+                const ids = token.actor?.items?.filter((i) => i.flags?.[LIB_ID]?.withArea === region.uuid).map((i) => i.id) ?? [];
+                if (ids.length > 0) token.actor.deleteEmbeddedDocuments("Item", ids).catch(() => null);
+            }
         });
     },
 
