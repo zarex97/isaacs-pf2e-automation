@@ -221,7 +221,8 @@
             "Fell": "{actor} falls {feet} feet, safely; still {left} feet up.",
             "Landed": "{actor} falls {feet} feet to the ground, safely.",
             "Grounded": "{name}: can't leave the ground",
-            "Refused": "{actor} can't leave the ground."
+            "Refused": "{actor} can't leave the ground.",
+            "Elevation": "{actor} floats {feet} feet up."
         },
         "Cleanse": {
             "Title": "Cleanse",
@@ -553,6 +554,12 @@
             },
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
+            },
+            "levitate": {
+                "Sustain": "Sustain Levitate",
+                "Way": "Move it up or down 10 feet?",
+                "Up": "Up 10 feet",
+                "Down": "Down 10 feet"
             },
             "animal-form": {
                 "Prompt": "Which battle form?",

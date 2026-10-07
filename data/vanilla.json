@@ -1960,6 +1960,71 @@
                 }
             ]
         },
+        "levitate": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "elevation",
+                        "set": 5
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.JqrTrvwV7pYStMXz",
+                        "carries": [
+                            {
+                                "event": "turn-end",
+                                "self": true,
+                                "apply": {
+                                    "type": "toggle",
+                                    "option": "stabilized",
+                                    "value": false,
+                                    "announce": false
+                                }
+                            }
+                        ],
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.levitate.Sustain",
+                            "spends": false,
+                            "traits": [
+                                "concentrate"
+                            ],
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "self": true,
+                                    "apply": {
+                                        "type": "choice",
+                                        "prompt": "ISAACS_AUTOMATION.Vanilla.levitate.Way",
+                                        "options": [
+                                            {
+                                                "label": "ISAACS_AUTOMATION.Vanilla.levitate.Up",
+                                                "apply": {
+                                                    "type": "elevation",
+                                                    "by": 10,
+                                                    "holder": true
+                                                }
+                                            },
+                                            {
+                                                "label": "ISAACS_AUTOMATION.Vanilla.levitate.Down",
+                                                "apply": {
+                                                    "type": "elevation",
+                                                    "by": -10,
+                                                    "holder": true
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
         "lightning-bolt": {
             "areaTargeting": {
                 "affects": "all",

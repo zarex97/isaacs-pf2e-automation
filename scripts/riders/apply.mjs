@@ -18,7 +18,7 @@ import { Aftermath } from "./aftermath.mjs";
 import { Unobserved } from "./unobserved.mjs";
 import { setAside } from "./set-aside.mjs";
 import { Cleanse } from "./cleanse.mjs";
-import { Fall } from "./fall.mjs";
+import { Fall, elevate } from "./fall.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -471,6 +471,8 @@ async function applyOne(rider, context) {
             return Unobserved.apply(rider, context);
         case "fall":
             return Fall.apply(rider, context);
+        case "elevation":
+            return elevate(rider, context);
         case "cleanse":
             return Cleanse.offer(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath":
@@ -1963,6 +1965,14 @@ async function applyEffect(rider, context) {
     record(context, created);
     // "You can Dismiss the spell" — *Animal Form*: its caster is given the action that ends it.
     if (created && rider.apply.dismissable && context.originActor) await Dismiss.grantForEffect(context.originActor, castItemOf(context) ?? context.item, created);
+    // …or an action that does something with it (`origin-action.mjs`) — *Levitate*'s Sustain to move it.
+    if (created && rider.apply.originAction) {
+        await OriginAction.grant(created, rider.apply.originAction, context, {
+            item: castItemOf(context) ?? context.item,
+            steps: riderSteps({ apply: {} }, context),
+            dc: RiderExtensions.resolveDC("spell", context),
+        });
+    }
 
     // Whatever has to follow an effect's arrival — an Arm put into the hands that were just granted it.
     await RiderExtensions.afterEffect(rider, context, created);

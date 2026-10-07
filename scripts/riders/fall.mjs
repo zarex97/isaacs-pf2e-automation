@@ -23,6 +23,28 @@ export function isGrounded(actor) {
     return (actor?.itemTypes?.effect ?? []).some((e) => e.flags?.[LIB_ID]?.[FLAG]);
 }
 
+/** The elevation after a rider's `set` or `by` (feet), never below the ground. Pure. */
+export function elevationAfter(current, { set = null, by = 0 } = {}) {
+    if (set !== null && set !== undefined) return Math.max(0, Number(set) || 0);
+    return Math.max(0, (Number(current) || 0) + (Number(by) || 0));
+}
+
+/**
+ * A creature lifted or lowered. *Levitate*: "levitate the target 5 feet off the ground. You can Sustain the spell to move
+ * the target up or down 10 feet." `elevation`: `set` (feet) or `by` (up, or down when negative); `holder`: on the
+ * creature whose effect gave the action used (`origin-action.mjs`), not the action's own target.
+ */
+export async function elevate(rider, context) {
+    const token = rider.apply.holder
+        ? (fromUuidSync(context.item?.flags?.[LIB_ID]?.originAction?.tokenUuid ?? "") ?? null)
+        : (context.target?.document ?? context.target);
+    if (!token?.update) return;
+    const from = Number(token._source?.elevation ?? token.elevation) || 0;
+    const to = elevationAfter(from, rider.apply);
+    if (to !== from) await token.update({ elevation: to });
+    context.notes.push(t("Fall.Elevation", { actor: token.name, feet: to }));
+}
+
 export const Fall = {
     async apply(rider, context) {
         const token = context.target?.document ?? context.target;

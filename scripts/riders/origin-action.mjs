@@ -49,7 +49,8 @@ export function originActionSource({ spec, item, effect, token, steps, dc }) {
             [LIB_ID]: {
                 [FLAG]: { effectUuid: effect.uuid, tokenUuid: token?.uuid ?? null },
                 ...(spec.areaTargeting ? { areaTargeting: spec.areaTargeting } : {}),
-                riders: [{ event: "action-used", self: true, apply: { type: "spend-charge" } }, ...bakeCast(spec.riders ?? [], { steps, dc })],
+                // `spends: false`: an action that uses nothing up — *Levitate*'s Sustain to move it.
+                riders: [...(spec.spends === false ? [] : [{ event: "action-used", self: true, apply: { type: "spend-charge" } }]), ...bakeCast(spec.riders ?? [], { steps, dc })],
             },
         },
     };

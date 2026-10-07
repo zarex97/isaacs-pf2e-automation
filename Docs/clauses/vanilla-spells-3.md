@@ -503,10 +503,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-75a | "levitate the target 5 feet off the ground" | Elevation 5 ft | | ☐ | |
-| VS-75b | "You can Sustain the spell to move the target up or down 10 feet" | Each Sustain moves it 10 ft up or down | | ☐ | |
-| VS-75c | "A creature floating in the air from levitate takes a –2 circumstance penalty to attack rolls" | –2 to its attacks | | ☐ | |
-| VS-75d | "A floating creature can spend an Interact action to stabilize itself and negate this penalty for the remainder of its turn" | An Interact removes the penalty until its turn ends | | ☐ | |
+| VS-75a | "levitate the target 5 feet off the ground" | Elevation 5 ft | `content/vanilla/levitate.json`: `elevation` `set: 5` (`scripts/riders/fall.mjs`, `elevationAfter` test) | ✅ | Cast at Leo: his token at **5 feet** |
+| VS-75b | "You can Sustain the spell to move the target up or down 10 feet" | Each Sustain moves it 10 ft up or down | pf2e's effect with an `originAction` (`spends: false`): the caster's *Sustain Levitate*, a choice of `elevation` ±10 on the effect's holder | ✅ | Aries got **Sustain Levitate**; using it asked "Move it up or down 10 feet?" — Up: "Leo floats 15 feet up." The effect and the action stayed. The once-a-turn limit of Sustaining is the table's |
+| VS-75c | "A creature floating in the air from levitate takes a –2 circumstance penalty to attack rolls" | –2 to its attacks | pf2e's *Spell Effect: Levitate*: –2 circumstance to attacks unless `stabilized` | ✅ | Leo's Strike: "Levitate –2" |
+| VS-75d | "A floating creature can spend an Interact action to stabilize itself and negate this penalty for the remainder of its turn" | An Interact removes the penalty until its turn ends | pf2e's `stabilized` toggle; a carried `turn-end` `toggle` (`value: false`) | ✅ | Stabilized: the –2 gone. At the end of Leo's turn the toggle went off and the **–2** came back |
 | VS-75e | "it can move across the surface by climbing" | — | | — | Nothing to automate: which surfaces hold is the GM's call |
 
 ### VS-76 · Vapor Form
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 106 |
-| ✅ | 211 |
+| ☐ not yet driven | 102 |
+| ✅ | 215 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |
