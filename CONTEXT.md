@@ -114,3 +114,7 @@ _Avoid_: "flag" for a table entry's key — it is not on the item.
 
 **Deferred**:
 A table rider left to another active module that already covers the spell.
+
+**Indicator**:
+The mark on an automated item's sheet and chat card, and the panel it opens: what is automated, from
+where, what was deferred, and the GM's per-key switches.

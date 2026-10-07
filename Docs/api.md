@@ -177,6 +177,11 @@ is dropped when the spell is already covered by another active automation module
   (PF2e Automations, read live from its `rules/config.json`; PF2e Assistant, from the list this module ships);
   `api.vanilla.deferredTo(slug)` → that module's id, `"setting:off"` when the setting has table riders off,
   or null when a table rider for that spell applies.
+- `api.vanilla.describe(item)` → the indicator's rows, `[{ key, label, lines, source, applies, switchable }]`;
+  `api.vanilla.openPanel(item)` opens the panel. Every item this module automates, from any source, carries
+  a mark on its sheet header and its chat card that opens it. The GM's switches only touch what this module
+  owns — a table or registered key (switching it off writes `false` under this module's id) or such a
+  `false` (switching it back on removes it) — never an item's own authored config.
 
 ## Hooks this module fires
 
