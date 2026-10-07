@@ -21,6 +21,7 @@ import { AreaTargeting } from "./targeting/index.mjs";
 import { Lingering } from "./targeting/lingering.mjs";
 import { Overlap } from "./targeting/overlap.mjs";
 import { CastShape } from "./targeting/cast-shape.mjs";
+import { MoveCaster } from "./targeting/move-caster.mjs";
 import { Coexistence } from "./vanilla/coexistence.mjs";
 import { Indicator } from "./vanilla/indicator.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
@@ -43,6 +44,7 @@ export const INIT = [
     ["the vanilla riders setting", () => Coexistence.registerSettings()],
     ["the automation indicator", () => Indicator.registerHooks()],
     ["the shape a cast chose, on its card", () => CastShape.registerHooks()],
+    ["a spell that moves its caster", () => MoveCaster.register()],
 ];
 
 /**

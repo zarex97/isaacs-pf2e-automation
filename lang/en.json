@@ -199,7 +199,9 @@
             "Drag": "{name} is dragged {feet} feet closer.",
             "Throw": "{name} is thrown {feet} feet away.",
             "DragShort": "{name} is pulled {feet} feet closer — the {travel}-foot drag ran out of map.",
-            "ThrowShort": "{name} is pulled {feet} feet away — the {travel}-foot throw ran out of map."
+            "ThrowShort": "{name} is pulled {feet} feet away — the {travel}-foot throw ran out of map.",
+            "Occupied": "that space is occupied by {names}",
+            "Unseen": "you can't see that space"
         },
         "Strikes": {
             "MissingOne": "{item} could not find {missing} on the sheet, so that Strike was not made.",
@@ -322,6 +324,9 @@
                 "ObjectFailure": "The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.",
                 "ObjectCriticalFailure": "The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.",
                 "BalanceFailure": "Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going."
+            },
+            "translocate": {
+                "Alone": "If this would bring another creature along — even inside an extradimensional container — the spell is lost."
             }
         }
     }

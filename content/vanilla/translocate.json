@@ -1,0 +1,29 @@
+{
+    "areaTargeting": {
+        "area": {
+            "type": "square",
+            "value": 5
+        },
+        "range": 120,
+        "moveCaster": {
+            "seeBelowRank": 5
+        },
+        "heightening": {
+            "atRank": {
+                "5": {
+                    "range": 5160
+                }
+            }
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.translocate.Alone"
+            }
+        }
+    ]
+}
