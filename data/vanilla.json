@@ -758,6 +758,144 @@
                 "replacesPrevious": true
             }
         },
+        "sleep": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sleep.Drowsy",
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": "perception",
+                                "type": "status",
+                                "value": -1
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "predicate": [
+                        {
+                            "lt": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "unconscious",
+                        "withoutGrants": [
+                            "prone"
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "lt": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "unconscious",
+                        "withoutGrants": [
+                            "prone"
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "unconscious"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "unconscious"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.sleep.Heightened"
+                    }
+                }
+            ]
+        },
         "slow": {
             "areaTargeting": {
                 "maxTargets": 1,

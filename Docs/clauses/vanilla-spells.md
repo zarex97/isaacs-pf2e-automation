@@ -61,7 +61,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-15 | `dizzying-colors` | 1 | Several conditions, several durations | "Stunned 1, Blinded for 1 round, and dazzled for 1 minute" | In a 15-ft cone, each outcome's set of conditions with its own duration | `content/vanilla/dizzying-colors.json` (pf2e's 15-ft cone `anchor: "caster"`, all; six condition riders: success dazzled 1 round; failure stunned 1, blinded 1 round, dazzled 1 minute; critical failure stunned for 1 round, blinded 1 minute) | ✅ | The cone pinned to Aries' east edge caught the Ghoul, Capricorn and Leo. Will saves from the card: **Ghoul — critical failure** → *Stunned* held by a 1-round effect (expires at turn start) and *Blinded* for 1 minute. **Leo — critical failure, improved to failure by pf2e's incapacitation** → *Stunned 1*, *Blinded* 1 round, *Dazzled* 1 minute (pf2e shows dazzled under blinded). **Capricorn — failure, improved to success by incapacitation** → *Dazzled* 1 round. Each condition carried its own duration. Representation: pf2e has no "stunned for 1 round"; it is a stunned condition held by a 1-round effect. |
-| VS-16 | `sleep` | 1 | Incapacitation, an exception | "doesn't fall Prone or release what it's holding" | A failure is unconscious *without* prone; it wakes after 1 minute | | ☐ | |
+| VS-16 | `sleep` | 1 | Incapacitation, an exception | "doesn't fall Prone or release what it's holding" | A failure is unconscious *without* prone; it wakes after 1 minute | `content/vanilla/sleep.json` (pf2e's 5-ft burst, all; success −1 status Perception 1 round; below rank 4 unconscious 1 minute / 1 hour `withoutGrants: [prone]`; from rank 4 unconscious 1 round / 1 minute with prone, and a GM note); `dropGrants`, and an immunity check on condition riders | ✅ | A 5-ft burst over two squares. **Rank 1:** *ZZ Victim* (level 1) critically failed → *Unconscious* for 1 hour with blinded and off-guard and **no prone**; the Ghoul (undead) critically failed → "Ghoul Soldier is immune to unconscious", nothing applied; Capricorn (level 20), failure improved to success by incapacitation → *Drowsy* (`perception −1` status) for 1 round. **Rank 4:** the Victim critically failed → *Unconscious* for 1 minute **with prone**, and the note that it can't wake by Perception and sleeps normally after. Found on the way: pf2e silently ignores a grant to an immune creature, which left an empty "Unconscious" effect looking like it had worked — condition riders now say the creature is immune. Not automated: waking from a Perception check; dropping held items is pf2e's own (it drops nothing). |
 | VS-17 | `blindness` | 3 | Permanent, then immune | "Blinded permanently" … "temporarily immune for 1 minute" | A critical failure blinds with no expiry; any outcome makes the target immune for 1 minute | | ☐ | |
 | VS-18 | `paralyze` | 3 | A save each turn shortens it | "a new Will save to reduce the remaining duration by 1 round" | Paralyzed 4 rounds; at the end of each of its turns a Will save takes a round off, or ends it on a critical success | | ☐ | |
 | VS-19 | `enfeeble` | 1 | Ends on the caster's turn | "Enfeebled 1 until the start of your next turn" | A success's enfeebled ends at the start of the *caster's* next turn, not the target's | | ☐ | |
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 25 |
-| ✅ | 15 |
+| ☐ not yet driven | 24 |
+| ✅ | 16 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -33,6 +33,7 @@ export const DOC = path.join(ROOT, "Docs", "vanilla.md");
 /** `Docs/vanilla.md`: every spell the table covers and what it does, generated beside the bundle. */
 export function docs(built, index, en) {
     const words = (key) => key.split(".").slice(1).reduce((node, part) => node?.[part], en.ISAACS_AUTOMATION) ?? key;
+    const rankFromRider = (predicate) => (predicate ?? []).map((p) => (p?.gte?.[0] === "item:rank" ? `from rank ${p.gte[1]}` : p?.lt?.[0] === "item:rank" ? `below rank ${p.lt[1]}` : null)).filter(Boolean);
     const outcome = { criticalSuccess: "crit. success", success: "success", failure: "failure", criticalFailure: "crit. failure" };
     const rider = (r) => {
         const a = r.apply ?? {};
@@ -43,7 +44,7 @@ export function docs(built, index, en) {
             : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
-        const lasting = [r.duration ? `${r.duration.value} ${r.duration.unit}` : null, a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, r.self ? "on you" : null].filter(Boolean);
+        const lasting = [r.duration ? `${r.duration.value} ${r.duration.unit}` : null, a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, a.withoutGrants?.length ? `without ${a.withoutGrants.join(", ")}` : null, ...rankFromRider(r.predicate), r.self ? "on you" : null].filter(Boolean);
         const lastingText = lasting.length ? ` (${lasting.join(", ")})` : "";
         return `${when ? `${when}: ` : ""}${what}${lastingText}`;
     };
@@ -192,6 +193,7 @@ export function problemsWith(slug, entry, ctx) {
         const apply = rider.apply ?? {};
         if (!ctx.applyTypes.includes(apply.type)) at(`${where}.apply`, `"${apply.type}" is not a built-in apply type`);
         if (apply.type === "condition" && !ctx.index.conditions[apply.slug]) at(`${where}.apply`, `no pf2e condition "${apply.slug}"`);
+        for (const slug of apply.withoutGrants ?? []) if (!ctx.index.conditions[slug]) at(`${where}.apply.withoutGrants`, `no pf2e condition "${slug}"`);
         const inline = apply.type === "effect" && !apply.uuid && Array.isArray(apply.rules);
         if (inline && (!apply.label || apply.rules.some((r) => typeof r?.key !== "string"))) at(`${where}.apply`, "an effect written out names a label and rules that each have a key");
         if (apply.type === "effect" && !inline && !Object.values(ctx.index.effects).includes(apply.uuid)) at(`${where}.apply`, `no pf2e spell effect ${apply.uuid}`);

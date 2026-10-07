@@ -1468,6 +1468,13 @@ async function applyCondition(rider, context) {
         return;
     }
 
+    // A ghoul does not fall asleep. pf2e quietly ignores a grant to an immune creature, which left an
+    // empty "Sleep: Unconscious" effect on the sheet looking as though it had worked; say it instead.
+    if (context.actor?.isImmuneTo?.(slug)) {
+        context.notes.push(t("Condition.Immune", { actor: context.actor.name, slug }));
+        return;
+    }
+
     if (!rider.duration) {
         // "cumulative to enfeebled 4" — the cap belongs on the increment, not on a predicate that would
         // have to be rewritten every time the ceiling moves. `max` is also the *declaration* that this
@@ -1494,6 +1501,7 @@ async function applyCondition(rider, context) {
         const existing = context.actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
         if (!existing) {
             await increaseRecorded(context.actor, slug, value ? { value } : {}, context);
+            await dropGrants(context.actor, slug, rider.apply.withoutGrants);
             await grantEscape(rider, context, { conditions: [slug] });
             return;
         }
@@ -1553,7 +1561,25 @@ async function applyCondition(rider, context) {
         [effectSource(label, [grant], rider, context)],
     );
     record(context, created);
+    await dropGrants(context.actor, slug, rider.apply.withoutGrants);
     await grantEscape(rider, context, { conditions: [slug], effectId: created?.id ?? null });
+}
+
+/**
+ * A condition without what it usually brings. *Sleep*: "A creature that falls Unconscious from this spell
+ * doesn't fall Prone" — and pf2e's Unconscious grants Prone, marked so it cannot be deleted while
+ * Unconscious holds it. The grant is unlinked from both sides first, then the granted condition removed.
+ */
+async function dropGrants(actor, slug, slugs) {
+    if (!Array.isArray(slugs) || slugs.length === 0) return;
+    const held = actor?.itemTypes?.condition?.filter((c) => c.slug === slug).at(-1);
+    for (const [key, grant] of Object.entries(held?.flags?.pf2e?.itemGrants ?? {})) {
+        const granted = actor.items.get(grant.id);
+        if (!granted || !slugs.includes(granted.slug)) continue;
+        await held.update({ [`flags.pf2e.itemGrants.-=${key}`]: null });
+        await granted.update({ "flags.pf2e.-=grantedBy": null });
+        await granted.delete();
+    }
 }
 
 /**
