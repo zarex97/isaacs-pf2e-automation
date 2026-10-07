@@ -599,8 +599,10 @@ function areaLeftBy(originActor, item) {
 export function preselected(rules, preselect, outcome) {
     const degree = { criticalSuccess: "critical-success", success: "success", failure: "failure", criticalFailure: "critical-failure" }[outcome] ?? null;
     return (rules ?? []).map((rule) => {
-        if (rule?.key !== "ChoiceSet" || !rule.flag || !(rule.flag in preselect)) return rule;
-        const answer = preselect[rule.flag] === "$outcome" ? degree : preselect[rule.flag];
+        // Named by its `flag`, or — pf2e's *Tangle Vine* has none — by its `rollOption`.
+        const key = [rule?.flag, rule?.rollOption].find((k) => k && k in preselect);
+        if (rule?.key !== "ChoiceSet" || !key) return rule;
+        const answer = preselect[key] === "$outcome" ? degree : preselect[key];
         return answer === null ? rule : { ...rule, selection: answer };
     });
 }

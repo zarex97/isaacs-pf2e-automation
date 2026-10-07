@@ -1,0 +1,99 @@
+{
+    "riders": [
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "success",
+                "criticalSuccess"
+            ],
+            "predicate": [
+                {
+                    "lt": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.TwtUIEyenrtAbeiX",
+                "replace": true,
+                "preselect": {
+                    "tangle-vine": "$outcome"
+                },
+                "escapeDc": "spell",
+                "escapeAll": true
+            }
+        },
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "success",
+                "criticalSuccess"
+            ],
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        2
+                    ]
+                },
+                {
+                    "lt": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 2,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.TwtUIEyenrtAbeiX",
+                "replace": true,
+                "preselect": {
+                    "tangle-vine": "$outcome"
+                },
+                "escapeDc": "spell",
+                "escapeAll": true
+            }
+        },
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "success",
+                "criticalSuccess"
+            ],
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.TwtUIEyenrtAbeiX",
+                "replace": true,
+                "preselect": {
+                    "tangle-vine": "$outcome"
+                },
+                "escapeDc": "spell",
+                "escapeAll": true
+            }
+        }
+    ]
+}
