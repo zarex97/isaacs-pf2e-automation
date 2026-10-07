@@ -164,6 +164,10 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "TempHp": {
+            "Label": "temporary Hit Points",
+            "Gained": "{actor} gains {value} temporary Hit Points."
+        },
         "Transfer": {
             "Moved": "{to} regains {moved} Hit Points; {from} loses {moved}.",
             "Ended": "{from} is at 0 Hit Points: the link ends."
@@ -409,6 +413,9 @@
             },
             "malediction": {
                 "Area": "Malediction"
+            },
+            "vampiric-feast": {
+                "Feast": "temporary Hit Points"
             },
             "spirit-link": {
                 "Link": "spirit link"

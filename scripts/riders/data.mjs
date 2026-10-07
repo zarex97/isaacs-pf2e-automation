@@ -181,6 +181,13 @@ function scopedAway(source, item, event, actor) {
  * Returns `[{ item, rider, index }]` — the index is needed later to name one rider back to the GM without
  * sending the rider itself.
  */
+/** Is `item` this sheet item, or a cast of it (a heightened copy keeps the id; a variant names its original)? */
+export function isSameItem(source, item) {
+    if (!source || !item) return false;
+    const id = item.original?.id ?? item.id;
+    return source === item || (source.id === id && source.actor === (item.original ?? item).actor);
+}
+
 export function collectRiders({ event, item, actor }) {
     const found = [];
     const seen = new Set();
@@ -195,7 +202,11 @@ export function collectRiders({ event, item, actor }) {
 
     for (const source of sources) {
         ridersOn(source).forEach((rider, index) => {
-            if (eventOf(rider) === event) found.push({ item: source, rider, index });
+            if (eventOf(rider) !== event) return;
+            // `ownItem`: only what this item itself did — *Vampiric Feast*'s temporary Hit Points come from its
+            // own void damage, not from every blow its caster lands while the spell sits on the sheet.
+            if (rider.ownItem && !isSameItem(source, item)) return;
+            found.push({ item: source, rider, index });
         });
     }
     return found;
