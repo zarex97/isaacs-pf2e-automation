@@ -132,7 +132,7 @@ export const Lingering = {
             const seconds = walled.duration ? (Number(walled.duration.value) || 1) * (UNIT_SECONDS[walled.duration.unit ?? "minutes"] ?? 60) : null;
             return Barrier.build(barrier, config, placed, originToken, {
                 expiresAt: seconds ? game.time.worldTime + seconds : null,
-                makeRegion: (shapes, castId) => Lingering.createOne(ground, config, { shapes, color: placed[0].color, toObject: () => ({ shapes }) }, originToken, { castId, first: false }),
+                makeRegion: (shapes, castId) => Lingering.createOne(ground, config, { shapes, color: placed[0].color, toObject: () => ({ shapes }) }, originToken, { castId, first: false, section: true }),
             });
         }
 
@@ -186,7 +186,7 @@ export const Lingering = {
         return Lingering.create({ item, steps, area: { type: areaType }, affected }, regions, originToken);
     },
 
-    async createOne(spec, config, region, originToken, { castId = null, first = true } = {}) {
+    async createOne(spec, config, region, originToken, { castId = null, first = true, section = false } = {}) {
         const seconds = (Number(spec.duration?.value) || 1) * (UNIT_SECONDS[spec.duration?.unit ?? "minutes"] ?? 60);
         const behaviors = [];
 
@@ -265,6 +265,8 @@ export const Lingering = {
                             followsCaster: spec.followsCaster === true,
                             drifts: spec.drifts ?? null,
                             castId,
+                            // A section of a wall of squares: the wall is one wall to a move (`firstForMovement`).
+                            section,
                             repels: spec.repels ?? null,
                             repelled: {},
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
@@ -857,7 +859,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
         // as "moved in" and then "moved within", and both used to roll Athletics.
         // A wall of squares is one wall however many sections a move crosses: "for every move action a creature uses
         // to enter at least one of the wall's spaces".
-        if (!firstForMovement(payload.castId ?? region?.uuid, event)) {
+        if (!firstForMovement(payload.section ? payload.castId : region?.uuid, event)) {
             if (event.name === CONST.REGION_EVENTS.TOKEN_MOVE_OUT) await Inside.leave(region, event.data.token);
             return;
         }
