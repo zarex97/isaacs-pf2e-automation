@@ -2452,12 +2452,18 @@ function effectSource(label, rules, rider, context) {
             traits: { value: [], rarity: "common" },
             context: contextData(context),
             rules,
+            // "Sustained" — it lasts while its caster keeps Sustaining it (`sustain.mjs`).
+            ...(rider.apply?.sustained ? { duration: { ...durationData(rider.duration), sustained: true } } : {}),
             // A slug a predicate can name — *Blindness*'s "temporarily immune" is read back as
             // `target:effect:blindness-immunity` the next time it is cast.
             ...(rider.apply?.slug ? { slug: rider.apply.slug } : {}),
         },
         flags: riderFlags(rider, context),
     };
+    if (rider.apply?.sustained && context.originActor) {
+        const spell = (item?.original ?? item)?.uuid;
+        if (spell) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sustainedBy: { origin: context.originActor.uuid, spell } } });
+    }
     onTargetsTurn(source, rider, context);
     // Riders the effect takes with it — *Paralyze*'s "at the end of each of its turns, a new Will save".
     if (Array.isArray(rider.apply?.carries)) {

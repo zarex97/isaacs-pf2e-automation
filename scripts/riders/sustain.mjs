@@ -33,7 +33,7 @@ export function roundFor(actor, combats = game.combats) {
 }
 
 /** The granted action, as a plain source object. */
-export function sustainActionSource({ item, effectId = null, regionUuid = null, step = 1, castRound = null }) {
+export function sustainActionSource({ item, effectId = null, regionUuid = null, spellUuid = null, step = 1, castRound = null }) {
     const name = item?.name ?? t("Rider.Name");
     return {
         type: "action",
@@ -42,16 +42,38 @@ export function sustainActionSource({ item, effectId = null, regionUuid = null, 
         system: {
             actionType: { value: "action" },
             actions: { value: 1 },
-            description: { value: `<p>${t("Sustain.Description", { name })}</p>` },
+            description: { value: `<p>${t(spellUuid ? "Sustain.KeepDescription" : "Sustain.Description", { name })}</p>` },
             traits: { value: ["concentrate"], rarity: "common" },
         },
         flags: {
             [LIB_ID]: {
-                [FLAG]: { effectId, regionUuid, step, castRound, lastRound: null },
+                [FLAG]: { effectId, regionUuid, spellUuid, step, castRound, lastRound: null },
                 riders: [{ apply: { type: "sustain" }, event: "action-used", self: true }],
             },
         },
     };
+}
+
+/** Does a sustained spell end at the end of this turn? Not in its casting round, not out of combat, not if Sustained. */
+export function lapses({ castRound = null, lastRound = null } = {}, round = null) {
+    if (round === null || round === undefined) return false;
+    if (castRound !== null && round <= castRound) return false;
+    return lastRound !== round;
+}
+
+/** An item that a sustained spell of this caster left. */
+function isSustainedBy(item, caster, spellUuid) {
+    const by = item.flags?.[LIB_ID]?.sustainedBy;
+    return by?.spell === spellUuid && by?.origin === caster.uuid;
+}
+
+/** Every actor on the caster's scenes holding something the spell left. */
+function heldBy(caster, spellUuid) {
+    const actors = new Set();
+    for (const scene of game.scenes) for (const token of scene.tokens) {
+        if (token.actor?.items?.some((i) => isSustainedBy(i, caster, spellUuid))) actors.add(token.actor);
+    }
+    return [...actors];
 }
 
 export const Sustain = {
@@ -80,6 +102,43 @@ export const Sustain = {
         return created ?? null;
     },
 
+    /**
+     * A spell that lasts only while it is Sustained — *Laughing Fit*. Its effects on its targets are marked
+     * `sustainedBy`, and the caster holds one *Sustain* action for the spell however many it reached.
+     */
+    async grantForSpell(actor, spell) {
+        const spellUuid = (spell?.original ?? spell)?.uuid;
+        if (!actor || !spellUuid) return null;
+        if (actor.items.some((i) => i.flags?.[LIB_ID]?.[FLAG]?.spellUuid === spellUuid)) return null;
+        const [created] = await actor.createEmbeddedDocuments("Item", [
+            sustainActionSource({ item: spell, spellUuid, castRound: roundFor(actor) }),
+        ]);
+        return created ?? null;
+    },
+
+    /**
+     * The caster's turn is over: a sustained spell they did not Sustain this turn ends — every effect it
+     * left, on everyone. Not in the round it was cast, and not out of combat. Active GM only.
+     */
+    async lapse(actor) {
+        if (game.users.activeGM?.id !== game.user.id || !actor) return;
+        const round = roundFor(actor);
+        for (const action of actor.items.filter((i) => i.flags?.[LIB_ID]?.[FLAG]?.spellUuid)) {
+            const spec = action.flags[LIB_ID][FLAG];
+            if (!lapses(spec, round)) continue;
+            const ended = [];
+            for (const holder of heldBy(actor, spec.spellUuid)) {
+                const ids = holder.items.filter((i) => isSustainedBy(i, actor, spec.spellUuid)).map((i) => i.id);
+                if (ids.length > 0) { await holder.deleteEmbeddedDocuments("Item", ids); ended.push(holder.name); }
+            }
+            if (actor.items.has(action.id)) await action.delete();
+            await ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor }),
+                content: `<p>${t("Sustain.Lapsed", { name: action.name.replace(t("Sustain.Name", { name: "" }).trim(), "").trim(), actor: actor.name })}</p>`,
+            });
+        }
+    },
+
     /** `(region, spec, context) → label`: what Sustaining an area does. Set by `lingering.mjs`. */
     onRegion: null,
 
@@ -89,6 +148,14 @@ export const Sustain = {
         const spec = action?.flags?.[LIB_ID]?.[FLAG];
         const actor = context.actor;
         if (!spec || !actor) return;
+        // A sustained spell: Sustaining it is the whole of it — keep it going this round.
+        if (spec.spellUuid) {
+            const round = roundFor(actor);
+            const say = (key) => ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t(key, { name: action.name })}</p>` });
+            if (!canSustain(spec, round)) return say(spec.castRound !== null && round <= spec.castRound ? "Sustain.NotYet" : "Sustain.Already");
+            await action.setFlag(LIB_ID, FLAG, { ...spec, lastRound: round });
+            return say("Sustain.Kept");
+        }
         const effect = spec.effectId ? actor.items.get(spec.effectId) : null;
         const region = spec.regionUuid ? await fromUuid(spec.regionUuid) : null;
         const say = (key, data) => ChatMessage.create({
@@ -124,6 +191,14 @@ export const Sustain = {
             const orphans = actor.items.filter((i) => i.type === "action" && i.flags?.[LIB_ID]?.[FLAG]?.effectId === item.id).map((i) => i.id);
             if (orphans.length > 0) await actor.deleteEmbeddedDocuments("Item", orphans);
         });
+        // An effect from a sustained spell, wherever it lands, puts the spell's Sustain on its caster.
+        Hooks.on("createItem", (item, _options, userId) => {
+            if (userId !== game.user.id) return;
+            const by = item.flags?.[LIB_ID]?.sustainedBy;
+            if (!by?.origin || !by?.spell) return;
+            (async () => Sustain.grantForSpell(await fromUuid(by.origin), await fromUuid(by.spell)))().catch(() => {});
+        });
+        Hooks.on("pf2e.endTurn", (combatant) => Sustain.lapse(combatant?.actor));
         // An area gone — dismissed, or its minute up — takes its Sustain action off its caster.
         Hooks.on("deleteRegion", async (region) => {
             if (game.users.activeGM?.id !== game.user.id) return;

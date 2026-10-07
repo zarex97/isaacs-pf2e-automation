@@ -177,7 +177,10 @@
             "Done": "{name} is Sustained — now {now}",
             "NotYet": "{name} can't be Sustained in the round it was cast.",
             "Already": "{name} has already been Sustained this round.",
-            "Gone": "{name} has ended; there is nothing to Sustain."
+            "Gone": "{name} has ended; there is nothing to Sustain.",
+            "Kept": "{name}: Sustained this round.",
+            "KeepDescription": "Sustain {name}: it lasts while you do. Once per round, and not in the round it was cast; a turn that ends without it ends the spell.",
+            "Lapsed": "{actor} did not Sustain {name}; it ends."
         },
         "Relay": {
             "ThisAbility": "This ability",
@@ -356,6 +359,10 @@
                 "Shroud": "Darkness",
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
+            },
+            "laughing-fit": {
+                "NoReactions": "laughing: can't use reactions",
+                "Helpless": "helpless with laughter: can't use actions or reactions"
             },
             "petrify": {
                 "Spell": "petrifying",
