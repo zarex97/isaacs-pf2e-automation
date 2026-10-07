@@ -186,6 +186,13 @@
             "ImageCrit": "An image of {actor} is destroyed, and the critical hit becomes a hit on them. {left} left.",
             "ImageMiss": "The attack misses {actor} but destroys an image, with no other effect. {left} left."
         },
+        "Deters": {
+            "Barred": "{attacker} can't attack {target} under {ward}: the action is wasted.",
+            "Wasted": "{attacker} fails the save against {ward}: the attack on {target} is wasted, and so is any other this turn.",
+            "BarredForGood": "{attacker} critically fails against {ward}: the action is wasted, and {attacker} can't attack {target} while it lasts.",
+            "Allowed": "{attacker} succeeds against {ward}: attacks on {target} go ahead this turn.",
+            "Ends": "{attacker} critically succeeds against {ward}: it ends."
+        },
         "Hostile": {
             "Ended": "{actor} acted with hostility: {what} ends."
         },
@@ -416,6 +423,9 @@
             },
             "vampiric-feast": {
                 "Feast": "temporary Hit Points"
+            },
+            "sanctuary": {
+                "Ward": "sanctuary"
             },
             "spirit-link": {
                 "Link": "spirit link"

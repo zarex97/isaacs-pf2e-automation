@@ -13,6 +13,7 @@ shape only in a major version. A change starts here, then in `scripts/api.mjs`.
 | 1.0.0 | Everything below unless marked otherwise |
 | 1.1.0 | The rider engine, areas left behind, the `counteracted` hook — marked where they appear |
 | 1.2.0 | The vanilla table and `api.vanilla` — marked where they appear |
+| 1.3.0 | `checkPipeline.gate` — marked where it appears |
 
 ## Pipelines
 
@@ -24,7 +25,7 @@ stages by ascending `priority` (leave gaps), refuses a second stage with the sam
 | --- | --- | --- | --- |
 | `castPipeline` | `SpellcastingEntryPF2e#cast`, an action's `toMessage` | `before(name, priority, fn)` · `after(name, priority, fn)` | `before(spell, options)` → **truthy** to continue; anything falsy refuses (a closed dialog's `null` refuses). `options` reaches the system, so a stage may leave something on it. `after(cast, spell)` once the spell reached the table: `cast` is what was posted (a chosen variant), `spell` what the caster owns. A throw stops the cast |
 | `damageBus` | `ActorPF2e#applyDamage` | `before(name, priority, fn)` · `after(name, priority, fn)` | `before(actor, params)` → may return an **undo**, called in a `finally`. `after(actor, params, hpBefore)`. Isolated: a throw is logged and the rest run |
-| `checkPipeline` | `game.pf2e.Check.roll` | `before(name, priority, fn)` | `(check, context)` → a new context, or mutate the one given. Isolated |
+| `checkPipeline` | `game.pf2e.Check.roll` | `before(name, priority, fn)` · `gate(name, priority, fn)` *(1.3.0)* | `before(check, context)` → a new context, or mutate the one given. Isolated. `gate(check, context)`, awaited before every stage → falsy refuses the roll (it returns `null`, as a closed dialog does); a throw counts as no objection. `gates()` lists them |
 | `rerollPipeline` | `game.pf2e.Check.rerollFromMessage` | `before(name, priority, fn)` | `(message, options)` → truthy to allow; falsy refuses (say why yourself). A throw counts as no objection |
 | `actorPreparation` | character `prepareDerivedData` | `after(name, priority, fn)` | `(actor)`, synchronous, after the system's own preparation. Isolated |
 | `detectionModes` | `TokenDocument#_prepareDetectionModes` | `after(name, priority, fn)` | `(tokenDocument)`, synchronous; edit `detectionModes` in place. Isolated |

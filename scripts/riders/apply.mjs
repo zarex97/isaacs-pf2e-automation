@@ -2573,6 +2573,12 @@ function effectSource(label, rules, rider, context) {
         const linked = others[0] ?? null;
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { linkedTo: linked?.uuid ?? null } });
     }
+    // *Sanctuary*: "Creatures attempting to attack the target must attempt a Will save each time" — the save and
+    // the caster's DC, kept on the ward for `deters.mjs` to ask.
+    if (rider.apply?.deters) {
+        const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
+    }
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;

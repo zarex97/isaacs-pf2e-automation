@@ -18,9 +18,23 @@ import { wrap } from "./wrap.mjs";
  *
  * Stages run in ascending `priority` and are isolated: a stage that throws is logged by name and the check
  * is still rolled. Whatever a feature wanted from a check, the roll matters more.
+ *
+ * A **gate** runs before every stage, and is awaited: `(check, context) => boolean`, falsy to refuse the roll,
+ * which then returns `null` the way a closed roll dialog does. *Sanctuary*'s "Creatures attempting to attack
+ * the target must attempt a Will save" is the first: the attacker's save is rolled before the attack is. A
+ * gate that throws is logged and counts as no objection.
  */
 
 const stages = [];
+const gates = [];
+
+function add(list, kind, name, priority, fn) {
+    if (list.some((stage) => stage.name === name)) {
+        throw new Error(`Isaac's PF2e Automation | the check pipeline already has a ${kind} called "${name}".`);
+    }
+    list.push({ name, priority, fn });
+    list.sort((a, b) => a.priority - b.priority);
+}
 
 export const CheckPipeline = {
     /**
@@ -29,11 +43,16 @@ export const CheckPipeline = {
      * @param {(check: object, context: object) => object | void} fn
      */
     before(name, priority, fn) {
-        if (stages.some((stage) => stage.name === name)) {
-            throw new Error(`Isaac's PF2e Automation | the check pipeline already has a stage called "${name}".`);
-        }
-        stages.push({ name, priority, fn });
-        stages.sort((a, b) => a.priority - b.priority);
+        add(stages, "stage", name, priority, fn);
+    },
+
+    /**
+     * @param {string} name
+     * @param {number} priority   Ascending.
+     * @param {(check: object, context: object) => Promise<boolean> | boolean} fn   Falsy refuses the roll.
+     */
+    gate(name, priority, fn) {
+        add(gates, "gate", name, priority, fn);
     },
 
     /** The stages in the order they run, for the console and the tests. */
@@ -41,10 +60,22 @@ export const CheckPipeline = {
         return stages.map(({ name, priority }) => ({ name, priority }));
     },
 
+    /** The gates in the order they run. */
+    gates() {
+        return gates.map(({ name, priority }) => ({ name, priority }));
+    },
+
     install() {
         wrap(
             "game.pf2e.Check.roll",
             async function (wrapped, check, context = {}, ...rest) {
+                for (const gate of gates) {
+                    try {
+                        if (!(await gate.fn(check, context))) return null;
+                    } catch (error) {
+                        console.error(`Isaac's PF2e Automation | ${gate.name} failed before a check`, error);
+                    }
+                }
                 for (const stage of stages) {
                     try {
                         const next = stage.fn(check, context);
