@@ -169,6 +169,11 @@
             "FlewFlavor": "{name} — its flight",
             "Stayed": "left where it is"
         },
+        "Dismiss": {
+            "Name": "Dismiss {name}",
+            "Description": "Dismiss {name}: the area it left ends.",
+            "Done": "{actor} dismisses {name}."
+        },
         "TempHp": {
             "Label": "temporary Hit Points",
             "Gained": "{actor} gains {value} temporary Hit Points."
@@ -432,6 +437,10 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "toxic-cloud": {
+                "Cloud": "Toxic Cloud",
+                "Inside": "Concealed in the toxic cloud, and everything outside it concealed from you."
             },
             "floating-flame": {
                 "Flame": "Floating Flame"

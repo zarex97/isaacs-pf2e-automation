@@ -11,6 +11,7 @@ import { Banish, durationSeconds } from "./banish.mjs";
 import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
+import { Dismiss } from "./dismiss.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -440,6 +441,8 @@ async function applyOne(rider, context) {
             return applyTransfer(rider, context);
         case "temp-hp":
             return applyTempHp(rider, context);
+        case "dismiss":
+            return Dismiss.apply(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {

@@ -44,7 +44,7 @@ export function docs(built, index, en) {
             : a.type === "persistent-damage" ? `${a.formula}${a.perStep ? ` (+${a.perStep} per ${a.perStepInterval > 1 ? `${a.perStepInterval} ranks` : "rank"})` : ""} persistent ${a.damageType ?? ""}${a.endsWith ? `, ends with ${a.endsWith.join("/")}` : ""}`
             : a.type === "heal" ? `heals ${a.formula ?? a.value}${a.perStep ? ` (+${a.perStep} per rank)` : ""}`
             : a.type === "banish" ? (r.duration?.unit === "unlimited" ? "banished for good" : "banished")
-            : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
+            : a.type === "damage" ? `${typeof a.formula === "object" ? `${a.formula.base}${a.formula.perStep ? ` (+${a.formula.perStep} per rank)` : ""}` : a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
         const lasting = [r.duration ? (r.duration.of === "target" ? "until its next turn" : r.duration.unit === "unlimited" ? "until it ends" : `${r.duration.value} ${r.duration.unit}`) : (a.type === "condition" && !a.value ? "no end" : null), a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustained ? "while Sustained" : null, a.endsOnHostile ? "ends on a hostile action" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, a.carries?.length ? `carries ${a.carries.map((c) => `${c.event ?? ""} ${c.apply?.type === "save" ? `${c.apply.statistic} save` : c.apply?.type}`.trim()).join(", ")}` : null, a.withoutGrants?.length ? `without ${a.withoutGrants.join(", ")}` : null, ...rankFromRider(r.predicate), r.self ? "on you" : null].filter(Boolean);
@@ -78,6 +78,8 @@ export function docs(built, index, en) {
             l.replacesPrevious ? "ends your previous one" : null,
             l.until === "originTurnStart" ? "until your next turn" : null,
             l.followsCaster ? "moves with you" : null,
+            l.drifts ? `drifts ${l.drifts.feet} ft away from you each round` : null,
+            l.dismiss ? "Dismiss" : null,
             l.sustain?.move ? `Sustain: moves ${l.sustain.move} ft, ${l.sustain.damage?.formula ?? ""} ${l.sustain.damage?.type ?? ""} to those it passes (basic ${l.sustain.damage?.save ?? "reflex"}), once a round`.replace(/\s+/g, " ") : l.sustain ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
@@ -167,6 +169,8 @@ export function problemsWith(slug, entry, ctx) {
             if (spec?.replacesPrevious !== undefined && spec.replacesPrevious !== true) at(`${where} lingering.replacesPrevious`.trim(), "true or absent");
             if (spec?.until !== undefined && spec.until !== "originTurnStart") at(`${where} lingering.until`.trim(), "originTurnStart or absent");
             if (spec?.followsCaster !== undefined && spec.followsCaster !== true) at(`${where} lingering.followsCaster`.trim(), "true or absent");
+            if (spec?.drifts !== undefined && !(Number(spec.drifts?.feet) > 0)) at(`${where} lingering.drifts`.trim(), "{ feet } it moves each round");
+            if (spec?.dismiss !== undefined && spec.dismiss !== true) at(`${where} lingering.dismiss`.trim(), "true or absent");
             if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0)) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
             if (spec?.sustain?.move && spec.sustain.damage && !spec.sustain.damage.formula) at(`${where} lingering.sustain.damage`.trim(), "a formula");
             if (spec?.targetPredicate !== undefined && !Array.isArray(spec.targetPredicate)) at(`${where} lingering.targetPredicate`.trim(), "a predicate list");

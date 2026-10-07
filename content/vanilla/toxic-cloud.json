@@ -1,0 +1,61 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.toxic-cloud.Cloud",
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "drifts": {
+            "feet": 10
+        },
+        "dismiss": true,
+        "events": [
+            "tokenTurnStart"
+        ],
+        "targetPredicate": [
+            {
+                "not": "target:trait:undead"
+            },
+            {
+                "not": "target:trait:construct"
+            }
+        ],
+        "inside": {
+            "conditions": [
+                "concealed"
+            ],
+            "rules": [
+                {
+                    "key": "EphemeralEffect",
+                    "affects": "target",
+                    "selectors": [
+                        "attack-roll",
+                        "spell-attack-roll"
+                    ],
+                    "uuid": "Compendium.pf2e.conditionitems.Item.DmAIPqOBomZ7H95W"
+                }
+            ],
+            "description": "ISAACS_AUTOMATION.Vanilla.toxic-cloud.Inside"
+        },
+        "save": {
+            "statistic": "fortitude",
+            "basic": true,
+            "riders": [
+                {
+                    "apply": {
+                        "type": "damage",
+                        "formula": {
+                            "base": "6d8",
+                            "perStep": "1d8"
+                        },
+                        "damageType": "poison"
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -9,6 +9,7 @@ import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
 import { Deters } from "./riders/deters.mjs";
+import { Dismiss } from "./riders/dismiss.mjs";
 import { FastHealing } from "./lib/fast-healing.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { Banish } from "./riders/banish.mjs";
@@ -71,6 +72,7 @@ export const RIDER_INIT = [
     ["what ends with a condition", () => registerEndsWith()],
     ["what a hostile action ends", () => registerHostileEnd()],
     ["a ward its attackers save against", () => Deters.register()],
+    ["dismissing an area", () => Dismiss.registerHooks()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],

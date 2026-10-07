@@ -111,11 +111,11 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-42a | "This functions as Mist" | Inside the 20-ft burst, creatures are concealed as with *Mist* (VS-07) | | ☐ | |
-| VS-42b | "the area moves 10 feet away from you each round" | Each round the area moves 10 ft directly away from the caster | | ☐ | |
-| VS-42c | "You deal 6d8 poison damage to each breathing creature that starts its turn in the spell's area" | A creature starting its turn inside rolls a basic Fortitude save against 6d8 poison; one that doesn't breathe is passed over | | ☐ | |
-| VS-42d | "You can Dismiss the spell" | Dismissing it removes the area | | ☐ | |
-| VS-42e | "The damage increases by 1d8" | Rank 6 deals 7d8 | | ☐ | |
+| VS-42a | "This functions as Mist" | Inside the 20-ft burst, creatures are concealed as with *Mist* (VS-07) | `content/vanilla/toxic-cloud.json` (`inside`: *Mist*'s concealment) | ✅ | Aries cast it at rank 5 on a 20-ft burst centred at (4100, 1500): Capricorn, ZZ Victim and the Ghoul inside were **concealed** (with the *Toxic Cloud* inside-effect); Aries, outside, was not. When it was dismissed, the concealment came off |
+| VS-42b | "the area moves 10 feet away from you each round" | Each round the area moves 10 ft directly away from the caster | `drifts`, `Lingering.drift`, `drifted` test | ✅ | At the start of Aries' turn in round 2 the cloud moved **10 ft east** (4100 → 4300), directly away from Aries in the west. Aries was then moved north; at round 3's turn start it moved **10 ft south** (1500 → 1700) — away from where Aries stood |
+| VS-42c | "You deal 6d8 poison damage to each breathing creature that starts its turn in the spell's area" | A creature starting its turn inside rolls a basic Fortitude save against 6d8 poison; one that doesn't breathe is passed over | lingering `save` (basic Fortitude, `events: [tokenTurnStart]`, `targetPredicate`: not undead, not construct) | ✅ | Capricorn's turn start: Fortitude vs DC 34, failure → **6d8 poison = 31**. ZZ Victim's: critical failure → **68** (doubled). The **Ghoul** (undead, which doesn't breathe) started its turn inside and was passed over — no save, no damage. Aries, outside, nothing |
+| VS-42d | "You can Dismiss the spell" | Dismissing it removes the area | `scripts/riders/dismiss.mjs` (`dismiss: true` grants *Dismiss Toxic Cloud*) | ✅ | Aries held **Dismiss Drive: Toxic Cloud** (1 action, concentrate). Using it: "Aries dismisses Toxic Cloud.", the Region gone, its concealment off Capricorn and the Ghoul, and the action gone from the sheet. Found on the way: the area's own clean-up removed the action first and swallowed the chat line; the line now comes first |
+| VS-42e | "The damage increases by 1d8" | Rank 6 deals 7d8 | `scaledSave` (heightening on the area) | ✅ | Cast at **rank 6**: the cloud's turn-start damage reads **7d8** (rank 5: 6d8) |
 
 ### VS-43 · Lightning Storm
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 319 |
-| ✅ | 6 |
+| ☐ not yet driven | 314 |
+| ✅ | 11 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

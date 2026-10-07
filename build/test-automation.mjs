@@ -920,7 +920,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { darknessSource, firstForMovement, followed } = await import("../scripts/targeting/lingering.mjs");
     const emanation = { type: "emanation", radius: 200, base: { type: "token", x: 3700, y: 1500, width: 1, height: 1 } };
     check("an emanation follows its caster by its base square", followed(emanation, { x: 3550, y: 1550 }, { x: 3500, y: 1500 }).base, { ...emanation.base, x: 3500, y: 1500 });
-    const { sweptPath, overlaps, alreadyBurned } = await import("../scripts/targeting/lingering.mjs");
+    const { sweptPath, overlaps, alreadyBurned, drifted } = await import("../scripts/targeting/lingering.mjs");
+    check("a drifting cloud moves its step away from its caster, onto a grid intersection", [drifted({ x: 1000, y: 500 }, { x: 500, y: 500 }, 200, 100), drifted({ x: 1000, y: 1000 }, { x: 500, y: 500 }, 200, 100), drifted({ x: 500, y: 500 }, { x: 500, y: 500 }, 200, 100)],
+        [{ x: 1200, y: 500 }, { x: 1100, y: 1100 }, { x: 500, y: 500 }]);
     check("a flight visits every square on its way, both ends included", [sweptPath({ x: 0, y: 0 }, { x: 200, y: 0 }, 100), sweptPath({ x: 0, y: 0 }, { x: 100, y: 100 }, 100), sweptPath({ x: 5, y: 5 }, { x: 5, y: 5 }, 100)],
         [[{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }], [{ x: 0, y: 0 }, { x: 100, y: 100 }], [{ x: 5, y: 5 }]]);
     check("a creature shares the flame's space when their squares overlap, not when they touch", [overlaps({ x: 100, y: 0, w: 100, h: 100 }, { x: 100, y: 0 }, 100), overlaps({ x: 200, y: 0, w: 100, h: 100 }, { x: 100, y: 0 }, 100), overlaps({ x: 0, y: 0, w: 200, h: 200 }, { x: 100, y: 100 }, 100)], [true, false, true]);

@@ -7,6 +7,7 @@ import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "
 import { LIB_ID } from "../id.mjs";
 import { Inside, insidePayload } from "./inside.mjs";
 import { Sustain } from "../riders/sustain.mjs";
+import { Dismiss } from "../riders/dismiss.mjs";
 import { RiderExtensions } from "../riders/extensions.mjs";
 import { combatOf } from "../lib/combat.mjs";
 
@@ -58,6 +59,7 @@ export const Lingering = {
         Hooks.on("pf2e.startTurn", (combatant) => {
             Lingering.sweep();
             Lingering.endAtTurnOf(combatant?.actor);
+            Lingering.drift(combatant?.actor);
         });
         Hooks.once("ready", () => Lingering.sweep());
         // An area deleted by hand — a Dismissed *Darkness* — takes its lights and walls with it. Only the
@@ -182,7 +184,7 @@ export const Lingering = {
         // that remembers to take them away again.
         const scenery = await Lingering.scenery(spec, region, config);
         // An area that does nothing on its own but move when Sustained — *Floating Flame* — is still kept.
-        if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0 && !spec.sustain) return null;
+        if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0 && !spec.sustain && !spec.drifts) return null;
 
         const [created] = await canvas.scene.createEmbeddedDocuments("Region", [
             {
@@ -200,6 +202,7 @@ export const Lingering = {
                             slug: config.item.slug ?? null,
                             until: spec.until ?? null,
                             followsCaster: spec.followsCaster === true,
+                            drifts: spec.drifts ?? null,
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
                             sustain: spec.sustain ? scaledSustain(spec.sustain, config.steps ?? 0) : null,
                             // Who the cast itself already reached: a Sustain's "not yet affected" leaves them be.
@@ -224,6 +227,7 @@ export const Lingering = {
             },
         ]);
         if (created && spec.sustain) await Sustain.grantForRegion(config.item?.actor, config.item, created, spec.sustain);
+        if (created && spec.dismiss) await Dismiss.grantForRegion(config.item?.actor, config.item, created);
         return created ?? null;
     },
 
@@ -327,6 +331,26 @@ export const Lingering = {
                 return payload?.until === "originTurnStart" && payload.originUuid === actor.uuid;
             });
             if (ending.length > 0) await scene.deleteEmbeddedDocuments("Region", ending.map((region) => region.id));
+        }
+    },
+
+    /**
+     * *Toxic Cloud*: "the area moves 10 feet away from you each round." At the start of each of its caster's turns, a
+     * drifting area moves its `drifts.feet` along the line from the caster through its centre. Active GM only.
+     */
+    async drift(actor) {
+        if (game.users?.activeGM?.id !== game.user?.id || !actor?.uuid) return;
+        for (const scene of game.scenes) {
+            const caster = actor.getActiveTokens?.(true, true).find((token) => token.parent === scene);
+            for (const region of scene.regions) {
+                const payload = flagOf(region, FLAG);
+                if (!payload?.drifts || payload.originUuid !== actor.uuid || !caster) continue;
+                const shape = region.toObject().shapes[0];
+                if (!shape || !Number.isFinite(shape.x)) continue;
+                const step = ((Number(payload.drifts.feet) || 10) / (scene.grid.distance || 5)) * scene.grid.size;
+                const to = drifted({ x: shape.x, y: shape.y }, tokenCentre(caster, scene), step, scene.grid.size);
+                if (to.x !== shape.x || to.y !== shape.y) await region.update({ shapes: [{ ...shape, x: to.x, y: to.y }] });
+            }
         }
     },
 
@@ -469,6 +493,19 @@ export function followed(shape, centre, at) {
     if (shape.base && Number.isFinite(shape.base.x)) return { ...shape, base: { ...shape.base, x: at.x, y: at.y } };
     if (Number.isFinite(shape.x) && Number.isFinite(shape.y) && Number.isFinite(shape.radius)) return { ...shape, x: centre.x, y: centre.y };
     return shape;
+}
+
+/**
+ * Where a drifting area's centre goes: `step` pixels further from `from` along the line through it, snapped to
+ * the nearest grid intersection, as a burst's centre is. An area right on top of its caster has no "away" and stays.
+ */
+export function drifted(centre, from, step, gridSize) {
+    const dx = centre.x - from.x;
+    const dy = centre.y - from.y;
+    const length = Math.hypot(dx, dy);
+    if (!length) return { ...centre };
+    const snap = (v) => Math.round(v / gridSize) * gridSize;
+    return { x: snap(centre.x + (dx / length) * step), y: snap(centre.y + (dy / length) * step) };
 }
 
 /** A compass point as a step in squares (y grows downward). */
