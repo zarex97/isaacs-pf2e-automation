@@ -287,6 +287,7 @@
             "Title": "Counteract",
             "Prompt": "Counteract one, if you wish.",
             "Nothing": "Nothing with {traits} to counteract in the area.",
+            "NoSpellEffect": "No spell effect on the target to counteract.",
             "NoStatistic": "{actor} has no {slug} statistic to counteract with.",
             "Floor": "<strong>{effect}</strong> cannot be counteracted below rank {floor} — a counteract rank of {rank} does not touch it.",
             "CannotSuppress": "{effect} could not be suppressed without stranding a grant.",

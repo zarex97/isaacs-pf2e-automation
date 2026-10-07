@@ -746,6 +746,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("a carried save takes the caster's DC with it", riders[0].apply.dc, 34);
     check("…and keeps a DC it already names", carried([{ apply: { type: "save", dc: 20 } }], 34)[0].apply.dc, 20);
     const { climbed, endsWithGone, growByStep, isHostileUse, castItemOf, decoyOdds, transferred } = await import("../scripts/riders/apply.mjs");
+    const { isSpellEffect } = await import("../scripts/riders/apply.mjs");
+    check("a spell's effect: from a spell, or pf2e's own Spell Effect", [isSpellEffect({ type: "effect", slug: "x" }, "spell"), isSpellEffect({ type: "effect", slug: "spell-effect-heroism" }), isSpellEffect({ type: "effect", slug: "effect-rage" }, "action"), isSpellEffect({ type: "condition", slug: "frightened" }, "spell")], [true, true, false, false]);
     const { deterVerdict, afterDeterSave, isAttack, turnKey } = await import("../scripts/riders/deters.mjs");
     check("a ward asks a new save each turn, and remembers this one", [deterVerdict(undefined, "c:1:0"), deterVerdict({ key: "c:1:0", allowed: true }, "c:1:0"), deterVerdict({ key: "c:1:0", allowed: false }, "c:1:0"), deterVerdict({ key: "c:1:0", allowed: true }, "c:1:1"), deterVerdict({ until: "spell" }, "c:2:0"), deterVerdict({ key: null, allowed: true }, null)], ["save", "allow", "refuse", "save", "refuse", "save"]);
     check("what a save against a ward earns", ["criticalSuccess", "success", "failure", "criticalFailure"].map((o) => afterDeterSave(o, "k")), [{ memo: null, allowed: true, ends: true }, { memo: { key: "k", allowed: true }, allowed: true, ends: false }, { memo: { key: "k", allowed: false }, allowed: false, ends: false }, { memo: { until: "spell" }, allowed: false, ends: false }]);
