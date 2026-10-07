@@ -1,0 +1,34 @@
+{
+    "areaTargeting": false,
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "not": "target:effect:shield-immunity"
+                }
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.Jemq5UknGdMO7b73",
+                "replace": true,
+                "atCastRank": true,
+                "endsOnBlock": {
+                    "immunity": "Compendium.pf2e.spell-effects.Item.QF6RDlCoTvkVHRo4"
+                }
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "target:effect:shield-immunity"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.shield.Immune"
+            }
+        }
+    ]
+}

@@ -164,6 +164,9 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "ShieldBlock": {
+            "Ended": "{actor} blocked with the shield: {name} ends, and it can't be cast again for 10 minutes."
+        },
         "Decoy": {
             "Roll": "{name}: which is struck? ({images} images)",
             "You": "The attack finds {actor} — not an image.",
@@ -398,6 +401,9 @@
             },
             "malediction": {
                 "Area": "Malediction"
+            },
+            "shield": {
+                "Immune": "You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago."
             },
             "sure-strike": {
                 "Immune": "temporarily immune to sure strike",

@@ -806,6 +806,17 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  A shield that ends when it blocks (VS-35)                                                    */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { blockingEffect } = await import("../scripts/riders/shield-block.mjs");
+    const spellShield = { id: "sh", flags: { [LIB_ID]: { endsOnBlock: { immunity: "x" } } } };
+    const actor = { attributes: { shield: { itemId: "sh" } }, items: { get: (id) => (id === "sh" ? spellShield : null) } };
+    check("a block with the spell's shield ends the spell; damage without a block, or another shield, does not", [blockingEffect(actor, { shieldBlockRequest: true }), blockingEffect(actor, {}), blockingEffect({ attributes: { shield: { itemId: "wood" } }, items: { get: () => ({ flags: {} }) } }, { shieldBlockRequest: true })], [spellShield, null, null]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  A push that walls stop (VS-12)                                                               */
 /* -------------------------------------------------------------------------------------------- */
 

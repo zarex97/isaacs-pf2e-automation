@@ -1747,6 +1747,8 @@ async function applyEffect(rider, context) {
     if (Array.isArray(rider.apply.carries)) {
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, RiderExtensions.resolveDC(undefined, context)) } });
     }
+    // *Shield*: the spell ends when its shield blocks (`shield-block.mjs`).
+    if (rider.apply.endsOnBlock) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnBlock: rider.apply.endsOnBlock } });
     const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
