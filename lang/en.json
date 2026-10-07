@@ -332,6 +332,10 @@
                 "Line": "A wall: a straight line up to 60 feet",
                 "Ring": "A ring: 10-foot radius",
                 "Wall": "Wall of Fire"
+            },
+            "mist": {
+                "Cloud": "Mist",
+                "Inside": "<p>You are within the mist: you are concealed, and creatures outside the mist are concealed to you.</p>"
             }
         }
     }

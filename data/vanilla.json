@@ -311,6 +311,36 @@
                 "anchor": "caster"
             }
         },
+        "mist": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.mist.Cloud",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "inside": {
+                    "conditions": [
+                        "concealed"
+                    ],
+                    "rules": [
+                        {
+                            "key": "EphemeralEffect",
+                            "affects": "target",
+                            "selectors": [
+                                "attack-roll",
+                                "spell-attack-roll"
+                            ],
+                            "uuid": "Compendium.pf2e.conditionitems.Item.DmAIPqOBomZ7H95W"
+                        }
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.mist.Inside"
+                }
+            }
+        },
         "slow": {
             "areaTargeting": {
                 "maxTargets": 1,

@@ -516,6 +516,13 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         shape: wrong("calm", { areaTargeting: { area: { type: "blob", value: 10 } } }),
         affects: wrong("calm", { areaTargeting: { affects: "friends" } }),
     }, { slug: 1, key: 1, variant: 1, variantOk: 0, condition: 1, effect: 1, event: 1, outcome: 1, type: 1, save: 1, nested: 1, literal: 1, missingKey: 1, shape: 1, affects: 1 });
+    check("an area held while inside names real conditions and holds something", {
+        sound: wrong("mist", { lingering: { inside: { conditions: ["concealed"] } } }),
+        condition: wrong("mist", { lingering: { inside: { conditions: ["foggy"] } } }),
+        empty: wrong("mist", { lingering: { inside: {} } }),
+        rules: wrong("mist", { lingering: { inside: { rules: [{ value: 1 }] } } }),
+        listed: wrong("mist", { lingering: [{ inside: { conditions: ["foggy"] } }] }),
+    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1 });
     check("an alias to nothing, or over a live slug, is caught", V.aliasProblems({ "magic-missile": "force-barrage", fear: "calm" }, { calm: {} }, index).length, 2);
 
     // The words a table entry names by key are read back translated; an item's own text is left alone.
@@ -681,6 +688,25 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("…including a Large creature's far corner", names(occupants({ x: 600, y: 100, width: 100, height: 100 }, [self, other, large], self)), ["large"]);
     check("the caster's own space never counts", names(occupants({ x: 0, y: 0, width: 100, height: 100 }, [self], self)), []);
     check("sight is needed below the waiving rank, not from it", [needsSight({ seeBelowRank: 5 }, 4), needsSight({ seeBelowRank: 5 }, 5), needsSight({}, 9)], [true, false, true]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  An area held while inside (VS-07)                                                            */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { insideEffectSource, heldFrom } = await import("../scripts/targeting/inside.mjs");
+    const ephemeral = { key: "EphemeralEffect", affects: "target", selectors: ["attack-roll"], uuid: "u" };
+    const source = insideEffectSource({ name: "Mist", regionUuid: "Scene.s.Region.r", conditions: ["Compendium.pf2e.conditionitems.Item.c"], rules: [ephemeral] });
+    check("a condition held inside is granted in memory, so it goes with the effect", source.system.rules[0], { key: "GrantItem", uuid: "Compendium.pf2e.conditionitems.Item.c", inMemoryOnly: true });
+    check("…and the area's own rules follow it", source.system.rules[1], ephemeral);
+    check("the effect lasts until it is taken off, and names its Region", [source.system.duration.unit, source.flags[LIB_ID].inside], ["unlimited", "Scene.s.Region.r"]);
+    const actor = { itemTypes: { effect: [
+        { id: "a", flags: { [LIB_ID]: { inside: "Scene.s.Region.r" } } },
+        { id: "b", flags: { [LIB_ID]: { inside: "Scene.s.Region.other" } } },
+        { id: "c", flags: {} },
+    ] } };
+    check("leaving one area takes off only what that area gave", heldFrom(actor, "Scene.s.Region.r").map((e) => e.id), ["a"]);
 }
 
 /* -------------------------------------------------------------------------------------------- */
