@@ -1,0 +1,354 @@
+{
+    "areaTargeting": {
+        "anchor": "caster"
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "aftermath",
+                "awaits": [
+                    "target:mode:living",
+                    {
+                        "or": [
+                            {
+                                "lte": [
+                                    "target:level",
+                                    17
+                                ]
+                            },
+                            {
+                                "and": [
+                                    {
+                                        "gte": [
+                                            "item:rank",
+                                            10
+                                        ]
+                                    },
+                                    {
+                                        "lte": [
+                                            "target:level",
+                                            19
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "none": [
+                    {
+                        "apply": {
+                            "type": "damage",
+                            "formula": "30",
+                            "damageType": "void"
+                        }
+                    }
+                ],
+                "noneTo": [
+                    "target:mode:living"
+                ],
+                "noneSelf": [
+                    {
+                        "apply": {
+                            "type": "damage",
+                            "formula": "30",
+                            "damageType": "void"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "success"
+            ],
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "lt": [
+                        "item:rank",
+                        10
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "9d6",
+                "damageType": "void"
+            }
+        },
+        {
+            "outcomes": [
+                "success"
+            ],
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "gte": [
+                        "item:rank",
+                        10
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "10d6",
+                "damageType": "void"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "lt": [
+                        "item:rank",
+                        10
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "100",
+                "damageType": "void"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "gte": [
+                        "item:rank",
+                        10
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "115",
+                "damageType": "void"
+            }
+        },
+        {
+            "outcomes": [
+                "success",
+                "failure"
+            ],
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "death",
+                "hpFraction": 0
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "death"
+            }
+        },
+        {
+            "predicate": [
+                "target:mode:living",
+                {
+                    "or": [
+                        {
+                            "lte": [
+                                "target:level",
+                                17
+                            ]
+                        },
+                        {
+                            "and": [
+                                {
+                                    "gte": [
+                                        "item:rank",
+                                        10
+                                    ]
+                                },
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        19
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "apply": {
+                "type": "aftermath-mark"
+            }
+        }
+    ]
+}

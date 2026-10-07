@@ -952,6 +952,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
     const { nextStage } = await import("../scripts/riders/affliction.mjs");
+    const { tallyState } = await import("../scripts/riders/aftermath.mjs");
+    check("a cast's tally is read once nobody is left to answer, and knows whether anybody died",
+        [tallyState({ awaiting: new Set(["a"]), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set(["b"]) })],
+        [{ done: false, died: false }, { done: true, died: false }, { done: true, died: true }]);
     check("a save moves an affliction's stage: two down, one down, one up, two up, cured below 1, capped at the last",
         [nextStage(2, "criticalSuccess", 2), nextStage(2, "success", 2), nextStage(1, "failure", 2), nextStage(1, "criticalFailure", 3), nextStage(2, "criticalFailure", 2)],
         [0, 1, 2, 3, 2]);

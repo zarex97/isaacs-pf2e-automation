@@ -378,14 +378,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-64a | "Each living creature of 17th level or lower in the line must attempt a Fortitude save" | The 60-ft line catches living creatures of level 17 or lower; others don't save | | ☐ | |
-| VS-64b | "If the damage from massacre reduces a creature to 0 Hit Points, that creature dies instantly" | 0 HP from it is death | | ☐ | |
-| VS-64c | "Success The creature takes 9d6 void damage" | 9d6 | | ☐ | |
-| VS-64d | "Failure The creature takes" | 100 void damage | | ☐ | |
-| VS-64e | "Critical Failure The creature dies" | Dead | | ☐ | |
-| VS-64f | "If massacre doesn't kill even a single creature, the void energy hungrily turns backward toward you" | With nobody dead, the backlash follows | | ☐ | |
-| VS-64g | "damage to every living creature in the line (even those above 17th level) and 30 void damage to you" | 30 void to every living creature in the line and 30 to the caster | | ☐ | |
-| VS-64h | "Heightened (10th) The spell can affect living creatures up to 19th level" | Level 19 at rank 10, with 10d6 and 115 | | ☐ | |
+| VS-64a | "Each living creature of 17th level or lower in the line must attempt a Fortitude save" | The 60-ft line catches living creatures of level 17 or lower; others don't save | `content/vanilla/massacre.json`: every rider predicated on `target:mode:living` and level ≤ 17 (≤ 19 at rank 10); the line aimed from the caster | ✅ | The 60-foot line from Aries caught ZZ Victim (level 1), the Ghoul Soldier (undead) and Capricorn (level 20); only ZZ Victim's save did anything. Made level 19, at rank 9 its save did nothing — not of 17th level or lower |
+| VS-64b | "If the damage from massacre reduces a creature to 0 Hit Points, that creature dies instantly" | 0 HP from it is death | `death` (`hpFraction: 0`) after the damage | ✅ | ZZ Victim at 50 HP, failing: 100 void, then "ZZ Victim is reduced to 0 Hit Points — it dies." |
+| VS-64c | "Success The creature takes 9d6 void damage" | 9d6 | `success` → 9d6 void (rank < 10) | ✅ | A success (34, with +30 Fortitude): **9d6 void** = 33 |
+| VS-64d | "Failure The creature takes" | 100 void damage | `failure` → 100 void (rank < 10) | ✅ | A failure (20) at 400 HP: **100 void**, ZZ Victim at 300 |
+| VS-64e | "Critical Failure The creature dies" | Dead | `criticalFailure` → `death` | ✅ | A critical failure (2): "ZZ Victim is reduced to 0 Hit Points — it dies.", marked dead |
+| VS-64f | "If massacre doesn't kill even a single creature, the void energy hungrily turns backward toward you" | With nobody dead, the backlash follows | `aftermath` on the cast (`awaits` the answering creatures), `aftermath-mark` last of each one's riders (`scripts/riders/aftermath.mjs`; `tallyState` test) | ✅ | With ZZ Victim surviving its result (a success, 9d6; a failure, 100; at rank 10, 115) — and with nobody able to answer at all (level 19, rank 9) — "Drive: Massacre killed no one: the void energy turns back." When ZZ Victim died (a critical failure, or 100 at 50 HP), no backlash |
+| VS-64g | "damage to every living creature in the line (even those above 17th level) and 30 void damage to you" | 30 void to every living creature in the line and 30 to the caster | `none` 30 void on every reached creature `noneTo: ["target:mode:living"]` admits; `noneSelf` 30 void on the caster | ✅ | The backlash: **30 void** to ZZ Victim and to Capricorn (level 20 — above 17th, still taken), none to the undead Ghoul Soldier, and **30 void to Aries** |
+| VS-64h | "Heightened (10th) The spell can affect living creatures up to 19th level" | Level 19 at rank 10, with 10d6 and 115 | rank-10 riders (`item:rank` ≥ 10): level 19, 10d6, 115 | ✅ | Rank 10, ZZ Victim at level 19: a failure dealt **115** void, a success **10d6** void — both answering, where at rank 9 the same level was out of reach |
 
 ## Batch 5 — Reactions and recovery
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 170 |
-| ✅ | 148 |
+| ☐ not yet driven | 162 |
+| ✅ | 156 |
 | ⚠️ | 7 |
 | ❌ | 0 |
 | 🔧 | 0 |

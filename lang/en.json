@@ -217,6 +217,9 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Aftermath": {
+            "NoneDied": "{name} killed no one: the void energy turns back."
+        },
         "Affliction": {
             "Again": "{actor} is exposed to {name} again: stage {stage}.",
             "Stage": "stage {stage}",
