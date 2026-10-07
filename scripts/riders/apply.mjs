@@ -576,6 +576,17 @@ async function targetsFor(rider, context) {
 /*  Apply handlers                                                                                   */
 /* ------------------------------------------------------------------------------------------------ */
 
+/** The uuid of the lingering area this caster left with this spell, on the current scene. */
+function areaLeftBy(originActor, item) {
+    const slug = item?.slug;
+    if (!originActor?.uuid || !slug) return null;
+    const region = canvas?.scene?.regions?.find((r) => {
+        const payload = r.flags?.[LIB_ID]?.lingering;
+        return payload?.originUuid === originActor.uuid && payload?.slug === slug;
+    });
+    return region?.uuid ?? null;
+}
+
 /**
  * Where a pushed token stops: the destination, or a square short of the first wall that blocks movement
  * between its centre and the destination's. `collide(from, to)` is Foundry's movement collision test.
@@ -1651,8 +1662,10 @@ async function applyEffect(rider, context) {
     if (rider.duration) source.system.duration = durationData(RiderExtensions.duration(rider, context));
     source.system.context = contextData(context);
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, riderFlags(rider, context));
-    // "Until it leaves the area" — *Entangling Flora*'s penalty, pf2e's own effect with no end of its own.
-    if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags, { [LIB_ID]: { inside: context.region } });
+    // "Until it leaves the area" — *Entangling Flora*'s penalty, pf2e's own effect with no end of its own. A
+    // save rolled from the spell's card has no area in hand; the one this caster left with this spell is it.
+    const leaving = rider.apply.endsOnLeaving ? (context.region ?? areaLeftBy(context.originActor, context.item ?? context.riderItem)) : null;
+    if (leaving) source.flags = foundry.utils.mergeObject(source.flags, { [LIB_ID]: { inside: leaving } });
 
     // "You know the target's exact Hit Points until the end of the encounter" is knowledge tied to *one*
     // creature, not a range — the marker effect this grants onto the caster carries that creature's uuid so

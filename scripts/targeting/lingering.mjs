@@ -6,6 +6,7 @@ import { allianceOf, catches } from "./enemy-terrain.mjs";
 import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
 import { LIB_ID } from "../id.mjs";
 import { Inside, insidePayload } from "./inside.mjs";
+import { Sustain } from "../riders/sustain.mjs";
 
 export const FLAG = "lingering";
 
@@ -40,10 +41,18 @@ export const Lingering = {
         CONFIG.RegionBehavior.dataModels[BEHAVIOR_TYPE] = LingeringRegionBehaviorType;
         CONFIG.RegionBehavior.typeLabels[BEHAVIOR_TYPE] = key("Lingering.TypeLabel");
         CONFIG.RegionBehavior.typeIcons[BEHAVIOR_TYPE] = "fa-solid fa-fire";
+        Sustain.onRegion = (region) => Lingering.grow(region);
     },
 
     registerHooks() {
         Hooks.on("updateWorldTime", () => Lingering.sweep());
+        // An emanation goes where its caster goes — *Malediction* is "enemies in the area", and the area is
+        // around the caster wherever they stand.
+        Hooks.on("updateToken", (token, changes) => {
+            if (game.users?.activeGM?.id !== game.user?.id) return;
+            if (!("x" in changes || "y" in changes)) return;
+            Lingering.follow(token);
+        });
         Hooks.on("pf2e.startTurn", (combatant) => {
             Lingering.sweep();
             Lingering.endAtTurnOf(combatant?.actor);
@@ -187,6 +196,11 @@ export const Lingering = {
                             itemUuid: config.item.uuid ?? null,
                             slug: config.item.slug ?? null,
                             until: spec.until ?? null,
+                            followsCaster: spec.followsCaster === true,
+                            originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
+                            sustain: spec.sustain ?? null,
+                            // Who the cast itself already reached: a Sustain's "not yet affected" leaves them be.
+                            affected: [...(game.user?.targets ?? [])].map((t) => t.id),
                             targetPredicate: spec.targetPredicate ?? null,
                             originUuid: config.item.actor?.uuid ?? null,
                             damage: spec.damage ? scaledDamage(spec.damage, config.steps ?? 0) : null,
@@ -206,6 +220,7 @@ export const Lingering = {
                 },
             },
         ]);
+        if (created && spec.sustain) await Sustain.grantForRegion(config.item?.actor, config.item, created, spec.sustain);
         return created ?? null;
     },
 
@@ -312,6 +327,58 @@ export const Lingering = {
         }
     },
 
+    /** Move the areas that follow this token so they stay centred on it. */
+    async follow(token) {
+        const scene = token?.parent;
+        if (!scene) return;
+        const centre = tokenCentre(token, scene);
+        const at = { x: token._source?.x ?? token.x, y: token._source?.y ?? token.y };
+        for (const region of scene.regions) {
+            const payload = flagOf(region, FLAG);
+            if (!payload?.followsCaster || payload.originTokenUuid !== token.uuid) continue;
+            const shapes = region.toObject().shapes;
+            const moved = shapes.map((s) => followed(s, centre, at));
+            if (JSON.stringify(moved) !== JSON.stringify(shapes)) await region.update({ shapes: moved });
+        }
+    },
+
+    /**
+     * Sustained: the area widens, and the creatures it now reaches that it had not yet affected save.
+     * *Malediction*: "increase the emanation's radius by 10 feet and force enemies in the area that weren't
+     * yet affected to attempt a saving throw." Returns what the area now is, for the chat line.
+     */
+    async grow(region) {
+        const payload = flagOf(region, FLAG);
+        const scene = region.parent;
+        const grow = payload?.sustain;
+        if (!grow || !scene) return null;
+        const perFoot = scene.grid.size / (scene.grid.distance || 5);
+        const shapes = region.toObject().shapes.map((s) => (Number.isFinite(s.radius) ? { ...s, radius: s.radius + (Number(grow.radius) || 0) * perFoot } : s));
+        await region.update({ shapes });
+        const feet = Math.round((shapes[0]?.radius ?? 0) / perFoot);
+        if (!grow.saveNewcomers || !payload.save) return `${feet} ft.`;
+
+        // Foundry works out who is inside after the shape is saved; read it once it has.
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        const originActor = payload.originUuid ? await fromUuid(payload.originUuid) : null;
+        const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
+        const affected = new Set(payload.affected ?? []);
+        const newcomers = [...(region.tokens ?? [])].filter((token) => {
+            if (affected.has(token.id) || token.actor === originActor || !token.actor) return false;
+            if (payload.affects === "enemies" && !catches(allianceOf(originActor), allianceOf(token.actor))) return false;
+            return !payload.targetPredicate || testPredicate(payload.targetPredicate, targetingOptions(originActor, token.actor, null));
+        });
+        for (const token of newcomers) {
+            affected.add(token.id);
+            const work = saveWork(token, originActor, item, region);
+            await runSave(payload.save, work);
+            if (work.notes.length > 0) await postNotes(work);
+            if (work.prompts.length > 0) await postPrompts(work);
+        }
+        await region.setFlag(LIB_ID, `${FLAG}.affected`, [...affected]);
+        return `${feet} ft.`;
+    },
+
     /** Areas whose minute is up. Active GM only: this deletes documents. */
     async sweep() {
         if (game.users?.activeGM?.id !== game.user?.id) return;
@@ -347,6 +414,40 @@ export function firstForMovement(regionUuid, event, now = Date.now()) {
     if (seenMovements.has(key)) return false;
     seenMovements.set(key, now);
     return true;
+}
+
+/**
+ * A shape moved to stay on its token. Foundry's emanation names the token's square it grows from (`base`, by its
+ * top-left corner); a circle names its centre.
+ */
+export function followed(shape, centre, at) {
+    if (shape.base && Number.isFinite(shape.base.x)) return { ...shape, base: { ...shape.base, x: at.x, y: at.y } };
+    if (Number.isFinite(shape.x) && Number.isFinite(shape.y) && Number.isFinite(shape.radius)) return { ...shape, x: centre.x, y: centre.y };
+    return shape;
+}
+
+/** Where a token's centre is, from its stored position rather than its animation. */
+function tokenCentre(token, scene) {
+    const size = scene.grid.size;
+    return { x: (token._source?.x ?? token.x) + (token.width * size) / 2, y: (token._source?.y ?? token.y) + (token.height * size) / 2 };
+}
+
+/** What a lingering area's check runs with — the creature, the caster, the spell, the area. */
+function saveWork(token, originActor, item, region) {
+    return {
+        actor: token.actor,
+        originActor,
+        originToken: originActor?.getActiveTokens?.(true, true).at(0) ?? null,
+        region: region.uuid,
+        item,
+        target: token,
+        eventTarget: token,
+        adjustments: [],
+        notes: [],
+        prompts: [],
+        choices: [],
+        moves: [],
+    };
 }
 
 /** A darkness source filling the area, outranking light up to the cast rank. */
@@ -500,20 +601,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
             // internal that expected `item.isOfType` to exist. `payload.itemUuid` is the owned item's own
             // uuid (`config.item.uuid` in `createOne`), so this is the genuine article, not a lookalike.
             const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
-            const work = {
-                actor,
-                originActor,
-                originToken: originActor.getActiveTokens(true, true).at(0) ?? null,
-                region: region.uuid,
-                item,
-                target: event.data.token,
-                eventTarget: event.data.token,
-                adjustments: [],
-                notes: [],
-                prompts: [],
-                choices: [],
-                moves: [],
-            };
+            const work = saveWork(event.data.token, originActor, item, region);
             await runSave(payload.save, work);
             // What the save's outcome left to the table is said, as it is after any other save. These lists
             // were handed in and never read back, so Grease's "fails to Balance" reached nobody.

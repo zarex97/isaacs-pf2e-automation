@@ -348,6 +348,9 @@
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
             },
+            "malediction": {
+                "Area": "Malediction"
+            },
             "gust-of-wind": {
                 "Gust": "Gust of Wind",
                 "Success": "The creature can't move against the wind.",

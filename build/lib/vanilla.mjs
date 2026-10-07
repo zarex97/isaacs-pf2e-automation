@@ -73,9 +73,11 @@ export function docs(built, index, en) {
             l.difficultTerrain ? "difficult terrain" : null,
             l.replacesPrevious ? "ends your previous one" : null,
             l.until === "originTurnStart" ? "until your next turn" : null,
+            l.followsCaster ? "moves with you" : null,
+            l.sustain ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
-            l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l)} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
+            l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l) || (l.sustain?.saveNewcomers ? "a Sustain" : "—")} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
             l.damage ? `${l.damage.formula}${l.damage.persistent === false ? "" : " persistent"} ${l.damage.type ?? ""} on ${(l.events ?? ["tokenMoveIn", "tokenTurnEnd"]).map((e) => ({ tokenMoveIn: "entering", tokenTurnStart: "turn start", tokenTurnEnd: "turn end" })[e] ?? e).join(" / ")}`.trim() : null,
             l.duration ? `${l.duration.value} ${l.duration.unit}` : null,
         ].filter(Boolean).join(", ")).join("; ");
@@ -160,6 +162,8 @@ export function problemsWith(slug, entry, ctx) {
             if (spec?.darkness !== undefined && spec.darkness !== true) at(`${where} lingering.darkness`.trim(), "true or absent");
             if (spec?.replacesPrevious !== undefined && spec.replacesPrevious !== true) at(`${where} lingering.replacesPrevious`.trim(), "true or absent");
             if (spec?.until !== undefined && spec.until !== "originTurnStart") at(`${where} lingering.until`.trim(), "originTurnStart or absent");
+            if (spec?.followsCaster !== undefined && spec.followsCaster !== true) at(`${where} lingering.followsCaster`.trim(), "true or absent");
+            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0)) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by: { radius, saveNewcomers? }");
             if (spec?.targetPredicate !== undefined && !Array.isArray(spec.targetPredicate)) at(`${where} lingering.targetPredicate`.trim(), "a predicate list");
             if (spec?.save) {
                 const asked = [spec.save.statistic ?? spec.save.statistics ?? []].flat();

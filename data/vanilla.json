@@ -578,6 +578,56 @@
                 "anchor": "caster"
             }
         },
+        "malediction": {
+            "areaTargeting": {
+                "affects": "enemies"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.1jX8W0eyMPJ0MFKY",
+                        "once": true,
+                        "endsOnLeaving": true
+                    }
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.malediction.Area",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "affects": "enemies",
+                "followsCaster": true,
+                "events": [],
+                "sustain": {
+                    "radius": 10,
+                    "saveNewcomers": true
+                },
+                "save": {
+                    "statistic": "will",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure",
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "effect",
+                                "uuid": "Compendium.pf2e.spell-effects.Item.1jX8W0eyMPJ0MFKY",
+                                "once": true,
+                                "endsOnLeaving": true
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "mist": {
             "areaTargeting": {
                 "affects": "all",

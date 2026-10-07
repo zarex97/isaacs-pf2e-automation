@@ -33,7 +33,7 @@ export function roundFor(actor, combats = game.combats) {
 }
 
 /** The granted action, as a plain source object. */
-export function sustainActionSource({ item, effectId, step = 1, castRound = null }) {
+export function sustainActionSource({ item, effectId = null, regionUuid = null, step = 1, castRound = null }) {
     const name = item?.name ?? t("Rider.Name");
     return {
         type: "action",
@@ -47,7 +47,7 @@ export function sustainActionSource({ item, effectId, step = 1, castRound = null
         },
         flags: {
             [LIB_ID]: {
-                [FLAG]: { effectId, step, castRound, lastRound: null },
+                [FLAG]: { effectId, regionUuid, step, castRound, lastRound: null },
                 riders: [{ apply: { type: "sustain" }, event: "action-used", self: true }],
             },
         },
@@ -67,20 +67,43 @@ export const Sustain = {
         return created ?? null;
     },
 
+    /**
+     * Give the caster the action that Sustains an area they left — *Malediction*'s emanation, which grows
+     * and catches more. What growing means is the area's own business (`Sustain.onRegion`, set by
+     * `lingering.mjs`, which this file does not import).
+     */
+    async grantForRegion(actor, item, region, spec = {}) {
+        if (!actor || !region) return null;
+        const [created] = await actor.createEmbeddedDocuments("Item", [
+            sustainActionSource({ item, regionUuid: region.uuid, step: Number(spec.step) || 1, castRound: roundFor(actor) }),
+        ]);
+        return created ?? null;
+    },
+
+    /** `(region, spec, context) → label`: what Sustaining an area does. Set by `lingering.mjs`. */
+    onRegion: null,
+
     /** The action was used: one step more on the effect's badge, if the rules allow it now. */
     async apply(rider, context) {
         const action = context.item;
         const spec = action?.flags?.[LIB_ID]?.[FLAG];
         const actor = context.actor;
         if (!spec || !actor) return;
-        const effect = actor.items.get(spec.effectId);
+        const effect = spec.effectId ? actor.items.get(spec.effectId) : null;
+        const region = spec.regionUuid ? await fromUuid(spec.regionUuid) : null;
         const say = (key, data) => ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor }),
-            content: `<p>${t(key, { name: effect?.name ?? action.name, ...data })}</p>`,
+            content: `<p>${t(key, { name: effect?.name ?? region?.name ?? action.name, ...data })}</p>`,
         });
-        if (!effect) return say("Sustain.Gone");
+        if (!effect && !region) return say("Sustain.Gone");
         const round = roundFor(actor);
         if (!canSustain(spec, round)) return say(spec.castRound !== null && round <= spec.castRound ? "Sustain.NotYet" : "Sustain.Already");
+
+        if (region) {
+            const now = await Sustain.onRegion?.(region, spec, context);
+            await action.setFlag(LIB_ID, FLAG, { ...spec, lastRound: round });
+            return say("Sustain.Done", { now: now ?? "" });
+        }
 
         const badge = effect.system?.badge;
         if (badge?.type === "counter") {
@@ -99,6 +122,14 @@ export const Sustain = {
             const actor = item?.parent;
             if (!actor?.items || item.type === "action") return;
             const orphans = actor.items.filter((i) => i.type === "action" && i.flags?.[LIB_ID]?.[FLAG]?.effectId === item.id).map((i) => i.id);
+            if (orphans.length > 0) await actor.deleteEmbeddedDocuments("Item", orphans);
+        });
+        // An area gone — dismissed, or its minute up — takes its Sustain action off its caster.
+        Hooks.on("deleteRegion", async (region) => {
+            if (game.users.activeGM?.id !== game.user.id) return;
+            const originUuid = region.flags?.[LIB_ID]?.lingering?.originUuid;
+            const actor = originUuid ? await fromUuid(originUuid) : null;
+            const orphans = actor?.items?.filter((i) => i.type === "action" && i.flags?.[LIB_ID]?.[FLAG]?.regionUuid === region.uuid).map((i) => i.id) ?? [];
             if (orphans.length > 0) await actor.deleteEmbeddedDocuments("Item", orphans);
         });
     },
