@@ -65,7 +65,7 @@ export function configFor(item, override = {}) {
     // target count and a range, and both grow. Those are checked against the targets the player has already
     // picked rather than by making them aim an emanation at themselves, which for one creature is worse
     // than clicking it.
-    if (!hasArea && !flag?.maxTargets && !flag?.range) return null;
+    if (!hasArea && !flag?.maxTargets && !flag?.range && !flag?.chain) return null;
 
     // It should not quietly take over every wizard's fireball unless the GM asks it to. An item carrying the
     // flag was written for this and always aims; the setting governs the items that were never written
@@ -133,6 +133,8 @@ export function configFor(item, override = {}) {
         areas: grown.areas,
         length: grown.length,
         steps: grown.steps,
+        // Targets that have to link up — see `chain.mjs`. `{ link }` in feet.
+        chain: Number(flag?.chain?.link) > 0 ? { link: Number(flag.chain.link) } : null,
     };
 }
 

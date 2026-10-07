@@ -54,7 +54,9 @@
             "OutOfRangeTitle": "Out of range",
             "OutOfRange": "<strong>{name}</strong> reaches {range} feet. That placement is {distance} feet away.",
             "PlaceAnyway": "Place it anyway?",
-            "HintFromYou": "{name}: {rule} — it starts at you; point where it goes."
+            "HintFromYou": "{name}: {rule} — it starts at you; point where it goes.",
+            "ChainBroken": "these targets don't form a chain — starting within {range} feet, each must be within {link} feet of the one before",
+            "NoLineTo": "no line of effect to {names}"
         },
         "Review": {
             "Title": "Confirm targets",

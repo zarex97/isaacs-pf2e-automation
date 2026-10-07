@@ -38,6 +38,13 @@
                 }
             ]
         },
+        "chain-lightning": {
+            "areaTargeting": {
+                "chain": {
+                    "link": 30
+                }
+            }
+        },
         "command": {
             "areaTargeting": {
                 "maxTargets": 1,

@@ -72,7 +72,7 @@ function originPoint(region, originToken) {
     return Number.isFinite(shape.x) && Number.isFinite(shape.y) ? { x: shape.x, y: shape.y } : fallback;
 }
 
-function blocked(origin, target) {
+export function blocked(origin, target) {
     return !!CONFIG.Canvas.polygonBackends.move.testCollision(origin, target, { type: "move", mode: "any" });
 }
 

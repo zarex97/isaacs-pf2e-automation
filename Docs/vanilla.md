@@ -7,6 +7,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Spell | Rank | Area and targets | Riders | Lingering |
 | :-- | :-- | :-- | :-- | :-- |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
+| Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
 | Electric Arc | 1 | up to 2 |  |  |
