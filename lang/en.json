@@ -349,6 +349,10 @@
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
             },
+            "blindness": {
+                "Immune": "temporarily immune to blindness",
+                "AlreadyImmune": "The target is temporarily immune to blindness and is unaffected."
+            },
             "sleep": {
                 "Drowsy": "Drowsy: –1 status to Perception",
                 "Heightened": "Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking."
