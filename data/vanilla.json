@@ -2558,6 +2558,43 @@
                 }
             }
         },
+        "mountain-resilience": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.JHpYudY14g0H4VWU",
+                        "atCastRank": true,
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "self": true,
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:damage:type:bludgeoning",
+                                            "rider:damage:type:piercing",
+                                            "rider:damage:type:slashing"
+                                        ]
+                                    },
+                                    {
+                                        "or": [
+                                            "rider:damage:outcome:success",
+                                            "rider:damage:outcome:criticalSuccess"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "shorten",
+                                    "rounds": 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "paralyze": {
             "riders": [
                 {

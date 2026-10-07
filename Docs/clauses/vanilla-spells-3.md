@@ -534,9 +534,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-78a | "It gains resistance 5 to physical damage, except adamantine" | Resistance 5 physical, adamantine excepted | | ☐ | |
-| VS-78b | "Each time the target is hit by a bludgeoning, piercing, or slashing attack, mountain resilience 's duration decreases by 1 minute" | Every physical hit takes a minute off its 20 | | ☐ | |
-| VS-78c | "Heightened (6th) The resistance increases to 10" | Rank 6: 10 | | ☐ | |
+| VS-78a | "It gains resistance 5 to physical damage, except adamantine" | Resistance 5 physical, adamantine excepted | pf2e's *Spell Effect: Mountain Resilience* (`Resistance` physical, `exceptions: [adamantine]`), `atCastRank` | ✅ | Leo: **resistance physical 5, except adamantine**; a 10-slashing hit took 5 |
+| VS-78b | "Each time the target is hit by a bludgeoning, piercing, or slashing attack, mountain resilience 's duration decreases by 1 minute" | Every physical hit takes a minute off its 20 | `content/vanilla/mountain-resilience.json`: the effect `carries` a `damage-received` `shorten` (1 of its minutes), predicated on bludgeoning, piercing or slashing from a hit | ✅ | A slashing hit: **20 → 19 minutes**. A fire hit: still 19. Piercing damage that was not an attack: still 19 |
+| VS-78c | "Heightened (6th) The resistance increases to 10" | Rank 6: 10 | pf2e's effect at level 6 | ✅ | Rank 6: **resistance physical 10** |
 
 ### VS-79 · Protection
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 93 |
-| ✅ | 223 |
+| ☐ not yet driven | 90 |
+| ✅ | 226 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |
