@@ -1954,6 +1954,19 @@
                 }
             ]
         },
+        "infuse-vitality": {
+            "targetsPerAction": true,
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.X7RD0JRxhJV9u2LC",
+                        "atCastRank": true
+                    }
+                }
+            ]
+        },
         "invisibility": {
             "riders": [
                 {

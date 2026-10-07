@@ -609,10 +609,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-86a | "The number of targets is equal to the number of actions you spent casting this spell" | One, two or three targets by the actions spent | | ☐ | |
-| VS-86b | "Each target's unarmed and weapon Strikes deal an extra 1d4 vitality damage" | +1d4 vitality on their Strikes | | ☐ | |
-| VS-86c | "If you have the holy trait, you can add that trait to this spell and to the Strikes affected by the spell" | A holy caster may make the Strikes holy | | ☐ | |
-| VS-86d | "Heightened (3rd) The damage increases to 2d4 damage" | Rank 3: 2d4 | | ☐ | |
+| VS-86a | "The number of targets is equal to the number of actions you spent casting this spell" | One, two or three targets by the actions spent | `targetsPerAction` with no `actionVariants` (`actionVariant`, cast stage 8): the targets are the actions spent; more than the spell's most (`mostActions`, "1 to 3" → 3) is refused | ✅ | Two targeted (Leo, Aries): cast, **both** got the effect. Four targeted: refused — **nothing posted** (the cast stage returned false). One: Leo only |
+| VS-86b | "Each target's unarmed and weapon Strikes deal an extra 1d4 vitality damage" | +1d4 vitality on their Strikes | pf2e's *Spell Effect: Infuse Vitality* (`DamageDice` on `strike-damage`), `atCastRank` | ✅ | Leo's longsword: **1d8 slashing → 1d8 slashing + 1d4 vitality** |
+| VS-86c | "If you have the holy trait, you can add that trait to this spell and to the Strikes affected by the spell" | A holy caster may make the Strikes holy | pf2e's `AdjustStrike` adds holy, predicated on `parent:origin:trait:holy` — read from the caster as the effect carries no stored origin options | ✅ | Aries without holy: Strike traits *attack*; with holy (a roll option): **attack, holy**. The holy caster's Strikes take it whenever cast — pf2e makes the "can" automatic |
+| VS-86d | "Heightened (3rd) The damage increases to 2d4 damage" | Rank 3: 2d4 | pf2e's dice by `@item.level` | ✅ | Rank 3: **2d4** vitality; rank 5: **3d4** |
 
 ### VS-87 · Moon Frenzy
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 61 |
-| ✅ | 255 |
+| ☐ not yet driven | 57 |
+| ✅ | 259 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -48,6 +48,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
 | Ignition | 1 | variant — Ignition (Melee): crit. success: 1d6 (+1d6 per rank) persistent fire | crit. success: 1d4 (+1d4 per rank) persistent fire |  |
 | Ill Omen | 1 |  | failure / crit. failure: spell-effect-ill-omen |  |
+| Infuse Vitality | 1 |  | spell-effect-infuse-vitality |  |
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Levitate | 3 |  | elevation; spell-effect-levitate (carries turn-end toggle) |  |

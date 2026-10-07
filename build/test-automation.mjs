@@ -1357,4 +1357,9 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a nudge applies one point short of success, or of failure — not where a natural 20 or 1 undoes it", NUDGE_PREDICATE, [{ or: [{ and: ["check:total:delta:-1", { not: "check:total:natural:20" }] }, { and: ["check:total:delta:-10", { not: "check:total:natural:1" }] }] }]);
 }
 
+{
+    const { mostActions } = await import("../scripts/vanilla/requires.mjs");
+    check("a spell's most actions, from its casting time", [mostActions({ system: { time: { value: "1 to 3" } } }), mostActions({ system: { time: { value: "2" } } }), mostActions({ system: { time: { value: "reaction" } } })], [3, 2, null]);
+}
+
 report("Automation tests");
