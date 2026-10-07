@@ -535,6 +535,30 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The vanilla spell tracker holds to pf2e and to the table                                    */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const file = path.join(ROOT, "Docs", "clauses", "vanilla-spells.md");
+    const text = fs.readFileSync(file, "utf8");
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const rows = text.split(/\r?\n/).filter((line) => /^\| VS-\d+ /.test(line)).map((line) => {
+        const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+        return { id: cells[0], slug: cells[1].replace(/`/g, ""), staticCheck: cells[6], mark: cells[7] };
+    });
+    check("the tracker has forty rows, numbered once each", [rows.length, new Set(rows.map((r) => r.id)).size], [40, 40]);
+    check("every tracked spell is a real pf2e spell", rows.filter((r) => !index.spells[r.slug]).map((r) => r.slug), []);
+    check("no spell is tracked twice", rows.length - new Set(rows.map((r) => r.slug)).size, 0);
+    check("every row carries one of the six marks", rows.filter((r) => !MARKS.includes(r.mark)).map((r) => `${r.id} ${r.mark}`), []);
+    check("a ✅ row has a table entry behind it, or says why it needs none",
+        rows.filter((r) => r.mark === "✅" && !fs.existsSync(path.join(ROOT, "content", "vanilla", `${r.slug}.json`)) && !r.staticCheck).map((r) => r.id), []);
+    const counted = Object.fromEntries(MARKS.map((mark) => [mark, rows.filter((r) => r.mark === mark).length]));
+    const table = Object.fromEntries(MARKS.map((mark) => [mark, Number(new RegExp(`^\\| ${mark}[^|]*\\| (\\d+) \\|`, "m").exec(text)?.[1])]));
+    check("the counts table is the rows counted", table, counted);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Coexistence: a table rider steps aside for a spell another module already automates           */
 /* -------------------------------------------------------------------------------------------- */
 
