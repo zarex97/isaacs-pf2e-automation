@@ -613,6 +613,26 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("…and on anything else, the class DC as before", RiderExtensions.resolveDC(undefined, { originActor: wizard, item: { type: "feat" } }), 20);
 }
 
+{
+    // A receipt is what the engine itself created (#6): every place a rider pass creates an item on a
+    // creature has to say so, or a reroll will not take it back — and diffing the sheet instead takes back
+    // other modules' items too. `inflictPersistent` and `Escape.grant` return what they made; their
+    // callers record it.
+    const unrecorded = [];
+    for (const file of ["apply.mjs", "encasement.mjs"]) {
+        const lines = fs.readFileSync(path.join(SCRIPTS, "riders", file), "utf8").split(/\r?\n/);
+        lines.forEach((line, i) => {
+            // `createEmbeddedDocuments(` with any type on the same line or the next — a call wrapped over lines
+            // put "Item" one line down and slipped past a narrower pattern.
+            const call = /createEmbeddedDocuments\(/.test(line) && /"Item"/.test(`${line}${lines[i + 1] ?? ""}`);
+            if (!call && !/\.increaseCondition\(/.test(line)) return;
+            const near = lines.slice(Math.max(0, i - 2), i + 5).join("\n");
+            if (!/record\(|context\.created|return created|async function increaseRecorded/.test(near)) unrecorded.push(`${file}:${i + 1}`);
+        });
+    }
+    check("every item a rider pass creates is recorded on its receipt", unrecorded, []);
+}
+
 /* -------------------------------------------------------------------------------------------- */
 /*  The indicator: what is automated, from where, and what the GM may switch                     */
 /* -------------------------------------------------------------------------------------------- */
