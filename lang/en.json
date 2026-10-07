@@ -547,6 +547,9 @@
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
             },
+            "enlarge": {
+                "Choose": "Which version: Large, or Huge?"
+            },
             "seal-fate": {
                 "Choose": "Which damage will be its end?"
             },

@@ -656,8 +656,20 @@ export function preselected(rules, preselect, outcome, cast = {}) {
         if (rule?.key !== "ChoiceSet" || !key) return rule;
         // `"$cast"`: what the caster chose as the spell was cast — *Seal Fate*'s damage type.
         const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key];
-        return answer === null ? rule : { ...rule, selection: answer };
+        return answer === null ? rule : { ...rule, selection: choiceValue(rule, answer) };
     });
+}
+
+/**
+ * The ChoiceSet value an answer names: the choice whose value is the answer, or — for pf2e's object-valued choices,
+ * *Enlarge*'s `{ size, reach, damage }` — the one with the answer among its values. Otherwise the answer itself.
+ */
+export function choiceValue(rule, answer) {
+    if (!Array.isArray(rule?.choices) || typeof answer !== "string") return answer;
+    const exact = rule.choices.find((choice) => choice?.value === answer);
+    if (exact) return exact.value;
+    const within = rule.choices.find((choice) => choice?.value && typeof choice.value === "object" && Object.values(choice.value).includes(answer));
+    return within ? within.value : answer;
 }
 
 /** A compass point as a direction on the grid (y grows downwards). */

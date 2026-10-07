@@ -454,13 +454,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-71a | "the target grows to size Large" | The creature and its token are Large | | ☐ | |
-| VS-71b | "The creature is Clumsy 1" | Clumsy 1 while it lasts | | ☐ | |
-| VS-71c | "Its reach increases by 5 feet (or by 10 feet if it started out Tiny)" | Reach +5 ft | | ☐ | |
-| VS-71d | "it gains a +2 status bonus to damage rolls on melee Strikes" | +2 to melee damage | | ☐ | |
-| VS-71e | "This spell has no effect on a Large or larger creature" | A Large creature is unchanged | | ☐ | |
-| VS-71f | "Heightened (4th) The creature instead grows to size Huge" | Rank 4: Huge, +4, reach +10 ft | | ☐ | |
-| VS-71g | "Heightened (6th) Choose either the 2nd-rank or 4th-rank version of this spell and apply its effects to up to 10 willing creatures" | Rank 6: a choice, and up to ten targets | | ☐ | |
+| VS-71a | "the target grows to size Large" | The creature and its token are Large | `content/vanilla/enlarge.json`: pf2e's *Spell Effect: Enlarge* (`CreatureSize`, its token linked to the actor's size), `atCastRank` | ✅ | Rank 2 on Leo (Medium): **Large**, his token resized to **2×2** |
+| VS-71b | "The creature is Clumsy 1" | Clumsy 1 while it lasts | pf2e's effect: `GrantItem` Clumsy | ✅ | Leo **clumsy 1** while it lasts |
+| VS-71c | "Its reach increases by 5 feet (or by 10 feet if it started out Tiny)" | Reach +5 ft | pf2e's effect: reach override 10 (15 at Huge) | ✅ | Leo's reach **10** feet (from 5) |
+| VS-71d | "it gains a +2 status bonus to damage rolls on melee Strikes" | +2 to melee damage | pf2e's effect: `FlatModifier` status, `melee-strike-damage` | ✅ | "Enlarge: +2" on Leo's melee Strike damage |
+| VS-71e | "This spell has no effect on a Large or larger creature" | A Large creature is unchanged | each rider predicated on `target:size` (below Large; below Huge from 4th rank) | ✅ | ZZ Victim made Large, cast on at rank 2: no effect, still Large, no clumsy, reach unchanged |
+| VS-71f | "Heightened (4th) The creature instead grows to size Huge" | Rank 4: Huge, +4, reach +10 ft | pf2e's effect at level 4: Huge, +4, reach 15 | ✅ | Rank 4 on Capricorn: **Huge**, token **3×3**, reach **15**, "Enlarge: +4", clumsy 1 |
+| VS-71g | "Heightened (6th) Choose either the 2nd-rank or 4th-rank version of this spell and apply its effects to up to 10 willing creatures" | Rank 6: a choice, and up to ten targets | `castChoice` with `fromRank: 6`, `preselect: "$cast"` (`choiceValue` test); `areaTargeting.maxTargets` 1, 10 from rank 6 | ✅ | Rank 6, three targets: "Which version: Large, or Huge?" — Large — and Leo, Capricorn and ZZ Victim each **Large**, the choice already made on every effect (no prompt per creature). At rank 2, two targeted: "2 targeted, and it reaches 1. Cast anyway?" |
 | VS-71h | "Its equipment grows with it but returns to natural size if removed" | — | | — | Nothing to automate: equipment size is description |
 
 ### VS-72 · Animal Form
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 133 |
-| ✅ | 184 |
+| ☐ not yet driven | 126 |
+| ✅ | 191 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -891,7 +891,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { stopShortOfWalls, compassVector, preselected } = await import("../scripts/riders/apply.mjs");
     const omen = [{ key: "ChoiceSet", flag: "illOmen", choices: [] }, { key: "RollTwice", keep: "lower" }];
     check("a ChoiceSet answered from the choice made as the spell was cast", preselected([{ key: "ChoiceSet", flag: "damageType" }], { damageType: "$cast" }, "failure", { damageType: "fire" })[0].selection, "fire");
-    const { withCast } = await import("../scripts/riders/apply.mjs");
+    const { withCast, choiceValue } = await import("../scripts/riders/apply.mjs");
+    const enlarge = { key: "ChoiceSet", choices: [{ value: { damage: 4, reach: 15, size: "huge" } }, { value: { damage: 2, reach: 10, size: "large" } }] };
+    check("an answer names an object-valued choice by one of its values; a plain one is itself", [choiceValue(enlarge, "large"), choiceValue({ choices: [{ value: "fire" }] }, "fire"), choiceValue(enlarge, "tiny")], [{ damage: 2, reach: 10, size: "large" }, "fire", "tiny"]);
     check("riders an effect carries are bound to the cast: its choice, and a level that grows by rank",
         withCast([{ predicate: ["rider:damage:type:$cast:damageType"], apply: { type: "death", maxLevel: 7, maxLevelPerStep: 4 } }], { damageType: "cold" }, 1),
         [{ predicate: ["rider:damage:type:cold"], apply: { type: "death", maxLevel: 11 } }]);

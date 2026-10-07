@@ -105,7 +105,16 @@ export const CAST_CHOICES = "castChoices";
 export async function castChoice(spell, _options) {
     const spec = configOf(spell, "castChoice");
     if (!spec?.flag || !Array.isArray(spec.choices) || spec.choices.length === 0) return true;
-    const label = (value) => game.i18n.localize(CONFIG.PF2E?.damageTypes?.[value] ?? value);
+    const key = `${CAST_CHOICES}.${(spell.original ?? spell).id}`;
+    // A choice only some ranks ask — *Enlarge*: "Heightened (6th) Choose either the 2nd-rank or 4th-rank version". Below
+    // `fromRank` nothing is asked, and nothing an earlier cast chose is left to be read.
+    if (Number(spec.fromRank) > 0 && (Number(spell.rank) || 0) < Number(spec.fromRank)) {
+        if (spell.actor?.getFlag(LIB_ID, key)) await spell.actor.unsetFlag(LIB_ID, key);
+        return true;
+    }
+    // Sizes by their names, as pf2e's own choices spell them ("large"); its labels are keyed by the short form ("lg").
+    const SIZES = { tiny: "tiny", small: "sm", medium: "med", large: "lg", huge: "huge", gargantuan: "grg" };
+    const label = (value) => game.i18n.localize(CONFIG.PF2E?.damageTypes?.[value] ?? CONFIG.PF2E?.actorSizes?.[SIZES[value] ?? value] ?? value);
     const chosen = spec.choices.length === 1 ? spec.choices[0] : await foundry.applications.api.DialogV2.wait({
         window: { title: spell.name },
         content: `<p>${game.i18n.localize(spec.prompt ?? "")}</p>`,
@@ -113,7 +122,7 @@ export async function castChoice(spell, _options) {
         rejectClose: false,
     });
     if (!chosen) return false;
-    await spell.actor?.setFlag(LIB_ID, `${CAST_CHOICES}.${(spell.original ?? spell).id}`, { [spec.flag]: chosen });
+    await spell.actor?.setFlag(LIB_ID, key, { [spec.flag]: chosen });
     return true;
 }
 

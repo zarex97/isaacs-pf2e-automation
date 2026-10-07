@@ -25,6 +25,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
 | Electric Arc | 1 | up to 2 |  |  |
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
+| Enlarge | 2 | up to 1, +9 at rank 6 | spell-effect-enlarge (below rank 4); spell-effect-enlarge (from rank 4) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
