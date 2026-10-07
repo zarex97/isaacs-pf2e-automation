@@ -1,5 +1,6 @@
 import { mergedFlag } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
+import { combatOf } from "../lib/combat.mjs";
 
 /**
  * Riders that may fire once a round, and no more.
@@ -63,7 +64,8 @@ export function alreadySpent(ledger, key, stamp) {
  * because the first attempt failed halfway through.
  */
 export async function claimRound(actor, item, index) {
-    const stamp = roundKey();
+    // The round of the encounter this creature is fighting in — not the one being viewed, which may be another.
+    const stamp = roundKey(combatOf(actor) ?? globalThis.game?.combat);
     if (!stamp) return true;
     const key = riderKey(item, index);
     const ledger = mergedFlag(actor, FLAG) ?? {};

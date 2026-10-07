@@ -15,6 +15,7 @@ import { Dismiss } from "./dismiss.mjs";
 import { OriginAction } from "./origin-action.mjs";
 import { Affliction } from "./affliction.mjs";
 import { Aftermath } from "./aftermath.mjs";
+import { Unobserved } from "./unobserved.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -463,6 +464,8 @@ async function applyOne(rider, context) {
             return OriginAction.spend(rider, context);
         case "cast":
             return applyCast(rider, context);
+        case "unobserve":
+            return Unobserved.apply(rider, context);
         case "aftermath":
             return Aftermath.open(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath-mark":

@@ -12,6 +12,7 @@ import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
 import { OriginAction } from "./riders/origin-action.mjs";
 import { Affliction } from "./riders/affliction.mjs";
+import { Unobserved } from "./riders/unobserved.mjs";
 import { CastZones } from "./targeting/zones.mjs";
 import { Repels } from "./targeting/repels.mjs";
 import { Barrier } from "./targeting/barrier.mjs";
@@ -84,6 +85,7 @@ export const RIDER_INIT = [
     ["dismissing an area", () => Dismiss.registerHooks()],
     ["an action spent from a creature's effect", () => { OriginAction.register(); OriginAction.registerHooks(); }],
     ["afflictions: stage damage and the save at the end of each turn", () => Affliction.registerHooks()],
+    ["a creature one cannot observe", () => Unobserved.register()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],

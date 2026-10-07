@@ -145,6 +145,90 @@
                 }
             ]
         },
+        "blinding-fury": {
+            "riders": [
+                {
+                    "event": "damage-received",
+                    "self": true,
+                    "predicate": [
+                        "rider:damage:dealt"
+                    ],
+                    "apply": {
+                        "type": "reaction",
+                        "riders": [
+                            {
+                                "trigger": true,
+                                "apply": {
+                                    "type": "cast"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "unobserve",
+                        "watcher": "target",
+                        "hidden": "origin"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blinding-fury.Fury",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "damage-applied",
+                                "apply": {
+                                    "type": "unobserve",
+                                    "watcher": "origin",
+                                    "hidden": "target",
+                                    "onlyEffectOrigin": true
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blinding-fury.Fury",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "damage-applied",
+                                "oncePerRound": true,
+                                "apply": {
+                                    "type": "unobserve",
+                                    "watcher": "origin",
+                                    "hidden": "target"
+                                }
+                            }
+                        ]
+                    },
+                    "duration": {
+                        "value": -1,
+                        "unit": "unlimited"
+                    }
+                }
+            ]
+        },
         "blindness": {
             "riders": [
                 {

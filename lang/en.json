@@ -217,6 +217,13 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Unobserved": {
+            "Name": "{watcher} can't observe {hidden}",
+            "Note": "{watcher} can't observe {hidden}.",
+            "FlatPassed": "{attacker} attacks {hidden}, whom it can't observe: DC 11 flat check — passed.",
+            "FlatFailed": "{attacker} attacks {hidden}, whom it can't observe: DC 11 flat check — failed, the attack is lost.",
+            "OffGuard": "off-guard: {name} can't observe the attacker"
+        },
         "Aftermath": {
             "NoneDied": "{name} killed no one: the void energy turns back."
         },
@@ -531,6 +538,9 @@
             },
             "seal-fate": {
                 "Choose": "Which damage will be its end?"
+            },
+            "blinding-fury": {
+                "Fury": "blinding fury"
             },
             "schadenfreude": {
                 "Amused": "amused: –1 to Perception and Will"

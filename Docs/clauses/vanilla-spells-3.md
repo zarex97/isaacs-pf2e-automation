@@ -403,12 +403,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-66a | "Trigger A creature damages you" | Damage to the caster offers the reaction, aimed at the one who dealt it | | ☐ | |
-| VS-66b | "Success The target can't Observe you until the end of its turn, and if you're currently observed by it, you become Hidden to it" | The caster is hidden to it until the end of its turn | | ☐ | |
-| VS-66c | "Failure As success, and for 1 minute, every time the target damages you, it can't observe you until the end of its turn" | For a minute, each time it hurts the caster, the caster is hidden to it again | | ☐ | |
-| VS-66d | "Critical Failure As success, and for an unlimited duration, the first time each round the target damages a creature, it can't observe that creature until the end of its turn" | Forever: the first creature it damages each round is hidden to it | | ☐ | |
-| VS-66e | "If it damages several creatures at once, the creature it can't perceive is chosen randomly among those creatures" | A random pick among several | | ☐ | |
-| VS-66f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+| VS-66a | "Trigger A creature damages you" | Damage to the caster offers the reaction, aimed at the one who dealt it | `content/vanilla/blinding-fury.json`: a `damage-received` reaction (`rider:damage:dealt`) whose nested `cast` (`trigger: true`) aims at the attacker | ✅ | ZZ Victim's longsword dealt Aries 5: "Drive: Blinding Fury can be used as a reaction." Using it cast *Blinding Fury* at **ZZ Victim**, whose Will save followed |
+| VS-66b | "Success The target can't Observe you until the end of its turn, and if you're currently observed by it, you become Hidden to it" | The caster is hidden to it until the end of its turn | `unobserve` (`scripts/riders/unobserved.mjs`): an effect naming the unobserved creature, to the end of the watcher's turn; a check-pipeline gate (DC 11 flat check) and stage (off-guard) | ✅ | Any result but a critical success: "ZZ Victim can't observe Aries" until the end of its turn. ZZ Victim's Strike at Aries: "DC 11 flat check — failed, the attack is lost" (5); with 15 it passed and the attack was rolled. Aries' Strike found ZZ Victim off-guard — AC **8**, not 10 |
+| VS-66c | "Failure As success, and for 1 minute, every time the target damages you, it can't observe you until the end of its turn" | For a minute, each time it hurts the caster, the caster is hidden to it again | `failure`: a 1-minute effect carrying a `damage-applied` `unobserve` with `onlyEffectOrigin` | ✅ | For the minute: ZZ Victim damaging Aries again — "ZZ Victim can't observe Aries" anew; damaging Capricorn — nothing |
+| VS-66d | "Critical Failure As success, and for an unlimited duration, the first time each round the target damages a creature, it can't observe that creature until the end of its turn" | Forever: the first creature it damages each round is hidden to it | `criticalFailure`: an unlimited effect carrying a `damage-applied` `unobserve` with `oncePerRound` (the round of the creature's own encounter) | ✅ | Unlimited. In one round: damaging Capricorn first — "can't observe Capricorn"; damaging Aries after — nothing. Next round, damaging Aries — "can't observe Aries". Found on the way: the round gate read the *viewed* encounter, not the one the creature fights in, and kept every round closed; it now reads the creature's own |
+| VS-66e | "If it damages several creatures at once, the creature it can't perceive is chosen randomly among those creatures" | A random pick among several | `oncePerRound`: the first damage that lands | ⚠️ | With several creatures damaged at once, the one it can't observe is the first whose damage is applied. **Gap:** not chosen at random — pf2e applies an area's damage one creature at a time, in the order the table clicks, so the first applied is the one |
+| VS-66f | "Critical Success The target is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): nothing |
 
 ### VS-67 · Breath of Life
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 157 |
-| ✅ | 161 |
-| ⚠️ | 7 |
+| ☐ not yet driven | 151 |
+| ✅ | 166 |
+| ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |
