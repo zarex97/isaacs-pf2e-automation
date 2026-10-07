@@ -217,6 +217,12 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Fall": {
+            "Fell": "{actor} falls {feet} feet, safely; still {left} feet up.",
+            "Landed": "{actor} falls {feet} feet to the ground, safely.",
+            "Grounded": "{name}: can't leave the ground",
+            "Refused": "{actor} can't leave the ground."
+        },
         "Cleanse": {
             "Title": "Cleanse",
             "Prompt": "Which affliction?",
@@ -255,7 +261,8 @@
             "PenaltyOne": "{name}'s multiple attack penalty now counts one more attack."
         },
         "Requires": {
-            "HeldWeapon": "{name} needs a weapon in hand."
+            "HeldWeapon": "{name} needs a weapon in hand.",
+            "FlyingTarget": "{name} needs a target in the air."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",

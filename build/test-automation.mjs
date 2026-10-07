@@ -955,6 +955,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
     const { conditionsAt } = await import("../scripts/riders/apply.mjs");
     const { counteractKinds, isAffliction } = await import("../scripts/riders/cleanse.mjs");
+    const { fallTo } = await import("../scripts/riders/fall.mjs");
+    check("a safe fall of up to 120 feet stops at the ground", [fallTo(60, 120), fallTo(200, 120), fallTo(0, 120)], [0, 80, 0]);
     check("Cleanse Affliction counteracts nothing at 2, a disease or poison at 3, a curse too at 4", [counteractKinds(2), counteractKinds(3), counteractKinds(4)], [[], ["disease", "poison"], ["disease", "poison", "curse"]]);
     check("an affliction is this module's, or an effect with the curse, disease or poison trait", [isAffliction({ type: "effect", flags: { [LIB_ID]: { affliction: {} } }, system: { traits: { value: [] } } }), isAffliction({ type: "effect", flags: {}, system: { traits: { value: ["curse"] } } }), isAffliction({ type: "effect", flags: {}, system: { traits: { value: ["fire"] } } })], [true, true, false]);
     const { resumedStart } = await import("../scripts/riders/set-aside.mjs");

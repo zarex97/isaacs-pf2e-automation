@@ -492,12 +492,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-74a | "you hamper a target's flight" | Only a flying creature can be targeted | | ☐ | |
-| VS-74b | "Success The target falls safely up to 120 feet" | It drops up to 120 ft (elevation) | | ☐ | |
-| VS-74c | "If the creature reaches the ground safely, it doesn't take falling damage" | No falling damage | | ☐ | |
-| VS-74d | "it can't Fly, levitate, or otherwise leave the ground for 1 round" | On a failure, grounded for a round | | ☐ | |
-| VS-74e | "it can't Fly, levitate, or otherwise leave the ground for 1 minute" | On a critical failure, for a minute | | ☐ | |
-| VS-74f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+| VS-74a | "you hamper a target's flight" | Only a flying creature can be targeted | `content/vanilla/earthbind.json`: `requires: "flying-target"` (a cast stage, `what a spell needs`) | ✅ | Cast at ZZ Victim on the ground: refused, nothing posted. At 60 feet up: cast |
+| VS-74b | "Success The target falls safely up to 120 feet" | It drops up to 120 ft (elevation) | `fall` (`scripts/riders/fall.mjs`, `fallTo` test): up to 120 feet, never below the ground | ✅ | A success at 60 feet: "ZZ Victim falls 60 feet to the ground, safely." A failure at 200 feet: "falls 120 feet, safely; still 80 feet up." |
+| VS-74c | "If the creature reaches the ground safely, it doesn't take falling damage" | No falling damage | `fall` deals no damage | ✅ | Every fall: no damage roll, Hit Points unchanged |
+| VS-74d | "it can't Fly, levitate, or otherwise leave the ground for 1 round" | On a failure, grounded for a round | `failure`: `grounded` 1 round, only on landing; a `preUpdateToken` hook refuses a rise | ✅ | A failure at 60 feet: landed, and *Earthbind: can't leave the ground* for **1 round**; lifting the token to 30 feet was **refused**. A failure at 200 feet: still 80 feet up, so not grounded |
+| VS-74e | "it can't Fly, levitate, or otherwise leave the ground for 1 minute" | On a critical failure, for a minute | `criticalFailure`: `grounded` 1 minute | ✅ | A critical failure at 60 feet: landed, can't leave the ground for **1 minute** |
+| VS-74f | "Critical Success The target is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): no fall, no effect |
 
 ### VS-75 · Levitate
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 112 |
-| ✅ | 205 |
+| ☐ not yet driven | 106 |
+| ✅ | 211 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -25,6 +25,11 @@ export function actionChoices(counts, targets, perAction) {
 export function unmetRequirement(spell) {
     const requires = configOf(spell, "requires");
     if (requires === "held-weapon" && heldWeapons(spell?.actor).length === 0) return t("Requires.HeldWeapon", { name: spell.name });
+    // *Earthbind*: "you hamper a target's flight" — every creature targeted is off the ground.
+    if (requires === "flying-target") {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        if (targets.length === 0 || targets.some((token) => !((Number(token.document?._source?.elevation ?? token.document?.elevation ?? token.elevation) || 0) > 0))) return t("Requires.FlyingTarget", { name: spell.name });
+    }
     return null;
 }
 

@@ -18,6 +18,7 @@ import { Aftermath } from "./aftermath.mjs";
 import { Unobserved } from "./unobserved.mjs";
 import { setAside } from "./set-aside.mjs";
 import { Cleanse } from "./cleanse.mjs";
+import { Fall } from "./fall.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -468,6 +469,8 @@ async function applyOne(rider, context) {
             return applyCast(rider, context);
         case "unobserve":
             return Unobserved.apply(rider, context);
+        case "fall":
+            return Fall.apply(rider, context);
         case "cleanse":
             return Cleanse.offer(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath":
