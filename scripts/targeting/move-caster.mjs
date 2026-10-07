@@ -74,6 +74,9 @@ export const MoveCaster = {
         if (!destination) return;
         pending.delete(key);
         const token = await fromUuid(destination.token);
+        // *Planar Tether*: "any teleportation effect that would move the target" — the caster's own *Translocate* too.
+        const { PlanarTether } = await import("../riders/tether.mjs");
+        if (token?.actor && await PlanarTether.holds({ actor: token.actor }, "teleport", { item: spell, dc: spell.spellcasting?.statistic?.dc?.value ?? null, rank: spell.rank })) return;
         await token?.update({ x: destination.x, y: destination.y }, { teleport: true, animate: false, forcedMovement: true });
     },
 };
