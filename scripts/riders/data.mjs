@@ -21,6 +21,8 @@ export const EVENTS = [
     "turn-end", // this actor's turn ended
     "turn-start", // this actor's turn began
     "aura-tick", // a creature entered this actor's aura, or ended its turn inside it
+    "save-made", // this actor rolled a save against someone else's effect
+    "creature-dying", // a creature within the rider's range would die
 ];
 
 export const DEFAULT_EVENT = "save-rolled";

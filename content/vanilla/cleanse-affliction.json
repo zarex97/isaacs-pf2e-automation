@@ -1,0 +1,12 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "cleanse",
+                "statistic": "spellcasting"
+            }
+        }
+    ]
+}

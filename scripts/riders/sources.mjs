@@ -220,11 +220,13 @@ export const Sources = {
      */
     async onSaveMessage(message, context) {
         if (!OUTCOMES.includes(context?.outcome)) return;
+        const riderSave = context.options?.includes(`${LIB_ID}:rider-save`);
 
         // The loop guard. A save this module rolled itself (`runSave`) produces a message like any other,
         // and its riders have already been dispatched by the rider that asked for the save — dispatching
         // them again from here is how *Aurora Execution* forces a save that forces a save forever.
-        if (context.options?.includes(`${LIB_ID}:rider-save`)) return;
+        // (Checked below, once the creatures are known: the saver's own `save-made` is a different event, and
+        // fires for a save this module rolled as much as for one rolled from a card.)
 
         // The origin is on the roll's own context, put there by pf2e when the save knows what it is against.
         // A save rolled off a character sheet has none, and is not an event this module has anything to say
@@ -241,12 +243,26 @@ export const Sources = {
         const target = message.token ?? message.actor?.getActiveTokens(true, true).at(0);
         if (!origin?.uuid || !target?.uuid) return;
 
+        if (!riderSave) {
+            await Relay.request({
+                action: "applyRiders",
+                event: "save-rolled",
+                messageId: message.id,
+                originUuid: origin.uuid,
+                targetUuid: target.uuid,
+                outcome: context.outcome,
+            });
+        }
+
+        // The mirror image, as `strike-received` mirrors `strike-resolved`: the creature that saved gets its own
+        // items looked at, aimed back at whoever forced the save — *Schadenfreude*'s "You critically fail a saving
+        // throw against a foe's effect".
         await Relay.request({
             action: "applyRiders",
-            event: "save-rolled",
+            event: "save-made",
             messageId: message.id,
-            originUuid: origin.uuid,
-            targetUuid: target.uuid,
+            originUuid: target.uuid,
+            targetUuid: origin.uuid,
             outcome: context.outcome,
         });
     },
@@ -526,6 +542,40 @@ export const Sources = {
         await Sources.onAllyDamaged({
             target, item, damage, outcome: params?.outcome ?? null, attackerToken,
         });
+
+        // …and the fourth: the blow would kill it, and somebody in range may yet stop that.
+        if (wouldDie(live, before) && !leavesNothing(item)) await Sources.onWouldDie({ target, item });
+    },
+
+    /**
+     * A creature about to die, and anyone close enough to stop it. *Breath of Life*: "Trigger A living creature
+     * within range would die." Every creature on the scene carrying a `creature-dying` rider whose `range` (feet)
+     * reaches the dying one is asked — its own items, with the dying creature as the event's other end
+     * (`eventTarget`, `trigger: true`).
+     */
+    async onWouldDie({ target, item }) {
+        const dying = target?.object;
+        if (!dying || !canvas?.ready) return;
+        for (const candidate of canvas.tokens.placeables) {
+            const actor = candidate.actor;
+            if (!actor || candidate.document.uuid === target.uuid) continue;
+            let reach = 0;
+            for (const owned of actor.items) {
+                for (const rider of ridersOn(owned)) {
+                    if (rider?.event === "creature-dying") reach = Math.max(reach, Number(rider.range) || 0);
+                }
+            }
+            if (reach <= 0 || distanceBetween(candidate, dying) > reach) continue;
+            await Relay.request({
+                action: "applyRiders",
+                event: "creature-dying",
+                itemUuid: item?.uuid,
+                originUuid: candidate.document.uuid,
+                targetUuid: candidate.document.uuid,
+                eventTargetUuid: target.uuid,
+                dispatchId: foundry.utils.randomID(),
+            });
+        }
     },
 
     /**
@@ -672,4 +722,22 @@ export function effectForAura(items, slug) {
         (item.system?.rules ?? []).some((rule) => rule.key === "Aura" && rule.slug === slug);
     const all = [...items];
     return all.find((item) => carries(item) && declares(item)) ?? all.find(carries) ?? null;
+}
+
+/**
+ * Would this creature die of what just happened? A character at its dying maximum; anything else at 0 Hit Points it
+ * did not have a moment ago.
+ */
+export function wouldDie(actor, before) {
+    if (!actor) return false;
+    if (actor.type === "character") {
+        const dying = actor.getCondition?.("dying")?.value ?? actor.itemTypes?.condition?.find((c) => c.slug === "dying")?.value ?? 0;
+        return dying > 0 && dying >= (actor.attributes?.dying?.max ?? 4);
+    }
+    return (actor.hitPoints?.value ?? 1) <= 0 && (Number(before) || 0) > 0;
+}
+
+/** "A death effect or an effect that leaves no remains, such as Disintegrate" — nothing to stop. */
+export function leavesNothing(item) {
+    return !!item && ((item.system?.traits?.value ?? []).includes("death") || ["disintegrate"].includes(item.slug));
 }

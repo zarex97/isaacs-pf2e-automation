@@ -145,6 +145,90 @@
                 }
             ]
         },
+        "blinding-fury": {
+            "riders": [
+                {
+                    "event": "damage-received",
+                    "self": true,
+                    "predicate": [
+                        "rider:damage:dealt"
+                    ],
+                    "apply": {
+                        "type": "reaction",
+                        "riders": [
+                            {
+                                "trigger": true,
+                                "apply": {
+                                    "type": "cast"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "unobserve",
+                        "watcher": "target",
+                        "hidden": "origin"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blinding-fury.Fury",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "damage-applied",
+                                "apply": {
+                                    "type": "unobserve",
+                                    "watcher": "origin",
+                                    "hidden": "target",
+                                    "onlyEffectOrigin": true
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blinding-fury.Fury",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "damage-applied",
+                                "oncePerRound": true,
+                                "apply": {
+                                    "type": "unobserve",
+                                    "watcher": "origin",
+                                    "hidden": "target"
+                                }
+                            }
+                        ]
+                    },
+                    "duration": {
+                        "value": -1,
+                        "unit": "unlimited"
+                    }
+                }
+            ]
+        },
         "blindness": {
             "riders": [
                 {
@@ -369,6 +453,39 @@
                 }
             ]
         },
+        "breath-of-life": {
+            "riders": [
+                {
+                    "event": "creature-dying",
+                    "range": 60,
+                    "self": true,
+                    "predicate": [
+                        "rider:trigger:mode:living"
+                    ],
+                    "apply": {
+                        "type": "reaction",
+                        "riders": [
+                            {
+                                "trigger": true,
+                                "apply": {
+                                    "type": "cast"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "heal",
+                        "formula": "5d8",
+                        "perStep": "1d8",
+                        "perStepInterval": 2,
+                        "revive": true
+                    }
+                }
+            ]
+        },
         "calm": {
             "areaTargeting": {
                 "affects": "all"
@@ -409,6 +526,18 @@
                     "link": 30
                 }
             }
+        },
+        "cleanse-affliction": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "cleanse",
+                        "statistic": "spellcasting"
+                    }
+                }
+            ]
         },
         "command": {
             "areaTargeting": {
@@ -2527,6 +2656,93 @@
                 "replacesPrevious": true
             }
         },
+        "schadenfreude": {
+            "riders": [
+                {
+                    "event": "save-made",
+                    "self": true,
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        "rider:trigger:enemy"
+                    ],
+                    "apply": {
+                        "type": "reaction",
+                        "riders": [
+                            {
+                                "trigger": true,
+                                "apply": {
+                                    "type": "cast"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.schadenfreude.Amused",
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": [
+                                    "perception",
+                                    "will"
+                                ],
+                                "type": "status",
+                                "value": -1
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stupefied",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stupefied",
+                        "value": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stunned",
+                        "value": 1
+                    }
+                }
+            ]
+        },
         "seal-fate": {
             "castChoice": {
                 "flag": "damageType",
@@ -3071,6 +3287,40 @@
                 }
             ]
         },
+        "sound-body": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "counteract",
+                        "conditions": [
+                            "blinded",
+                            "dazzled",
+                            "deafened",
+                            "enfeebled",
+                            "sickened"
+                        ],
+                        "conditionsAtRank": {
+                            "4": [
+                                "drained",
+                                "slowed"
+                            ],
+                            "6": [
+                                "petrified"
+                            ],
+                            "8": [
+                                "stunned"
+                            ]
+                        },
+                        "includesSelf": false,
+                        "nearMiss": 2,
+                        "dcFrom": "effect",
+                        "statistic": "spellcasting"
+                    }
+                }
+            ]
+        },
         "spider-sting": {
             "riders": [
                 {
@@ -3254,6 +3504,25 @@
                         "sustained": {
                             "repeat": true
                         }
+                    }
+                }
+            ]
+        },
+        "stabilize": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "condition",
+                        "slug": "dying",
+                        "remove": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "condition",
+                        "slug": "unconscious"
                     }
                 }
             ]

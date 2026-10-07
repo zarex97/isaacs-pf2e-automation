@@ -393,60 +393,60 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-65a | "Trigger You critically fail a saving throw against a foe's effect" | The caster's critical failure against a foe's effect offers the reaction, aimed at that foe | | ☐ | |
-| VS-65b | "Success The creature is distracted by its amusement and takes a -1 status penalty on Perception checks and Will saves for 1 round" | –1 to Perception and Will for a round | | ☐ | |
-| VS-65c | "Failure The creature is overcome by its amusement and is Stupefied 1 for 1 round" | Stupefied 1 for a round | | ☐ | |
-| VS-65d | "Critical Failure The creature is lost in its amusement and is Stupefied 2 for 1 round and Stunned 1" | Stupefied 2 and stunned 1 | | ☐ | |
-| VS-65e | "Critical Success The creature is unaffected" | Nothing | | ☐ | |
+| VS-65a | "Trigger You critically fail a saving throw against a foe's effect" | The caster's critical failure against a foe's effect offers the reaction, aimed at that foe | `save-made` event (`Sources.onSaveMessage`'s mirror; test); `rider:trigger:enemy`; `reaction` → nested `cast` with `trigger: true` | ✅ | ZZ Victim (opposition) cast *Fear* at Aries; Aries critically failed its Will save (23 against DC 60): "Drive: Schadenfreude can be used as a reaction. Spend it?" Using it cast *Schadenfreude* targeted at **ZZ Victim** (one use spent, 30 → 29). Leo (party) casting the same at Aries, critically failed: no offer |
+| VS-65b | "Success The creature is distracted by its amusement and takes a -1 status penalty on Perception checks and Will saves for 1 round" | –1 to Perception and Will for a round | `success` → a written-out effect, –1 status to Perception and Will, 1 round | ✅ | ZZ Victim's success (with +30 Will): *amused: –1 to Perception and Will* for 1 round — Will +30 → **+29**, Perception 0 → **–1** |
+| VS-65c | "Failure The creature is overcome by its amusement and is Stupefied 1 for 1 round" | Stupefied 1 for a round | `failure` → stupefied 1 for 1 round | ✅ | A failure: **stupefied 1** for 1 round (Will and Perception –1) |
+| VS-65d | "Critical Failure The creature is lost in its amusement and is Stupefied 2 for 1 round and Stunned 1" | Stupefied 2 and stunned 1 | `criticalFailure` → stupefied 2 for 1 round, and stunned 1 | ✅ | A critical failure: **stupefied 2** for 1 round and **stunned 1** |
+| VS-65e | "Critical Success The creature is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success: nothing |
 
 ### VS-66 · Blinding Fury
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-66a | "Trigger A creature damages you" | Damage to the caster offers the reaction, aimed at the one who dealt it | | ☐ | |
-| VS-66b | "Success The target can't Observe you until the end of its turn, and if you're currently observed by it, you become Hidden to it" | The caster is hidden to it until the end of its turn | | ☐ | |
-| VS-66c | "Failure As success, and for 1 minute, every time the target damages you, it can't observe you until the end of its turn" | For a minute, each time it hurts the caster, the caster is hidden to it again | | ☐ | |
-| VS-66d | "Critical Failure As success, and for an unlimited duration, the first time each round the target damages a creature, it can't observe that creature until the end of its turn" | Forever: the first creature it damages each round is hidden to it | | ☐ | |
-| VS-66e | "If it damages several creatures at once, the creature it can't perceive is chosen randomly among those creatures" | A random pick among several | | ☐ | |
-| VS-66f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
+| VS-66a | "Trigger A creature damages you" | Damage to the caster offers the reaction, aimed at the one who dealt it | `content/vanilla/blinding-fury.json`: a `damage-received` reaction (`rider:damage:dealt`) whose nested `cast` (`trigger: true`) aims at the attacker | ✅ | ZZ Victim's longsword dealt Aries 5: "Drive: Blinding Fury can be used as a reaction." Using it cast *Blinding Fury* at **ZZ Victim**, whose Will save followed |
+| VS-66b | "Success The target can't Observe you until the end of its turn, and if you're currently observed by it, you become Hidden to it" | The caster is hidden to it until the end of its turn | `unobserve` (`scripts/riders/unobserved.mjs`): an effect naming the unobserved creature, to the end of the watcher's turn; a check-pipeline gate (DC 11 flat check) and stage (off-guard) | ✅ | Any result but a critical success: "ZZ Victim can't observe Aries" until the end of its turn. ZZ Victim's Strike at Aries: "DC 11 flat check — failed, the attack is lost" (5); with 15 it passed and the attack was rolled. Aries' Strike found ZZ Victim off-guard — AC **8**, not 10 |
+| VS-66c | "Failure As success, and for 1 minute, every time the target damages you, it can't observe you until the end of its turn" | For a minute, each time it hurts the caster, the caster is hidden to it again | `failure`: a 1-minute effect carrying a `damage-applied` `unobserve` with `onlyEffectOrigin` | ✅ | For the minute: ZZ Victim damaging Aries again — "ZZ Victim can't observe Aries" anew; damaging Capricorn — nothing |
+| VS-66d | "Critical Failure As success, and for an unlimited duration, the first time each round the target damages a creature, it can't observe that creature until the end of its turn" | Forever: the first creature it damages each round is hidden to it | `criticalFailure`: an unlimited effect carrying a `damage-applied` `unobserve` with `oncePerRound` (the round of the creature's own encounter) | ✅ | Unlimited. In one round: damaging Capricorn first — "can't observe Capricorn"; damaging Aries after — nothing. Next round, damaging Aries — "can't observe Aries". Found on the way: the round gate read the *viewed* encounter, not the one the creature fights in, and kept every round closed; it now reads the creature's own |
+| VS-66e | "If it damages several creatures at once, the creature it can't perceive is chosen randomly among those creatures" | A random pick among several | `oncePerRound`: the first damage that lands | ⚠️ | With several creatures damaged at once, the one it can't observe is the first whose damage is applied. **Gap:** not chosen at random — pf2e applies an area's damage one creature at a time, in the order the table clicks, so the first applied is the one |
+| VS-66f | "Critical Success The target is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): nothing |
 
 ### VS-67 · Breath of Life
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-67a | "Trigger A living creature within range would die" | When a living creature within 60 ft would die, the caster is offered the reaction before it does | | ☐ | |
-| VS-67b | "You prevent the target from dying and restore 5d8 Hit Points to the target" | It lives, at 5d8 HP | | ☐ | |
-| VS-67c | "You can't use breath of life if the triggering effect was a death effect or an effect that leaves no remains, such as Disintegrate" | No offer for a death effect or *Disintegrate* | | ☐ | |
-| VS-67d | "The healing increases by 1d8" | Rank 7: 6d8 | | ☐ | |
+| VS-67a | "Trigger A living creature within range would die" | When a living creature within 60 ft would die, the caster is offered the reaction before it does | `creature-dying` event (`Sources.onWouldDie`; `wouldDie` test: a character at its dying maximum, anything else brought to 0), `range: 60`, `rider:trigger:mode:living`; a reaction whose nested `cast` (`trigger: true`) aims at the dying creature | ✅ | Capricorn's longsword took ZZ Victim (living, 35 feet from Aries) from 5 to 0: "Drive: Breath of Life can be used as a reaction." offered to Aries, before anything else was decided. The character half — dying at its maximum — is covered by the `wouldDie` test; the one character driven (Leo) holds at 1 HP by his own ability |
+| VS-67b | "You prevent the target from dying and restore 5d8 Hit Points to the target" | It lives, at 5d8 HP | the cast's `action-used` `heal` (`formula: "5d8"`) with `revive`: no longer dying, dead or defeated | ✅ | Using it cast *Breath of Life* at ZZ Victim: "ZZ Victim regains 27 Hit Points" (5d8) — up from 0, not dead |
+| VS-67c | "You can't use breath of life if the triggering effect was a death effect or an effect that leaves no remains, such as Disintegrate" | No offer for a death effect or *Disintegrate* | `leavesNothing` (a `death` trait, or *Disintegrate*) keeps `creature-dying` from firing; this module's own `death` sets 0 HP without damage, so never fires it; test | ✅ | ZZ Victim taken from 5 to 0 by *Disintegrate*: no reaction offered |
+| VS-67d | "The healing increases by 1d8" | Rank 7: 6d8 | `perStep: "1d8"`, `perStepInterval: 2` (pf2e's data heightens it every rank; the text, every 2) | ✅ | Cast at **rank 7**: "ZZ Victim regains 24 Hit Points" — **6d8** |
 
 ### VS-68 · Stabilize
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-68a | "The target loses the Dying condition" | Dying gone (and wounded rises, as losing dying always does) | | ☐ | |
-| VS-68b | "though it remains Unconscious at 0 Hit Points" | Still unconscious, still at 0 HP | | ☐ | |
+| VS-68a | "The target loses the Dying condition" | Dying gone (and wounded rises, as losing dying always does) | `content/vanilla/stabilize.json`: `condition` `dying` `remove: true` — `loseDying` raises wounded | ✅ | Leo at 0 HP, dying 2: "Leo is no longer dying." — dying gone, **wounded 1**. Found on the way: taking dying off took neither wounded on (the rule: losing dying always raises it) nor left the unconscious pf2e's dying had granted |
+| VS-68b | "though it remains Unconscious at 0 Hit Points" | Still unconscious, still at 0 HP | an `unconscious` rider after the removal | ✅ | Leo stayed **unconscious** (blinded and prone with it) at **0 HP** |
 
 ### VS-69 · Sound Body
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-69a | "Attempt to counteract an effect of your choice imposing one of these conditions on the target: Blinded, Dazzled, Deafened, Enfeebled, or Sickened" | A card offers the effects imposing those conditions; a counteract check ends the one chosen | | ☐ | |
-| VS-69b | "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead suppress the effect until the beginning of your next turn" | A near miss suppresses it until the caster's next turn | | ☐ | |
-| VS-69c | "The effect's duration doesn't elapse while it's suppressed" | The suppressed effect's clock stops | | ☐ | |
-| VS-69d | "This spell can't counteract or suppress curses, diseases, or conditions that are part of the target's normal state" | Curses and diseases are not offered | | ☐ | |
-| VS-69e | "Heightened (4th) Add Drained and Slowed to the list of conditions" | Rank 4 offers drained and slowed | | ☐ | |
-| VS-69f | "Heightened (6th) As 4th rank, plus add Petrified" | Rank 6, petrified | | ☐ | |
-| VS-69g | "Heightened (8th) As 4th rank, plus add petrified and Stunned" | Rank 8, stunned | | ☐ | |
+| VS-69a | "Attempt to counteract an effect of your choice imposing one of these conditions on the target: Blinded, Dazzled, Deafened, Enfeebled, or Sickened" | A card offers the effects imposing those conditions; a counteract check ends the one chosen | `content/vanilla/sound-body.json`: `counteract` with `conditions` — the effects imposing them (`imposesListed`), on the target only | ✅ | Cast at Leo, carrying *Blinding Flash* (blinded), *Deep Blindness* (blinded), *Curse of Night* (dazzled, a curse) and *Weakness* (drained): the card offered **Blinding Flash** and **Deep Blindness**. Counteracting *Deep Blindness* (level 5) with a critical success: "counteracted and gone", its blinded with it. The drive rolled Aries' default counteract statistic; the content now names `spellcasting`, the spell's own |
+| VS-69b | "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead suppress the effect until the beginning of your next turn" | A near miss suppresses it until the caster's next turn | `nearMiss: 2` in `resolveCounteract`; `set-aside.mjs` (until the caster's next turn) | ✅ | *Deep Blindness* at level 7, a critical success at counteract rank 2 (reaching 5): "not counteracted, but suppressed until the start of Aries's next turn" — taken off Leo, its blinded with it. As Aries' next turn began: "Drive: Deep Blindness returns to Leo.", blinded again |
+| VS-69c | "The effect's duration doesn't elapse while it's suppressed" | The suppressed effect's clock stops | `resumedStart` (test): the start moved on by the time away | ✅ | Set aside at world time 232635 and back 12 seconds later: its start **232647**, its remaining duration the full **600 seconds** it had |
+| VS-69d | "This spell can't counteract or suppress curses, diseases, or conditions that are part of the target's normal state" | Curses and diseases are not offered | `imposesListed` leaves out curse and disease effects | ✅ | *Curse of Night* — a curse imposing dazzled, a listed condition — was not offered |
+| VS-69e | "Heightened (4th) Add Drained and Slowed to the list of conditions" | Rank 4 offers drained and slowed | `conditionsAtRank: { 4: [drained, slowed] }`; `conditionsAt` test | ✅ | At rank 2, *Weakness* (drained) was not offered; at **rank 4**, the card offered **Blinding Flash / Weakness / Deep Blindness** |
+| VS-69f | "Heightened (6th) As 4th rank, plus add Petrified" | Rank 6, petrified | `conditionsAtRank: { 6: [petrified] }`; `conditionsAt` test | ✅ | `conditionsAt` at rank 6: blinded, dazzled, deafened, enfeebled, sickened, drained, slowed, **petrified** — the same list the rank-4 drive read its drained from |
+| VS-69g | "Heightened (8th) As 4th rank, plus add petrified and Stunned" | Rank 8, stunned | `conditionsAtRank: { 8: [stunned] }`; `conditionsAt` test | ✅ | `conditionsAt` at rank 8: the rank-6 list plus **stunned** |
 
 ### VS-70 · Cleanse Affliction
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-70a | "Choose an affliction on the target, such as a curse, disease, or poison" | A card offers the target's afflictions | | ☐ | |
-| VS-70b | "If it has advanced past stage one, reduce the stage by one" | Stage 2 → 1; stage 1 stays | | ☐ | |
-| VS-70c | "This reduction can be applied only once to a given case of an affliction" | A second casting doesn't lower the same case again | | ☐ | |
-| VS-70d | "Heightened (3rd) Attempt to counteract the affliction if it is a disease or poison" | Rank 3 counteracts a disease or poison | | ☐ | |
-| VS-70e | "Heightened (4th) Attempt to counteract the affliction if it is a curse, disease, or poison" | Rank 4 adds curses | | ☐ | |
+| VS-70a | "Choose an affliction on the target, such as a curse, disease, or poison" | A card offers the target's afflictions | `cleanse` apply type (`scripts/riders/cleanse.mjs`): a card of the target's afflictions (`isAffliction` test) | ✅ | Cast at Leo, afflicted with spider venom (stage 2) and carrying *Curse of Night*: "Which affliction?" — **Spider Venom (stage 2)** and **Curse of Night** |
+| VS-70b | "If it has advanced past stage one, reduce the stage by one" | Stage 2 → 1; stage 1 stays | `Affliction.ease`: past stage 1, one stage down | ✅ | Spider Venom chosen: "Spider Venom eases to stage 1." — enfeebled 2 became enfeebled 1 |
+| VS-70c | "This reduction can be applied only once to a given case of an affliction" | A second casting doesn't lower the same case again | the case keeps a `cleansed` mark; a second easing is refused | ✅ | Exposed again (back to stage 2, the same case) and cleansed again: "Spider Venom has already been eased once; only a counteract can do more." — still stage 2 |
+| VS-70d | "Heightened (3rd) Attempt to counteract the affliction if it is a disease or poison" | Rank 3 counteracts a disease or poison | `counteractKinds` (test): rank 3 — disease, poison; the counteract against the affliction's own DC | ✅ | At **rank 3**, the venom (a poison): a counteract against its own **DC 20** — "counteracted and gone", its enfeebled with it. *Curse of Night* at rank 3: "beyond this casting … its kind can't be counteracted at this rank" |
+| VS-70e | "Heightened (4th) Attempt to counteract the affliction if it is a curse, disease, or poison" | Rank 4 adds curses | `counteractKinds`: rank 4 adds curse | ✅ | At **rank 4**, *Curse of Night*: "counteracted and gone", the dazzled with it |
 
 ## Batch 6 — Bodies and movement
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 162 |
-| ✅ | 156 |
-| ⚠️ | 7 |
+| ☐ not yet driven | 133 |
+| ✅ | 184 |
+| ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

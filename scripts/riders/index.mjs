@@ -74,6 +74,7 @@ function bindCards(message, html) {
     bindChoiceButtons(message, html);
     bindPickButtons(message, html);
     bindCounteractButtons(message, html);
+    bindCleanseButtons(message, html);
     bindReactionButtons(message, html, (payload) => Relay.request(payload));
 }
 
@@ -120,6 +121,18 @@ function bindPickButtons(message, html) {
                 pickedUuid: button.dataset.token,
                 ...pick,
             });
+        });
+    }
+}
+
+/** The buttons on a "which affliction?" card — *Cleanse Affliction* (`cleanse.mjs`). */
+function bindCleanseButtons(message, html) {
+    const cleanse = flagOf(message, "cleanse");
+    if (!cleanse || !html?.querySelectorAll) return;
+    for (const button of html.querySelectorAll(`[data-action="isaacs-automation-cleanse"]`)) {
+        button.addEventListener("click", async () => {
+            for (const sibling of html.querySelectorAll(`[data-action="isaacs-automation-cleanse"]`)) sibling.disabled = true;
+            await Relay.request({ action: "applyCleanse", event: "cleanse", effectUuid: button.dataset.effect, ...cleanse });
         });
     }
 }

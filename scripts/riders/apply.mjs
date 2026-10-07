@@ -15,6 +15,9 @@ import { Dismiss } from "./dismiss.mjs";
 import { OriginAction } from "./origin-action.mjs";
 import { Affliction } from "./affliction.mjs";
 import { Aftermath } from "./aftermath.mjs";
+import { Unobserved } from "./unobserved.mjs";
+import { setAside } from "./set-aside.mjs";
+import { Cleanse } from "./cleanse.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -120,7 +123,7 @@ async function applyToTarget(target, candidates, context, payload) {
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
         item: castItemOf(context) ?? context.eventItem,
-        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem)],
+        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context)],
     });
 
     // Most riders are chosen against the snapshot. A `live` rider is chosen against the world as this pass
@@ -461,6 +464,12 @@ async function applyOne(rider, context) {
             return Dismiss.apply(rider, context);
         case "spend-charge":
             return OriginAction.spend(rider, context);
+        case "cast":
+            return applyCast(rider, context);
+        case "unobserve":
+            return Unobserved.apply(rider, context);
+        case "cleanse":
+            return Cleanse.offer(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath":
             return Aftermath.open(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath-mark":
@@ -1083,6 +1092,8 @@ async function applyHeal(rider, context) {
         const roll = await new Roll(String(dice)).evaluate();
         const healed = Math.max(0, Math.min(roll.total, hp.max - hp.value));
         if (healed > 0) await actor.update({ "system.attributes.hp.value": hp.value + healed });
+        // "You prevent the target from dying" — *Breath of Life*: dying, dead and defeated undone.
+        if (rider.apply.revive) await revive(actor, context);
         await roll.toMessage({
             speaker: ChatMessage.getSpeaker({ actor }),
             flavor: t("Heal.Regains", { item: context.item?.name ?? t("Rider.Name"), actor: actor.name, healed }),
@@ -1256,6 +1267,8 @@ async function applyCounteract(rider, context) {
     // *Dispel Magic*: "1 spell effect" — any effect a spell left, whatever its traits.
     const spellEffects = rider.apply.spellEffects === true;
     const traits = spellEffects ? ["spell"] : (rider.apply.traits ?? ["mental"]);
+    // *Sound Body*: "an effect of your choice imposing one of these conditions on the target", the list growing by rank.
+    const conditions = Array.isArray(rider.apply.conditions) ? conditionsAt(rider.apply, castItemOf(context)?.rank) : null;
     const tokens = [...(context.targets ?? [])];
     if (rider.apply.includesSelf !== false && context.originToken) tokens.unshift(context.originToken);
 
@@ -1266,7 +1279,9 @@ async function applyCounteract(rider, context) {
         if (!actor || seen.has(actor.uuid)) continue;
         seen.add(actor.uuid);
         for (const item of [...(actor.itemTypes.effect ?? []), ...(actor.itemTypes.condition ?? [])]) {
-            if (spellEffects) {
+            if (conditions) {
+                if (!imposesListed(item, actor, conditions)) continue;
+            } else if (spellEffects) {
                 if (!isSpellEffect(item, originItemOf(item)?.type)) continue;
             } else {
                 const itemTraits = item.system?.traits?.value ?? [];
@@ -1291,7 +1306,7 @@ async function applyCounteract(rider, context) {
         for (const uuid of buttons.map((b) => /data-effect="([^"]+)"/.exec(b)?.[1]).filter(Boolean)) {
             await resolveCounteract({ originUuid: context.originActor?.uuid ?? null, effectUuid: uuid,
                 itemUuid: (context.item ?? context.riderItem)?.uuid ?? null, statistic, suppress: rider.apply.suppress ?? false, dcFrom: rider.apply.dcFrom ?? null,
-                rank: castItemOf(context)?.rank ?? null });
+                rank: castItemOf(context)?.rank ?? null, nearMiss: rider.apply.nearMiss ?? null });
         }
         return;
     }
@@ -1314,6 +1329,8 @@ async function applyCounteract(rider, context) {
                     dcFrom: rider.apply.dcFrom ?? null,
                     // The rank it was cast at: the item named above is the sheet's, at its own rank.
                     rank: castItemOf(context)?.rank ?? null,
+                    // "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower" — *Sound Body*.
+                    nearMiss: rider.apply.nearMiss ?? null,
                 },
             },
         },
@@ -1391,7 +1408,8 @@ export async function resolveCounteract(payload) {
         return;
     }
     const roll = await statistic.roll({
-        dc: { value: (payload.dcFrom === "effect" ? spellDcOf(effect) : null) ?? dcByLevel(effect.system?.level?.value ?? actor.level) },
+        // An affliction's own DC when it has one (`cleanse.mjs`).
+        dc: { value: Number(payload.dc) || ((payload.dcFrom === "effect" ? spellDcOf(effect) : null) ?? dcByLevel(effect.system?.level?.value ?? actor.level)) },
         skipDialog: true,
         label: `Counteract — ${effect.name}`,
         extraRollOptions: [`${LIB_ID}:counteract`],
@@ -1410,6 +1428,16 @@ export async function resolveCounteract(payload) {
     // beats. How a state is parked, and for how long, is the registered suppressor's; without one, a
     // counteracted state is ended like anything else.
     const suppressible = payload.suppress === "any" || (payload.suppress && RiderExtensions.isSuppressible(effect));
+
+    // *Sound Body*: "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead
+    // suppress the effect until the beginning of your next turn. The effect's duration doesn't elapse while it's
+    // suppressed." Set aside, and put back as the caster's next turn begins with its clock moved on by the time away.
+    if (!counteracted && Number(payload.nearMiss) > 0 && targetRank - Number(payload.nearMiss) <= ourRank + reach) {
+        await setAside(effect, actor);
+        await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), flavor: item?.name ?? t("Counteract.Title"),
+            content: `<p>${t("Counteract.NearMiss", { effect: effect.name, actor: actor.name })}</p>` });
+        return;
+    }
 
     let suppression = null;
     if (counteracted && suppressible) {
@@ -1440,6 +1468,25 @@ export async function resolveCounteract(payload) {
                 ? `<p>${t("Counteract.Gone", { effect: effect.name })}</p>`
                 : `<p>${t("Counteract.Holds", { effect: effect.name, rank: targetRank, ours: ourRank, outcome: outcome ? outcomeLabel(outcome) : t("Counteract.FailedCheck") })}</p>`,
     });
+}
+
+/** The conditions listed for a cast's rank: `conditions`, and every `conditionsAtRank` reached. */
+export function conditionsAt(spec, rank) {
+    const extra = Object.entries(spec.conditionsAtRank ?? {}).filter(([at]) => (Number(rank) || 0) >= Number(at)).flatMap(([, list]) => list);
+    return [...new Set([...(spec.conditions ?? []), ...extra])];
+}
+
+/**
+ * Does this item impose one of these conditions on the creature? An effect that grants one, or the condition itself
+ * when nothing granted it. Never a curse's or a disease's — *Sound Body* "can't counteract or suppress curses,
+ * diseases, or conditions that are part of the target's normal state".
+ */
+function imposesListed(item, actor, slugs) {
+    const traits = item.system?.traits?.value ?? [];
+    if (traits.includes("curse") || traits.includes("disease")) return false;
+    if (item.type === "condition") return slugs.includes(item.slug) && !item.flags?.pf2e?.grantedBy?.id;
+    const granted = Object.values(item.flags?.pf2e?.itemGrants ?? {}).map((grant) => actor.items.get(grant.id)?.slug);
+    return granted.some((slug) => slugs.includes(slug));
 }
 
 /** The counteract rank: the rank it was cast at, else the item's rank, else half the actor's level, plus whatever is registered. */
@@ -1607,7 +1654,8 @@ async function applyCondition(rider, context) {
     if (rider.apply.remove === true) {
         const held = context.actor?.itemTypes?.condition?.find((c) => c.slug === slug && c.active);
         if (!held) return;
-        await context.actor.decreaseCondition(slug, { forceRemove: true });
+        if (slug === "dying") await loseDying(context.actor, context);
+        else await context.actor.decreaseCondition(slug, { forceRemove: true });
         context.notes.push(t("Condition.Removed", { actor: context.actor.name, slug }));
         return;
     }
@@ -2558,6 +2606,51 @@ async function destroyObject(token, spell, context) {
     if (actor.hitPoints?.value > 0) await actor.update({ "system.attributes.hp.value": 0 });
     context.notes.push(t("Rays.Destroyed", { name: spell.name, actor: token.name }));
     return true;
+}
+
+/**
+ * Cast the rider's own spell at the rider's creature — a reaction that is a spell. *Schadenfreude*: "Trigger You
+ * critically fail a saving throw against a foe's effect" — answered by casting it at that foe (`trigger: true` on a
+ * reaction's nested rider). The creature is targeted and the spell cast as its card would be; its save and what
+ * follows are the spell's own riders.
+ */
+async function applyCast(_rider, context) {
+    const spell = context.riderItem ?? context.item;
+    if (spell?.type !== "spell" || !spell.spellcasting) return;
+    const token = context.target?.object ?? context.target;
+    if (typeof token?.setTarget === "function") token.setTarget(true, { releaseOthers: true, groupSelection: false });
+    await spell.spellcasting.cast(spell, {});
+}
+
+/**
+ * Which side the event's other end is on, from the origin's: `rider:trigger:enemy` / `rider:trigger:ally`. A `self`
+ * rider's own target is its origin, so `rider:target:…` cannot say it — *Schadenfreude*'s "a foe's effect" is about
+ * the creature that forced the save, the one a nested `trigger: true` rider reaches.
+ */
+function triggerSide(context) {
+    const origin = context.originActor;
+    const other = context.eventTarget?.actor ?? context.target?.actor ?? null;
+    if (!origin || !other || origin === other) return [];
+    // …and what it is: *Breath of Life* answers only for "a living creature".
+    const mode = other.modeOfBeing ? [`rider:trigger:mode:${other.modeOfBeing}`] : [];
+    if (typeof origin.isAllyOf !== "function") return mode;
+    return [origin.isAllyOf(other) ? "rider:trigger:ally" : "rider:trigger:enemy", ...mode];
+}
+
+/** "Whenever you lose the dying condition, you gain the wounded condition, or increase its value by 1." */
+export async function loseDying(actor, context) {
+    if (!actor?.hasCondition?.("dying")) return;
+    await actor.decreaseCondition("dying", { forceRemove: true });
+    await increaseRecorded(actor, "wounded", {}, context);
+}
+
+/** Back from the brink: no longer dying, dead or defeated; awake if it has Hit Points again. */
+async function revive(actor, context) {
+    await loseDying(actor, context);
+    if (actor.statuses?.has?.("dead")) await actor.toggleStatusEffect("dead", { active: false, overlay: true });
+    if ((actor.hitPoints?.value ?? 0) > 0 && actor.hasCondition?.("unconscious")) await actor.decreaseCondition("unconscious", { forceRemove: true });
+    const combatant = (context.target?.document ?? context.target)?.combatant;
+    if (combatant?.defeated) await combatant.update({ defeated: false });
 }
 
 /** The parts of a damage roll of the named types, as one formula — null when none is left. */

@@ -217,6 +217,22 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Cleanse": {
+            "Title": "Cleanse",
+            "Prompt": "Which affliction?",
+            "Nothing": "No affliction on the target to ease.",
+            "Eased": "{name} eases to stage {stage}.",
+            "Already": "{name} has already been eased once; only a counteract can do more.",
+            "FirstStage": "{name} is at its first stage; there is no stage to take off.",
+            "Beyond": "{name} is beyond this casting: it can't be eased, and its kind can't be counteracted at this rank."
+        },
+        "Unobserved": {
+            "Name": "{watcher} can't observe {hidden}",
+            "Note": "{watcher} can't observe {hidden}.",
+            "FlatPassed": "{attacker} attacks {hidden}, whom it can't observe: DC 11 flat check — passed.",
+            "FlatFailed": "{attacker} attacks {hidden}, whom it can't observe: DC 11 flat check — failed, the attack is lost.",
+            "OffGuard": "off-guard: {name} can't observe the attacker"
+        },
         "Aftermath": {
             "NoneDied": "{name} killed no one: the void energy turns back."
         },
@@ -378,7 +394,9 @@
             "UntilNextTurn": "until the end of {actor}'s next turn",
             "Gone": "<strong>{effect}</strong> is counteracted and gone.",
             "Holds": "<strong>{effect}</strong> holds — rank {rank} against a counteract rank of {ours} on a {outcome}.",
-            "FailedCheck": "failed check"
+            "FailedCheck": "failed check",
+            "NearMiss": "{effect} is not counteracted, but suppressed until the start of {actor}'s next turn; its duration does not run meanwhile.",
+            "Back": "{effect} returns to {actor}."
         },
         "Readout": {
             "Title": "What the senses tell",
@@ -531,6 +549,12 @@
             },
             "seal-fate": {
                 "Choose": "Which damage will be its end?"
+            },
+            "blinding-fury": {
+                "Fury": "blinding fury"
+            },
+            "schadenfreude": {
+                "Amused": "amused: –1 to Perception and Will"
             },
             "spider-sting": {
                 "Venom": "Spider Venom"

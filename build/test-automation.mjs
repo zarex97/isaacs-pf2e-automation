@@ -951,8 +951,22 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    const { conditionsAt } = await import("../scripts/riders/apply.mjs");
+    const { counteractKinds, isAffliction } = await import("../scripts/riders/cleanse.mjs");
+    check("Cleanse Affliction counteracts nothing at 2, a disease or poison at 3, a curse too at 4", [counteractKinds(2), counteractKinds(3), counteractKinds(4)], [[], ["disease", "poison"], ["disease", "poison", "curse"]]);
+    check("an affliction is this module's, or an effect with the curse, disease or poison trait", [isAffliction({ type: "effect", flags: { [LIB_ID]: { affliction: {} } }, system: { traits: { value: [] } } }), isAffliction({ type: "effect", flags: {}, system: { traits: { value: ["curse"] } } }), isAffliction({ type: "effect", flags: {}, system: { traits: { value: ["fire"] } } })], [true, true, false]);
+    const { resumedStart } = await import("../scripts/riders/set-aside.mjs");
+    check("an effect set aside for 12 seconds comes back with its start 12 seconds later — its clock stopped", resumedStart(100, 200, 212), 112);
+    const sound = { conditions: ["blinded", "sickened"], conditionsAtRank: { 4: ["drained", "slowed"], 6: ["petrified"], 8: ["stunned"] } };
+    check("Sound Body's list grows by rank, each heightening as the 4th plus its own", [conditionsAt(sound, 2), conditionsAt(sound, 4), conditionsAt(sound, 6), conditionsAt(sound, 8)],
+        [["blinded", "sickened"], ["blinded", "sickened", "drained", "slowed"], ["blinded", "sickened", "drained", "slowed", "petrified"], ["blinded", "sickened", "drained", "slowed", "petrified", "stunned"]]);
     const { nextStage } = await import("../scripts/riders/affliction.mjs");
     const { tallyState } = await import("../scripts/riders/aftermath.mjs");
+    const { wouldDie, leavesNothing } = await import("../scripts/riders/sources.mjs");
+    const pc = (dying) => ({ type: "character", attributes: { dying: { max: 4 } }, getCondition: () => (dying ? { value: dying } : null) });
+    const npc = (hp) => ({ type: "npc", hitPoints: { value: hp } });
+    check("a creature would die: a character at its dying maximum, anything else brought to 0", [wouldDie(pc(4), 0), wouldDie(pc(3), 0), wouldDie(npc(0), 12), wouldDie(npc(0), 0), wouldDie(npc(5), 12)], [true, false, true, false, false]);
+    check("a death effect, or Disintegrate, leaves nothing to save", [leavesNothing({ system: { traits: { value: ["death"] } } }), leavesNothing({ slug: "disintegrate", system: { traits: { value: [] } } }), leavesNothing({ slug: "fireball", system: { traits: { value: ["fire"] } } })], [true, true, false]);
     check("a cast's tally is read once nobody is left to answer, and knows whether anybody died",
         [tallyState({ awaiting: new Set(["a"]), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set(["b"]) })],
         [{ done: false, died: false }, { done: true, died: false }, { done: true, died: true }]);

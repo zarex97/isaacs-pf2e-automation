@@ -10,10 +10,13 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
+| Blinding Fury | 6 |  | reaction (on you); success / failure / crit. failure: unobserve; failure: blinding fury (1 minutes, carries damage-applied unobserve); crit. failure: blinding fury (until it ends, carries damage-applied unobserve) |  |
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
 | Blister | 5 |  | success: Blisters (1 minutes); failure: Blisters (1 minutes); crit. failure: Blisters (1 minutes) |  |
+| Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
+| Cleanse Affliction | 2 |  | cleanse (on you) |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
@@ -56,15 +59,18 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
+| Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |
 | Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |
 | Slither | 5 | 20-ft burst (pf2e's), all | failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area) | Dismiss, reflex on turn end — failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area), 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Soothe | 1 |  | heals 1d10+4 (+1d10+4 per rank); spell-effect-soothe |  |
+| Sound Body | 2 |  | counteract (on you) |  |
 | Spider Sting | 1 |  | success: 1d4 poison; failure: affliction; crit. failure: affliction |  |
 | Spirit Link | 1 |  | transfer; spirit link (10 minutes, carries turn-start transfer, on you) |  |
 | Spiritual Armament | 2 |  | Spiritual Armament (1 minutes, while Sustained, on you) |  |
+| Stabilize | 1 |  | dying (no end); unconscious (no end) |  |
 | Sure Strike | 1 |  | spell-effect-sure-strike (on you); temporarily immune to sure strike (10 minutes, on you); GM note: “You are temporarily immune to sure strike: this casting has no effect.” (on you) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
