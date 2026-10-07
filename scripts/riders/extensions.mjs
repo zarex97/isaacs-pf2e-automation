@@ -16,7 +16,7 @@
 export const BUILT_IN_APPLY_TYPES = Object.freeze([
     "prompt", "pick", "choice", "save", "pool", "damage", "death", "persistent-damage", "effect", "condition",
     "teleport", "strikes", "banish", "heal", "readout", "toggle", "counteract", "reaction", "flat-check",
-    "encasement", "escape", "expire", "sustain", "shorten", "climb", "decoy",
+    "encasement", "escape", "expire", "sustain", "shorten", "climb", "decoy", "transfer",
 ]);
 
 const applyTypes = new Map();

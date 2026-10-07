@@ -34,6 +34,11 @@ export function isTurnHealing(flavor, lines) {
     return lines.some((line) => text.includes(line));
 }
 
+/** Does an effect on the creature take away its fast healing and regeneration? Returns that effect. */
+export function healingWithheldBy(actor) {
+    return actor?.items?.find?.((item) => item.flags?.[LIB_ID]?.noTurnHealing) ?? null;
+}
+
 export const FastHealing = {
     registerHooks() {
         // Acid or fire switches regeneration off for the next turn start that comes.
@@ -53,6 +58,11 @@ export const FastHealing = {
             const total = Number(roll?.total) || 0;
             if (!actor || total <= 0) return;
             await message.setFlag(LIB_ID, "healingApplied", true);
+            const withheld = healingWithheldBy(actor);
+            if (withheld) {
+                await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t("FastHealing.Withheld", { actor: actor.name, name: withheld.name })}</p>` });
+                return;
+            }
             // The turn start after acid or fire: no regeneration this time.
             if (actor.getFlag(LIB_ID, "regenerationOff") && isTurnHealing(message.flavor, receivedLines((key) => game.i18n.localize(key)).slice(1))) {
                 await actor.unsetFlag(LIB_ID, "regenerationOff");
