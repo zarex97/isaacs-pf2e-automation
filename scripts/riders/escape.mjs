@@ -74,6 +74,15 @@ export const Escape = {
 
         if (granted && actor.items.has(action.id)) await action.delete();
 
+        // "Creatures can attempt to Escape to remove these effects": everything the ability left on the
+        // creature goes, not just the grip this Escape was granted with — *Entangling Flora*'s penalty and
+        // its immobilized alike.
+        if (spec.all && spec.source) {
+            const left = actor.items.filter((i) => i.flags?.[LIB_ID]?.rider?.source === spec.source && i.type !== "action").map((i) => i.id);
+            if (left.length > 0) await actor.deleteEmbeddedDocuments("Item", left);
+            return;
+        }
+
         const effect = spec.effectId ? actor.items.get(spec.effectId) : null;
         if (effect) {
             await effect.delete();
@@ -106,9 +115,13 @@ export const Escape = {
 
             for (const action of actor.items.filter((i) => flagOf(i, FLAG))) {
                 const spec = flagOf(action, FLAG);
-                const orphaned = spec.effectId
-                    ? spec.effectId === item.id
-                    : (spec.conditions ?? []).includes(item.slug) && !actor.hasCondition?.(item.slug);
+                // An Escape from "these effects" lasts while any of them does: *Entangling Flora*'s penalty
+                // ends on leaving the area, and the immobilized beside it must not lose its way out.
+                const orphaned = spec.all && spec.source
+                    ? !actor.items.some((i) => i.type !== "action" && i.flags?.[LIB_ID]?.rider?.source === spec.source)
+                    : spec.effectId
+                        ? spec.effectId === item.id
+                        : (spec.conditions ?? []).includes(item.slug) && !actor.hasCondition?.(item.slug);
                 if (orphaned && actor.items.has(action.id)) await action.delete();
             }
         });
@@ -121,7 +134,7 @@ export const Escape = {
  * Exported so the build can hold the content to it: an `escapeDc` written on any other rider is a
  * sentence in a description with nothing behind it, which is what this whole module is here to fix.
  */
-export const ESCAPE_DC_TYPES = new Set(["condition", "encasement"]);
+export const ESCAPE_DC_TYPES = new Set(["condition", "encasement", "effect"]);
 
 /** The granted action, as a plain source object — no Foundry, so the build can read it. */
 export function escapeActionSource({ item, dc, statistic = null, release }) {

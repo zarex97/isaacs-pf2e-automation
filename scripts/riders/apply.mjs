@@ -1522,7 +1522,7 @@ async function applyCondition(rider, context) {
  */
 async function grantEscape(rider, context, release) {
     if (!rider.apply.escapeDc) return;
-    record(context, await Escape.grant(rider, context, release));
+    record(context, await Escape.grant(rider, context, rider.apply.escapeAll ? { ...release, all: true } : release));
 }
 
 /**
@@ -1560,6 +1560,7 @@ async function applyEffect(rider, context) {
         if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { inside: context.region } });
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
+        await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });
         return;
     }
     const uuid = rider.apply.uuid;
@@ -1616,6 +1617,8 @@ async function applyEffect(rider, context) {
     if (rider.duration) source.system.duration = durationData(RiderExtensions.duration(rider, context));
     source.system.context = contextData(context);
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, riderFlags(rider, context));
+    // "Until it leaves the area" — *Entangling Flora*'s penalty, pf2e's own effect with no end of its own.
+    if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags, { [LIB_ID]: { inside: context.region } });
 
     // "You know the target's exact Hit Points until the end of the encounter" is knowledge tied to *one*
     // creature, not a range — the marker effect this grants onto the caster carries that creature's uuid so
@@ -1637,6 +1640,7 @@ async function applyEffect(rider, context) {
         await crossThresholds(source, 0, Number(source.system?.badge?.value) || 0, context);
     }
     if (rider.apply.trackedTarget) await reportTrackedHp(created, context);
+    await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });
 }
 
 /**

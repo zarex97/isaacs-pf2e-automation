@@ -145,7 +145,9 @@ export const Lingering = {
             behaviors.push({
                 type: BEHAVIOR_TYPE,
                 name: spec.name ?? config.item.name,
-                system: { events: spec.events ?? ["tokenMoveIn", "tokenTurnEnd"] },
+                // Leaving always counts: whatever the area left "until it leaves" — *Entangling Flora*'s
+                // penalty, checked only at turn start — has to hear the creature go.
+                system: { events: [...new Set([...(spec.events ?? ["tokenMoveIn", "tokenTurnEnd"]), "tokenExit"])] },
             });
         }
         // An area that changes whoever stands in it — *Mist*'s concealment — holds an effect on them while
