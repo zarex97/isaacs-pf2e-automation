@@ -40,6 +40,7 @@
             }
         },
         "Aim": {
+            "TooClose": "Those areas are too close together: their centres must be at least {feet} feet apart. Aim them again.",
             "Hint": "{name}: {rule}",
             "HintRotate": "{name}: {rule} — Shift+scroll to rotate (Ctrl for finer).",
             "Failed": "Area targeting failed; cast normally. See the console for details.",
@@ -167,7 +168,13 @@
             "FlyHint": "Which way does {name} fly, and how far (up to {feet} feet)? Everyone whose space it passes over is hit.",
             "Flew": "moved {feet} ft. {direction}, over {count} creature(s)",
             "FlewFlavor": "{name} — its flight",
-            "Stayed": "left where it is"
+            "Stayed": "left where it is",
+            "BoltTitle": "{name}: a bolt",
+            "BoltHint": "Where does the bolt fall? Every creature inside the storm is offered; the bolt strikes the one you choose.",
+            "BoltNone": "On no one",
+            "BoltFlavor": "{name} — a lightning bolt",
+            "Bolted": "a bolt falls on {name}",
+            "NoBolt": "no bolt"
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -437,6 +444,11 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "lightning-storm": {
+                "Storm": "Lightning Storm",
+                "One": "One storm cloud",
+                "Two": "Two storm clouds (outdoors)"
             },
             "toxic-cloud": {
                 "Cloud": "Toxic Cloud",

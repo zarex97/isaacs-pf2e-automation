@@ -21,7 +21,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
-| Floating Flame | 2 | 5-ft square (pf2e's), all |  | Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
+| Floating Flame | 2 | 5-ft square (pf2e's), all |  | ends if not Sustained, Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
@@ -36,6 +36,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
+| Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |

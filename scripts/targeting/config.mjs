@@ -130,9 +130,13 @@ export function configFor(item, override = {}) {
         // `system.range` and none of them repeats it on the flag, so "a 60-foot burst **within 120 feet**"
         // was half a rule: the burst was placed and the 120 feet was never checked, for any Cloth.
         range: grown.range || feetOf(item.system?.range?.value),
-        areas: grown.areas,
+        // A count chosen at cast time — a shape that is several areas, or `registerAreaCount` — over the authored one.
+        areas: Number(override.areas) > 0 ? Number(override.areas) : grown.areas,
         length: grown.length,
         steps: grown.steps,
+        // Several areas that may not come closer than this, centre to centre, in feet: *Lightning Storm*'s two
+        // "non-overlapping clouds", *Falling Stars*' "central 10-foot bursts can't overlap".
+        apart: Number(flag?.apart) > 0 ? Number(flag.apart) : null,
         // Targets that have to link up — see `chain.mjs`. `{ link }` in feet.
         chain: Number(flag?.chain?.link) > 0 ? { link: Number(flag.chain.link) } : null,
         // The caster moves to the placement — see `move-caster.mjs`.

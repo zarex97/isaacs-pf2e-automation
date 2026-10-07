@@ -80,7 +80,9 @@ export function docs(built, index, en) {
             l.followsCaster ? "moves with you" : null,
             l.drifts ? `drifts ${l.drifts.feet} ft away from you each round` : null,
             l.dismiss ? "Dismiss" : null,
-            l.sustain?.move ? `Sustain: moves ${l.sustain.move} ft, ${l.sustain.damage?.formula ?? ""} ${l.sustain.damage?.type ?? ""} to those it passes (basic ${l.sustain.damage?.save ?? "reflex"}), once a round`.replace(/\s+/g, " ") : l.sustain ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
+            l.sustain?.bolt ? `bolt: ${l.sustain.bolt.formula} ${l.sustain.bolt.type ?? ""} on a creature in the storm (basic ${l.sustain.bolt.save ?? "reflex"}), at the cast and on each Sustain`.replace(/\s+/g, " ") : null,
+            l.sustain?.lapses ? "ends if not Sustained" : null,
+            l.sustain?.move ? `Sustain: moves ${l.sustain.move} ft, ${l.sustain.damage?.formula ?? ""} ${l.sustain.damage?.type ?? ""} to those it passes (basic ${l.sustain.damage?.save ?? "reflex"}), once a round`.replace(/\s+/g, " ") : l.sustain?.radius ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
             l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l) || (l.sustain?.saveNewcomers ? "a Sustain" : "—")} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
@@ -97,7 +99,7 @@ export function docs(built, index, en) {
             }).join("; ");
         // An entry that aims the spell's own area names it, so the row says what is placed.
         const own = entry.areaTargeting && !entry.areaTargeting.area && spell?.area ? `${spell.area.value}-ft ${spell.area.type} (pf2e's)` : "";
-        const shapes = (entry.areaTargetingShapes ?? []).map((c) => (c.type === "none" ? "no area" : `${c.value}-ft ${c.type}`)).join(" or ");
+        const shapes = (entry.areaTargetingShapes ?? []).map((c) => (c.type === "none" ? "no area" : `${c.areas > 1 ? `${c.areas} × ` : ""}${c.value}-ft ${c.type}`)).join(" or ");
         const areaCell = [[shapes ? `choose: ${shapes}` : own, area(entry.areaTargeting)].filter(Boolean).join(", "), variants && `variant — ${variants}`].filter(Boolean).join("; ");
         return `| ${spell?.name ?? slug} | ${spell?.rank ?? ""} | ${areaCell} | ${(entry.riders ?? []).map(rider).join("; ")} | ${linger(entry.lingering)} |`;
     });
@@ -171,7 +173,7 @@ export function problemsWith(slug, entry, ctx) {
             if (spec?.followsCaster !== undefined && spec.followsCaster !== true) at(`${where} lingering.followsCaster`.trim(), "true or absent");
             if (spec?.drifts !== undefined && !(Number(spec.drifts?.feet) > 0)) at(`${where} lingering.drifts`.trim(), "{ feet } it moves each round");
             if (spec?.dismiss !== undefined && spec.dismiss !== true) at(`${where} lingering.dismiss`.trim(), "true or absent");
-            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0)) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
+            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0) && !spec.sustain?.bolt?.formula) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
             if (spec?.sustain?.move && spec.sustain.damage && !spec.sustain.damage.formula) at(`${where} lingering.sustain.damage`.trim(), "a formula");
             if (spec?.targetPredicate !== undefined && !Array.isArray(spec.targetPredicate)) at(`${where} lingering.targetPredicate`.trim(), "a predicate list");
             if (spec?.save) {

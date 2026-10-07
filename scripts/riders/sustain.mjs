@@ -33,7 +33,7 @@ export function roundFor(actor, combats = game.combats) {
 }
 
 /** The granted action, as a plain source object. */
-export function sustainActionSource({ item, effectId = null, regionUuid = null, spellUuid = null, step = 1, castRound = null }) {
+export function sustainActionSource({ item, effectId = null, regionUuid = null, spellUuid = null, step = 1, castRound = null, lapses = false }) {
     const name = item?.name ?? t("Rider.Name");
     return {
         type: "action",
@@ -47,7 +47,7 @@ export function sustainActionSource({ item, effectId = null, regionUuid = null, 
         },
         flags: {
             [LIB_ID]: {
-                [FLAG]: { effectId, regionUuid, spellUuid, step, castRound, lastRound: null },
+                [FLAG]: { effectId, regionUuid, spellUuid, step, castRound, lastRound: null, lapses },
                 riders: [{ apply: { type: "sustain" }, event: "action-used", self: true }],
             },
         },
@@ -97,7 +97,7 @@ export const Sustain = {
     async grantForRegion(actor, item, region, spec = {}) {
         if (!actor || !region) return null;
         const [created] = await actor.createEmbeddedDocuments("Item", [
-            sustainActionSource({ item, regionUuid: region.uuid, step: Number(spec.step) || 1, castRound: roundFor(actor) }),
+            sustainActionSource({ item, regionUuid: region.uuid, step: Number(spec.step) || 1, castRound: roundFor(actor), lapses: spec.lapses === true }),
         ]);
         return created ?? null;
     },
@@ -120,9 +120,24 @@ export const Sustain = {
      * The caster's turn is over: a sustained spell they did not Sustain this turn ends — every effect it
      * left, on everyone. Not in the round it was cast, and not out of combat. Active GM only.
      */
-    async lapse(actor) {
+    async lapse(actor, endedRound = null) {
         if (game.users.activeGM?.id !== game.user.id || !actor) return;
-        const round = roundFor(actor);
+        // The round of the turn that ended, as pf2e recorded it: skipping straight to the next round ends this
+        // turn with the encounter already a round on, and a spell cast this turn would lapse before it began.
+        const round = endedRound ?? roundFor(actor);
+        // An area whose spell is "sustained" — *Floating Flame*, *Lightning Storm* — ends with the turn it wasn't.
+        for (const action of actor.items.filter((i) => i.flags?.[LIB_ID]?.[FLAG]?.regionUuid && i.flags[LIB_ID][FLAG].lapses)) {
+            const spec = action.flags[LIB_ID][FLAG];
+            if (!lapses(spec, round)) continue;
+            const region = await fromUuid(spec.regionUuid);
+            const name = region?.name ?? action.name;
+            // Every area of the cast goes — *Lightning Storm*'s second cloud is the same spell.
+            const castId = region?.flags?.[LIB_ID]?.lingering?.castId;
+            const areas = region ? region.parent.regions.filter((r) => r === region || (castId && r.flags?.[LIB_ID]?.lingering?.castId === castId)) : [];
+            if (areas.length > 0) await region.parent.deleteEmbeddedDocuments("Region", areas.map((r) => r.id));
+            if (actor.items.has(action.id)) await action.delete().catch(() => {});
+            await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t("Sustain.Lapsed", { name, actor: actor.name })}</p>` });
+        }
         for (const action of actor.items.filter((i) => i.flags?.[LIB_ID]?.[FLAG]?.spellUuid)) {
             const spec = action.flags[LIB_ID][FLAG];
             if (!lapses(spec, round)) continue;
@@ -198,7 +213,7 @@ export const Sustain = {
             if (!by?.origin || !by?.spell) return;
             (async () => Sustain.grantForSpell(await fromUuid(by.origin), await fromUuid(by.spell)))().catch(() => {});
         });
-        Hooks.on("pf2e.endTurn", (combatant) => Sustain.lapse(combatant?.actor));
+        Hooks.on("pf2e.endTurn", (combatant) => Sustain.lapse(combatant?.actor, combatant?.flags?.pf2e?.roundOfLastTurnEnd ?? null));
         // An area gone — dismissed, or its minute up — takes its Sustain action off its caster.
         Hooks.on("deleteRegion", async (region) => {
             if (game.users.activeGM?.id !== game.user.id) return;

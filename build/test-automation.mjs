@@ -921,6 +921,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const emanation = { type: "emanation", radius: 200, base: { type: "token", x: 3700, y: 1500, width: 1, height: 1 } };
     check("an emanation follows its caster by its base square", followed(emanation, { x: 3550, y: 1550 }, { x: 3500, y: 1500 }).base, { ...emanation.base, x: 3500, y: 1500 });
     const { sweptPath, overlaps, alreadyBurned, drifted } = await import("../scripts/targeting/lingering.mjs");
+    const { tooClose } = await import("../scripts/targeting/index.mjs");
+    check("areas kept apart: two 20-ft clouds 40 ft apart pass, 35 ft apart don't", [tooClose([{ x: 0, y: 0 }, { x: 800, y: 0 }], 40, 100, 5), tooClose([{ x: 0, y: 0 }, { x: 700, y: 0 }], 40, 100, 5), tooClose([{ x: 0, y: 0 }], 40, 100, 5)], [false, true, false]);
+    const { lapses: lapsesTurn } = await import("../scripts/riders/sustain.mjs");
+    check("a sustained area lapses on a later turn left unsustained, not in its casting round", [lapsesTurn({ castRound: 1, lastRound: null }, 1), lapsesTurn({ castRound: 1, lastRound: null }, 2), lapsesTurn({ castRound: 1, lastRound: 2 }, 2)], [false, true, false]);
     check("a drifting cloud moves its step away from its caster, onto a grid intersection", [drifted({ x: 1000, y: 500 }, { x: 500, y: 500 }, 200, 100), drifted({ x: 1000, y: 1000 }, { x: 500, y: 500 }, 200, 100), drifted({ x: 500, y: 500 }, { x: 500, y: 500 }, 200, 100)],
         [{ x: 1200, y: 500 }, { x: 1100, y: 1100 }, { x: 500, y: 500 }]);
     check("a flight visits every square on its way, both ends included", [sweptPath({ x: 0, y: 0 }, { x: 200, y: 0 }, 100), sweptPath({ x: 0, y: 0 }, { x: 100, y: 100 }, 100), sweptPath({ x: 5, y: 5 }, { x: 5, y: 5 }, 100)],

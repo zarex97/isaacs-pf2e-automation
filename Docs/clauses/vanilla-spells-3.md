@@ -121,12 +121,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-43a | "call down one lightning bolt within the spell's area" | At the cast, the storm's 20-ft burst is placed and one bolt is aimed inside it | | ☐ | |
-| VS-43b | "The bolt is a vertical line from the top of the storm cloud to the ground below, dealing 4d12 electricity damage to creatures in the line (basic Reflex save)" | The creatures in the bolt's square roll a basic Reflex save against 4d12 electricity | | ☐ | |
-| VS-43c | "the first time you Sustain the Spell each round, you can call another lightning bolt within the area" | The first Sustain in a round aims another bolt inside the storm; a bolt outside it is refused | | ☐ | |
-| VS-43d | "you can still call down only one bolt per turn" | A second Sustain in the same turn calls no bolt | | ☐ | |
-| VS-43e | "you can create two non-overlapping clouds instead of one" | The caster may place two storms that don't overlap (outdoors is the table's call); either takes the bolt | | ☐ | |
-| VS-43f | "The damage of each bolt increases by 1d12" | Rank 7 deals 5d12 | | ☐ | |
+| VS-43a | "call down one lightning bolt within the spell's area" | At the cast, the storm's 20-ft burst is placed and one bolt is aimed inside it | `content/vanilla/lightning-storm.json` (a placed storm, `sustain.bolt`); `Lingering.bolt` runs once at the cast | ✅ | Aries cast it at rank 5 with the storm over Capricorn and Leo (ZZ Victim outside). Right after the placement, "Lightning Storm: a bolt" offered **Capricorn, Leo, On no one** — not ZZ Victim. The storm stayed as a Region, with *Sustain Drive: Lightning Storm* on Aries |
+| VS-43b | "The bolt is a vertical line from the top of the storm cloud to the ground below, dealing 4d12 electricity damage to creatures in the line (basic Reflex save)" | The creatures in the bolt's square roll a basic Reflex save against 4d12 electricity | `Lingering.strike` (the GM rolls it, through the relay) | ✅ | Bolt on Leo: "Lightning Storm — a lightning bolt" **4d12 electricity = 38**; Leo's Reflex vs DC 34 failed → **38** (200 → 162). Nobody else was touched. A vertical line on a flat map is one square, so the bolt is aimed by the creature it falls on |
+| VS-43c | "the first time you Sustain the Spell each round, you can call another lightning bolt within the area" | The first Sustain in a round aims another bolt inside the storm; a bolt outside it is refused | `sustain.bolt`; `Sustain.onRegion` → `bolt` | ✅ | Round 2, Sustain: the bolt dialog offered every creature inside **either** cloud (Capricorn, Leo, ZZ Victim); on ZZ Victim, **4d12 = 29**, a failure (400 → 371). "Lightning Storm is Sustained — now a bolt falls on ZZ Victim" |
+| VS-43d | "you can still call down only one bolt per turn" | A second Sustain in the same turn calls no bolt | one *Sustain* per cast (`castId`, granted for the first cloud only); `canSustain` | ✅ | Two clouds, **one** Sustain action. Sustaining again in round 2: "Lightning Storm has already been Sustained this round.", no dialog, no bolt. Round 3 left unsustained: at the end of Aries' turn "Aries did not Sustain Lightning Storm; it ends." — **both** clouds and the action gone (the spell's duration is "sustained", `sustain.lapses`) |
+| VS-43e | "you can create two non-overlapping clouds instead of one" | The caster may place two storms that don't overlap (outdoors is the table's call); either takes the bolt | `areaTargetingShapes` (one cloud, or `areas: 2`); `areaTargeting.apart: 40`, `tooClose` test | ✅ | The cast asked **One storm cloud / Two storm clouds (outdoors)** — whether it is outdoors is the table's call. Two clouds placed 20 ft apart: "Those areas are too close together: their centres must be at least 40 feet apart. Aim them again." and back to aiming; placed 40 ft apart they stood, with one `castId`. Found on the way: a shape's `areas` never reached the placement, and neither did a count from `registerAreaCount` — `configFor` ignored the override — so both now do |
+| VS-43f | "The damage of each bolt increases by 1d12" | Rank 7 deals 5d12 | `scaledDamage` with `perStepInterval: 2` | ✅ | Cast at **rank 7**: the bolt reads **5d12** (rank 5: 4d12) |
 
 ### VS-44 · Falling Stars
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 314 |
-| ✅ | 11 |
+| ☐ not yet driven | 308 |
+| ✅ | 17 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

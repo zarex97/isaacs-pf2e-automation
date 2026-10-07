@@ -129,7 +129,8 @@ export const AreaTargeting = {
 
         const config = configFor(cast, {
             ...(shape ? { area: shape } : {}),
-            ...(count > 1 ? { areas: count } : {}),
+            // A shape may be several areas of itself — *Lightning Storm*'s "two non-overlapping clouds instead of one".
+            ...(count > 1 ? { areas: count } : Number(shape?.areas) > 1 ? { areas: Number(shape.areas) } : {}),
         });
         if (!config) return true;
         if (bypassHeld()) return true;
@@ -159,6 +160,10 @@ export const AreaTargeting = {
                     // Declining an out-of-range placement now means "let me aim again" rather than calling
                     // the cast off, which is the answer that question always wanted.
                     if (!(await withinRange(aimed, config, originToken))) continue;
+                    if (config.apart && tooClose(aimed, config.apart)) {
+                        ui.notifications.warn(t("Aim.TooClose", { feet: config.apart }));
+                        continue;
+                    }
                     regions = aimed;
                 } else if (!regions) {
                     // Esc with nothing aimed yet is the caster calling the whole thing off. Esc while
@@ -234,6 +239,13 @@ function collect(regions, config, originToken) {
  * spell to keep in step for what is one number and one word, and the choice has to reach the placement
  * rather than the chat card.
  */
+/** Do any two of these placed areas' centres stand closer than `feet`? */
+export function tooClose(regions, feet, gridSize = canvas.grid.size, gridDistance = canvas.scene.grid.distance) {
+    const px = (feet / (gridDistance || 5)) * gridSize;
+    const centres = regions.map((region) => region.shapes?.[0] ?? region).filter((s) => Number.isFinite(s?.x) && Number.isFinite(s?.y));
+    return centres.some((a, i) => centres.slice(i + 1).some((b) => Math.hypot(a.x - b.x, a.y - b.y) < px - 0.5));
+}
+
 async function chooseShape(item) {
     const declared = configOf(item, "areaTargetingShapes");
     if (!Array.isArray(declared) || declared.length === 0) return null;
@@ -258,7 +270,7 @@ async function chooseShape(item) {
     if (choices.length === 0) return null;
     if (choices.length === 1) {
         const only = choices[0];
-        return { type: only.type, value: only.value, overlay: only.overlay ?? null };
+        return { type: only.type, value: only.value, overlay: only.overlay ?? null, areas: only.areas ?? null };
     }
 
     const picked = await foundry.applications.api.DialogV2.wait({
@@ -277,7 +289,7 @@ async function chooseShape(item) {
     // shape reached the placement from the start — the Region really was a 120-foot line — but the chat
     // card still read "Area 60-foot cone", because the choice had never reached pf2e. Driven live, a
     // Cero Metralleta fired down a 120-foot line caught the creatures along it and announced a cone.
-    return { type: choice.type, value: choice.value, overlay: choice.overlay ?? null };
+    return { type: choice.type, value: choice.value, overlay: choice.overlay ?? null, areas: choice.areas ?? null };
 }
 
 /**

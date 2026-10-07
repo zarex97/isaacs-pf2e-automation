@@ -627,6 +627,7 @@
                     "unit": "minutes"
                 },
                 "sustain": {
+                    "lapses": true,
                     "move": 10,
                     "damage": {
                         "formula": "3d6",
@@ -1162,6 +1163,43 @@
             "areaTargeting": {
                 "affects": "all",
                 "anchor": "caster"
+            }
+        },
+        "lightning-storm": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true,
+                "apart": 40
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "burst",
+                    "value": 20,
+                    "label": "ISAACS_AUTOMATION.Vanilla.lightning-storm.One"
+                },
+                {
+                    "type": "burst",
+                    "value": 20,
+                    "areas": 2,
+                    "label": "ISAACS_AUTOMATION.Vanilla.lightning-storm.Two"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.lightning-storm.Storm",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "sustain": {
+                    "lapses": true,
+                    "bolt": {
+                        "formula": "4d12",
+                        "perStep": "1d12",
+                        "perStepInterval": 2,
+                        "type": "electricity",
+                        "save": "reflex"
+                    }
+                }
             }
         },
         "malediction": {

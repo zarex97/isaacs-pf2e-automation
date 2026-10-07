@@ -9,6 +9,7 @@
             "unit": "minutes"
         },
         "sustain": {
+            "lapses": true,
             "move": 10,
             "damage": {
                 "formula": "3d6",
