@@ -559,6 +559,9 @@
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
             },
+            "resist-energy": {
+                "Choose": "Resistance to which damage?"
+            },
             "levitate": {
                 "Sustain": "Sustain Levitate",
                 "Way": "Move it up or down 10 feet?",

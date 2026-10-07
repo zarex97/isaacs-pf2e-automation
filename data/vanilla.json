@@ -2982,6 +2982,45 @@
                 }
             }
         },
+        "resist-energy": {
+            "areaTargeting": {
+                "maxTargets": 1,
+                "heightening": {
+                    "atRank": {
+                        "4": {
+                            "maxTargets": 1
+                        },
+                        "7": {
+                            "maxTargets": 3
+                        }
+                    }
+                }
+            },
+            "castChoice": {
+                "flag": "resistEnergyType",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.resist-energy.Choose",
+                "choices": [
+                    "acid",
+                    "cold",
+                    "electricity",
+                    "fire",
+                    "sonic"
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.con2Hzt47JjpuUej",
+                        "atCastRank": true,
+                        "preselect": {
+                            "resistEnergyType": "$cast"
+                        }
+                    }
+                }
+            ]
+        },
         "sanctuary": {
             "riders": [
                 {

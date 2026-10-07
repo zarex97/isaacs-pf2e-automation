@@ -525,10 +525,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-77a | "Choose acid, cold, electricity, fire, or sonic damage" | The cast asks for one of five | | ☐ | |
-| VS-77b | "The target and its gear gain resistance 5 against the damage type you chose" | Resistance 5 to that type | | ☐ | |
-| VS-77c | "Heightened (4th) The resistance increases to 10, and you can target up to two creatures" | Rank 4: 10, two targets | | ☐ | |
-| VS-77d | "Heightened (7th) The resistance increases to 15, and you can target up to five creatures" | Rank 7: 15, five targets | | ☐ | |
+| VS-77a | "Choose acid, cold, electricity, fire, or sonic damage" | The cast asks for one of five | `content/vanilla/resist-energy.json`: `castChoice` of five types, `preselect: "$cast"` on pf2e's effect | ✅ | The cast asked "Resistance to which damage?" — Acid, Cold, Electricity, Fire, Sonic; the choice went onto every target's effect, no prompt per creature |
+| VS-77b | "The target and its gear gain resistance 5 against the damage type you chose" | Resistance 5 to that type | pf2e's *Spell Effect: Resist Energy* (`Resistance`, by `@item.level`), `atCastRank` | ✅ | Rank 2, Fire, on Leo: **fire 5** |
+| VS-77c | "Heightened (4th) The resistance increases to 10, and you can target up to two creatures" | Rank 4: 10, two targets | `areaTargeting.maxTargets` 1, +1 at rank 4; pf2e's 10 at level 4 | ✅ | Rank 4 with three targeted: "3 targeted, and it reaches 2. Cast anyway?"; with two, Cold: Leo and ZZ Victim **cold 10** |
+| VS-77d | "Heightened (7th) The resistance increases to 15, and you can target up to five creatures" | Rank 7: 15, five targets | `maxTargets` +3 at rank 7 (five); pf2e's 15 at level 7 | ✅ | Rank 7, three targeted, Sonic: Leo, ZZ Victim and Capricorn **sonic 15**, no warning |
 
 ### VS-78 · Mountain Resilience
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 97 |
-| ✅ | 219 |
+| ☐ not yet driven | 93 |
+| ✅ | 223 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |
