@@ -41,6 +41,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
+| Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |

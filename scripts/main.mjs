@@ -8,6 +8,7 @@ import { DamageBus } from "./lib/damage-bus.mjs";
 import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
+import { Deters } from "./riders/deters.mjs";
 import { FastHealing } from "./lib/fast-healing.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { Banish } from "./riders/banish.mjs";
@@ -69,6 +70,7 @@ export const RIDER_INIT = [
     ["effects timed to their target's turn", () => registerTargetTiming()],
     ["what ends with a condition", () => registerEndsWith()],
     ["what a hostile action ends", () => registerHostileEnd()],
+    ["a ward its attackers save against", () => Deters.register()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],
