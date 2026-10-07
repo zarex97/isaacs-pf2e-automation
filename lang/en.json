@@ -201,7 +201,33 @@
         },
         "Weapon": {
             "Choose": "Which weapon do you swing?",
-            "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}"
+            "ChooseType": "Which of {weapon}'s damage types? Spirit instead, if that would be worse for the creature (the GM's call).",
+            "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}",
+            "NothingHeld": "{name} holds no weapon to disarm.",
+            "Dropped": "{name} drops {weapon}."
+        },
+        "Actions": {
+            "Choose": "How many actions do you spend?",
+            "ChoosePerTarget": "How many actions do you spend? One creature for each ({targets} targeted).",
+            "One": "1 action",
+            "Many": "{n} actions",
+            "Penalty": "Every attack at:",
+            "MapFirst": "No multiple attack penalty",
+            "MapSecond": "The second attack's penalty",
+            "MapThird": "The third attack's penalty",
+            "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
+        },
+        "OriginAction": {
+            "Description": "{name}: from {target}, the creature {spell} marked. Each use spends one.",
+            "Left": "{name}: {left} left.",
+            "Last": "{name}: the last one — the spell ends."
+        },
+        "Rays": {
+            "Flavor": "{name} — {actor} ({outcome})",
+            "Penalty": "{name}'s multiple attack penalty now counts {count} more attacks.",
+            "Worse": "A critical hit: {actor}'s {from} is a {to}.",
+            "Destroyed": "{name} destroys {actor}.",
+            "PenaltyOne": "{name}'s multiple attack penalty now counts one more attack."
         },
         "Requires": {
             "HeldWeapon": "{name} needs a weapon in hand."
@@ -262,6 +288,7 @@
             "Already": "{name} has already been Sustained this round.",
             "Gone": "{name} has ended; there is nothing to Sustain.",
             "Kept": "{name}: Sustained this round.",
+            "Again": "{name}: Sustained — the attack again.",
             "KeepDescription": "Sustain {name}: it lasts while you do. Once per round, and not in the round it was cast; a turn that ends without it ends the spell.",
             "Lapsed": "{actor} did not Sustain {name}; it ends."
         },
@@ -398,6 +425,11 @@
             "Overlap": "A penalty for being caught by more than one placement",
             "Bypass": "Ignores resistances or immunities, as written",
             "Thresholds": "Escalates as a counter grows",
+            "Requires": "Refused when what it needs is missing",
+            "VariantFromWeapon": "Its damage type from the weapon in hand",
+            "ActionVariants": "Cast with {counts} actions, the variant for each",
+            "TargetsPerAction": "A creature for each action spent",
+            "SameAttackPenalty": "Every attack of the cast at one penalty",
             "Key": {
                 "areaTargeting": "Area and targets",
                 "areaTargetingShapes": "Shape choice",
@@ -405,7 +437,12 @@
                 "lingering": "Lingering area",
                 "overlap": "Overlapping placements",
                 "bypass": "Bypass",
-                "counterThresholds": "Counter thresholds"
+                "counterThresholds": "Counter thresholds",
+                "requires": "Requirements",
+                "variantFromWeapon": "Weapon variant",
+                "actionVariants": "Actions spent",
+                "targetsPerAction": "Targets per action",
+                "sameAttackPenalty": "One attack penalty"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -474,6 +511,23 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "blister": {
+                "Blisters": "Blisters",
+                "Pop": "Pop a Blister"
+            },
+            "disintegrate": {
+                "Powder": "it is blasted to fine powder; its gear remains."
+            },
+            "telekinetic-maneuver": {
+                "Prompt": "Which maneuver, with your spell attack?",
+                "Disarm": "Disarm",
+                "Shove": "Shove",
+                "Reposition": "Reposition",
+                "Trip": "Trip"
+            },
+            "spiritual-armament": {
+                "Echo": "Spiritual Armament"
             },
             "weapon-storm": {
                 "Cone": "A 30-foot cone",

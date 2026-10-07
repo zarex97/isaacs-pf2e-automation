@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -944,8 +944,21 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("how far each degree pulls", ["criticalSuccess", "success", "failure", "criticalFailure"].map((o) => pullFeet({ success: 5, failure: 15, criticalFailure: 30 }, o)), [0, 5, 15, 30]);
     const tok = (id, x, y) => ({ id, center: { x, y } });
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
-    const { areaParts, typedTotals } = await import("../scripts/riders/apply.mjs");
-    const { dieAsHeld, heldWeapons } = await import("../scripts/riders/weapon.mjs");
+    const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
+    const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    check("an action granted from a cast keeps the cast's rank and DC",
+        bakeCast([{ apply: { type: "area-damage", parts: [{ formula: "7d6", perStep: "1d6", type: "acid" }] } }], { steps: 2, dc: 31 }),
+        [{ apply: { type: "area-damage", parts: [{ formula: "9d6", type: "acid" }], dc: 31 } }]);
+    check("a critical hit worsens the save one degree, never past a critical failure", ["criticalSuccess", "success", "failure", "criticalFailure"].map(worseDegree), ["success", "failure", "criticalFailure", "criticalFailure"]);
+    check("a miss keeps only the damage types it still deals",
+        [keptInstances([{ type: "slashing", _formula: "1d4[slashing]" }, { type: "electricity", _formula: "1d4[electricity]" }], ["electricity"]), keptInstances([{ type: "slashing", _formula: "1d4[slashing]" }], ["electricity"])],
+        ["{1d4[electricity]}", null]);
+    const { dieAsHeld, heldWeapons, weaponDamageTypes } = await import("../scripts/riders/weapon.mjs");
+    const { actionChoices } = await import("../scripts/vanilla/requires.mjs");
+    check("a ray per action: never fewer actions than creatures targeted, never more than three",
+        [actionChoices(["1", "2", "3"], 0, true), actionChoices(["1", "2", "3"], 2, true), actionChoices(["1", "2", "3"], 4, true), actionChoices(["3", "1"], 2, false)],
+        [[1, 2, 3], [2, 3], [], [1, 3]]);
+    check("a versatile weapon deals its own type or the one its trait adds", [weaponDamageTypes({ system: { damage: { damageType: "slashing" }, traits: { value: ["versatile-p"] } } }), weaponDamageTypes({ system: { damage: { damageType: "bludgeoning" }, traits: { value: [] } } })], [["slashing", "piercing"], ["bludgeoning"]]);
     const sword = { system: { damage: { die: "d8" }, traits: { value: ["two-hand-d12"] }, equipped: { carryType: "held", handsHeld: 1 } } };
     check("a two-hand weapon uses its two-hand die only when held in both hands", [dieAsHeld(sword), dieAsHeld({ ...sword, system: { ...sword.system, equipped: { carryType: "held", handsHeld: 2 } } })], ["d8", "d12"]);
     check("only weapons in hand are held", heldWeapons({ itemTypes: { weapon: [sword, { system: { equipped: { carryType: "worn", handsHeld: 0 } } }] } }).length, 1);
@@ -1081,6 +1094,15 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 
 {
     const { rowsFor, isAutomated, describeRiders } = await import("../scripts/vanilla/describe.mjs");
+    {
+        // Every key an item may author has a row on the panel: one without a summary threw on render.
+        const { AUTHORED_KEYS } = await import("../scripts/lib/config-of.mjs");
+        const describeText = fs.readFileSync(path.join(ROOT, "scripts", "vanilla", "describe.mjs"), "utf8");
+        const summaries = /const SUMMARIES = \{([\s\S]*?)\n\};/.exec(describeText.replaceAll("\r\n", "\n"))?.[1] ?? "";
+        const en = JSON.parse(fs.readFileSync(path.join(ROOT, "lang", "en.json"), "utf8"));
+        check("every authored key has a summary and a label on the panel",
+            AUTHORED_KEYS.filter((key) => !new RegExp(`^\\s+${key}:`, "m").test(summaries) || !en.ISAACS_AUTOMATION.Indicator.Key[key]), []);
+    }
     const { RIDERS_OFF } = await import("../scripts/vanilla/coexistence.mjs");
     Vanilla.setTable({ entries: { slow: { areaTargeting: { maxTargets: 1 }, riders: [{ outcomes: ["failure"], apply: { type: "condition", slug: "slowed", value: 1 } }] } } });
     const spellItem = (slug, flags = {}) => ({ documentName: "Item", slug, flags, system: {} });

@@ -10,6 +10,7 @@ import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
 import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
+import { OriginAction } from "./riders/origin-action.mjs";
 import { CastZones } from "./targeting/zones.mjs";
 import { Repels } from "./targeting/repels.mjs";
 import { Barrier } from "./targeting/barrier.mjs";
@@ -80,6 +81,7 @@ export const RIDER_INIT = [
     ["what a hostile action ends", () => registerHostileEnd()],
     ["a ward its attackers save against", () => Deters.register()],
     ["dismissing an area", () => Dismiss.registerHooks()],
+    ["an action spent from a creature's effect", () => { OriginAction.register(); OriginAction.registerHooks(); }],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],

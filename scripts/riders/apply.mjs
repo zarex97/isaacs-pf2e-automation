@@ -12,8 +12,9 @@ import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
+import { OriginAction } from "./origin-action.mjs";
 import { applyPull } from "./pull.mjs";
-import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld } from "./weapon.mjs";
+import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -27,6 +28,7 @@ import { selectRiders } from "./select.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
 const DEGREES = ["criticalFailure", "failure", "success", "criticalSuccess"];
+const DISARM_SUCCESS = "Compendium.pf2e.other-effects.Item.PuDS0DEq0CnaSIFV";
 
 /**
  * Apply the riders an event earned. GM-side; see relay.mjs for why.
@@ -374,6 +376,11 @@ async function applyOne(rider, context) {
     if (rider.trigger === "ally" && context.eventAlly?.actor) {
         context = { ...context, actor: context.eventAlly.actor, target: context.eventAlly };
     }
+    // …and `toOrigin` for the caster: a maneuver's critical failure falls on whoever attempted it — *Telekinetic
+    // Maneuver*'s Trip, "you fall prone".
+    if (rider.toOrigin === true && context.originActor) {
+        context = { ...context, actor: context.originActor, target: context.originToken ?? context.originActor.getActiveTokens?.(true, true).at(0) ?? context.target };
+    }
     switch (apply.type) {
         case "prompt":
             context.prompts.push(apply.text ?? rider.note ?? "");
@@ -450,10 +457,18 @@ async function applyOne(rider, context) {
             return applyTempHp(rider, context);
         case "dismiss":
             return Dismiss.apply(rider, context);
+        case "spend-charge":
+            return OriginAction.spend(rider, context);
         case "area-damage":
             return applyAreaDamage(rider, context);
         case "pull":
             return applyPull(rider, context);
+        case "contest":
+            return applyContest(rider, context);
+        case "disarm":
+            return applyDisarm(rider, context);
+        case "rays":
+            return applyRays(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -1767,8 +1782,18 @@ async function applyEffect(rider, context) {
             const area = context.region ?? areaOfCast(context);
             if (area) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { withArea: area } });
         }
+        // A count the effect carries — *Blister*'s one, two or four blisters.
+        if (Number(rider.apply.badge) > 0) source.system.badge = { type: "counter", value: Number(rider.apply.badge) };
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
+        // …and the action its caster spends it with (`origin-action.mjs`), at the cast's DC and rank.
+        if (created && rider.apply.originAction) {
+            await OriginAction.grant(created, rider.apply.originAction, context, {
+                item: castItemOf(context) ?? context.item,
+                steps: riderSteps({ apply: {} }, context),
+                dc: RiderExtensions.resolveDC("spell", context),
+            });
+        }
         await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });
         return;
     }
@@ -2113,7 +2138,7 @@ async function applyDeath(rider, context) {
     const playerOwned = context.actor.hasPlayerOwner;
 
     if (mode === "off" || (mode === "npcs" && playerOwned)) {
-        context.prompts.push(rider.apply.text ?? t("Death.Prompt"));
+        context.prompts.push(rider.apply.text ? game.i18n.localize(rider.apply.text) : t("Death.Prompt"));
         return;
     }
 
@@ -2140,7 +2165,7 @@ async function applyDeath(rider, context) {
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: context.originActor }),
         flavor: context.item?.name ?? context.originActor?.name ?? t("Rider.Name"),
-        content: `<p>${t("Death.Dies", { actor: context.actor.name, text: rider.apply.text ?? t("Death.Text") })}</p>`,
+        content: `<p>${t("Death.Dies", { actor: context.actor.name, text: rider.apply.text ? game.i18n.localize(rider.apply.text) : t("Death.Text") })}</p>`,
     });
 }
 
@@ -2347,6 +2372,180 @@ export function areaParts(parts, zones, tokenId) {
     return parts.filter((part) => !part.zone || (zones?.[part.zone] ?? []).includes(tokenId));
 }
 
+/**
+ * The caster's check against the target's DC, the riders chosen by the caster's result. *Telekinetic Maneuver*: "You can
+ * attempt to Disarm, Shove, Reposition, or Trip the target using a spell attack roll instead of an Athletics check" —
+ * the spell attack (`statistic: "spell-attack"`, the spell's own) against the target's `against` DC (Reflex for Disarm
+ * and Trip, Fortitude for Shove and Reposition). Nested riders land on the target, or on the caster with `toOrigin`.
+ */
+async function applyContest(rider, context) {
+    const origin = context.originActor;
+    const target = context.actor;
+    if (!origin || !target) return;
+    const item = castItemOf(context);
+    const statistic = rider.apply.statistic === "spell-attack" || !rider.apply.statistic
+        ? (item?.spellcasting?.statistic ?? RiderExtensions.statistic(origin, "spellcasting"))
+        : origin.getStatistic?.(rider.apply.statistic);
+    const dc = target.getStatistic?.(rider.apply.against ?? "reflex")?.dc?.value;
+    if (!statistic || !dc) return;
+    const roll = await statistic.roll({ dc: { value: dc }, skipDialog: true, item, traits: ["attack"], extraRollOptions: ["attack", `action:${rider.apply.action ?? "maneuver"}`], label: rider.apply.label ?? item?.name });
+    const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
+    if (!outcome) return;
+    const nested = (rider.apply.riders ?? []).map((r, index) => ({ rider: r, item: context.item, index }));
+    const options = riderOptions({ originActor: origin, targetActor: target, item: context.item });
+    for (const { rider: inner, index } of selectRiders(nested, { outcome, options })) {
+        await applyOne(inner, { ...context, outcome, riderIndex: [context.riderIndex, "riders", index].flat() });
+    }
+}
+
+/**
+ * A grip loosened or broken. Disarm, as *Telekinetic Maneuver* makes it: "Success You weaken your target's grasp on the
+ * item … takes a –2 circumstance penalty to attacks with the item … Critical Success You knock the item out of the
+ * opponent's grasp. It falls to the ground." `mode: "loosen"` is pf2e's own *Effect: Disarm (Success)* with its weapon
+ * already chosen — the –2 on that weapon's attacks, the +2 to the next Disarm, for as long as it is held; `mode:
+ * "drop"` lets go of it. The weapon is the one held — the first, if several.
+ */
+async function applyDisarm(rider, context) {
+    const actor = context.actor;
+    const weapon = heldWeapons(actor)[0];
+    if (!weapon) {
+        context.notes.push(t("Weapon.NothingHeld", { name: actor?.name ?? "" }));
+        return;
+    }
+    if (rider.apply.mode === "drop") {
+        await weapon.update({ "system.equipped.carryType": "dropped", "system.equipped.handsHeld": 0 });
+        context.notes.push(t("Weapon.Dropped", { name: actor.name, weapon: weapon.name }));
+        return;
+    }
+    const effect = await fromUuid(DISARM_SUCCESS);
+    if (!effect) return;
+    const source = effect.toObject();
+    delete source._id;
+    source.name = `${source.name} (${weapon.name})`;
+    // The weapon is already known: the ChoiceSet takes it rather than asking the GM's client.
+    source.system.rules = source.system.rules.map((rule) => (rule.key === "ChoiceSet" ? { ...rule, selection: weapon.id } : rule));
+    source.system.context = contextData(context);
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, riderFlags(rider, context));
+    const [created] = await actor.createEmbeddedDocuments("Item", [source]);
+    record(context, created);
+}
+
+/**
+ * One spell attack at each creature targeted. *Blazing Bolt*: "Make a spell attack roll against a single creature. On
+ * a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage. For each additional
+ * action … an additional ray at a different target". Every ray rolls at the penalty the cast chose (`ATTACK_NUMBER`,
+ * `vanilla/requires.mjs`); a hit rolls the cast variant's own damage and applies it, doubled on a critical hit the
+ * way pf2e's ×2 does. Runs once, on the caster (`self: true`), with the whole list of targets.
+ */
+async function applyRays(rider, context) {
+    const spell = castItemOf(context);
+    const targets = (context.targets ?? []).filter((token) => token?.actor && token.actor !== context.originActor);
+    if (typeof spell?.rollAttack !== "function" || targets.length === 0) return;
+    const chosen = context.originActor?.getFlag?.(LIB_ID, "attackNumber");
+    const attackNumber = chosen?.item === (spell.original ?? spell).id ? Number(chosen.value) || 1 : 1;
+    // *Live Wire*: "Failure The target takes the electricity damage, but not the slashing damage" — `failure`, the
+    // damage types a miss still deals.
+    const onFailure = Array.isArray(rider.apply.failure) ? rider.apply.failure : [];
+    const nested = (rider.apply.riders ?? []).map((r, index) => ({ rider: r, item: context.item, index }));
+    for (const token of targets) {
+        const roll = await spell.rollAttack(new PointerEvent("click"), attackNumber, { target: token.actor, skipDialog: true });
+        const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
+        if (!outcome) continue;
+        const hit = outcome === "success" || outcome === "criticalSuccess";
+        // *Disintegrate*: "If you hit an object or force construct (such as a wall of force), it's destroyed with no
+        // save … A single casting can destroy no more than a 10-foot cube of matter" — one wall section, one hazard.
+        if (hit && rider.apply.objects === "destroy" && (await destroyObject(token, spell, context))) continue;
+        // *Disintegrate*: "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save.
+        // If you critically hit, the target gets a result one degree of success worse" — `save` on a hit.
+        if (hit && rider.apply.save) {
+            const save = await raySave(rider.apply.save, spell, token, outcome, context);
+            if (save === null) continue;
+            const damage = await spell.getDamage({ target: token, skipDialog: true });
+            const dealt = await damage?.template?.damage?.roll?.evaluate?.();
+            const multiplier = BASIC_SAVE_MULTIPLIER[save];
+            if (dealt && multiplier > 0) {
+                await dealt.toMessage(
+                    { speaker: ChatMessage.getSpeaker({ actor: context.originActor }), flavor: t("Rays.Flavor", { name: spell.name, actor: token.actor.name, outcome: outcomeLabel(save) }) },
+                    { rollMode: game.settings.get("core", "rollMode") },
+                );
+                await token.actor.applyDamage({ damage: multiplier === 1 ? dealt : dealt.alter(multiplier, 0), token });
+            }
+        } else if (hit || (outcome === "failure" && onFailure.length > 0)) {
+            const damage = await spell.getDamage({ target: token, skipDialog: true });
+            // pf2e's own roll, unevaluated, as its damage button would evaluate it: its formula is display text.
+            const full = damage?.template?.damage?.roll;
+            const DamageRoll = full?.constructor;
+            const kept = hit ? full : keptInstances(full?.instances ?? [], onFailure);
+            const dealt = !kept ? null : hit ? await full.evaluate() : await new DamageRoll(kept).evaluate();
+            if (dealt) {
+                await dealt.toMessage(
+                    { speaker: ChatMessage.getSpeaker({ actor: context.originActor }), flavor: t("Rays.Flavor", { name: spell.name, actor: token.actor.name, outcome: outcomeLabel(outcome) }) },
+                    { rollMode: game.settings.get("core", "rollMode") },
+                );
+                await token.actor.applyDamage({ damage: outcome === "criticalSuccess" ? dealt.alter(2, 0) : dealt, token });
+            }
+        }
+        // What else each result does, on the creature the ray reached — *Live Wire*'s persistent electricity on a
+        // critical hit.
+        const options = riderOptions({ originActor: context.originActor, targetActor: token.actor, item: context.item });
+        for (const { rider: inner, index } of selectRiders(nested, { outcome, options })) {
+            await applyOne(inner, { ...context, actor: token.actor, target: token, outcome, riderIndex: [context.riderIndex, "riders", index].flat() });
+        }
+    }
+    // "These attacks each increase your multiple attack penalty" — pf2e keeps no count, so it is said.
+    context.notes.push(t(targets.length === 1 ? "Rays.PenaltyOne" : "Rays.Penalty", { name: context.originActor?.name ?? "", count: targets.length }));
+}
+
+/** A basic save's share of the damage, by the save's own result. */
+const BASIC_SAVE_MULTIPLIER = { criticalSuccess: 0, success: 0.5, failure: 1, criticalFailure: 2 };
+
+/** One degree worse, never below a critical failure. */
+export function worseDegree(outcome) {
+    return DEGREES[Math.max(0, DEGREES.indexOf(outcome) - 1)];
+}
+
+/**
+ * The creature a ray hit saves against the caster's spell DC; a critical hit makes the result one degree worse when
+ * `worseOnCritical`. Its own result, from the creature's side — null when it could not roll.
+ */
+async function raySave(spec, spell, token, attack, context) {
+    const statistic = token.actor?.getStatistic?.(spec.statistic ?? "fortitude");
+    const dc = spell.spellcasting?.statistic?.dc?.value;
+    if (!statistic || !dc) return null;
+    const roll = await statistic.roll({ dc: { value: dc }, item: spell, origin: context.originActor, skipDialog: true });
+    const rolled = DEGREES[roll?.degreeOfSuccess ?? -1];
+    if (!rolled) return null;
+    if (attack === "criticalSuccess" && spec.worseOnCritical) {
+        const worse = worseDegree(rolled);
+        if (worse !== rolled) context.notes.push(t("Rays.Worse", { actor: token.actor.name, from: outcomeLabel(rolled), to: outcomeLabel(worse) }));
+        return worse;
+    }
+    return rolled;
+}
+
+/**
+ * A ray that hits an object destroys it: a section of a wall this module raised breaks as if brought to 0 Hit Points,
+ * and a hazard with Hit Points goes to 0. True when the target was an object.
+ */
+async function destroyObject(token, spell, context) {
+    const { Barrier, isSection } = await import("../targeting/barrier.mjs");
+    if (isSection(token)) {
+        await Barrier.breach(token);
+        return true;
+    }
+    const actor = token.actor;
+    if (actor?.type !== "hazard") return false;
+    if (actor.hitPoints?.value > 0) await actor.update({ "system.attributes.hp.value": 0 });
+    context.notes.push(t("Rays.Destroyed", { name: spell.name, actor: token.name }));
+    return true;
+}
+
+/** The parts of a damage roll of the named types, as one formula — null when none is left. */
+export function keptInstances(instances, types) {
+    const kept = instances.filter((instance) => types.includes(instance.type)).map((instance) => instance._formula);
+    return kept.length === 0 ? null : `{${kept.join(",")}}`;
+}
+
 /** One damage formula for several typed totals: pf2e reads a braced list as one roll of several instances. */
 export function typedTotals(parts) {
     const each = parts.map((part) => `${part.total}[${part.type}]`);
@@ -2394,7 +2593,8 @@ async function applyAreaDamage(rider, context) {
     const rolled = await areaRolls.get(key);
     const reaching = areaParts(rolled, context.message?.flags?.[LIB_ID]?.zones, token.id);
     if (reaching.length === 0) return;
-    const dc = RiderExtensions.resolveDC("spell", context);
+    // A DC fixed when the rider was granted — an action spent from a spell's effect has no spellcasting of its own.
+    const dc = Number(rider.apply.dc) || RiderExtensions.resolveDC("spell", context);
     const statistic = actor.getStatistic?.(rider.apply.save ?? "reflex");
     const save = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item, extraRollOptions: ["damaging-effect"] }) : null;
     const multiplier = [2, 1, 0.5, 0][save?.degreeOfSuccess ?? 1];
@@ -2702,7 +2902,11 @@ function effectSource(label, rules, rider, context) {
     };
     if (rider.apply?.sustained && context.originActor) {
         const spell = (item?.original ?? item)?.uuid;
-        if (spell) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sustainedBy: { origin: context.originActor.uuid, spell } } });
+        // `sustained: { repeat: true }`: Sustaining it casts it again at the same rank and variant — *Spiritual Armament*'s
+        // "Each time you Sustain the spell, you can repeat the attack".
+        const cast = castItemOf(context);
+        const repeat = rider.apply.sustained?.repeat ? { rank: cast?.rank ?? null, overlayIds: [...(cast?.appliedOverlays?.values?.() ?? [])] } : null;
+        if (spell) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sustainedBy: { origin: context.originActor.uuid, spell, repeat } } });
     }
     onTargetsTurn(source, rider, context);
     // "If the target uses a hostile action, the spell ends" — *Invisibility*. See `registerHostileEnd`.
@@ -3283,7 +3487,8 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
         .map(
             ({ option, optionIndex }) =>
                 `<button type="button" data-action="isaacs-automation-rider-choice" data-option="${optionIndex}">`
-                + `${foundry.utils.escapeHTML(option.label ?? `Option ${optionIndex + 1}`)}</button>`,
+                // A key is read in the table's language; plain text (homebrew's labels) comes back as it is.
+                + `${foundry.utils.escapeHTML(option.label ? game.i18n.localize(option.label) : `Option ${optionIndex + 1}`)}</button>`,
         )
         .join(" ");
 
@@ -3297,7 +3502,7 @@ async function postChoice({ rider, index, item, target, actor }, context, payloa
         whisper: [...recipients],
         flavor: `${item.name} — ${(actor ?? context.actor)?.name}`,
         content:
-            `<p>${foundry.utils.escapeHTML(rider.apply.prompt ?? t("Choice.Prompt"))}</p>`
+            `<p>${foundry.utils.escapeHTML(rider.apply.prompt ? game.i18n.localize(rider.apply.prompt) : t("Choice.Prompt"))}</p>`
             + `<div class="isaacs-automation-choice">${buttons}</div>`,
         flags: {
             [LIB_ID]: {

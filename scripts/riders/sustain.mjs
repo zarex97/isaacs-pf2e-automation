@@ -33,7 +33,7 @@ export function roundFor(actor, combats = game.combats) {
 }
 
 /** The granted action, as a plain source object. */
-export function sustainActionSource({ item, effectId = null, regionUuid = null, spellUuid = null, step = 1, castRound = null, lapses = false }) {
+export function sustainActionSource({ item, effectId = null, regionUuid = null, spellUuid = null, step = 1, castRound = null, lapses = false, repeat = null }) {
     const name = item?.name ?? t("Rider.Name");
     return {
         type: "action",
@@ -47,7 +47,7 @@ export function sustainActionSource({ item, effectId = null, regionUuid = null, 
         },
         flags: {
             [LIB_ID]: {
-                [FLAG]: { effectId, regionUuid, spellUuid, step, castRound, lastRound: null, lapses },
+                [FLAG]: { effectId, regionUuid, spellUuid, step, castRound, lastRound: null, lapses, repeat },
                 riders: [{ apply: { type: "sustain" }, event: "action-used", self: true }],
             },
         },
@@ -106,12 +106,12 @@ export const Sustain = {
      * A spell that lasts only while it is Sustained — *Laughing Fit*. Its effects on its targets are marked
      * `sustainedBy`, and the caster holds one *Sustain* action for the spell however many it reached.
      */
-    async grantForSpell(actor, spell) {
+    async grantForSpell(actor, spell, { repeat = null } = {}) {
         const spellUuid = (spell?.original ?? spell)?.uuid;
         if (!actor || !spellUuid) return null;
         if (actor.items.some((i) => i.flags?.[LIB_ID]?.[FLAG]?.spellUuid === spellUuid)) return null;
         const [created] = await actor.createEmbeddedDocuments("Item", [
-            sustainActionSource({ item: spell, spellUuid, castRound: roundFor(actor) }),
+            sustainActionSource({ item: spell, spellUuid, castRound: roundFor(actor), repeat }),
         ]);
         return created ?? null;
     },
@@ -169,6 +169,13 @@ export const Sustain = {
             const say = (key) => ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t(key, { name: action.name })}</p>` });
             if (!canSustain(spec, round)) return say(spec.castRound !== null && round <= spec.castRound ? "Sustain.NotYet" : "Sustain.Already");
             await action.setFlag(LIB_ID, FLAG, { ...spec, lastRound: round });
+            // The spell again, as it was cast: its rank and its variant, a card to attack from.
+            if (spec.repeat) {
+                const spell = await fromUuid(spec.spellUuid);
+                const again = spell?.loadVariant?.({ overlayIds: spec.repeat.overlayIds ?? [], castRank: spec.repeat.rank ?? spell.rank }) ?? spell;
+                await again?.toMessage?.(undefined, { data: { castRank: spec.repeat.rank ?? spell?.rank } });
+                return say("Sustain.Again");
+            }
             return say("Sustain.Kept");
         }
         const effect = spec.effectId ? actor.items.get(spec.effectId) : null;
@@ -211,7 +218,7 @@ export const Sustain = {
             if (userId !== game.user.id) return;
             const by = item.flags?.[LIB_ID]?.sustainedBy;
             if (!by?.origin || !by?.spell) return;
-            (async () => Sustain.grantForSpell(await fromUuid(by.origin), await fromUuid(by.spell)))().catch(() => {});
+            (async () => Sustain.grantForSpell(await fromUuid(by.origin), await fromUuid(by.spell), { repeat: by.repeat ?? null }))().catch(() => {});
         });
         Hooks.on("pf2e.endTurn", (combatant) => Sustain.lapse(combatant?.actor, combatant?.flags?.pf2e?.roundOfLastTurnEnd ?? null));
         // An area gone — dismissed, or its minute up — takes its Sustain action off its caster.

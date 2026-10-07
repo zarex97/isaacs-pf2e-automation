@@ -22,6 +22,14 @@ export function dieAsHeld(weapon) {
     return weapon?.system?.damage?.die ?? "d4";
 }
 
+/** The damage types a weapon can deal: its own, and each its versatile traits add. */
+export function weaponDamageTypes(weapon) {
+    const VERSATILE = { b: "bludgeoning", p: "piercing", s: "slashing" };
+    const traits = weapon?.system?.traits?.value ?? [];
+    const extra = traits.map((trait) => /^versatile-(\w+)$/.exec(trait)?.[1]).filter(Boolean).map((k) => VERSATILE[k] ?? k);
+    return [...new Set([weapon?.system?.damage?.damageType, ...extra].filter(Boolean))];
+}
+
 /** The weapon to borrow: the only one held, or the one the caster picks. */
 export async function chooseHeldWeapon(actor, title) {
     const held = heldWeapons(actor);

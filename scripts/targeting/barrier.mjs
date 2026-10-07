@@ -219,6 +219,11 @@ export const Barrier = {
     },
 };
 
+/** Is this token a section of a wall raised here? */
+export function isSection(token) {
+    return !!flagOf(token);
+}
+
 /** Does the line between two points pass through any of these squares? */
 export function crossesAny(from, to, squares, gridSize) {
     if (!Array.isArray(squares)) return false;

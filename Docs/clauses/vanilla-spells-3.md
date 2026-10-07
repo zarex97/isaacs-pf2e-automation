@@ -249,71 +249,71 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-53a | "Attempt a spell attack roll against the target's AC, dealing 2d8 damage on a hit (or double damage on a critical hit)" | A spell attack; 2d8 on a hit, 4d8 on a critical hit | | ☐ | |
-| VS-53b | "The damage type is the same as the chosen weapon (or any of its types for a versatile weapon)" | The cast asks for a held weapon; its type (or a versatile one) is the damage's | | ☐ | |
-| VS-53c | "The attack deals spirit damage instead if that would be more detrimental to the creature (as determined by the GM)" | The GM may switch to spirit | | ☐ | |
-| VS-53d | "This attack uses and contributes to your multiple attack penalty" | The attack takes and raises the caster's MAP | | ☐ | |
-| VS-53e | "Each time you Sustain the spell, you can repeat the attack against any creature within 120 feet" | Sustain offers a new attack against any creature within 120 ft | | ☐ | |
+| VS-53a | "Attempt a spell attack roll against the target's AC, dealing 2d8 damage on a hit (or double damage on a critical hit)" | A spell attack; 2d8 on a hit, 4d8 on a critical hit | pf2e's own spell card (attack, then damage) | ✅ | Aries (a longsword in hand) cast it at Capricorn: the card offered pf2e's spell attack against his AC and **2d8 piercing** damage; a critical hit doubles it on pf2e's damage button, as for any attack spell |
+| VS-53b | "The damage type is the same as the chosen weapon (or any of its types for a versatile weapon)" | The cast asks for a held weapon; its type (or a versatile one) is the damage's | `content/vanilla/spiritual-armament.json` (`requires: "held-weapon"`, `variantFromWeapon`); a cast stage, `a variant from the weapon in hand`; `weaponDamageTypes` test | ✅ | The cast offered **Slashing, Piercing, Spirit** — the longsword's own type and the piercing its versatile trait adds. Piercing cast pf2e's *Spiritual Armament (Piercing)*: damage 2d8 **piercing**; at rank 4, Slashing: 3d8 **slashing** |
+| VS-53c | "The attack deals spirit damage instead if that would be more detrimental to the creature (as determined by the GM)" | The GM may switch to spirit | *Spirit* among the choices, the GM's call | ✅ | **Spirit** is always offered, with the note that it is the GM's call; choosing it casts pf2e's *Spiritual Armament (Spirit)* |
+| VS-53d | "This attack uses and contributes to your multiple attack penalty" | The attack takes and raises the caster's MAP | pf2e's card: the attack at each step of the multiple attack penalty | ⚠️ | The card's attack is offered at MAP 0, –5 and –10 (pf2e's three buttons); the roll records `map:increases:0`. **Gap:** pf2e keeps no count of the attacks a creature has made, so "contributes to your multiple attack penalty" is the player's to track — nothing here or in pf2e advances it |
+| VS-53e | "Each time you Sustain the spell, you can repeat the attack against any creature within 120 feet" | Sustain offers a new attack against any creature within 120 ft | `sustained: { repeat: true }` — the Sustain casts the spell again at its rank and variant | ✅ | Round 2, *Sustain Drive: Spiritual Armament*: "Sustained — the attack again." and a fresh *Spiritual Armament (Piercing)* card at rank 2 to attack any creature from. Round 3 left unsustained: "Aries did not Sustain Drive: Spiritual Armament; it ends." — the marker and the action gone |
 | VS-53f | "If you sanctify the spell, the attacks are sanctified as well" | — | | — | Nothing to automate: sanctification is the caster's own trait choice, carried by pf2e |
-| VS-53g | "The damage increases by 1d8" | Rank 4: 3d8 | | ☐ | |
+| VS-53g | "The damage increases by 1d8" | Rank 4: 3d8 | pf2e's own heightening (+1d8 every 2 ranks) | ✅ | Cast at **rank 4**: **3d8** |
 
 ### VS-54 · Telekinetic Maneuver
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-54a | "You can attempt to Disarm, Shove, Reposition, or Trip the target" | The cast asks which of the four | | ☐ | |
-| VS-54b | "using a spell attack roll instead of an Athletics check" | The roll is the caster's spell attack against the maneuver's DC (Reflex for Disarm and Trip, Fortitude for Shove and Reposition) | | ☐ | |
-| VS-54c | "you move a foe or something they carry" | The maneuver's outcome happens: Shove pushes, Trip knocks prone, Disarm penalises or drops, Reposition moves | | ☐ | |
+| VS-54a | "You can attempt to Disarm, Shove, Reposition, or Trip the target" | The cast asks which of the four | `content/vanilla/telekinetic-maneuver.json`: a `choice` of four options | ✅ | Casting at ZZ Victim, then at Capricorn, posted "Which maneuver, with your spell attack?" with **Disarm, Shove, Reposition, Trip**; the buttons are spent once one is pressed |
+| VS-54b | "using a spell attack roll instead of an Athletics check" | The roll is the caster's spell attack against the maneuver's DC (Reflex for Disarm and Trip, Fortitude for Shove and Reposition) | `contest` apply type (`statistic: "spell-attack"`, `against`) | ✅ | Every roll was Aries' spell attack, **Expert +24**, the spellcasting entry's. Capricorn given +5 Reflex: Disarm and Trip rolled against **DC 39** (Reflex), Shove and Reposition against **DC 34** (Fortitude). Aries prone rolled 32, the –2 included |
+| VS-54c | "you move a foe or something they carry" | The maneuver's outcome happens: Shove pushes, Trip knocks prone, Disarm penalises or drops, Reposition moves | nested riders by the caster's result; `disarm` apply type; `teleport` (`stopsAtWalls`, `direction: "choose"`); `toOrigin` | ✅ | **Disarm**: crit success, ZZ Victim "drops Longsword" (carried: dropped); success, pf2e's *Effect: Disarm (Success)* on Capricorn's longsword, its Strike –2, with no prompt; crit fail, Aries **off-guard** until the start of its turn. **Shove**: success 5 ft away (4000→4100), crit success 10 ft (→4300), crit fail Aries **prone**. **Reposition**: success asked "Which way does Capricorn go?" (eight directions, away, toward) and South moved it 5 ft; crit fail asked "Move Aries up to 5 feet" and moved Aries. **Trip**: success, Capricorn prone; crit success, prone and **6 bludgeoning** (1d6); crit fail, Aries prone |
 
 ### VS-55 · Blazing Bolt
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-55a | "Make a spell attack roll against a single creature" | One spell attack per ray | | ☐ | |
-| VS-55b | "On a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage" | One action: 2d6, doubled on a critical hit | | ☐ | |
-| VS-55c | "For each additional action you use when Casting the Spell, you can fire an additional ray at a different target" | Two actions, two rays; three, three; each at a different creature | | ☐ | |
-| VS-55d | "to a maximum of three rays targeting three different targets for 3 actions" | Never more than three, never the same creature twice | | ☐ | |
-| VS-55e | "These attacks each increase your multiple attack penalty" | After the rays, the MAP has gone up once per ray | | ☐ | |
-| VS-55f | "you don't increase your multiple attack penalty until after you make all the spell attack rolls for blazing bolt" | Every ray of one cast rolls at the same penalty | | ☐ | |
-| VS-55g | "If you spend 2 or more actions Casting the Spell, the damage increases to 4d6 fire damage on a hit" | Two or three actions: 4d6 per ray | | ☐ | |
-| VS-55h | "The damage to each target increases by 1d6 for the 1-action version, or by 2d6 for the 2-action and 3-action versions" | Rank 3: 3d6 or 6d6 | | ☐ | |
+| VS-55a | "Make a spell attack roll against a single creature" | One spell attack per ray | `rays` apply type (`self: true`, every target): `spell.rollAttack` with `target` | ✅ | One pf2e *Arcane Spell Attack* per creature, each against that creature's own AC: ZZ Victim (AC 10), Ghoul Soldier (AC 17), Capricorn (AC 34) |
+| VS-55b | "On a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage" | One action: 2d6, doubled on a critical hit | `rays`: the cast variant's own damage roll, applied ×2 on a critical hit | ✅ | One action, rank 2: a critical hit on ZZ Victim rolled **2d6 fire** = 4 and ZZ Victim took **8**. A miss (Capricorn, 26 against AC 34) rolled no damage |
+| VS-55c | "For each additional action you use when Casting the Spell, you can fire an additional ray at a different target" | Two actions, two rays; three, three; each at a different creature | cast stage `the actions spent` (`actionVariants`, `targetsPerAction`); `actionChoices` test | ✅ | Two creatures targeted: the cast offered **2 actions / 3 actions** only, and two actions fired two rays (Capricorn, Ghoul Soldier). Three targeted: **3 actions** only, three rays. One targeted: 1, 2 or 3 |
+| VS-55d | "to a maximum of three rays targeting three different targets for 3 actions" | Never more than three, never the same creature twice | `actionChoices` (more targets than three → none); pf2e's targets are one per creature | ✅ | Four creatures targeted: "Drive: Blazing Bolt reaches at most 3 creatures; 4 are targeted." — nothing cast. A ray per creature in Foundry's target set, which holds each creature once |
+| VS-55e | "These attacks each increase your multiple attack penalty" | After the rays, the MAP has gone up once per ray | `rays`: the count, said | ⚠️ | After the rays: "Aries's multiple attack penalty now counts 3 more attacks." (2 for two rays). **Gap:** pf2e keeps no count of the attacks a creature has made, so the next attack's penalty is the player's to pick — as for VS-53d |
+| VS-55f | "you don't increase your multiple attack penalty until after you make all the spell attack rolls for blazing bolt" | Every ray of one cast rolls at the same penalty | `sameAttackPenalty`: one penalty chosen at the cast, every ray at it | ✅ | "Every attack at:" the second attack's penalty → the first ray rolled **+19** (24 – 5); the third → both rays **+14** (Capricorn and Ghoul Soldier); none → all three at +24 |
+| VS-55g | "If you spend 2 or more actions Casting the Spell, the damage increases to 4d6 fire damage on a hit" | Two or three actions: 4d6 per ray | `actionVariants`: pf2e's *2 or 3* variant for both | ✅ | Two actions, rank 2: **4d6 fire** per ray (Ghoul Soldier, a critical hit: 11, took 22); three actions: 4d6 on each of the three |
+| VS-55h | "The damage to each target increases by 1d6 for the 1-action version, or by 2d6 for the 2-action and 3-action versions" | Rank 3: 3d6 or 6d6 | pf2e's own heightening of each variant | ✅ | Rank 3, one action: **3d6**; rank 3, two actions: **6d6** (20, a critical hit, 40 taken) |
 
 ### VS-56 · Live Wire
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-56a | "The wire deals 1d4 slashing damage and 1d4 electricity damage, depending on your spell attack roll against the target's AC" | A spell attack decides the damage | | ☐ | |
-| VS-56b | "Critical Success The target takes double damage" | Both doubled, and persistent electricity | | ☐ | |
-| VS-56c | "Success The target takes full damage" | 1d4 slashing and 1d4 electricity | | ☐ | |
-| VS-56d | "Failure The target takes the electricity damage, but not the slashing damage" | A miss still deals 1d4 electricity | | ☐ | |
-| VS-56e | "Critical Failure The target is unaffected" | Nothing | | ☐ | |
-| VS-56f | "The slashing damage, initial electricity damage, and persistent electricity damage on a critical hit each increase by 1d4" | Heightened to rank 3: 2d4 and 2d4 | | ☐ | |
+| VS-56a | "The wire deals 1d4 slashing damage and 1d4 electricity damage, depending on your spell attack roll against the target's AC" | A spell attack decides the damage | `content/vanilla/live-wire.json`: `rays` (one target), the spell attack against AC | ✅ | Aries' *Arcane Spell Attack* against Capricorn's **AC 34**; the result chose the damage, as below |
+| VS-56b | "Critical Success The target takes double damage" | Both doubled, and persistent electricity | `rays` ×2 on a critical hit; nested `persistent-damage` (`1d4`, `perStep: "1d4"`, `perStepInterval: 2`) on `criticalSuccess` | ✅ | Critical hit (44), rank 10: **5d4 slashing + 5d4 electricity** = 26, Capricorn took **52**, and **5d4 persistent electricity** — pf2e's (ceil(rank / 2))d4 |
+| VS-56c | "Success The target takes full damage" | 1d4 slashing and 1d4 electricity | `rays`: the full roll on a hit | ✅ | Hit (39): 5d4 slashing + 5d4 electricity = 24, Capricorn took 24; no persistent damage |
+| VS-56d | "Failure The target takes the electricity damage, but not the slashing damage" | A miss still deals 1d4 electricity | `failure: ["electricity"]`; `keptInstances` test | ✅ | Miss (29): **5d4 electricity** alone = 14, Capricorn took 14 |
+| VS-56e | "Critical Failure The target is unaffected" | Nothing | `rays`: nothing on a critical miss | ✅ | Critical miss (natural 1, 25): no damage roll, Capricorn still at 200 |
+| VS-56f | "The slashing damage, initial electricity damage, and persistent electricity damage on a critical hit each increase by 1d4" | Heightened to rank 3: 2d4 and 2d4 | pf2e's own heightening (+1d4 every 2 ranks); `perStep` every 2 for the persistent damage | ✅ | A level-5 caster (rank 3): **2d4 slashing + 2d4 electricity** = 9, ×2 = 18 on the critical hit, and **2d4** persistent electricity |
 
 ### VS-57 · Disintegrate
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-57a | "Make a spell attack against the target" | A spell attack first; a miss does nothing | | ☐ | |
-| VS-57b | "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save" | On a hit, a basic Fortitude save against 12d10 untyped | | ☐ | |
-| VS-57c | "If you critically hit, the target gets a result one degree of success worse than the outcome of its Fortitude save" | A critical hit lowers the save one step | | ☐ | |
-| VS-57d | "A creature reduced to 0 HP is blasted to fine powder; its gear remains" | 0 HP is death, not dying | | ☐ | |
-| VS-57e | "If you hit an object or force construct (such as a wall of force), it's destroyed with no save" | A wall section or a placed object hit is destroyed | | ☐ | |
-| VS-57f | "A single casting can destroy no more than a 10-foot cube of matter" | One 10-ft section at most | | ☐ | |
-| VS-57g | "The damage increases by 2d10" | Rank 7: 14d10 | | ☐ | |
+| VS-57a | "Make a spell attack against the target" | A spell attack first; a miss does nothing | `content/vanilla/disintegrate.json`: `rays` (one target) — the spell attack first | ✅ | Aries' *Arcane Spell Attack* against Capricorn's AC 34 came first each time; a miss (27) did nothing — no save, no damage, Capricorn at 200 |
+| VS-57b | "If you hit a creature, it takes 12d10 damage (no damage type) with a basic Fortitude save" | On a hit, a basic Fortitude save against 12d10 untyped | `rays` `save: { statistic: "fortitude" }`: on a hit, the creature's Fortitude against the spell DC, a basic save's share of pf2e's own roll | ✅ | Hit (36): Capricorn's *Fortitude Saving Throw* against **DC 34**, a success (34) → **12d10** = 71 untyped, Capricorn took **35**. ZZ Victim, a critical failure: 79, took **158** |
+| VS-57c | "If you critically hit, the target gets a result one degree of success worse than the outcome of its Fortitude save" | A critical hit lowers the save one step | `worseOnCritical`; `worseDegree` test | ✅ | Critical hit (44), Capricorn's save a success (34): "A critical hit: Capricorn's Success is a Failure." — 65 rolled, **65** taken, full damage |
+| VS-57d | "A creature reduced to 0 HP is blasted to fine powder; its gear remains" | 0 HP is death, not dying | nested `death` (`hpFraction: 0`, its text localized) on a hit; the *automateDeath* setting | ✅ | ZZ Victim (an NPC) at 30 HP, critically hit and failing: 158 damage, "ZZ Victim is reduced to 0 Hit Points — it is blasted to fine powder; its gear remains." and marked **dead**, not dying. A player character gets the GM's prompt instead, as the *automateDeath* setting (NPCs) asks |
+| VS-57e | "If you hit an object or force construct (such as a wall of force), it's destroyed with no save" | A wall section or a placed object hit is destroyed | `objects: "destroy"` (`destroyObject`: a wall section through `Barrier.breach`, a hazard to 0 HP) | ✅ | A hit on a section of Aries' *Wall of Stone*: no save, "Drive: Wall of Stone (section) is destroyed; its rubble is difficult terrain." — its wall and token gone. A hit on a hazard (a statue, 50 HP): "Drive: Disintegrate destroys Drive: Statue.", its HP to **0** |
+| VS-57f | "A single casting can destroy no more than a 10-foot cube of matter" | One 10-ft section at most | one target, one section (`Barrier` sections are 10 feet) | ✅ | The 30-foot wall stood as three 10-foot sections; Disintegrate on the middle one took it alone — the sections at either end stood |
+| VS-57g | "The damage increases by 2d10" | Rank 7: 14d10 | pf2e's own heightening (+2d10) | ✅ | Rank 7: **14d10** (79, Capricorn failing, took 79) |
 
 ### VS-58 · Blister
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-58a | "Success The target grows one blister" | One blister on the target | | ☐ | |
-| VS-58b | "Failure As success, but the target grows two blisters" | Two | | ☐ | |
-| VS-58c | "Critical Failure As success, but the target grows four blisters" | Four | | ☐ | |
-| VS-58d | "Critical Success The target is unaffected" | None | | ☐ | |
-| VS-58e | "You can spend a single action, which has the concentrate trait, to pop a blister" | The caster has a one-action *Pop a Blister* while blisters remain | | ☐ | |
-| VS-58f | "originating from the target takes 7d6 acid damage (basic Fortitude save)" | The target and everyone in a 15-ft cone from it save against 7d6 acid | | ☐ | |
-| VS-58g | "You choose the direction of the cone, which can't include the target" | The caster aims the cone from the target's edge | | ☐ | |
-| VS-58h | "When no blisters are left, the spell ends" | The last pop ends the spell and takes the action away | | ☐ | |
-| VS-58i | "The damage of a popped blister increases by 1d6" | Rank 6: 8d6 | | ☐ | |
+| VS-58a | "Success The target grows one blister" | One blister on the target | `content/vanilla/blister.json`: a `success` rider, an effect with `badge: 1` | ✅ | ZZ Victim (Fortitude +30 for the test) saved with a success (34 against DC 34): *Drive: Blister: Blisters* with a counter of **1** |
+| VS-58b | "Failure As success, but the target grows two blisters" | Two | `failure`: `badge: 2` | ✅ | A failure (20 against DC 34): Blisters **×2** |
+| VS-58c | "Critical Failure As success, but the target grows four blisters" | Four | `criticalFailure`: `badge: 4` | ✅ | A critical failure (2): Blisters **×4**, at rank 5 and at rank 6 |
+| VS-58d | "Critical Success The target is unaffected" | None | no rider on `criticalSuccess` | ✅ | A critical success (44): no effect on ZZ Victim, no action for Aries |
+| VS-58e | "You can spend a single action, which has the concentrate trait, to pop a blister" | The caster has a one-action *Pop a Blister* while blisters remain | `originAction` on the effect (`scripts/riders/origin-action.mjs`): a one-action, concentrate *Pop a Blister* on the caster | ✅ | With the blisters came **Pop a Blister** on Aries' sheet — 1 action, *concentrate*: "from ZZ Victim, the creature Drive: Blister marked. Each use spends one." Using it: "Blisters: 1 left." |
+| VS-58f | "originating from the target takes 7d6 acid damage (basic Fortitude save)" | The target and everyone in a 15-ft cone from it save against 7d6 acid | the action's `area-damage` (`save: "fortitude"`, basic; the DC and rank set at the grant, `bakeCast` test); `includesOrigin` | ✅ | One pop: **7d6 acid** = 19, rolled once; ZZ Victim saved against **DC 34** (a critical failure, took 38), and so did the four creatures in the cone (two critical successes, a failure for 19, a critical failure) |
+| VS-58g | "You choose the direction of the cone, which can't include the target" | The caster aims the cone from the target's edge | `anchor: "caster"` with an origin resolver: the cone starts on the blistered creature's edge, aimed by the caster | ✅ | Aimed south, the cone opened from ZZ Victim's edge and caught the tokens 15 feet south of it; Aries, 35 feet east, was not in it. Aimed north, it caught no one else — ZZ Victim still took its 7d6 |
+| VS-58h | "When no blisters are left, the spell ends" | The last pop ends the spell and takes the action away | `spend-charge`: the last charge deletes the effect; the effect's deletion takes the action | ✅ | The second pop of two: "Blisters: the last one — the spell ends." — the effect gone at once, *Pop a Blister* gone from Aries' sheet within 10 seconds (it outlasts the effect so that pop's own damage still resolves) |
+| VS-58i | "The damage of a popped blister increases by 1d6" | Rank 6: 8d6 | `perStep: "1d6"`, grown into the granted action at the cast's rank | ✅ | Cast at **rank 6**: the action's damage is **8d6** acid; a pop rolled 8d6 = 30, "3 left" |
 
 ## Batch 4 — Saves with lasting consequences
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 241 |
-| ✅ | 80 |
-| ⚠️ | 4 |
+| ☐ not yet driven | 202 |
+| ✅ | 117 |
+| ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

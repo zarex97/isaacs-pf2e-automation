@@ -1,0 +1,28 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "rays",
+                "failure": [
+                    "electricity"
+                ],
+                "riders": [
+                    {
+                        "outcomes": [
+                            "criticalSuccess"
+                        ],
+                        "apply": {
+                            "type": "persistent-damage",
+                            "formula": "1d4",
+                            "damageType": "electricity",
+                            "perStep": "1d4",
+                            "perStepInterval": 2
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
