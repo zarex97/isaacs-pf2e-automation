@@ -1824,6 +1824,44 @@
                 }
             ]
         },
+        "spirit-link": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "transfer",
+                        "amount": 2,
+                        "perStep": 2
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.spirit-link.Link",
+                        "rules": [],
+                        "link": true,
+                        "carries": [
+                            {
+                                "event": "turn-start",
+                                "self": true,
+                                "apply": {
+                                    "type": "transfer",
+                                    "amount": 2,
+                                    "perStep": 2
+                                }
+                            }
+                        ],
+                        "noTurnHealing": true
+                    }
+                }
+            ]
+        },
         "sure-strike": {
             "areaTargeting": false,
             "riders": [

@@ -164,8 +164,13 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "Transfer": {
+            "Moved": "{to} regains {moved} Hit Points; {from} loses {moved}.",
+            "Ended": "{from} is at 0 Hit Points: the link ends."
+        },
         "FastHealing": {
-            "Off": "{actor} took acid or fire damage: no regeneration this turn."
+            "Off": "{actor} took acid or fire damage: no regeneration this turn.",
+            "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
         },
         "ShieldBlock": {
             "Ended": "{actor} blocked with the shield: {name} ends, and it can't be cast again for 10 minutes."
@@ -404,6 +409,9 @@
             },
             "malediction": {
                 "Area": "Malediction"
+            },
+            "spirit-link": {
+                "Link": "spirit link"
             },
             "shield": {
                 "Immune": "You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago."

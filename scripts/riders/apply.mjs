@@ -436,6 +436,8 @@ async function applyOne(rider, context) {
             return applyClimb(rider, context);
         case "decoy":
             return applyDecoy(rider, context);
+        case "transfer":
+            return applyTransfer(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2555,11 +2557,22 @@ function effectSource(label, rules, rider, context) {
     onTargetsTurn(source, rider, context);
     // "If the target uses a hostile action, the spell ends" — *Invisibility*. See `registerHostileEnd`.
     if (rider.apply?.endsOnHostile) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnHostile: true } });
-    // Riders the effect takes with it — *Paralyze*'s "at the end of each of its turns, a new Will save".
+    // Riders the effect takes with it — *Paralyze*'s "at the end of each of its turns, a new Will save". The
+    // cast's heightening steps go with them: on the holder's turn the effect is the only item in hand.
     if (Array.isArray(rider.apply?.carries)) {
         const dc = RiderExtensions.resolveDC(undefined, context);
-        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, dc) } });
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, dc), steps: riderSteps(rider, context) } });
     }
+    // Who this effect is linked to — *Spirit Link*'s ally, kept on the caster's effect.
+    if (rider.apply?.link) {
+        // The caster's own riders run apart from the target's, with the caster as their target — the creature
+        // the cast was aimed at is in the confirmed list.
+        const others = [context.eventTarget, ...(context.targets ?? [])].map((t) => t?.actor ?? t).filter((a) => a?.uuid && a !== context.actor);
+        const linked = others[0] ?? null;
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { linkedTo: linked?.uuid ?? null } });
+    }
+    // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
+    if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
 }
 
@@ -2650,6 +2663,40 @@ async function applyDecoy(rider, context) {
     if (left <= 0) await effect.delete();
     else await effect.update({ "system.badge.value": left });
     context.notes.push(t(outcome === "criticalSuccess" ? "Decoy.ImageCrit" : outcome === "failure" ? "Decoy.ImageMiss" : "Decoy.Image", { actor: holder.name, left }));
+}
+
+/**
+ * How many Hit Points move. *Spirit Link*: "it regains 2 Hit Points (or the difference between its current and
+ * maximum Hit Points, if that's lower). You lose as many Hit Points as the target regained."
+ */
+export function transferred(amount, current, max) {
+    return Math.max(0, Math.min(Number(amount) || 0, (Number(max) || 0) - (Number(current) || 0)));
+}
+
+/**
+ * Hit Points moved from the caster to someone else, ignoring temporary Hit Points either way. On the effect a
+ * link left (`linkedTo`), the someone else is the linked creature and the steps are the cast's (`steps`).
+ * The link ends when the caster reaches 0 Hit Points.
+ */
+async function applyTransfer(rider, context) {
+    const effect = context.riderItem;
+    const flags = effect?.flags?.[LIB_ID] ?? {};
+    const to = flags.linkedTo ? await fromUuid(flags.linkedTo) : context.actor;
+    const from = context.originActor;
+    if (!to?.hitPoints || !from?.hitPoints || to === from) return;
+    const steps = Number.isFinite(flags.steps) ? flags.steps : riderSteps(rider, context);
+    const amount = (Number(rider.apply.amount) || 0) + (Number(rider.apply.perStep) || 0) * steps;
+    const moved = transferred(amount, to.hitPoints.value, to.hitPoints.max);
+    if (moved > 0) {
+        await to.update({ "system.attributes.hp.value": to.hitPoints.value + moved });
+        await from.update({ "system.attributes.hp.value": Math.max(0, from.hitPoints.value - moved) });
+    }
+    context.notes.push(t("Transfer.Moved", { from: from.name, to: to.name, moved }));
+    if (from.hitPoints.value <= 0) {
+        const links = from.items.filter((i) => i.flags?.[LIB_ID]?.linkedTo).map((i) => i.id);
+        if (links.length > 0) await from.deleteEmbeddedDocuments("Item", links);
+        context.notes.push(t("Transfer.Ended", { from: from.name }));
+    }
 }
 
 /** A valued condition moved by `by`, held within [0, max]. */
