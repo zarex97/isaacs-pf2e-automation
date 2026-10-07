@@ -1739,6 +1739,10 @@ async function applyEffect(rider, context) {
     applySubstitutions(source, rider.apply.substitutions, context);
     // A pf2e effect that asks — *Ill Omen*'s "failure or critical failure?" — is told instead, from the outcome.
     if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome);
+    // *Heroism*'s +1 / +2 / +3 reads `@item.level` — the effect's own level, which pf2e sets to the spell's rank
+    // when the effect is taken from a cast. Taken from the compendium, it is whatever the effect was saved at.
+    const castRank = Number((context.item ?? context.riderItem)?.rank);
+    if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
     source.system.start = startData(context.actor);
     if (rider.duration) source.system.duration = durationData(RiderExtensions.duration(rider, context));
