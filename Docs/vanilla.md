@@ -14,6 +14,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Blinding Fury | 6 |  | reaction (on you); success / failure / crit. failure: unobserve; failure: blinding fury (1 minutes, carries damage-applied unobserve); crit. failure: blinding fury (until it ends, carries damage-applied unobserve) |  |
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
 | Blister | 5 |  | success: Blisters (1 minutes); failure: Blisters (1 minutes); crit. failure: Blisters (1 minutes) |  |
+| Blur | 2 |  | concealed (1 minutes) |  |
 | Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |

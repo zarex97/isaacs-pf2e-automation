@@ -597,6 +597,21 @@
                 }
             ]
         },
+        "blur": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "concealed"
+                    }
+                }
+            ]
+        },
         "breath-of-life": {
             "riders": [
                 {

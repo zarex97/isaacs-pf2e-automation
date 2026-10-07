@@ -658,7 +658,7 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-91a | "It becomes Concealed" | An attack on it rolls a DC 5 flat check first; a failure misses | | ☐ | |
+| VS-91a | "It becomes Concealed" | An attack on it rolls a DC 5 flat check first; a failure misses | `content/vanilla/blur.json`: *concealed* for 1 minute; a check gate (`unobserved.mjs`, "an attack on a concealed creature") rolls the DC 5 flat check before any attack on a concealed target | ✅ | Leo: an effect *Blur: Concealed* (1 minute) with the condition. The Ghoul's Claw at Leo: flat check **3** — "the DC 5 flat check fails, and the attack misses", **no attack rolled**; **12** — "succeeds", the attack rolled. Concealed gone: the Claw rolled with no check |
 | VS-91b | "the target can't use this concealment to Hide or Sneak" | — | | — | Nothing to automate: Hide and Sneak are the table's |
 
 ### VS-92 · Silence
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 40 |
-| ✅ | 275 |
+| ☐ not yet driven | 39 |
+| ✅ | 276 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |
