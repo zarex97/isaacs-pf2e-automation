@@ -1,0 +1,122 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "1d4",
+                "damageType": "poison"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "affliction",
+                "name": "ISAACS_AUTOMATION.Vanilla.spider-sting.Venom",
+                "stage": 1,
+                "save": "fortitude",
+                "level": 1,
+                "traits": [
+                    "poison"
+                ],
+                "maxRounds": 4,
+                "stages": [
+                    {
+                        "damage": [
+                            {
+                                "formula": "1d4",
+                                "type": "poison"
+                            }
+                        ],
+                        "conditions": [
+                            {
+                                "slug": "enfeebled",
+                                "value": 1
+                            }
+                        ],
+                        "duration": {
+                            "value": 1,
+                            "unit": "rounds"
+                        }
+                    },
+                    {
+                        "damage": [
+                            {
+                                "formula": "1d4",
+                                "type": "poison"
+                            }
+                        ],
+                        "conditions": [
+                            {
+                                "slug": "enfeebled",
+                                "value": 2
+                            }
+                        ],
+                        "duration": {
+                            "value": 1,
+                            "unit": "rounds"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "affliction",
+                "name": "ISAACS_AUTOMATION.Vanilla.spider-sting.Venom",
+                "stage": 2,
+                "save": "fortitude",
+                "level": 1,
+                "traits": [
+                    "poison"
+                ],
+                "maxRounds": 4,
+                "stages": [
+                    {
+                        "damage": [
+                            {
+                                "formula": "1d4",
+                                "type": "poison"
+                            }
+                        ],
+                        "conditions": [
+                            {
+                                "slug": "enfeebled",
+                                "value": 1
+                            }
+                        ],
+                        "duration": {
+                            "value": 1,
+                            "unit": "rounds"
+                        }
+                    },
+                    {
+                        "damage": [
+                            {
+                                "formula": "1d4",
+                                "type": "poison"
+                            }
+                        ],
+                        "conditions": [
+                            {
+                                "slug": "enfeebled",
+                                "value": 2
+                            }
+                        ],
+                        "duration": {
+                            "value": 1,
+                            "unit": "rounds"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

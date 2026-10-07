@@ -217,6 +217,12 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Affliction": {
+            "Again": "{actor} is exposed to {name} again: stage {stage}.",
+            "Stage": "stage {stage}",
+            "Cured": "{actor} recovers from {name}.",
+            "Expired": "{name} runs its course on {actor}."
+        },
         "OriginAction": {
             "Description": "{name}: from {target}, the creature {spell} marked. Each use spends one.",
             "Left": "{name}: {left} left.",
@@ -511,6 +517,9 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "spider-sting": {
+                "Venom": "Spider Venom"
             },
             "blister": {
                 "Blisters": "Blisters",

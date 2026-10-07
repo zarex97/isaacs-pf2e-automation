@@ -321,14 +321,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-59a | "You deal 1d4 piercing damage to the touched creature" | 1d4 piercing whatever the save | | ☐ | |
-| VS-59b | "Critical Success The target is unaffected" | Nothing more | | ☐ | |
-| VS-59c | "Success The target takes 1d4[poison] damage" | 1d4 poison, no affliction | | ☐ | |
-| VS-59d | "Failure The target is afflicted with spider venom at stage 1" | The affliction at stage 1: 1d4 poison and enfeebled 1 | | ☐ | |
-| VS-59e | "Critical Failure The target is afflicted with spider venom at stage 2" | Stage 2: 1d4 poison and enfeebled 2 | | ☐ | |
-| VS-59f | "Stage 1 1d4 poison damage and Enfeebled 1 (1 round)" | At the end of each of its turns a Fortitude save moves the stage, and stage 1 deals its damage and condition | | ☐ | |
-| VS-59g | "Stage 2 1d4 poison damage and Enfeebled 2 (1 round)" | Stage 2's damage and condition | | ☐ | |
-| VS-59h | "Maximum Duration 4 rounds" | After four rounds the venom ends | | ☐ | |
+| VS-59a | "You deal 1d4 piercing damage to the touched creature" | 1d4 piercing whatever the save | pf2e's own spell card (its damage, 1d4 piercing) | ✅ | The card's damage button rolled **1d4 piercing** (1) for ZZ Victim, whatever its save — pf2e's own, as for any spell's damage |
+| VS-59b | "Critical Success The target is unaffected" | Nothing more | no rider on `criticalSuccess` | ✅ | A critical success (44): no damage roll, no venom, no condition |
+| VS-59c | "Success The target takes 1d4[poison] damage" | 1d4 poison, no affliction | `content/vanilla/spider-sting.json`: `success` → `damage` 1d4 poison | ✅ | A success (34): "1d4 poison" = 4, ZZ Victim took 4; no venom |
+| VS-59d | "Failure The target is afflicted with spider venom at stage 1" | The affliction at stage 1: 1d4 poison and enfeebled 1 | `failure` → `affliction` at `stage: 1` (`scripts/riders/affliction.mjs`) | ✅ | A failure (20): *Spider Venom (stage 1)* — badge 1 — **enfeebled 1**, and its stage damage rolled and applied at once: 1d4 poison = 3 |
+| VS-59e | "Critical Failure The target is afflicted with spider venom at stage 2" | Stage 2: 1d4 poison and enfeebled 2 | `criticalFailure` → `stage: 2` | ✅ | A critical failure (2): *Spider Venom (stage 2)*, **enfeebled 2**, 1d4 poison applied |
+| VS-59f | "Stage 1 1d4 poison damage and Enfeebled 1 (1 round)" | At the end of each of its turns a Fortitude save moves the stage, and stage 1 deals its damage and condition | `pf2e.endTurn` → `Affliction.recover`: the save against the venom's DC; `nextStage` test (−2/−1/+1/+2) | ✅ | In an encounter, at the end of ZZ Victim's turn: "Spider Venom DC 34", a failure → stage 2. With +30 Fortitude, a success at stage 2 → **stage 1**: enfeebled 2 became **enfeebled 1**, and 1d4 poison was dealt; a critical success at stage 1: "ZZ Victim recovers from Spider Venom." and the enfeebled went with it |
+| VS-59g | "Stage 2 1d4 poison damage and Enfeebled 2 (1 round)" | Stage 2's damage and condition | stage 2's own conditions and damage; the same stage again is its damage again | ✅ | At stage 2: **enfeebled 2** and 1d4 poison; a critical failure there kept it at stage 2 (the last) and dealt its 1d4 again (1) |
+| VS-59h | "Maximum Duration 4 rounds" | After four rounds the venom ends | `maxRounds: 4` | ✅ | After the fourth end of turn: "Spider Venom runs its course on ZZ Victim." — the effect and its enfeebled gone |
 
 ### VS-60 · Seal Fate
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 202 |
-| ✅ | 117 |
+| ☐ not yet driven | 194 |
+| ✅ | 125 |
 | ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |

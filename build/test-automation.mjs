@@ -946,6 +946,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    const { nextStage } = await import("../scripts/riders/affliction.mjs");
+    check("a save moves an affliction's stage: two down, one down, one up, two up, cured below 1, capped at the last",
+        [nextStage(2, "criticalSuccess", 2), nextStage(2, "success", 2), nextStage(1, "failure", 2), nextStage(1, "criticalFailure", 3), nextStage(2, "criticalFailure", 2)],
+        [0, 1, 2, 3, 2]);
     check("an action granted from a cast keeps the cast's rank and DC",
         bakeCast([{ apply: { type: "area-damage", parts: [{ formula: "7d6", perStep: "1d6", type: "acid" }] } }], { steps: 2, dc: 31 }),
         [{ apply: { type: "area-damage", parts: [{ formula: "9d6", type: "acid" }], dc: 31 } }]);

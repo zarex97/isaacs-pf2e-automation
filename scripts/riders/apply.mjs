@@ -13,6 +13,7 @@ import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
 import { OriginAction } from "./origin-action.mjs";
+import { Affliction } from "./affliction.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -459,6 +460,8 @@ async function applyOne(rider, context) {
             return Dismiss.apply(rider, context);
         case "spend-charge":
             return OriginAction.spend(rider, context);
+        case "affliction":
+            return Affliction.apply(rider, context, { dc: Number(rider.apply.dc) || RiderExtensions.resolveDC("spell", context), item: castItemOf(context) ?? context.item });
         case "area-damage":
             return applyAreaDamage(rider, context);
         case "pull":
