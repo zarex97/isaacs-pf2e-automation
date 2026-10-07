@@ -561,10 +561,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-81a | "The target takes half damage from all effects that deal Hit Point damage, and you take the remainder of the damage" | The target takes half (rounded down); the caster takes the rest | | ☐ | |
-| VS-81b | "When you take damage through this link, you don't apply any resistances, weaknesses, or other abilities you have to that damage" | The caster's half ignores the caster's resistances and weaknesses | | ☐ | |
-| VS-81c | "The spell ends if the target is ever more than 30 feet away from you" | Moving apart beyond 30 ft ends it | | ☐ | |
-| VS-81d | "If either you or the target is reduced to 0 Hit Points, any damage from this spell is resolved and then the spell ends" | 0 HP on either side ends it after the blow | | ☐ | |
+| VS-81a | "The target takes half damage from all effects that deal Hit Point damage, and you take the remainder of the damage" | The target takes half (rounded down); the caster takes the rest | `shareDamage: { share: 0.5 }` (`scripts/riders/share-damage.mjs`): a damage stage alters the blow with pf2e's `DamageRoll#alter` before it lands; the remainder goes to the caster | ✅ | ZZ Victim linked; 20 slashing: **ZZ −10, Aries −10**; 15 slashing: **ZZ −7, Aries −8** ("Aries takes 8 damage through the link with ZZ Victim") |
+| VS-81b | "When you take damage through this link, you don't apply any resistances, weaknesses, or other abilities you have to that damage" | The caster's half ignores the caster's resistances and weaknesses | The caster's remainder is applied `final` — no IWR | ✅ | ZZ resisting slashing 3, Aries slashing 5, 20 slashing: **ZZ −7** (its half, less its resistance), **Aries −10** (none of Aries's resistance) |
+| VS-81c | "The spell ends if the target is ever more than 30 feet away from you" | Moving apart beyond 30 ft ends it | `range: 30`: an `updateToken` hook ends the effect when the two are farther apart | ✅ | ZZ moved to 35 ft: "life linked ends: the linked creatures are too far apart" — effect gone |
+| VS-81d | "If either you or the target is reduced to 0 Hit Points, any damage from this spell is resolved and then the spell ends" | 0 HP on either side ends it after the blow | After the split, either creature at 0 HP ends the effect | ✅ | ZZ at 6, 20 slashing: ZZ **0**, Aries still took his 10, then "ends: one of the linked creatures is at 0 Hit Points". Caster side (the link pointed at the Ghoul at 5 HP, since Aries's homebrew holds Aries at 1): Ghoul **0**, link ended |
 
 ### VS-82 · Protector Tree
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 82 |
-| ✅ | 234 |
+| ☐ not yet driven | 78 |
+| ✅ | 238 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

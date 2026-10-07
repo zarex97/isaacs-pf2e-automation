@@ -1,0 +1,20 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.share-life.Link",
+                "rules": [],
+                "shareDamage": {
+                    "share": 0.5,
+                    "range": 30
+                }
+            }
+        }
+    ]
+}

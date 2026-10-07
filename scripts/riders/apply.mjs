@@ -3080,6 +3080,11 @@ function effectSource(label, rules, rider, context) {
         const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
     }
+    // *Share Life*: its holder's damage halved, the rest to its caster (`share-damage.mjs`).
+    if (rider.apply?.shareDamage && context.originActor) {
+        const { share = 0.5, range = null } = rider.apply.shareDamage;
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { shareDamage: { with: context.originActor.uuid, share, range } } });
+    }
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;

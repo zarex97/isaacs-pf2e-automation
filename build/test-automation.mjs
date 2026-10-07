@@ -1335,4 +1335,11 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a blow has a trait from its item or its roll options", [blowHas({ item: { system: { traits: { value: ["water"] } } } }, ["water"]), blowHas({ rollOptions: new Set(["origin:item:trait:water"]) }, ["water"]), blowHas({ rollOptions: new Set(["item:trait:fire"]) }, ["water"])], [true, true, false]);
 }
 
+{
+    const { splitDamage, splittable } = await import("../scripts/riders/share-damage.mjs");
+    check("shared damage: the target's altered part, the caster the remainder", [splitDamage(15, 7), splitDamage(15, 8), splitDamage(4, 9)], [{ own: 7, rest: 8 }, { own: 8, rest: 7 }, { own: 4, rest: 0 }]);
+    const roll = { total: 12, alter: () => null };
+    check("only a rolled blow is split — not a final number, healing, or one past IWR", [splittable({ damage: roll }), splittable({ damage: 12 }), splittable({ damage: { total: -5, alter: () => null } }), splittable({ damage: roll, final: true }), splittable({ damage: roll, skipIWR: true })], [true, false, false, false, false]);
+}
+
 report("Automation tests");
