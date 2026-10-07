@@ -29,7 +29,7 @@ Riders are authored on whatever the rule belongs to — a spell, a feat, an acti
 | `strike-resolved` | This actor's Strike resolves | The attacker's items |
 | `strike-received` | A Strike resolves against this actor | The defender's items |
 | `action-used` | An action or spell is posted to chat | The item posted, against the targets you confirmed |
-| `save-made` | This actor rolled a save against someone else's effect; the rider is aimed back at whoever forced it. `rider:trigger:enemy` / `rider:trigger:ally` say which side they are on (`rider:target:…` for an ordinary rider) | This actor's items |
+| `save-made` | This actor rolled a save against someone else's effect; the rider is aimed back at whoever forced it. `rider:trigger:enemy` / `rider:trigger:ally` say which side they are on (`rider:target:…` for an ordinary rider); every rider also sees the cast's choices as `rider:cast:<flag>:<value>` | This actor's items |
 | `creature-dying` | A creature within the rider's `range` (feet) would die — a character at its dying maximum, anything else at 0 Hit Points — of anything but a death effect or *Disintegrate*. `trigger: true` reaches the dying creature; `rider:trigger:mode:living` says what it is | This actor's items |
 | `damage-applied` | Damage from this actor's item lands | The origin's items |
 | `damage-received` | Damage from someone else's item lands on this actor | The defender's items |

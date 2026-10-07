@@ -2955,6 +2955,62 @@
                 }
             ]
         },
+        "protection": {
+            "castChoice": {
+                "flag": "extent",
+                "fromRank": 3,
+                "prompt": "ISAACS_AUTOMATION.Vanilla.protection.Choose",
+                "choices": [
+                    "target",
+                    "emanation"
+                ],
+                "labels": {
+                    "target": "ISAACS_AUTOMATION.Vanilla.protection.Target",
+                    "emanation": "ISAACS_AUTOMATION.Vanilla.protection.Emanation"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.RawLEPwyT5CtCZ4D"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        "rider:cast:extent:emanation"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.protection.Aura",
+                        "rules": [
+                            {
+                                "key": "Aura",
+                                "slug": "protection-emanation",
+                                "radius": 10,
+                                "traits": [
+                                    "magical"
+                                ],
+                                "effects": [
+                                    {
+                                        "uuid": "Compendium.pf2e.spell-effects.Item.RawLEPwyT5CtCZ4D",
+                                        "affects": "allies",
+                                        "includesSelf": false,
+                                        "removeOnExit": true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "regenerate": {
             "riders": [
                 {

@@ -542,8 +542,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-79a | "The target gains a +1 status bonus to Armor Class and saving throws" | +1 AC and saves | | ☐ | |
-| VS-79b | "You can choose to have the benefits also affect all your allies in a 10-foot emanation around the target" | From rank 3, a choice: the bonus also reaches the caster's allies within 10 ft of the target, moving with it | | ☐ | |
+| VS-79a | "The target gains a +1 status bonus to Armor Class and saving throws" | +1 AC and saves | pf2e's *Spell Effect: Protection* (`FlatModifier` status +1 AC and saves) on `action-used` | ✅ | Rank 1 on Leo: no prompt; **AC 34 → 35, Fortitude +24 → +25** |
+| VS-79b | "You can choose to have the benefits also affect all your allies in a 10-foot emanation around the target" | From rank 3, a choice: the bonus also reaches the caster's allies within 10 ft of the target, moving with it | `content/vanilla/protection.json`: `castChoice` `extent` from rank 3; on `rider:cast:extent:emanation`, an effect with pf2e's `Aura` (10 ft, allies, `removeOnExit`) granting the same effect | ✅ | Rank 3 asked "Ward only the target, or every ally within 10 feet of it as well?"; *emanation*: Leo got the bonus and the aura; Aries 5 ft away **AC 35**, Capricorn 20 ft away stayed 34; moved 10 ft from Leo, Capricorn gained it; Aries walked 30 ft out — **lost it**, and walking back in got it again |
 
 ### VS-80 · Fire Shield
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 90 |
-| ✅ | 226 |
+| ☐ not yet driven | 88 |
+| ✅ | 228 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

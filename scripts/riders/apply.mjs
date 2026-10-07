@@ -124,7 +124,7 @@ async function applyToTarget(target, candidates, context, payload) {
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
         item: castItemOf(context) ?? context.eventItem,
-        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context)],
+        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context), ...castChoiceOptions(context)],
     });
 
     // Most riders are chosen against the snapshot. A `live` rider is chosen against the world as this pass
@@ -3101,6 +3101,11 @@ export function withCast(value, cast = {}, steps = 0) {
         delete out.maxLevelPerStep;
     }
     return out;
+}
+
+/** The cast's choices as roll options, for a rider to be predicated on: `rider:cast:<flag>:<value>` — *Protection*'s extent. */
+export function castChoiceOptions(context) {
+    return Object.entries(castChoicesOf(context)).map(([flag, value]) => `rider:cast:${flag}:${value}`);
 }
 
 /** What the caster chose as this spell was cast (`castChoice`, `vanilla/requires.mjs`). */

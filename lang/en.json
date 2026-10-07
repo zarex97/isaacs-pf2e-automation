@@ -559,6 +559,12 @@
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
             },
+            "protection": {
+                "Choose": "Ward only the target, or every ally within 10 feet of it as well?",
+                "Target": "The target",
+                "Emanation": "Allies within 10 feet too",
+                "Aura": "protection emanation"
+            },
             "resist-energy": {
                 "Choose": "Resistance to which damage?"
             },
