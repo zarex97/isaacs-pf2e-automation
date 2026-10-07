@@ -442,11 +442,11 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-70a | "Choose an affliction on the target, such as a curse, disease, or poison" | A card offers the target's afflictions | | ☐ | |
-| VS-70b | "If it has advanced past stage one, reduce the stage by one" | Stage 2 → 1; stage 1 stays | | ☐ | |
-| VS-70c | "This reduction can be applied only once to a given case of an affliction" | A second casting doesn't lower the same case again | | ☐ | |
-| VS-70d | "Heightened (3rd) Attempt to counteract the affliction if it is a disease or poison" | Rank 3 counteracts a disease or poison | | ☐ | |
-| VS-70e | "Heightened (4th) Attempt to counteract the affliction if it is a curse, disease, or poison" | Rank 4 adds curses | | ☐ | |
+| VS-70a | "Choose an affliction on the target, such as a curse, disease, or poison" | A card offers the target's afflictions | `cleanse` apply type (`scripts/riders/cleanse.mjs`): a card of the target's afflictions (`isAffliction` test) | ✅ | Cast at Leo, afflicted with spider venom (stage 2) and carrying *Curse of Night*: "Which affliction?" — **Spider Venom (stage 2)** and **Curse of Night** |
+| VS-70b | "If it has advanced past stage one, reduce the stage by one" | Stage 2 → 1; stage 1 stays | `Affliction.ease`: past stage 1, one stage down | ✅ | Spider Venom chosen: "Spider Venom eases to stage 1." — enfeebled 2 became enfeebled 1 |
+| VS-70c | "This reduction can be applied only once to a given case of an affliction" | A second casting doesn't lower the same case again | the case keeps a `cleansed` mark; a second easing is refused | ✅ | Exposed again (back to stage 2, the same case) and cleansed again: "Spider Venom has already been eased once; only a counteract can do more." — still stage 2 |
+| VS-70d | "Heightened (3rd) Attempt to counteract the affliction if it is a disease or poison" | Rank 3 counteracts a disease or poison | `counteractKinds` (test): rank 3 — disease, poison; the counteract against the affliction's own DC | ✅ | At **rank 3**, the venom (a poison): a counteract against its own **DC 20** — "counteracted and gone", its enfeebled with it. *Curse of Night* at rank 3: "beyond this casting … its kind can't be counteracted at this rank" |
+| VS-70e | "Heightened (4th) Attempt to counteract the affliction if it is a curse, disease, or poison" | Rank 4 adds curses | `counteractKinds`: rank 4 adds curse | ✅ | At **rank 4**, *Curse of Night*: "counteracted and gone", the dazzled with it |
 
 ## Batch 6 — Bodies and movement
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 138 |
-| ✅ | 179 |
+| ☐ not yet driven | 133 |
+| ✅ | 184 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |

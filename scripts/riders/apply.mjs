@@ -17,6 +17,7 @@ import { Affliction } from "./affliction.mjs";
 import { Aftermath } from "./aftermath.mjs";
 import { Unobserved } from "./unobserved.mjs";
 import { setAside } from "./set-aside.mjs";
+import { Cleanse } from "./cleanse.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -467,6 +468,8 @@ async function applyOne(rider, context) {
             return applyCast(rider, context);
         case "unobserve":
             return Unobserved.apply(rider, context);
+        case "cleanse":
+            return Cleanse.offer(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath":
             return Aftermath.open(rider, context, { castItem: castItemOf(context) ?? context.item });
         case "aftermath-mark":
@@ -1405,7 +1408,8 @@ export async function resolveCounteract(payload) {
         return;
     }
     const roll = await statistic.roll({
-        dc: { value: (payload.dcFrom === "effect" ? spellDcOf(effect) : null) ?? dcByLevel(effect.system?.level?.value ?? actor.level) },
+        // An affliction's own DC when it has one (`cleanse.mjs`).
+        dc: { value: Number(payload.dc) || ((payload.dcFrom === "effect" ? spellDcOf(effect) : null) ?? dcByLevel(effect.system?.level?.value ?? actor.level)) },
         skipDialog: true,
         label: `Counteract — ${effect.name}`,
         extraRollOptions: [`${LIB_ID}:counteract`],

@@ -1,6 +1,7 @@
 import { t } from "../i18n.mjs";
 import { LIB_ID } from "../id.mjs";
 import { applyRiders, applyChoice, applyPick, resolveCounteract, resolveReaction } from "./apply.mjs";
+import { Cleanse } from "./cleanse.mjs";
 
 const CHANNEL = `module.${LIB_ID}`;
 
@@ -10,6 +11,7 @@ const HANDLERS = {
     applyPick,
     applyCounteract: resolveCounteract,
     applyReaction: resolveReaction,
+    applyCleanse: (payload) => Cleanse.resolve(payload),
 };
 
 /**

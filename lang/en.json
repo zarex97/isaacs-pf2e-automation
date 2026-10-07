@@ -217,6 +217,15 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Cleanse": {
+            "Title": "Cleanse",
+            "Prompt": "Which affliction?",
+            "Nothing": "No affliction on the target to ease.",
+            "Eased": "{name} eases to stage {stage}.",
+            "Already": "{name} has already been eased once; only a counteract can do more.",
+            "FirstStage": "{name} is at its first stage; there is no stage to take off.",
+            "Beyond": "{name} is beyond this casting: it can't be eased, and its kind can't be counteracted at this rank."
+        },
         "Unobserved": {
             "Name": "{watcher} can't observe {hidden}",
             "Note": "{watcher} can't observe {hidden}.",

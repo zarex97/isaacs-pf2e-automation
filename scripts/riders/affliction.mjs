@@ -76,8 +76,22 @@ export const Affliction = {
             img: item?.img ?? null,
             level: Number(spec.level) || item?.level || 1,
             origin: context.originActor?.uuid ?? null,
+            // What kind of affliction — a poison, a disease, a curse — for whatever eases it (`cleanse.mjs`).
+            traits: spec.traits ?? [],
         };
         return begin(actor, state, stage);
+    },
+
+    /**
+     * One stage down, once per case — *Cleanse Affliction*'s "If it has advanced past stage one, reduce the stage by
+     * one. This reduction can be applied only once to a given case". The case remembers (`cleansed`). The effect
+     * that is the new stage, or the one there was.
+     */
+    async ease(effect) {
+        const state = stateOf(effect);
+        if (!state || state.cleansed || state.stage <= 1) return effect;
+        await effect.update({ [`flags.${LIB_ID}.${FLAG}.cleansed`]: true });
+        return toStage(effect, state.stage - 1);
     },
 
     /** The end of the creature's turn: a save against each affliction it carries. Active GM only. */

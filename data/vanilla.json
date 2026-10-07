@@ -527,6 +527,18 @@
                 }
             }
         },
+        "cleanse-affliction": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "cleanse",
+                        "statistic": "spellcasting"
+                    }
+                }
+            ]
+        },
         "command": {
             "areaTargeting": {
                 "maxTargets": 1,
