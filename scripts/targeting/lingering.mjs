@@ -53,6 +53,7 @@ export const Lingering = {
             return Lingering.grow(region);
         };
         Relay.register("lingeringBolt", (payload) => Lingering.strike(payload));
+        Relay.register("lingeringCreate", (payload) => Lingering.createFor(payload));
     },
 
     registerHooks() {
@@ -99,6 +100,23 @@ export const Lingering = {
         const placed = [regions].flat().filter((region) => region);
         if (specs.length === 0 || placed.length === 0 || !canvas?.scene) return null;
 
+        // Only a GM may create a Region that has behaviors. A player's cast hands the placement to the GM, who
+        // builds the area from the same spell, rank and shapes (#58).
+        if (!game.user?.isGM) {
+            await Relay.request({
+                action: "lingeringCreate",
+                sceneId: canvas.scene.id,
+                itemUuid: (config.item.original ?? config.item).uuid,
+                rank: config.item.rank ?? null,
+                steps: config.steps ?? 0,
+                areaType: config.area?.type ?? "burst",
+                areas: placed.map((region) => ({ shapes: region.toObject().shapes, color: region.color?.toString?.() ?? null })),
+                originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
+                affected: [...(game.user?.targets ?? [])].map((t) => t.id),
+            });
+            return null;
+        }
+
         // Every placement leaves its own patch behind, not just the first. Gemini and Cancer place one area
         // each, so this was a single region for two Cloths; *Lightning Crown* erupts three pillars and gains
         // more per heightening step, and each of them stands on its own square for its own round.
@@ -139,6 +157,20 @@ export const Lingering = {
             ...(item.getRollOptions?.("item") ?? []),
         ]);
         return [declared].flat().filter((spec) => spec && testPredicate(spec.predicate, options));
+    },
+
+    /**
+     * GM: a player's placement, built as their own cast would have built it. The spell is read back by uuid at the rank
+     * it was cast at; the placed areas arrive as their shapes.
+     */
+    async createFor({ sceneId, itemUuid, rank, steps, areaType, areas, originTokenUuid, affected }) {
+        if (canvas?.scene?.id !== sceneId) return null;
+        const owned = itemUuid ? await fromUuid(itemUuid) : null;
+        if (!owned || !Array.isArray(areas) || areas.length === 0) return null;
+        const item = rank && rank !== owned.rank ? owned.clone({ "system.location.heightenedLevel": rank }, { keepId: true }) : owned;
+        const originToken = originTokenUuid ? await fromUuid(originTokenUuid) : null;
+        const regions = areas.map(({ shapes, color }) => ({ shapes, color, toObject: () => ({ shapes }) }));
+        return Lingering.create({ item, steps, area: { type: areaType }, affected }, regions, originToken);
     },
 
     async createOne(spec, config, region, originToken, { castId = null, first = true } = {}) {
@@ -225,7 +257,7 @@ export const Lingering = {
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
                             sustain: spec.sustain ? scaledSustain(spec.sustain, config.steps ?? 0) : null,
                             // Who the cast itself already reached: a Sustain's "not yet affected" leaves them be.
-                            affected: [...(game.user?.targets ?? [])].map((t) => t.id),
+                            affected: config.affected ?? [...(game.user?.targets ?? [])].map((t) => t.id),
                             targetPredicate: spec.targetPredicate ?? null,
                             originUuid: config.item.actor?.uuid ?? null,
                             damage: spec.damage ? scaledDamage(spec.damage, config.steps ?? 0) : null,
