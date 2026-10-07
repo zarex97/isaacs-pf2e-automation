@@ -176,6 +176,9 @@
             "Bolted": "a bolt falls on {name}",
             "NoBolt": "no bolt"
         },
+        "AreaDamage": {
+            "Flavor": "{item} — {type}, rolled once for everyone it reaches"
+        },
         "Dismiss": {
             "Name": "Dismiss {name}",
             "Description": "Dismiss {name}: the area it left ends.",
@@ -444,6 +447,12 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "falling-stars": {
+                "Asteroids": "Asteroids (fire)",
+                "Airbursts": "Airbursts (sonic)",
+                "Comets": "Comets (cold)",
+                "Plasma": "Plasma (electricity)"
             },
             "lightning-storm": {
                 "Storm": "Lightning Storm",

@@ -10,6 +10,7 @@ import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
 import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
+import { CastZones } from "./targeting/zones.mjs";
 import { FastHealing } from "./lib/fast-healing.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { Banish } from "./riders/banish.mjs";
@@ -53,6 +54,7 @@ export const INIT = [
     ["the vanilla riders setting", () => Coexistence.registerSettings()],
     ["the automation indicator", () => Indicator.registerHooks()],
     ["the shape a cast chose, on its card", () => CastShape.registerHooks()],
+    ["who stands where in the areas, on its card", () => CastZones.register()],
     ["a spell that moves its caster", () => MoveCaster.register()],
 ];
 

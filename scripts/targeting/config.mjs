@@ -137,6 +137,8 @@ export function configFor(item, override = {}) {
         // Several areas that may not come closer than this, centre to centre, in feet: *Lightning Storm*'s two
         // "non-overlapping clouds", *Falling Stars*' "central 10-foot bursts can't overlap".
         apart: Number(flag?.apart) > 0 ? Number(flag.apart) : null,
+        // Rings inside the areas whose creatures the card should name — see `zones.mjs`.
+        zones: Array.isArray(flag?.zones) ? flag.zones : null,
         // Targets that have to link up — see `chain.mjs`. `{ link }` in feet.
         chain: Number(flag?.chain?.link) > 0 ? { link: Number(flag.chain.link) } : null,
         // The caster moves to the placement — see `move-caster.mjs`.

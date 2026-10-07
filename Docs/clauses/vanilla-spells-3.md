@@ -132,14 +132,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-44a | "Choose for the falling stars to be airbursts (sonic), asteroids (fire), comets (cold), or plasma (electricity)" | The cast asks for one of four kinds; the energy damage takes its type | | ☐ | |
-| VS-44b | "The spell gains the trait of the falling star type you chose" | The chosen trait is on the cast | | ☐ | |
-| VS-44c | "The four stars' central 10-foot bursts can't overlap" | Four 40-ft bursts are placed; a centre within 20 ft of another's is refused | | ☐ | |
-| VS-44d | "Each falling star deals 6d10 bludgeoning damage to each creature in the 10-foot burst at the center of its area of effect" | Creatures within 10 ft of a star's centre take the bludgeoning | | ☐ | |
-| VS-44e | "dealing 14d6 energy damage of the type you chose to each creature in its 40-foot burst" | Every creature in a star's 40-ft burst takes the energy | | ☐ | |
-| VS-44f | "attempts one basic Reflex save against the spell no matter how many overlapping explosions it's caught in" | One save per creature, whatever the overlaps | | ☐ | |
-| VS-44g | "can take each type of damage only once" | A creature caught by two stars takes the bludgeoning once and the energy once | | ☐ | |
-| VS-44h | "The bludgeoning damage increases by 1d10, and the energy damage increases by 2d6" | Rank 10: 7d10 and 16d6 | | ☐ | |
+| VS-44a | "Choose for the falling stars to be airbursts (sonic), asteroids (fire), comets (cold), or plasma (electricity)" | The cast asks for one of four kinds; the energy damage takes its type | `content/vanilla/falling-stars.json` (`areaTargetingShapes`: four choices, each loading pf2e's own variant by `overlay`); `typeFromSpell` | ✅ | Aries cast it at rank 9: the cast asked **Asteroids (fire) / Airbursts (sonic) / Comets (cold) / Plasma (electricity)**. Comets → the energy roll was **14d6 cold**; Asteroids (rank 10) → **fire**. The energy's type is read off the chosen variant's own damage |
+| VS-44b | "The spell gains the trait of the falling star type you chose" | The chosen trait is on the cast | pf2e's overlays, loaded through the shape's `overlay` | ✅ | The Comets card: "Falling Stars (Comets)", with `origin:item:trait:cold` among its roll options; the Asteroids cast was "Falling Stars (Asteroids)" |
+| VS-44c | "The four stars' central 10-foot bursts can't overlap" | Four 40-ft bursts are placed; a centre within 20 ft of another's is refused | `areaTargeting.apart: 20`; `tooClose` test | ✅ | Four 40-ft bursts placed in turn. Two centres 5 ft apart: "Those areas are too close together: their centres must be at least 20 feet apart. Aim them again." and back to aiming. Centres 45 ft and more apart stood |
+| VS-44d | "Each falling star deals 6d10 bludgeoning damage to each creature in the 10-foot burst at the center of its area of effect" | Creatures within 10 ft of a star's centre take the bludgeoning | `areaTargeting.zones` (`centre`, within 10 ft), stamped on the card by `scripts/targeting/zones.mjs`; `withinOfAny` test | ✅ | Stars at (4100, 1500), (5400, 1500) and two far off. The card named the **centre** zone: Capricorn (beside the first centre) and ZZ Victim (beside the second) — not Leo, between the two. Capricorn and ZZ Victim took the **6d10 bludgeoning = 46**; Leo didn't |
+| VS-44e | "dealing 14d6 energy damage of the type you chose to each creature in its 40-foot burst" | Every creature in a star's 40-ft burst takes the energy | `area-damage` parts | ✅ | Every creature in a burst — Capricorn, Leo, ZZ Victim — took the **14d6 cold = 45**. Aries, 55 ft from the nearest centre, outside every burst, wasn't targeted |
+| VS-44f | "attempts one basic Reflex save against the spell no matter how many overlapping explosions it's caught in" | One save per creature, whatever the overlaps | `area-damage` (one save per creature) | ✅ | One Reflex save each, against DC 34: Capricorn failed → 46 + 45 = **91**; Leo succeeded → **22** (half of 45); ZZ Victim critically failed → **182** (double of 91). Each part was rolled **once** for the whole cast ("rolled once for everyone it reaches") |
+| VS-44g | "can take each type of damage only once" | A creature caught by two stars takes the bludgeoning once and the energy once | `area-damage` (each part once; `typedTotals`) | ✅ | Leo stood inside **both** stars' 40-ft bursts and took the cold once — 22, not 44; Capricorn's 91 was one roll of two instances (bludgeoning and cold), so each type met its resistances once |
+| VS-44h | "The bludgeoning damage increases by 1d10, and the energy damage increases by 2d6" | Rank 10: 7d10 and 16d6 | `perStep` on each part, grown by the cast's steps | ✅ | Cast at **rank 10**: "7d10 bludgeoning" and "16d6 fire" |
 
 ### VS-45 · Gravity Well
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 308 |
-| ✅ | 17 |
+| ☐ not yet driven | 300 |
+| ✅ | 25 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |
