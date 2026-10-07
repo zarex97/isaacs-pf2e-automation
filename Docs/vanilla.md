@@ -20,6 +20,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
+| Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” |  |
 
 ## Legacy names
 

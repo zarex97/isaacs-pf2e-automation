@@ -135,6 +135,8 @@ export function configFor(item, override = {}) {
         steps: grown.steps,
         // Targets that have to link up — see `chain.mjs`. `{ link }` in feet.
         chain: Number(flag?.chain?.link) > 0 ? { link: Number(flag.chain.link) } : null,
+        // The caster moves to the placement — see `move-caster.mjs`.
+        moveCaster: flag?.moveCaster ? { ...flag.moveCaster } : null,
     };
 }
 

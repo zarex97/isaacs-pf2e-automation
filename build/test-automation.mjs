@@ -667,6 +667,23 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  A spell that moves its caster (VS-05)                                                        */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { occupants, needsSight } = await import("../scripts/targeting/move-caster.mjs");
+    const self = { x: 0, y: 0, w: 100, h: 100, n: "self" };
+    const other = { x: 300, y: 300, w: 100, h: 100, n: "other" };
+    const large = { x: 500, y: 0, w: 200, h: 200, n: "large" };
+    const names = (list) => list.map((t) => t.n);
+    check("an empty square is unoccupied", names(occupants({ x: 100, y: 100, width: 100, height: 100 }, [self, other, large], self)), []);
+    check("a square on another creature is occupied", names(occupants({ x: 300, y: 300, width: 100, height: 100 }, [self, other, large], self)), ["other"]);
+    check("…including a Large creature's far corner", names(occupants({ x: 600, y: 100, width: 100, height: 100 }, [self, other, large], self)), ["large"]);
+    check("the caster's own space never counts", names(occupants({ x: 0, y: 0, width: 100, height: 100 }, [self], self)), []);
+    check("sight is needed below the waiving rank, not from it", [needsSight({ seeBelowRank: 5 }, 4), needsSight({ seeBelowRank: 5 }, 5), needsSight({}, 9)], [true, false, true]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Targets that form a chain (VS-04)                                                            */
 /* -------------------------------------------------------------------------------------------- */
 
