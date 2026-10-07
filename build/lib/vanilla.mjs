@@ -37,12 +37,13 @@ export function docs(built, index, en) {
     const rider = (r) => {
         const a = r.apply ?? {};
         const what = a.type === "condition" ? [a.slug, a.value].filter((x) => x !== undefined && x !== null).join(" ")
-            : a.type === "effect" ? Object.entries(index.effects).find(([, uuid]) => uuid === a.uuid)?.[0] ?? "effect"
+            : a.type === "effect" ? (a.uuid ? Object.entries(index.effects).find(([, uuid]) => uuid === a.uuid)?.[0] ?? "effect" : words(a.label ?? "effect"))
             : a.type === "prompt" ? `GM note: “${words(a.text)}”`
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
-        const lasting = r.duration ? ` (${r.duration.value} ${r.duration.unit})` : "";
-        return `${when ? `${when}: ` : ""}${what}${lasting}`;
+        const lasting = [r.duration ? `${r.duration.value} ${r.duration.unit}` : null, a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null].filter(Boolean);
+        const lastingText = lasting.length ? ` (${lasting.join(", ")})` : "";
+        return `${when ? `${when}: ` : ""}${what}${lastingText}`;
     };
     const area = (a) => {
         if (!a) return "";
@@ -61,12 +62,15 @@ export function docs(built, index, en) {
         if (a.heightening?.maxTargets) parts.push(`+${a.heightening.maxTargets} per ${a.heightening.interval ?? 1} ranks`);
         return parts.join(", ");
     };
+    const EVENT_WORDS = { tokenMoveIn: "entering", tokenMoveOut: "moving out", tokenMoveWithin: "moving in it", tokenTurnStart: "turn start", tokenTurnEnd: "turn end" };
+    const eventsOf = (l) => (l.events ?? ["tokenMoveIn", "tokenTurnEnd"]).map((e) => EVENT_WORDS[e]).filter(Boolean).join(" / ");
     const rankFrom = (predicate) => (predicate ?? []).map((p) => p?.gte?.[0] === "item:rank" ? `from rank ${p.gte[1]}` : null).filter(Boolean);
     const linger = (spec) => [spec ?? []].flat().map((l) => [
             ...rankFrom(l.predicate),
             l.difficultTerrain ? "difficult terrain" : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
+            l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l)} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
             l.damage ? `${l.damage.formula}${l.damage.persistent === false ? "" : " persistent"} ${l.damage.type ?? ""} on ${(l.events ?? ["tokenMoveIn", "tokenTurnEnd"]).map((e) => ({ tokenMoveIn: "entering", tokenTurnStart: "turn start", tokenTurnEnd: "turn end" })[e] ?? e).join(" / ")}`.trim() : null,
             l.duration ? `${l.duration.value} ${l.duration.unit}` : null,
         ].filter(Boolean).join(", ")).join("; ");
@@ -149,6 +153,11 @@ export function problemsWith(slug, entry, ctx) {
         }
         for (const [i, spec] of [object.lingering ?? []].flat().entries()) {
             if (spec?.darkness !== undefined && spec.darkness !== true) at(`${where} lingering.darkness`.trim(), "true or absent");
+            if (spec?.save) {
+                const asked = [spec.save.statistic ?? spec.save.statistics ?? []].flat();
+                if (asked.length === 0 || asked.some((s) => !STATISTICS.includes(s))) at(`${where} lingering.save`.trim(), `a save names its statistic, or the statistics to choose between, from ${STATISTICS.join(", ")}`);
+                (spec.save.riders ?? []).forEach((r, j) => checkRider(`${where} lingering.save.riders[${j}]`.trim(), r));
+            }
             if (spec?.inside === undefined) continue;
             const inside = spec.inside;
             const at2 = (what) => at(`${where} lingering${Array.isArray(object.lingering) ? `[${i}]` : ""}.inside`.trim(), what);
@@ -171,7 +180,9 @@ export function problemsWith(slug, entry, ctx) {
         const apply = rider.apply ?? {};
         if (!ctx.applyTypes.includes(apply.type)) at(`${where}.apply`, `"${apply.type}" is not a built-in apply type`);
         if (apply.type === "condition" && !ctx.index.conditions[apply.slug]) at(`${where}.apply`, `no pf2e condition "${apply.slug}"`);
-        if (apply.type === "effect" && !Object.values(ctx.index.effects).includes(apply.uuid)) at(`${where}.apply`, `no pf2e spell effect ${apply.uuid}`);
+        const inline = apply.type === "effect" && !apply.uuid && Array.isArray(apply.rules);
+        if (inline && (!apply.label || apply.rules.some((r) => typeof r?.key !== "string"))) at(`${where}.apply`, "an effect written out names a label and rules that each have a key");
+        if (apply.type === "effect" && !inline && !Object.values(ctx.index.effects).includes(apply.uuid)) at(`${where}.apply`, `no pf2e spell effect ${apply.uuid}`);
         if (apply.type === "save" && !["fortitude", "reflex", "will"].includes(apply.statistic)) at(`${where}.apply`, `a save is fortitude, reflex or will, not "${apply.statistic}"`);
         for (const list of ["riders", "onAllHit"]) (apply[list] ?? []).forEach((r, i) => checkRider(`${where}.apply.${list}[${i}]`, r));
         (apply.options ?? []).forEach((o, i) => (o.riders ?? []).forEach((r, j) => checkRider(`${where}.apply.options[${i}].riders[${j}]`, r)));
@@ -186,6 +197,9 @@ export function problemsWith(slug, entry, ctx) {
         else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walkText(where, v, k);
     }
 }
+
+/** What a check in an entry may roll: the three saves and the skills a creature can be asked for. */
+const STATISTICS = ["fortitude", "reflex", "will", "perception", "acrobatics", "arcana", "athletics", "crafting", "deception", "diplomacy", "intimidation", "medicine", "nature", "occultism", "performance", "religion", "society", "stealth", "survival", "thievery"];
 
 /** Problems with the alias map: every target is an entry, and no alias shadows a real pf2e slug. */
 export function aliasProblems(aliases, entries, index) {

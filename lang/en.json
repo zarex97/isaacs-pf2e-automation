@@ -338,6 +338,10 @@
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
             },
+            "web": {
+                "Web": "Web",
+                "Slowed": "–10 ft. to Speeds"
+            },
             "mist": {
                 "Cloud": "Mist",
                 "Inside": "<p>You are within the mist: you are concealed, and creatures outside the mist are concealed to you.</p>"

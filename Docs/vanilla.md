@@ -15,7 +15,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
-| Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone; failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | 1 minutes |
+| Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone; failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone, 1 minutes |
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
@@ -24,6 +24,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
+| Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
 
 ## Legacy names
 

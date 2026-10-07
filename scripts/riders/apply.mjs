@@ -1550,6 +1550,18 @@ async function applyExpire(rider, context) {
 
 /** An authored effect from a pack — the riders that are more than a condition with a timer. */
 async function applyEffect(rider, context) {
+    // An effect written out in the content — *Web*'s "–10-foot circumstance penalty to its Speeds" — when
+    // pf2e has no effect item for it: the rules travel in the rider, and it lands like a timed condition.
+    if (!rider.apply.uuid && Array.isArray(rider.apply.rules)) {
+        const label = rider.apply.label ?? t("Rider.Name");
+        const source = effectSource(label, rider.apply.rules, rider, context);
+        // "A creature that gets out of the web ceases to take a circumstance penalty": an effect given by a
+        // lingering area's check can end on leaving it, the way an area held while inside does.
+        if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { inside: context.region } });
+        const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
+        record(context, created);
+        return;
+    }
     const uuid = rider.apply.uuid;
     const source = (await fromUuid(uuid))?.toObject();
     if (!source) {
@@ -2028,8 +2040,10 @@ async function applySave(rider, context) {
  */
 export async function runSave(spec, context) {
     const { dc } = spec;
+    // "An Athletics check or Reflex save": where the creature may choose, it rolls the better of them.
+    const asked = spec.statistic ?? bestStatistic(context.actor, spec.statistics);
     // A save another module changes — a different save asked for, a penalty the caster chose to impose.
-    const { statistic: slug, modifiers } = RiderExtensions.modifySave(spec.statistic, context);
+    const { statistic: slug, modifiers } = RiderExtensions.modifySave(asked, context);
     const statistic = context.actor.getStatistic?.(slug);
     if (!statistic) {
         console.warn(`Isaac's PF2e Automation | ${context.actor.name} has no ${slug} statistic`);
@@ -2059,6 +2073,12 @@ export async function runSave(spec, context) {
     for (const { rider: inner, index: innerIndex } of selectRiders(nested, { outcome, options })) {
         await applyOne(inner, { ...context, outcome, riderIndex: [context.riderIndex, "riders", innerIndex].flat() });
     }
+}
+
+/** Of the statistics a creature may choose between, the one with the higher modifier. */
+export function bestStatistic(actor, slugs) {
+    const choices = (slugs ?? []).map((slug) => ({ slug, mod: actor?.getStatistic?.(slug)?.mod })).filter((c) => typeof c.mod === "number");
+    return choices.reduce((best, c) => (best === null || c.mod > best.mod ? c : best), null)?.slug ?? slugs?.[0];
 }
 
 function counterOn(actor, uuid) {

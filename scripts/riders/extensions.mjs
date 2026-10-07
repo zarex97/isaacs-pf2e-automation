@@ -116,7 +116,8 @@ export const RiderExtensions = {
         // Nothing named, nothing registered answered: what pf2e itself would reach for — a spell's own
         // spellcasting DC, else the origin's class DC, else the best DC among its spellcasting entries. A
         // wizard's Fear is against the arcane DC, not a class DC. An unknown word stays unresolved, and says so.
-        if (dc === undefined || dc === null) {
+        // `"spell"` says the same thing out loud — "an Escape against your spell DC".
+        if (dc === undefined || dc === null || dc === "spell") {
             const item = context?.item ?? context?.riderItem;
             const spellDC = item?.type === "spell" ? item.spellcasting?.statistic?.dc?.value : null;
             return spellDC ?? defaultDC(context?.originActor);

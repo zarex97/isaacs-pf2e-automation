@@ -297,6 +297,8 @@ const { describeActor, describeDamage } = await import("../scripts/lib/roll-opti
     check("…else its best spell DC", RiderExtensions.resolveDC(undefined, { originActor: wizard }), 25);
     check("a numeric DC is itself", RiderExtensions.resolveDC(18, { originActor: fighter }), 18);
     check("a word nothing answers stays unresolved", RiderExtensions.resolveDC("cosmo", { originActor: fighter }), null);
+    const web = { type: "spell", spellcasting: { statistic: { dc: { value: 31 } } } };
+    check("\"spell\" is the spell's own DC, as no DC is", [RiderExtensions.resolveDC("spell", { originActor: fighter, item: web }), RiderExtensions.resolveDC(undefined, { originActor: fighter, item: web })], [31, 31]);
 
     RiderExtensions.registerDcResolver("test-late", 20, (dc) => (dc === "cosmo" ? 99 : undefined));
     RiderExtensions.registerDcResolver("test-early", 10, (dc) => (dc === "cosmo" ? 31 : undefined));
@@ -524,7 +526,13 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         listed: wrong("mist", { lingering: [{ inside: { conditions: ["foggy"] } }] }),
         darkness: wrong("darkness", { lingering: { darkness: "yes" } }),
         darknessOk: wrong("darkness", { lingering: { darkness: true } }),
-    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0 });
+        webSave: wrong("web", { lingering: { save: { statistics: ["athletics", "reflex"], riders: [{ outcomes: ["failure"], apply: { type: "effect", label: "ISAACS_AUTOMATION.Vanilla.web.Slowed", rules: [{ key: "FlatModifier" }] } }] } } }),
+        saveStatistic: wrong("web", { lingering: { save: { statistics: ["athletics", "luck"] } } }),
+        saveNone: wrong("web", { lingering: { save: { riders: [] } } }),
+        saveRider: wrong("web", { lingering: { save: { statistic: "reflex", riders: [{ apply: { type: "condition", slug: "stuck" } }] } } }),
+        inlineNoLabel: wrong("web", { riders: [{ apply: { type: "effect", rules: [{ key: "FlatModifier" }] } }] }),
+        inlineNoKey: wrong("web", { riders: [{ apply: { type: "effect", label: "ISAACS_AUTOMATION.Vanilla.web.Slowed", rules: [{ value: -10 }] } }] }),
+    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0, webSave: 0, saveStatistic: 1, saveNone: 1, saveRider: 1, inlineNoLabel: 1, inlineNoKey: 1 });
     check("an alias to nothing, or over a live slug, is caught", V.aliasProblems({ "magic-missile": "force-barrage", fear: "calm" }, { calm: {} }, index).length, 2);
 
     // The words a table entry names by key are read back translated; an item's own text is left alone.
@@ -712,11 +720,27 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  A check the creature chooses (VS-09)                                                         */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { bestStatistic } = await import("../scripts/riders/apply.mjs");
+    const climber = { getStatistic: (slug) => ({ athletics: { mod: 18 }, reflex: { mod: 12 } })[slug] };
+    const dancer = { getStatistic: (slug) => ({ athletics: { mod: 4 }, reflex: { mod: 15 } })[slug] };
+    check("a creature that may choose rolls its better statistic", [bestStatistic(climber, ["athletics", "reflex"]), bestStatistic(dancer, ["athletics", "reflex"])], ["athletics", "reflex"]);
+    check("…and one it lacks falls to the first named", bestStatistic({}, ["athletics", "reflex"]), "athletics");
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Darkness that outshines light up to its rank (VS-08)                                         */
 /* -------------------------------------------------------------------------------------------- */
 
 {
-    const { darknessSource } = await import("../scripts/targeting/lingering.mjs");
+    const { darknessSource, firstForMovement } = await import("../scripts/targeting/lingering.mjs");
+    const moved = (id, chain = []) => ({ data: { token: { id: "t" }, movement: { id, chain } } });
+    check("one move action is one check, however many events it makes", [firstForMovement("R", moved("m1"), 0), firstForMovement("R", moved("m1"), 1), firstForMovement("R", moved("m2", ["m1"]), 2)], [true, false, false]);
+    check("…a new move, another area, or a turn starting each count again", [firstForMovement("R", moved("m3"), 3), firstForMovement("R2", moved("m1"), 4), firstForMovement("R", { data: { token: { id: "t" } } }, 5)], [true, true, true]);
+    check("…and a move is forgotten after a minute", firstForMovement("R", moved("m1"), 120_000), true);
     const burst = darknessSource({ x: 3000, y: 1600, width: 800, height: 800 }, 2, 100, 5);
     check("a 20-ft burst of darkness is a 20-ft darkness source at its centre", [burst.x, burst.y, burst.config.negative, burst.config.bright, burst.config.dim], [3400, 2000, true, 20, 20]);
     check("its priority is the cast rank, so light of that rank or lower is put out", [burst.config.priority, darknessSource({ x: 0, y: 0, width: 100, height: 100 }, 5, 100, 5).config.priority], [2, 5]);

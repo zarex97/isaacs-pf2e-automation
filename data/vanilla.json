@@ -578,6 +578,95 @@
                     "persistent": false
                 }
             }
+        },
+        "web": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.web.Web",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "difficultTerrain": 2,
+                "events": [
+                    "tokenMoveIn",
+                    "tokenMoveOut",
+                    "tokenMoveWithin",
+                    "tokenExit"
+                ],
+                "save": {
+                    "statistics": [
+                        "athletics",
+                        "reflex"
+                    ],
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "duration": {
+                                "value": 1,
+                                "unit": "rounds",
+                                "expiry": "turn-start"
+                            },
+                            "apply": {
+                                "type": "effect",
+                                "label": "ISAACS_AUTOMATION.Vanilla.web.Slowed",
+                                "endsOnLeaving": true,
+                                "rules": [
+                                    {
+                                        "key": "FlatModifier",
+                                        "selector": "all-speeds",
+                                        "type": "circumstance",
+                                        "value": -10
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "duration": {
+                                "value": 1,
+                                "unit": "rounds",
+                                "expiry": "turn-start"
+                            },
+                            "apply": {
+                                "type": "condition",
+                                "slug": "immobilized",
+                                "escapeDc": "spell"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "duration": {
+                                "value": 2,
+                                "unit": "rounds",
+                                "expiry": "turn-start"
+                            },
+                            "apply": {
+                                "type": "effect",
+                                "label": "ISAACS_AUTOMATION.Vanilla.web.Slowed",
+                                "endsOnLeaving": true,
+                                "rules": [
+                                    {
+                                        "key": "FlatModifier",
+                                        "selector": "all-speeds",
+                                        "type": "circumstance",
+                                        "value": -10
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
         }
     }
 }
