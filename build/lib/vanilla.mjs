@@ -61,14 +61,15 @@ export function docs(built, index, en) {
         if (a.heightening?.maxTargets) parts.push(`+${a.heightening.maxTargets} per ${a.heightening.interval ?? 1} ranks`);
         return parts.join(", ");
     };
-    const linger = (l) => (l
-        ? [
+    const rankFrom = (predicate) => (predicate ?? []).map((p) => p?.gte?.[0] === "item:rank" ? `from rank ${p.gte[1]}` : null).filter(Boolean);
+    const linger = (spec) => [spec ?? []].flat().map((l) => [
+            ...rankFrom(l.predicate),
             l.difficultTerrain ? "difficult terrain" : null,
+            l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
             l.damage ? `${l.damage.formula}${l.damage.persistent === false ? "" : " persistent"} ${l.damage.type ?? ""} on ${(l.events ?? ["tokenMoveIn", "tokenTurnEnd"]).map((e) => ({ tokenMoveIn: "entering", tokenTurnStart: "turn start", tokenTurnEnd: "turn end" })[e] ?? e).join(" / ")}`.trim() : null,
             l.duration ? `${l.duration.value} ${l.duration.unit}` : null,
-        ].filter(Boolean).join(", ")
-        : "");
+        ].filter(Boolean).join(", ")).join("; ");
     const rows = Object.entries(built.entries).map(([slug, entry]) => {
         const spell = index.spells[slug];
         const variants = Object.entries(entry.variants ?? {})
@@ -147,6 +148,7 @@ export function problemsWith(slug, entry, ctx) {
             if (choice.type !== "none" && !(Number(choice.value) > 0)) at(`${where} areaTargetingShapes[${i}]`, "a size in feet");
         }
         for (const [i, spec] of [object.lingering ?? []].flat().entries()) {
+            if (spec?.darkness !== undefined && spec.darkness !== true) at(`${where} lingering.darkness`.trim(), "true or absent");
             if (spec?.inside === undefined) continue;
             const inside = spec.inside;
             const at2 = (what) => at(`${where} lingering${Array.isArray(object.lingering) ? `[${i}]` : ""}.inside`.trim(), what);

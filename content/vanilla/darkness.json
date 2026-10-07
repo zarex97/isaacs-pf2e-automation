@@ -1,0 +1,48 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": [
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.darkness.Shroud",
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "darkness": true
+        },
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.darkness.Seen",
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "inside": {
+                "conditions": [
+                    "concealed"
+                ],
+                "rules": [
+                    {
+                        "key": "EphemeralEffect",
+                        "affects": "target",
+                        "selectors": [
+                            "attack-roll",
+                            "spell-attack-roll"
+                        ],
+                        "uuid": "Compendium.pf2e.conditionitems.Item.DmAIPqOBomZ7H95W"
+                    }
+                ],
+                "description": "ISAACS_AUTOMATION.Vanilla.darkness.Inside"
+            }
+        }
+    ]
+}

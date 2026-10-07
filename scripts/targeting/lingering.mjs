@@ -46,6 +46,21 @@ export const Lingering = {
         Hooks.on("updateWorldTime", () => Lingering.sweep());
         Hooks.on("pf2e.startTurn", () => Lingering.sweep());
         Hooks.once("ready", () => Lingering.sweep());
+        // An area deleted by hand — a Dismissed *Darkness* — takes its lights and walls with it. Only the
+        // expiry sweep used to, so a dismissed darkness went on putting out every torch in the room.
+        Hooks.on("deleteRegion", (region) => {
+            if (game.users?.activeGM?.id !== game.user?.id) return;
+            Lingering.clearScenery(region.parent, flagOf(region, FLAG));
+        });
+    },
+
+    /** The lights and walls an area placed, whichever of them are still standing. */
+    async clearScenery(scene, payload) {
+        if (!scene || !payload) return;
+        const lightIds = (payload.lightIds ?? []).filter((id) => scene.lights.has(id));
+        const wallIds = (payload.wallIds ?? []).filter((id) => scene.walls.has(id));
+        if (lightIds.length > 0) await scene.deleteEmbeddedDocuments("AmbientLight", lightIds);
+        if (wallIds.length > 0) await scene.deleteEmbeddedDocuments("Wall", wallIds);
     },
 
     /**
@@ -146,7 +161,7 @@ export const Lingering = {
         // Crown*'s pillars carry no behavior at all — they shed light and block sight, which are a light
         // source and a set of walls rather than anything a Region does — so the Region here is the thing
         // that remembers to take them away again.
-        const scenery = await Lingering.scenery(spec, region);
+        const scenery = await Lingering.scenery(spec, region, config);
         if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0) return null;
 
         const [created] = await canvas.scene.createEmbeddedDocuments("Region", [
@@ -195,11 +210,23 @@ export const Lingering = {
      * The walls block sight and light and *not* movement: a pillar of lightning is something to walk
      * through and regret, not a wall to walk around.
      */
-    async scenery(spec, region) {
+    async scenery(spec, region, config = {}) {
         const lightIds = [];
         const wallIds = [];
         const bounds = boundsOf(region);
         if (!bounds) return { lightIds, wallIds };
+
+        // *Darkness*: "Light does not enter the area and any non-magical light sources … do not emanate any
+        // light while inside the area … This also suppresses magical light of your darkness spell's rank or
+        // lower." Foundry has that exact rule in a darkness source: it puts out every light whose priority is
+        // not above its own. Ordinary lights sit at 0; the darkness takes the cast rank, so a magical light
+        // given its rank as its priority outshines a darkness of lower rank and no other.
+        if (spec.darkness) {
+            const [darkness] = await canvas.scene.createEmbeddedDocuments("AmbientLight", [
+                darknessSource(bounds, config.item?.rank, canvas.grid.size, canvas.scene.grid.distance),
+            ]);
+            if (darkness) lightIds.push(darkness.id);
+        }
 
         if (spec.light) {
             const [light] = await canvas.scene.createEmbeddedDocuments("AmbientLight", [
@@ -255,17 +282,22 @@ export const Lingering = {
 
             // Scenery first: a Region deleted while its walls are still standing leaves nothing behind to
             // say the walls were ever ours.
-            const lightIds = stale.flatMap((region) => flagOf(region, FLAG).lightIds ?? []);
-            const wallIds = stale.flatMap((region) => flagOf(region, FLAG).wallIds ?? []);
-            const live = (type, ids) => ids.filter((id) => scene[type].has(id));
-            if (lightIds.length > 0) {
-                await scene.deleteEmbeddedDocuments("AmbientLight", live("lights", lightIds));
-            }
-            if (wallIds.length > 0) await scene.deleteEmbeddedDocuments("Wall", live("walls", wallIds));
+            for (const region of stale) await Lingering.clearScenery(scene, flagOf(region, FLAG));
             await scene.deleteEmbeddedDocuments("Region", stale.map((region) => region.id));
         }
     },
 };
+
+/** A darkness source filling the area, outranking light up to the cast rank. */
+export function darknessSource(bounds, rank, gridSize, gridDistance) {
+    const radius = (Math.min(bounds.width, bounds.height) / 2 / gridSize) * gridDistance;
+    return {
+        x: bounds.x + bounds.width / 2,
+        y: bounds.y + bounds.height / 2,
+        config: { negative: true, bright: radius, dim: radius, priority: Math.max(0, Number(rank) || 0) },
+        flags: { [LIB_ID]: { [FLAG]: true } },
+    };
+}
 
 /** The rectangle an aimed shape occupies, which is what a light is centred in and what walls are laid on. */
 function boundsOf(region) {
