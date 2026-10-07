@@ -16,9 +16,11 @@ import { Riders } from "./riders/index.mjs";
 import { SharedAllowance } from "./riders/shared-allowance.mjs";
 import { StrikeTechnique } from "./riders/strike-technique.mjs";
 import { registerEnemyTerrain } from "./targeting/enemy-terrain.mjs";
+import { Extensions } from "./targeting/extensions.mjs";
 import { AreaTargeting } from "./targeting/index.mjs";
 import { Lingering } from "./targeting/lingering.mjs";
 import { Overlap } from "./targeting/overlap.mjs";
+import { CastShape } from "./targeting/cast-shape.mjs";
 import { Coexistence } from "./vanilla/coexistence.mjs";
 import { Indicator } from "./vanilla/indicator.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
@@ -40,6 +42,7 @@ export const INIT = [
     ["the vanilla table", () => void Vanilla.load()],
     ["the vanilla riders setting", () => Coexistence.registerSettings()],
     ["the automation indicator", () => Indicator.registerHooks()],
+    ["the shape a cast chose, on its card", () => CastShape.registerHooks()],
 ];
 
 /**
@@ -72,4 +75,23 @@ export const SETUP = [
 
 export const RIDER_SETUP = [
     ["the rider engine", () => Riders.registerHooks()],
+    ["ground left behind and overlapping placements, after aiming", () => registerAreaSteps()],
 ];
+
+/**
+ * Lingering ground and overlapping placements are this module's own, so it asks for them after an area is
+ * aimed. They were registered by the homebrew alone, which left a world running this module by itself with
+ * an Ice Storm that never stormed. At `setup`, after every module's `init` has had its say, and only
+ * where nobody registered the same step — a homebrew that still does so keeps its own.
+ */
+export const AREA_STEP = { lingering: 20, overlap: 30 };
+
+export function registerAreaSteps() {
+    const taken = new Set(Extensions.registered().afterAim.map((step) => step.name));
+    if (!taken.has("lingering areas")) {
+        Extensions.registerAfterAim("lingering areas", AREA_STEP.lingering, (config, regions, originToken) => Lingering.create(config, regions, originToken));
+    }
+    if (!taken.has("overlapping areas")) {
+        Extensions.registerAfterAim("overlapping areas", AREA_STEP.overlap, (config, regions, originToken) => Overlap.apply(config, regions, originToken));
+    }
+}

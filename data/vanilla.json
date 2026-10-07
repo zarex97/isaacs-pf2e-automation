@@ -175,6 +175,94 @@
                 }
             ]
         },
+        "grease": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "square",
+                    "value": 10,
+                    "label": "ISAACS_AUTOMATION.Vanilla.grease.Area"
+                },
+                {
+                    "type": "none",
+                    "label": "ISAACS_AUTOMATION.Vanilla.grease.Object"
+                }
+            ],
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        "rider:cast:shape:square"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "predicate": [
+                        "rider:cast:shape:none"
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.grease.ObjectFailure"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        "rider:cast:shape:none"
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.grease.ObjectCriticalFailure"
+                    }
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.grease.Ground",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "events": [
+                    "tokenMoveIn"
+                ],
+                "save": {
+                    "statistic": "reflex",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "prompt",
+                                "text": "ISAACS_AUTOMATION.Vanilla.grease.BalanceFailure"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "condition",
+                                "slug": "prone"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "heal": {
             "variants": {
                 "7vbvdrv2cl87sqta": {

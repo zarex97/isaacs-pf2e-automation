@@ -497,6 +497,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("a sound entry has no problems", V.problemsWith("fear", sound, ctx), []);
     const heal = Object.keys(index.spells.heal?.overlays ?? {})[0];
     const wrong = (slug, entry) => V.problemsWith(slug, entry, ctx).length;
+    check("a shape choice that is not a shape or none is caught", wrong("grease", { areaTargetingShapes: [{ type: "blob", value: 10 }, { type: "none" }] }), 1);
     check("an anchor that is not self, free or caster is caught", wrong("lightning-bolt", { areaTargeting: { anchor: "hand" } }), 1);
     check("each mistake is caught", {
         slug: wrong("not-a-spell", {}),
@@ -617,6 +618,52 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     Vanilla.setRiderDeferral(null);
     Vanilla.setTable({ aliases: {}, entries: {} });
     Object.assign(globalThis, saved);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  "An area or a target": the chosen shape rides on the card (VS-03)                            */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { CastShape, shapeOptions } = await import("../scripts/targeting/cast-shape.mjs");
+    const saved = globalThis.Hooks;
+    let hook = null;
+    globalThis.Hooks = { on: (name, fn) => { if (name === "preCreateChatMessage") hook = fn; }, once() {}, callAll() {} };
+    CastShape.registerHooks();
+    const card = (uuid) => { const m = { flags: { pf2e: { origin: { uuid } } }, updateSource(d) { for (const [k, v] of Object.entries(d)) foundry.utils.setProperty(m, k, v); } }; return m; };
+    const savedFoundry = globalThis.foundry;
+    globalThis.foundry = { ...(savedFoundry ?? {}), utils: { ...(savedFoundry?.utils ?? {}), setProperty: (o, k, v) => { const parts = k.split("."); let n = o; for (const p of parts.slice(0, -1)) n = n[p] ??= {}; n[parts.at(-1)] = v; } } };
+    CastShape.expect({ uuid: "Actor.a.Item.grease" }, { type: "none" });
+    const other = card("Actor.a.Item.fear");
+    hook(other);
+    check("another item's card is not stamped", shapeOptions(other), []);
+    const greased = card("Actor.a.Item.grease");
+    hook(greased);
+    check("the chosen shape rides on its own card", shapeOptions(greased), ["rider:cast:shape:none"]);
+    const later = card("Actor.a.Item.grease");
+    hook(later);
+    check("…once: the next card of the same spell is not", shapeOptions(later), []);
+    CastShape.expect({ uuid: "Actor.a.Item.grease" }, { type: "square", value: 10 }, Date.now() - 61_000);
+    const stale = card("Actor.a.Item.grease");
+    hook(stale);
+    check("a choice that waited over a minute is dropped", shapeOptions(stale), []);
+    check("a save on its own message reads the shape the spell was last cast with", shapeOptions({ flags: {} }, { flags: { [LIB_ID]: { lastCastShape: { type: "square" } } } }), ["rider:cast:shape:square"]);
+    check("…and the card's own stamp wins over it", shapeOptions({ flags: { [LIB_ID]: { castShape: { type: "none" } } } }, { flags: { [LIB_ID]: { lastCastShape: { type: "square" } } } }), ["rider:cast:shape:none"]);
+    globalThis.Hooks = saved;
+    globalThis.foundry = savedFoundry;
+}
+
+{
+    // Lingering ground and overlap are this module's own after-aim steps — registered here, not only by a
+    // homebrew — and a homebrew that already registered them keeps its own.
+    const { registerAreaSteps } = await import("../scripts/main.mjs");
+    const { Extensions } = await import("../scripts/targeting/extensions.mjs");
+    const names = () => Extensions.registered().afterAim.map((s) => `${s.name}@${s.priority}`);
+    registerAreaSteps();
+    check("the library asks for lingering ground and overlap after aiming", ["lingering areas@20", "overlapping areas@30"].every((n) => names().includes(n)), true);
+    let threw = false;
+    try { registerAreaSteps(); } catch { threw = true; }
+    check("…and steps aside for a step already registered under the same name", threw, false);
 }
 
 /* -------------------------------------------------------------------------------------------- */

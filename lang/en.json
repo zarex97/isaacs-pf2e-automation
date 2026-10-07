@@ -312,6 +312,14 @@
             },
             "ice-storm": {
                 "Area": "Ice Storm"
+            },
+            "grease": {
+                "Area": "An area: four squares of grease",
+                "Object": "A target: one object (target it yourself)",
+                "Ground": "Grease",
+                "ObjectFailure": "The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.",
+                "ObjectCriticalFailure": "The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.",
+                "BalanceFailure": "Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going."
             }
         }
     }

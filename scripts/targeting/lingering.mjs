@@ -3,7 +3,7 @@ import { flagOf } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
 import { testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
-import { growByStep, inflictPersistent, runSave } from "../riders/apply.mjs";
+import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
 import { LIB_ID } from "../id.mjs";
 
 export const FLAG = "lingering";
@@ -376,7 +376,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
             // internal that expected `item.isOfType` to exist. `payload.itemUuid` is the owned item's own
             // uuid (`config.item.uuid` in `createOne`), so this is the genuine article, not a lookalike.
             const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
-            await runSave(payload.save, {
+            const work = {
                 actor,
                 originActor,
                 originToken: originActor.getActiveTokens(true, true).at(0) ?? null,
@@ -388,7 +388,12 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
                 prompts: [],
                 choices: [],
                 moves: [],
-            });
+            };
+            await runSave(payload.save, work);
+            // What the save's outcome left to the table is said, as it is after any other save. These lists
+            // were handed in and never read back, so Grease's "fails to Balance" reached nobody.
+            if (work.notes.length > 0) await postNotes(work);
+            if (work.prompts.length > 0) await postPrompts(work);
             return;
         }
 
