@@ -1,0 +1,47 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "enfeebled",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "enfeebled",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "enfeebled",
+                "value": 3
+            }
+        }
+    ]
+}
