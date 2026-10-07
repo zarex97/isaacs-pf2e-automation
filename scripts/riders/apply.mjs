@@ -1,5 +1,6 @@
 import { flagOf, mergedFlag } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
+import { RerollCarry } from "./reroll-carry.mjs";
 import { describeActor, describeDamage, riderOptions, testPredicate } from "../lib/roll-options.mjs";
 import { catchTokens } from "../targeting/catch.mjs";
 import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, stepsFor, thresholdsCrossed, valueAtLevel } from "../targeting/heightening.mjs";
@@ -89,8 +90,15 @@ async function applyToTarget(target, candidates, context, payload) {
     // re-apply. The Saint got the counteract card and never their own aura. `selfOnly` is therefore folded
     // in: it is undefined for every event that never splits this way, so nothing else moves.
     const receiptKey = receiptKeyFor(payload, target.id);
-    const previous = mergedFlag(context.message, "ridersApplied")?.[receiptKey] ?? null;
-    if (previous?.outcome === (payload.outcome ?? null)) return;
+    // A reroll by pf2e's own button arrives as a new message; its first roll's receipt is carried over
+    // from the deleted one (see `reroll-carry.mjs`), and lands on the new message whatever happens next,
+    // so a second reroll finds it there.
+    const carried = mergedFlag(context.message, "ridersApplied")?.[receiptKey] ? null : RerollCarry.take(context.message, receiptKey);
+    const previous = mergedFlag(context.message, "ridersApplied")?.[receiptKey] ?? carried ?? null;
+    if (previous?.outcome === (payload.outcome ?? null)) {
+        if (carried) await context.message.update({ [`flags.${LIB_ID}.ridersApplied.${receiptKey}`]: carried });
+        return;
+    }
     if (previous) await undo(actor, previous);
 
     // The snapshot. Every predicate for this target is tested against the world as it was before anything

@@ -633,6 +633,32 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("every item a rider pass creates is recorded on its receipt", unrecorded, []);
 }
 
+{
+    // pf2e's own reroll deletes the save's message and posts another; the first roll's receipt crosses over (#8).
+    const { RerollCarry, signatureOf } = await import("../scripts/riders/reroll-carry.mjs");
+    const save = (extra = {}, receipts = undefined) => ({
+        speaker: { token: "tok1", actor: "act1" },
+        flags: {
+            pf2e: { context: { type: "saving-throw", origin: { actor: "Actor.caster", item: "Item.fear" }, dc: { value: 34 }, domains: ["will"], outcome: "failure", ...extra } },
+            ...(receipts ? { [LIB_ID]: { ridersApplied: receipts } } : {}),
+        },
+    });
+    const receipt = { outcome: "failure", itemIds: ["frightened2"] };
+    RerollCarry.clear();
+    RerollCarry.keep(save({}, { "save-rolled:a:b:c": receipt }), 1000);
+
+    check("a reroll is the same save: everything pf2e copies but the result", signatureOf(save({ isReroll: true, outcome: "success", options: ["check:reroll"] })), signatureOf(save()));
+    check("a fresh save of the same kind takes nothing — only a reroll inherits", RerollCarry.take(save({ outcome: "success" }), "save-rolled:a:b:c", 2000), null);
+    check("a save against another DC takes nothing", RerollCarry.take(save({ isReroll: true, dc: { value: 30 } }), "save-rolled:a:b:c", 2000), null);
+    check("the reroll takes its first roll's receipt", RerollCarry.take(save({ isReroll: true, outcome: "success" }), "save-rolled:a:b:c", 2000), receipt);
+    check("…once: the same receipt cannot be undone twice", RerollCarry.take(save({ isReroll: true }), "save-rolled:a:b:c", 3000), null);
+    RerollCarry.keep(save({}, { "save-rolled:a:b:c": receipt }), 10_000);
+    check("a receipt waits a minute and no longer", RerollCarry.take(save({ isReroll: true }), "save-rolled:a:b:c", 10_000 + 61_000), null);
+    RerollCarry.keep(save({ type: "attack-roll" }, { k: receipt }), 0);
+    check("only saves are kept", RerollCarry.take(save({ isReroll: true, type: "attack-roll" }), "k", 1), null);
+    RerollCarry.clear();
+}
+
 /* -------------------------------------------------------------------------------------------- */
 /*  The indicator: what is automated, from where, and what the GM may switch                     */
 /* -------------------------------------------------------------------------------------------- */
