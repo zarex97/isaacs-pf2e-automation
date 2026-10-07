@@ -61,6 +61,7 @@ const SUMMARIES = {
     actionVariants: (variants) => [t("Indicator.ActionVariants", { counts: Object.keys(variants ?? {}).join(", ") })],
     targetsPerAction: () => [t("Indicator.TargetsPerAction")],
     sameAttackPenalty: () => [t("Indicator.SameAttackPenalty")],
+    castChoice: (spec) => [t("Indicator.CastChoice", { count: spec?.choices?.length ?? 0 })],
 };
 
 /** Where a key's config came from, in words. */

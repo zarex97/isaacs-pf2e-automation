@@ -436,6 +436,7 @@
             "ActionVariants": "Cast with {counts} actions, the variant for each",
             "TargetsPerAction": "A creature for each action spent",
             "SameAttackPenalty": "Every attack of the cast at one penalty",
+            "CastChoice": "One of {count} choices, made as it is cast",
             "Key": {
                 "areaTargeting": "Area and targets",
                 "areaTargetingShapes": "Shape choice",
@@ -448,7 +449,8 @@
                 "variantFromWeapon": "Weapon variant",
                 "actionVariants": "Actions spent",
                 "targetsPerAction": "Targets per action",
-                "sameAttackPenalty": "One attack penalty"
+                "sameAttackPenalty": "One attack penalty",
+                "castChoice": "A choice as it is cast"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -517,6 +519,9 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "seal-fate": {
+                "Choose": "Which damage will be its end?"
             },
             "spider-sting": {
                 "Venom": "Spider Venom"

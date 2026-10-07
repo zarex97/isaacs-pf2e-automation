@@ -334,13 +334,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-60a | "Choose one type of damage from the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void" | The cast asks for one of the nine | | ☐ | |
-| VS-60b | "Success The target gains weakness 2 to the chosen damage type until the end of your next turn" | Weakness 2 to that type, ending on the caster's next turn | | ☐ | |
-| VS-60c | "Failure As success, but the duration is 1 minute" | One minute | | ☐ | |
-| VS-60d | "If the creature is reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies" | 0 HP from that type kills a creature of level 7 or lower outright | | ☐ | |
-| VS-60e | "Critical Failure As failure, but the duration is unlimited" | No end | | ☐ | |
-| VS-60f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
-| VS-60g | "The weakness increases by 1, and the maximum level of creature that can be automatically killed increases by 4" | Rank 6: weakness 3, level 11 | | ☐ | |
+| VS-60a | "Choose one type of damage from the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void" | The cast asks for one of the nine | `castChoice` (`content/vanilla/seal-fate.json`); a cast stage, `a choice made as it is cast` | ✅ | Every cast asked "Which damage will be its end?" with **acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, void**; the choice reached pf2e's *Spell Effect: Seal Fate* without its own prompt (`preselect: "$cast"`) — *Seal Fate (Fire)*, *(Cold)*, *(Acid)* |
+| VS-60b | "Success The target gains weakness 2 to the chosen damage type until the end of your next turn" | Weakness 2 to that type, ending on the caster's next turn | `success`: the effect for `1 round, turn-end`, timed from the caster's turn | ✅ | A success (34, with +30 Fortitude): *Seal Fate (Acid)*, **weakness acid 2**, lasting 1 round to the end of a turn — the end of Aries' next turn, pf2e's reckoning from the turn it was cast in |
+| VS-60c | "Failure As success, but the duration is 1 minute" | One minute | `failure`: 1 minute | ✅ | A failure (20): *Seal Fate (Fire)*, **weakness fire 2**, **1 minute** |
+| VS-60d | "If the creature is reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies" | 0 HP from that type kills a creature of level 7 or lower outright | `carries`: a `damage-received` `death` (`hpFraction: 0`, `maxLevel: 7`) predicated on the chosen type (`"$cast:damageType"`, `withCast` test) | ✅ | ZZ Victim (level 1) at 10 HP: 15 **cold** took it to 0 and it lived (not the chosen type); 15 **fire** — 17 with the weakness — took it to 0: "ZZ Victim is reduced to 0 Hit Points — it dies.", marked dead. At level 9, cast at rank 4, the same fire left it at 0 and alive |
+| VS-60e | "Critical Failure As failure, but the duration is unlimited" | No end | `criticalFailure`: the effect with no duration of its own | ✅ | A critical failure (2): *Seal Fate (Cold)*, weakness cold 2, **unlimited**, carrying the death rider |
+| VS-60f | "Critical Success The target is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): no effect, no weakness |
+| VS-60g | "The weakness increases by 1, and the maximum level of creature that can be automatically killed increases by 4" | Rank 6: weakness 3, level 11 | `atCastRank` (pf2e's floor(level / 2)); `maxLevelPerStep: 4` every 2 ranks | ✅ | Rank 6: **weakness fire 3**, and the death rider's level limit **11** — the level-9 ZZ Victim, burned to 0, died |
 
 ### VS-61 · Vision of Death
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 194 |
-| ✅ | 125 |
+| ☐ not yet driven | 187 |
+| ✅ | 132 |
 | ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |

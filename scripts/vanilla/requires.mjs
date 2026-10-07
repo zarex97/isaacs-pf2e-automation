@@ -93,6 +93,30 @@ export async function actionVariant(spell, options) {
     return true;
 }
 
+/** The flag on the caster that keeps what was chosen as a spell was cast, by spell: `{ [spellId]: { [flag]: value } }`. */
+export const CAST_CHOICES = "castChoices";
+
+/**
+ * A choice the caster makes as the spell is cast, for its riders to read. *Seal Fate*: "Choose one type of damage from
+ * the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void." `castChoice`:
+ * `{ flag, prompt, choices }` — damage types are labelled as pf2e labels them. Kept on the caster (`CAST_CHOICES`),
+ * and read back by a rider's `"$cast"` (`preselect`) or `"$cast:<flag>"` (`carries`).
+ */
+export async function castChoice(spell, _options) {
+    const spec = configOf(spell, "castChoice");
+    if (!spec?.flag || !Array.isArray(spec.choices) || spec.choices.length === 0) return true;
+    const label = (value) => game.i18n.localize(CONFIG.PF2E?.damageTypes?.[value] ?? value);
+    const chosen = spec.choices.length === 1 ? spec.choices[0] : await foundry.applications.api.DialogV2.wait({
+        window: { title: spell.name },
+        content: `<p>${game.i18n.localize(spec.prompt ?? "")}</p>`,
+        buttons: spec.choices.map((value) => ({ action: value, label: label(value) })),
+        rejectClose: false,
+    });
+    if (!chosen) return false;
+    await spell.actor?.setFlag(LIB_ID, `${CAST_CHOICES}.${(spell.original ?? spell).id}`, { [spec.flag]: chosen });
+    return true;
+}
+
 export function checkRequirements(spell) {
     const unmet = unmetRequirement(spell);
     if (!unmet) return true;

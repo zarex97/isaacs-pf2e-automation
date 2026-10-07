@@ -1,0 +1,100 @@
+{
+    "castChoice": {
+        "flag": "damageType",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.seal-fate.Choose",
+        "choices": [
+            "acid",
+            "bludgeoning",
+            "cold",
+            "electricity",
+            "fire",
+            "piercing",
+            "slashing",
+            "sonic",
+            "void"
+        ]
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-end"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.r4XX7yzeEOPK7l2a",
+                "atCastRank": true,
+                "preselect": {
+                    "damageType": "$cast"
+                },
+                "perStepInterval": 2
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.r4XX7yzeEOPK7l2a",
+                "atCastRank": true,
+                "preselect": {
+                    "damageType": "$cast"
+                },
+                "perStepInterval": 2,
+                "carries": [
+                    {
+                        "event": "damage-received",
+                        "self": true,
+                        "predicate": [
+                            "rider:damage:type:$cast:damageType"
+                        ],
+                        "apply": {
+                            "type": "death",
+                            "hpFraction": 0,
+                            "maxLevel": 7,
+                            "maxLevelPerStep": 4
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.r4XX7yzeEOPK7l2a",
+                "atCastRank": true,
+                "preselect": {
+                    "damageType": "$cast"
+                },
+                "perStepInterval": 2,
+                "carries": [
+                    {
+                        "event": "damage-received",
+                        "self": true,
+                        "predicate": [
+                            "rider:damage:type:$cast:damageType"
+                        ],
+                        "apply": {
+                            "type": "death",
+                            "hpFraction": 0,
+                            "maxLevel": 7,
+                            "maxLevelPerStep": 4
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
