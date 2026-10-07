@@ -77,6 +77,7 @@ and `npm test` fails if this table and that switch disagree.
 | `pull` | Every creature the cast reached saves (`save`), then each moves toward the area's centre by `feet[outcome]`, nearest first, a square at a time, stopping at walls, other creatures and the centre — forced movement, no reactions (*Gravity Well*). Needs `areaTargeting.markCentre`. |
 | `contest` | The caster rolls `statistic` (`"spell-attack"`: the spell's own) against the target's `against` DC; the nested `riders` are chosen by the caster's result (*Telekinetic Maneuver*). A nested rider with `toOrigin` lands on the caster. |
 | `disarm` | The target's held weapon: `mode: "loosen"` is pf2e's *Effect: Disarm (Success)* on that weapon (–2 to its attacks while held), `"drop"` lets go of it. |
+| `rays` | One spell attack per targeted creature, all at the penalty the cast chose; a hit rolls the cast's own damage and applies it, doubled on a critical hit (*Blazing Bolt*). Put it on `self: true`: it runs once, with every target. |
 | `climb` | Moves a valued condition by `by` (negative to lower it) within `[0, max]`; reaching `max` runs the riders in `onMax`, reaching 0 those in `onZero` — *Petrify*'s slowed that turns to stone. |
 | `shorten` | Takes `rounds` off the effect that carries this rider, or ends it with `rounds: "all"` — *Paralyze*'s save at the end of each turn. |
 | `strikes` | Rolls a volley, dealt round-robin across the confirmed targets. `mapIndex` picks the variant. Follows through to damage. |

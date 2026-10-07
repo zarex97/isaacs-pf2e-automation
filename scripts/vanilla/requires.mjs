@@ -2,6 +2,21 @@ import { configOf } from "../lib/config-of.mjs";
 import { t } from "../i18n.mjs";
 import { chooseHeldWeapon, heldWeapons, weaponDamageTypes } from "../riders/weapon.mjs";
 import { VARIANT } from "../targeting/index.mjs";
+import { LIB_ID } from "../id.mjs";
+
+/** The flag on the caster that carries the multiple attack penalty chosen for a cast's attacks to its riders. */
+export const ATTACK_NUMBER = "attackNumber";
+
+/**
+ * Which action counts can be spent: every one the spell offers, and — when each action buys a target
+ * (`targetsPerAction`) — only those that pay for every creature targeted. *Blazing Bolt*: "For each additional
+ * action you use when Casting the Spell, you can fire an additional ray at a different target". Fewer targets than
+ * actions is a ray not fired, never refused. Empty: more targets than the most actions can pay for.
+ */
+export function actionChoices(counts, targets, perAction) {
+    const sorted = [...counts].map(Number).filter((n) => n > 0).sort((a, b) => a - b);
+    return perAction ? sorted.filter((n) => n >= targets) : sorted;
+}
 
 /**
  * What a spell needs before it can be cast. *Weapon Storm*: "You swing a weapon you're holding" — with nothing in
@@ -35,6 +50,45 @@ export async function weaponVariant(spell, options) {
     });
     if (!type) return false;
     const variant = spell.loadVariant({ overlayIds: [overlays[type]], castRank: spell.rank });
+    if (variant && options) options[VARIANT] = variant;
+    return true;
+}
+
+/**
+ * A spell cast with a variable number of actions, pf2e's variants keyed by the count. *Blazing Bolt*: one action
+ * for 2d6, "If you spend 2 or more actions Casting the Spell, the damage increases to 4d6". `actionVariants`:
+ * `{ "1": <overlay id>, "2": <overlay id>, "3": <overlay id> }`; `targetsPerAction`: one creature per action, "to a
+ * maximum of three rays targeting three different targets for 3 actions". With `sameAttackPenalty` the cast also
+ * asks the penalty every attack of the cast rolls at — "you don't increase your multiple attack penalty until after
+ * you make all the spell attack rolls" — and leaves it on the caster for the riders (`ATTACK_NUMBER`).
+ */
+export async function actionVariant(spell, options) {
+    const variants = configOf(spell, "actionVariants");
+    if (!variants || typeof spell?.loadVariant !== "function" || options?.[VARIANT]) return true;
+    const perAction = configOf(spell, "targetsPerAction") === true;
+    const targets = [...(game.user?.targets ?? [])].filter((token) => token.actor && token.actor !== spell.actor).length;
+    const counts = actionChoices(Object.keys(variants), targets, perAction);
+    if (counts.length === 0) {
+        ui.notifications.warn(t("Actions.TooManyTargets", { name: spell.name, max: Math.max(...Object.keys(variants).map(Number)), targets }));
+        return false;
+    }
+    const penalty = configOf(spell, "sameAttackPenalty") === true;
+    const select = penalty
+        ? `<label>${t("Actions.Penalty")} <select name="attackNumber">${[[1, t("Actions.MapFirst")], [2, t("Actions.MapSecond")], [3, t("Actions.MapThird")]].map(([n, label]) => `<option value="${n}">${label}</option>`).join("")}</select></label>`
+        : "";
+    const chosen = await foundry.applications.api.DialogV2.wait({
+        window: { title: spell.name },
+        content: `<p>${t(perAction ? "Actions.ChoosePerTarget" : "Actions.Choose", { targets })}</p>${select}`,
+        buttons: counts.map((n) => ({
+            action: String(n),
+            label: t(n === 1 ? "Actions.One" : "Actions.Many", { n }),
+            callback: (_event, button) => ({ count: n, attackNumber: Number(button.form?.elements?.attackNumber?.value) || 1 }),
+        })),
+        rejectClose: false,
+    });
+    if (!chosen?.count) return false;
+    if (penalty) await spell.actor?.setFlag(LIB_ID, ATTACK_NUMBER, { item: (spell.original ?? spell).id, value: chosen.attackNumber });
+    const variant = spell.loadVariant({ overlayIds: [variants[String(chosen.count)]], castRank: spell.rank });
     if (variant && options) options[VARIANT] = variant;
     return true;
 }

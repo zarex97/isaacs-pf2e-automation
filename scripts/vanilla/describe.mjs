@@ -56,6 +56,11 @@ const SUMMARIES = {
     overlap: () => [t("Indicator.Overlap")],
     bypass: () => [t("Indicator.Bypass")],
     counterThresholds: () => [t("Indicator.Thresholds")],
+    requires: () => [t("Indicator.Requires")],
+    variantFromWeapon: () => [t("Indicator.VariantFromWeapon")],
+    actionVariants: (variants) => [t("Indicator.ActionVariants", { counts: Object.keys(variants ?? {}).join(", ") })],
+    targetsPerAction: () => [t("Indicator.TargetsPerAction")],
+    sameAttackPenalty: () => [t("Indicator.SameAttackPenalty")],
 };
 
 /** Where a key's config came from, in words. */

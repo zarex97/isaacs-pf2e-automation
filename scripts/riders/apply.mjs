@@ -464,6 +464,8 @@ async function applyOne(rider, context) {
             return applyContest(rider, context);
         case "disarm":
             return applyDisarm(rider, context);
+        case "rays":
+            return applyRays(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2413,6 +2415,37 @@ async function applyDisarm(rider, context) {
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, riderFlags(rider, context));
     const [created] = await actor.createEmbeddedDocuments("Item", [source]);
     record(context, created);
+}
+
+/**
+ * One spell attack at each creature targeted. *Blazing Bolt*: "Make a spell attack roll against a single creature. On
+ * a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage. For each additional
+ * action … an additional ray at a different target". Every ray rolls at the penalty the cast chose (`ATTACK_NUMBER`,
+ * `vanilla/requires.mjs`); a hit rolls the cast variant's own damage and applies it, doubled on a critical hit the
+ * way pf2e's ×2 does. Runs once, on the caster (`self: true`), with the whole list of targets.
+ */
+async function applyRays(rider, context) {
+    const spell = castItemOf(context);
+    const targets = (context.targets ?? []).filter((token) => token?.actor && token.actor !== context.originActor);
+    if (typeof spell?.rollAttack !== "function" || targets.length === 0) return;
+    const chosen = context.originActor?.getFlag?.(LIB_ID, "attackNumber");
+    const attackNumber = chosen?.item === (spell.original ?? spell).id ? Number(chosen.value) || 1 : 1;
+    for (const token of targets) {
+        const roll = await spell.rollAttack(new PointerEvent("click"), attackNumber, { target: token.actor, skipDialog: true });
+        const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
+        if (outcome !== "success" && outcome !== "criticalSuccess") continue;
+        const damage = await spell.getDamage({ target: token, skipDialog: true });
+        // pf2e's own roll, unevaluated, as its damage button would evaluate it: its formula is display text.
+        const dealt = await damage?.template?.damage?.roll?.evaluate?.();
+        if (!dealt) continue;
+        await dealt.toMessage(
+            { speaker: ChatMessage.getSpeaker({ actor: context.originActor }), flavor: t("Rays.Flavor", { name: spell.name, actor: token.actor.name, outcome: outcomeLabel(outcome) }) },
+            { rollMode: game.settings.get("core", "rollMode") },
+        );
+        await token.actor.applyDamage({ damage: outcome === "criticalSuccess" ? dealt.alter(2, 0) : dealt, token });
+    }
+    // "These attacks each increase your multiple attack penalty" — pf2e keeps no count, so it is said.
+    context.notes.push(t(targets.length === 1 ? "Rays.PenaltyOne" : "Rays.Penalty", { name: context.originActor?.name ?? "", count: targets.length }));
 }
 
 /** One damage formula for several typed totals: pf2e reads a braced list as one roll of several instances. */

@@ -206,6 +206,22 @@
             "NothingHeld": "{name} holds no weapon to disarm.",
             "Dropped": "{name} drops {weapon}."
         },
+        "Actions": {
+            "Choose": "How many actions do you spend?",
+            "ChoosePerTarget": "How many actions do you spend? One creature for each ({targets} targeted).",
+            "One": "1 action",
+            "Many": "{n} actions",
+            "Penalty": "Every attack at:",
+            "MapFirst": "No multiple attack penalty",
+            "MapSecond": "The second attack's penalty",
+            "MapThird": "The third attack's penalty",
+            "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
+        },
+        "Rays": {
+            "Flavor": "{name} — {actor} ({outcome})",
+            "Penalty": "{name}'s multiple attack penalty now counts {count} more attacks.",
+            "PenaltyOne": "{name}'s multiple attack penalty now counts one more attack."
+        },
         "Requires": {
             "HeldWeapon": "{name} needs a weapon in hand."
         },
@@ -402,6 +418,11 @@
             "Overlap": "A penalty for being caught by more than one placement",
             "Bypass": "Ignores resistances or immunities, as written",
             "Thresholds": "Escalates as a counter grows",
+            "Requires": "Refused when what it needs is missing",
+            "VariantFromWeapon": "Its damage type from the weapon in hand",
+            "ActionVariants": "Cast with {counts} actions, the variant for each",
+            "TargetsPerAction": "A creature for each action spent",
+            "SameAttackPenalty": "Every attack of the cast at one penalty",
             "Key": {
                 "areaTargeting": "Area and targets",
                 "areaTargetingShapes": "Shape choice",
@@ -409,7 +430,12 @@
                 "lingering": "Lingering area",
                 "overlap": "Overlapping placements",
                 "bypass": "Bypass",
-                "counterThresholds": "Counter thresholds"
+                "counterThresholds": "Counter thresholds",
+                "requires": "Requirements",
+                "variantFromWeapon": "Weapon variant",
+                "actionVariants": "Actions spent",
+                "targetsPerAction": "Targets per action",
+                "sameAttackPenalty": "One attack penalty"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",

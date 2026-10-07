@@ -19,6 +19,10 @@ export const AUTHORED_KEYS = Object.freeze([
     "requires",
     // A spell's damage type from the weapon in hand, as its own variants — *Spiritual Armament* (`vanilla/requires.mjs`).
     "variantFromWeapon",
+    // A spell's variant from the actions spent, a target per action, one penalty for every attack — *Blazing Bolt*.
+    "actionVariants",
+    "targetsPerAction",
+    "sameAttackPenalty",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

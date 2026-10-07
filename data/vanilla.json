@@ -110,6 +110,24 @@
                 }
             ]
         },
+        "blazing-bolt": {
+            "actionVariants": {
+                "1": "wlrbtv7c5shfmdh1",
+                "2": "hqiwae0wgehycnex",
+                "3": "hqiwae0wgehycnex"
+            },
+            "targetsPerAction": true,
+            "sameAttackPenalty": true,
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "rays"
+                    }
+                }
+            ]
+        },
         "bless": {
             "areaTargeting": false,
             "riders": [

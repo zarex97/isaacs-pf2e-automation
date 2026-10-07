@@ -269,14 +269,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-55a | "Make a spell attack roll against a single creature" | One spell attack per ray | | ☐ | |
-| VS-55b | "On a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage" | One action: 2d6, doubled on a critical hit | | ☐ | |
-| VS-55c | "For each additional action you use when Casting the Spell, you can fire an additional ray at a different target" | Two actions, two rays; three, three; each at a different creature | | ☐ | |
-| VS-55d | "to a maximum of three rays targeting three different targets for 3 actions" | Never more than three, never the same creature twice | | ☐ | |
-| VS-55e | "These attacks each increase your multiple attack penalty" | After the rays, the MAP has gone up once per ray | | ☐ | |
-| VS-55f | "you don't increase your multiple attack penalty until after you make all the spell attack rolls for blazing bolt" | Every ray of one cast rolls at the same penalty | | ☐ | |
-| VS-55g | "If you spend 2 or more actions Casting the Spell, the damage increases to 4d6 fire damage on a hit" | Two or three actions: 4d6 per ray | | ☐ | |
-| VS-55h | "The damage to each target increases by 1d6 for the 1-action version, or by 2d6 for the 2-action and 3-action versions" | Rank 3: 3d6 or 6d6 | | ☐ | |
+| VS-55a | "Make a spell attack roll against a single creature" | One spell attack per ray | `rays` apply type (`self: true`, every target): `spell.rollAttack` with `target` | ✅ | One pf2e *Arcane Spell Attack* per creature, each against that creature's own AC: ZZ Victim (AC 10), Ghoul Soldier (AC 17), Capricorn (AC 34) |
+| VS-55b | "On a hit, the target takes 2d6 fire damage, and on a critical hit, the target takes double damage" | One action: 2d6, doubled on a critical hit | `rays`: the cast variant's own damage roll, applied ×2 on a critical hit | ✅ | One action, rank 2: a critical hit on ZZ Victim rolled **2d6 fire** = 4 and ZZ Victim took **8**. A miss (Capricorn, 26 against AC 34) rolled no damage |
+| VS-55c | "For each additional action you use when Casting the Spell, you can fire an additional ray at a different target" | Two actions, two rays; three, three; each at a different creature | cast stage `the actions spent` (`actionVariants`, `targetsPerAction`); `actionChoices` test | ✅ | Two creatures targeted: the cast offered **2 actions / 3 actions** only, and two actions fired two rays (Capricorn, Ghoul Soldier). Three targeted: **3 actions** only, three rays. One targeted: 1, 2 or 3 |
+| VS-55d | "to a maximum of three rays targeting three different targets for 3 actions" | Never more than three, never the same creature twice | `actionChoices` (more targets than three → none); pf2e's targets are one per creature | ✅ | Four creatures targeted: "Drive: Blazing Bolt reaches at most 3 creatures; 4 are targeted." — nothing cast. A ray per creature in Foundry's target set, which holds each creature once |
+| VS-55e | "These attacks each increase your multiple attack penalty" | After the rays, the MAP has gone up once per ray | `rays`: the count, said | ⚠️ | After the rays: "Aries's multiple attack penalty now counts 3 more attacks." (2 for two rays). **Gap:** pf2e keeps no count of the attacks a creature has made, so the next attack's penalty is the player's to pick — as for VS-53d |
+| VS-55f | "you don't increase your multiple attack penalty until after you make all the spell attack rolls for blazing bolt" | Every ray of one cast rolls at the same penalty | `sameAttackPenalty`: one penalty chosen at the cast, every ray at it | ✅ | "Every attack at:" the second attack's penalty → the first ray rolled **+19** (24 – 5); the third → both rays **+14** (Capricorn and Ghoul Soldier); none → all three at +24 |
+| VS-55g | "If you spend 2 or more actions Casting the Spell, the damage increases to 4d6 fire damage on a hit" | Two or three actions: 4d6 per ray | `actionVariants`: pf2e's *2 or 3* variant for both | ✅ | Two actions, rank 2: **4d6 fire** per ray (Ghoul Soldier, a critical hit: 11, took 22); three actions: 4d6 on each of the three |
+| VS-55h | "The damage to each target increases by 1d6 for the 1-action version, or by 2d6 for the 2-action and 3-action versions" | Rank 3: 3d6 or 6d6 | pf2e's own heightening of each variant | ✅ | Rank 3, one action: **3d6**; rank 3, two actions: **6d6** (20, a critical hit, 40 taken) |
 
 ### VS-56 · Live Wire
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 232 |
-| ✅ | 88 |
-| ⚠️ | 5 |
+| ☐ not yet driven | 224 |
+| ✅ | 95 |
+| ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |
