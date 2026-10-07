@@ -1801,11 +1801,13 @@ async function applyPersistent(rider, context) {
     const scaled = perStep && steps > 0 ? growByStep(counted, perStep, steps) : counted;
     if (!scaled) return;
 
+    // "If the target recovers from being Sickened, the persistent damage ends" — *Phantom Pain*.
+    const ending = Array.isArray(rider.apply.endsWith) ? { [LIB_ID]: { endsWith: rider.apply.endsWith } } : {};
     const persistent = await inflictPersistent(context.actor, {
         formula: scaled,
         damageType,
         dc: Number(rider.apply.dc) || 15,
-        flags: riderFlags(rider, context),
+        flags: foundry.utils.mergeObject(riderFlags(rider, context), ending),
     });
     record(context, persistent);
 }
@@ -2558,6 +2560,31 @@ function onTargetsTurn(source, rider, context) {
     // pf2e sets an effect's start itself as it is created — from the viewed encounter's current turn — so the
     // target's own initiative is written back just after (`registerTargetTiming`).
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { targetInitiative: timing.initiative } });
+}
+
+/**
+ * What a condition's leaving takes with it. A rider's `endsWith: ["sickened"]` marks what it made to end when
+ * the creature is no longer sickened. Active GM only.
+ */
+export function registerEndsWith() {
+    Hooks.on("deleteItem", async (item) => {
+        if (game.users?.activeGM?.id !== game.user?.id) return;
+        const actor = item?.parent;
+        if (item?.type !== "condition" || !actor?.items) return;
+        if (actor.hasCondition?.(item.slug)) return;
+        const ending = actor.items.filter((i) => endsWithGone(i.flags?.[LIB_ID]?.endsWith, item.slug));
+        if (ending.length === 0) return;
+        await actor.deleteEmbeddedDocuments("Item", ending.map((i) => i.id));
+        await ChatMessage.create({
+            speaker: ChatMessage.getSpeaker({ actor }),
+            content: `<p>${t("EndsWith.Ended", { actor: actor.name, what: ending.map((i) => i.name).join(", "), slug: item.slug })}</p>`,
+        });
+    });
+}
+
+/** Does this item end now that `slug` is gone? */
+export function endsWithGone(endsWith, slug) {
+    return Array.isArray(endsWith) && endsWith.includes(slug);
 }
 
 /** Write a target-timed effect's start back after pf2e's own creation step has set it. */
