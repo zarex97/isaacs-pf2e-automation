@@ -1958,6 +1958,8 @@ async function applyEffect(rider, context) {
 
     const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
     record(context, created);
+    // "You can Dismiss the spell" — *Animal Form*: its caster is given the action that ends it.
+    if (created && rider.apply.dismissable && context.originActor) await Dismiss.grantForEffect(context.originActor, castItemOf(context) ?? context.item, created);
 
     // Whatever has to follow an effect's arrival — an Arm put into the hands that were just granted it.
     await RiderExtensions.afterEffect(rider, context, created);

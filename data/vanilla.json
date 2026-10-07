@@ -65,6 +65,150 @@
                 }
             ]
         },
+        "animal-form": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "choice",
+                        "prompt": "ISAACS_AUTOMATION.Vanilla.animal-form.Prompt",
+                        "options": [
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Ape",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.tk3go5Cl6Qt130Dk",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Bear",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.gQnDKDeBTtjwOWAk",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Bull",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.BT1ofB6RvRocQOWO",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Canine",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.sN3mQ7YrPBogEJRn",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Cat",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.ptOqsN5FS0nQh7RW",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Crab",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.1Gax900IAwhLCi4q",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Crocodile",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.0B3noZtrBfeHC7ye",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Deer",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.F4DTpDXNu5IliyhJ",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Frog",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.j2LhQ7kEQhq3J3zZ",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Orca",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.rmtCkBCEwyg919N0",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Seal",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.tUelWvSaNZBng42K",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Shark",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.qPaEEhczUWCQo6ux",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.animal-form.Snake",
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.kz3mlFwb9tV9bFwu",
+                                    "atCastRank": true,
+                                    "replace": true,
+                                    "dismissable": true
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "banishment": {
             "riders": [
                 {

@@ -13,7 +13,7 @@ import { LIB_ID } from "../id.mjs";
 const FLAG = "dismiss";
 
 /** The granted action, as a plain source object. */
-export function dismissActionSource({ item, regionUuid }) {
+export function dismissActionSource({ item, regionUuid = null, effectUuid = null }) {
     const name = item?.name ?? t("Rider.Name");
     return {
         type: "action",
@@ -27,7 +27,7 @@ export function dismissActionSource({ item, regionUuid }) {
         },
         flags: {
             [LIB_ID]: {
-                [FLAG]: { regionUuid },
+                [FLAG]: { regionUuid, effectUuid },
                 riders: [{ event: "action-used", self: true, apply: { type: "dismiss" } }],
             },
         },
@@ -41,17 +41,26 @@ export const Dismiss = {
         return created ?? null;
     },
 
-    /** The action was used: the area goes, and the action with it. */
+    /** A spell's effect that can be Dismissed — *Animal Form*: "You can Dismiss the spell." */
+    async grantForEffect(actor, item, effect) {
+        if (!actor || !effect) return null;
+        const [created] = await actor.createEmbeddedDocuments("Item", [dismissActionSource({ item, effectUuid: effect.uuid })]);
+        return created ?? null;
+    },
+
+    /** The action was used: the area — or the effect — goes, and the action with it. */
     async apply(_rider, context) {
         const action = context.item;
         const spec = action?.flags?.[LIB_ID]?.[FLAG];
         const actor = context.actor;
         if (!spec || !actor) return;
         const region = spec.regionUuid ? await fromUuid(spec.regionUuid) : null;
-        const name = region?.name ?? action.name;
+        const effect = spec.effectUuid ? await fromUuid(spec.effectUuid).catch(() => null) : null;
+        const name = region?.name ?? effect?.name ?? action.name;
         await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t("Dismiss.Done", { actor: actor.name, name })}</p>` });
         // The area's own clean-up (`registerHooks`) takes the action too, and may get there first.
         if (region) await region.delete();
+        if (effect) await effect.delete().catch(() => {});
         if (actor.items.has(action.id)) await action.delete().catch(() => {});
     },
 
@@ -63,6 +72,17 @@ export const Dismiss = {
             const actor = originUuid ? await fromUuid(originUuid) : null;
             const orphans = actor?.items?.filter((i) => i.type === "action" && i.flags?.[LIB_ID]?.[FLAG]?.regionUuid === region.uuid).map((i) => i.id) ?? [];
             if (orphans.length > 0) await actor.deleteEmbeddedDocuments("Item", orphans).catch(() => {});
+        });
+        // …and an effect gone — dismissed, or out of time — likewise.
+        Hooks.on("deleteItem", async (item) => {
+            if (game.users.activeGM?.id !== game.user.id || item.type !== "effect") return;
+            for (const actor of [item.actor, ...game.actors.contents].filter(Boolean)) {
+                const orphans = actor.items.filter((i) => i.type === "action" && i.flags?.[LIB_ID]?.[FLAG]?.effectUuid === item.uuid).map((i) => i.id);
+                if (orphans.length > 0) {
+                    await actor.deleteEmbeddedDocuments("Item", orphans).catch(() => {});
+                    return;
+                }
+            }
         });
     },
 };

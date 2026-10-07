@@ -467,19 +467,19 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-72a | "When you Cast this Spell, choose a listed battle form" | The cast asks for one of the forms | | ☐ | |
+| VS-72a | "When you Cast this Spell, choose a listed battle form" | The cast asks for one of the forms | `content/vanilla/animal-form.json`: a `choice` of pf2e's 13 *Spell Effect: Animal Form* effects | ✅ | The cast asked "Which battle form?" — Ape, Bear, Bull, Canine, Cat, Crab, Crocodile, Deer, Frog, Orca, Seal, Shark, Snake. Bear chosen: *Spell Effect: Animal Form (Bear)* on Aries, at the cast's rank |
 | VS-72b | "You can decide the specific type of animal" | — | | — | Nothing to automate: flavour |
-| VS-72c | "While in this form, you gain the animal trait" | The animal trait | | ☐ | |
-| VS-72d | "AC = 16 + your level" | AC 16 + level, unless the caster's own is higher | | ☐ | |
-| VS-72e | "5 temporary Hit Points" | 5 temporary HP | | ☐ | |
-| VS-72f | "Low-light vision and imprecise scent 30 feet" | Both senses | | ☐ | |
-| VS-72g | "which are the only attacks you can Strike with" | The form's attacks replace every other Strike | | ☐ | |
-| VS-72h | "Your attack modifier is +9, and your damage bonus is +1" | +9 and +1, unless the caster's unarmed bonus is higher | | ☐ | |
-| VS-72i | "Athletics modifier of +9, unless your own modifier is higher" | Athletics +9 or the caster's own | | ☐ | |
-| VS-72j | "You also gain specific abilities based on the type of animal you choose" | The chosen form's Speeds and attacks | | ☐ | |
-| VS-72k | "You can Dismiss the spell" | Dismissing it ends the form | | ☐ | |
-| VS-72l | "Heightened (3rd) You instead gain 10 temporary HP, AC = 17 + your level, attack modifier +14, damage bonus +5, and Athletics +14" | Rank 3's numbers | | ☐ | |
-| VS-72m | "Heightened (4th) Your battle form is Large and your attacks have 10-foot reach" | Rank 4: Large, reach 10 ft | | ☐ | |
+| VS-72c | "While in this form, you gain the animal trait" | The animal trait | pf2e's `BattleForm`: traits | ✅ | Aries has the **animal** trait in Bear form, not before |
+| VS-72d | "AC = 16 + your level" | AC 16 + level, unless the caster's own is higher | pf2e's `BattleForm`: AC `16 + @actor.level` | ✅ | AC 34 → **36** (16 + level 20) |
+| VS-72e | "5 temporary Hit Points" | 5 temporary HP | pf2e's `BattleForm`: tempHP | ✅ | **5** temporary Hit Points |
+| VS-72f | "Low-light vision and imprecise scent 30 feet" | Both senses | pf2e's `BattleForm`: senses | ✅ | **low-light vision** and **scent (imprecise, 30 feet)** added to Aries' own lifesense |
+| VS-72g | "which are the only attacks you can Strike with" | The form's attacks replace every other Strike | pf2e's `BattleForm`: strikes replace the rest | ✅ | Aries' Strikes became **Claw** and **Jaws** only — *Ghost Touch Fist* and *Unarmed Attack* gone while in form |
+| VS-72h | "Your attack modifier is +9, and your damage bonus is +1" | +9 and +1, unless the caster's unarmed bonus is higher | pf2e's `BattleForm`: +9 / +1, or the creature's own if higher | ✅ | Claw and Jaws at **+29** — Aries' own unarmed modifier, higher than +9 |
+| VS-72i | "Athletics modifier of +9, unless your own modifier is higher" | Athletics +9 or the caster's own | pf2e's `BattleForm`: Athletics +9 unless higher | ✅ | Athletics stayed **+25**, Aries' own |
+| VS-72j | "You also gain specific abilities based on the type of animal you choose" | The chosen form's Speeds and attacks | pf2e's per-form effects: each form its own Speeds and attacks | ✅ | Bear: Claw (1d8 slashing, agile) and Jaws (2d8 piercing), land Speed 30 |
+| VS-72k | "You can Dismiss the spell" | Dismissing it ends the form | `dismissable` on the effect: the caster's *Dismiss* action (`Dismiss.grantForEffect`) | ✅ | With the form came **Dismiss Drive: Animal Form**; using it: "Aries dismisses Spell Effect: Animal Form (Bear)." — the form gone (AC 34, its own Strikes back), the action gone with it |
+| VS-72l | "Heightened (3rd) You instead gain 10 temporary HP, AC = 17 + your level, attack modifier +14, damage bonus +5, and Athletics +14" | Rank 3's numbers | pf2e's brackets at level 3; `atCastRank` | ✅ | Rank 3: AC **37**, **10** temporary Hit Points (attack +14 and Athletics +14 below Aries' own) |
+| VS-72m | "Heightened (4th) Your battle form is Large and your attacks have 10-foot reach" | Rank 4: Large, reach 10 ft | pf2e's brackets at level 4: Large, reach | ✅ | Rank 4: **Large**, token **2×2**, Claw and Jaws with **reach**; the rank-3 form replaced, not stacked |
 
 ### VS-73 · Fly
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 126 |
-| ✅ | 191 |
+| ☐ not yet driven | 114 |
+| ✅ | 203 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |
