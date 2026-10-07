@@ -3673,6 +3673,122 @@
                 }
             }
         },
+        "wave-of-despair": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.wave-of-despair.Despair",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "self:cannot-react"
+                            }
+                        ],
+                        "carries": [
+                            {
+                                "event": "turn-start",
+                                "self": true,
+                                "apply": {
+                                    "type": "save",
+                                    "statistic": "will",
+                                    "riders": [
+                                        {
+                                            "outcomes": [
+                                                "failure",
+                                                "criticalFailure"
+                                            ],
+                                            "duration": {
+                                                "value": 0,
+                                                "unit": "rounds",
+                                                "expiry": "turn-end"
+                                            },
+                                            "apply": {
+                                                "type": "condition",
+                                                "slug": "slowed",
+                                                "value": 1
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.wave-of-despair.Despair",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "self:cannot-react"
+                            }
+                        ],
+                        "carries": [
+                            {
+                                "event": "turn-start",
+                                "self": true,
+                                "apply": {
+                                    "type": "save",
+                                    "statistic": "will",
+                                    "riders": [
+                                        {
+                                            "outcomes": [
+                                                "failure",
+                                                "criticalFailure"
+                                            ],
+                                            "duration": {
+                                                "value": 0,
+                                                "unit": "rounds",
+                                                "expiry": "turn-end"
+                                            },
+                                            "apply": {
+                                                "type": "condition",
+                                                "slug": "slowed",
+                                                "value": 1
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1
+                    }
+                }
+            ]
+        },
         "weapon-storm": {
             "requires": "held-weapon",
             "areaTargeting": {

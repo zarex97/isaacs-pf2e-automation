@@ -357,12 +357,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-62a | "Success For 1 round, the creature can't use reactions and must attempt another save at the start of its turn" | No reactions for a round, and a Will save at the start of its next turn | | ☐ | |
-| VS-62b | "on a failure, it is Slowed 1 for that turn as it sobs uncontrollably" | A failed turn-start save slows it 1 for that turn only | | ☐ | |
-| VS-62c | "Failure As success, but the duration is 1 minute" | No reactions and a save at each turn start, for a minute | | ☐ | |
-| VS-62d | "Critical Failure As failure, and the creature is automatically slowed 1 for 1 minute" | Slowed 1 for the minute, whatever the turn-start saves | | ☐ | |
-| VS-62e | "Critical Success The creature is unaffected" | Nothing | | ☐ | |
-| VS-62f | "Heightened (7th) The area increases to a 60-foot cone" | A 60-ft cone at rank 7 | | ☐ | |
+| VS-62a | "Success For 1 round, the creature can't use reactions and must attempt another save at the start of its turn" | No reactions for a round, and a Will save at the start of its next turn | `content/vanilla/wave-of-despair.json`: `success` → a written-out effect for `1 round, turn-start` with `self:cannot-react` and a carried `turn-start` Will save | ⚠️ | A success (34, +30 Will): *despair: no reactions, a Will save at the start of each turn* for **1 round** to the start of a turn, and the creature carries `self:cannot-react` — every reaction this module offers (`reactions.mjs`) is refused it. **Gap:** pf2e itself has no way to refuse a reaction, so its own reactions (*Reactive Strike*, a Shield Block) are not stopped — as for VS-49g |
+| VS-62b | "on a failure, it is Slowed 1 for that turn as it sobs uncontrollably" | A failed turn-start save slows it 1 for that turn only | the carried save's failure → slowed 1 for `0 rounds, turn-end` (a rider's duration may be 0) | ✅ | In an encounter, at the start of ZZ Victim's turn: one Will save against DC 34, a critical failure (2) → **slowed 1** for 0 rounds, gone at the end of that same turn; the next turn's save a success (40) → no slowed |
+| VS-62c | "Failure As success, but the duration is 1 minute" | No reactions and a save at each turn start, for a minute | `failure` → the same effect for 1 minute | ✅ | A failure (20): the despair effect for **1 minute**, `self:cannot-react`, and a save at the start of each of its turns (above) |
+| VS-62d | "Critical Failure As failure, and the creature is automatically slowed 1 for 1 minute" | Slowed 1 for the minute, whatever the turn-start saves | `criticalFailure` → the effect for 1 minute and slowed 1 for 1 minute | ✅ | A critical failure (2): the despair effect for 1 minute and **slowed 1 for 1 minute**, whatever the turn-start saves |
+| VS-62e | "Critical Success The creature is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): no effect, reactions untouched |
+| VS-62f | "Heightened (7th) The area increases to a 60-foot cone" | A 60-ft cone at rank 7 | pf2e's own heightening of the area | ✅ | pf2e's variant at rank 7 is a **60-foot cone** (30 at ranks 5 and 6), and area targeting aims what the variant says. Found on the way: an added +30 at rank 7 made it 90 — pf2e already carries it, and nothing is added |
 
 ### VS-63 · Phantasmal Calamity
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 181 |
-| ✅ | 138 |
-| ⚠️ | 6 |
+| ☐ not yet driven | 175 |
+| ✅ | 143 |
+| ⚠️ | 7 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

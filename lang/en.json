@@ -520,6 +520,9 @@
             "sanctuary": {
                 "Ward": "sanctuary"
             },
+            "wave-of-despair": {
+                "Despair": "despair: no reactions, a Will save at the start of each turn"
+            },
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
             },

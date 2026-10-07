@@ -3278,7 +3278,8 @@ function durationData(duration) {
         expiry: duration?.expiry ?? "turn-end",
         sustained: false,
         unit: duration?.unit ?? "rounds",
-        value: Number(duration?.value) || 1,
+        // 0 is a duration too: "slowed 1 for that turn" — *Wave of Despair* — ends with the turn it began in.
+        value: Number(duration?.value) === 0 ? 0 : Number(duration?.value) || 1,
     };
 }
 
