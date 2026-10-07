@@ -1215,7 +1215,9 @@ async function applyEscape(rider, context) {
  * `resolveCounteract`, which is where the counteract rules themselves live.
  */
 async function applyCounteract(rider, context) {
-    const traits = rider.apply.traits ?? ["mental"];
+    // *Dispel Magic*: "1 spell effect" — any effect a spell left, whatever its traits.
+    const spellEffects = rider.apply.spellEffects === true;
+    const traits = spellEffects ? ["spell"] : (rider.apply.traits ?? ["mental"]);
     const tokens = [...(context.targets ?? [])];
     if (rider.apply.includesSelf !== false && context.originToken) tokens.unshift(context.originToken);
 
@@ -1226,8 +1228,12 @@ async function applyCounteract(rider, context) {
         if (!actor || seen.has(actor.uuid)) continue;
         seen.add(actor.uuid);
         for (const item of [...(actor.itemTypes.effect ?? []), ...(actor.itemTypes.condition ?? [])]) {
-            const itemTraits = item.system?.traits?.value ?? [];
-            if (!traits.some((trait) => itemTraits.includes(trait))) continue;
+            if (spellEffects) {
+                if (!isSpellEffect(item, originItemOf(item)?.type)) continue;
+            } else {
+                const itemTraits = item.system?.traits?.value ?? [];
+                if (!traits.some((trait) => itemTraits.includes(trait))) continue;
+            }
             buttons.push(
                 `<button type="button" data-action="isaacs-automation-counteract" data-effect="${item.uuid}">`
                 + `${foundry.utils.escapeHTML(`${actor.name}: ${item.name}`)}</button>`,
@@ -1236,7 +1242,7 @@ async function applyCounteract(rider, context) {
     }
 
     if (buttons.length === 0) {
-        context.notes.push(t("Counteract.Nothing", { traits: traits.join(" / ") }));
+        context.notes.push(spellEffects ? t("Counteract.NoSpellEffect") : t("Counteract.Nothing", { traits: traits.join(" / ") }));
         return;
     }
 
@@ -1246,7 +1252,8 @@ async function applyCounteract(rider, context) {
         const statistic = rider.apply.statistic ?? RiderExtensions.defaultStatistic(context.originActor);
         for (const uuid of buttons.map((b) => /data-effect="([^"]+)"/.exec(b)?.[1]).filter(Boolean)) {
             await resolveCounteract({ originUuid: context.originActor?.uuid ?? null, effectUuid: uuid,
-                itemUuid: (context.item ?? context.riderItem)?.uuid ?? null, statistic, suppress: rider.apply.suppress ?? false });
+                itemUuid: (context.item ?? context.riderItem)?.uuid ?? null, statistic, suppress: rider.apply.suppress ?? false, dcFrom: rider.apply.dcFrom ?? null,
+                rank: castItemOf(context)?.rank ?? null });
         }
         return;
     }
@@ -1266,10 +1273,49 @@ async function applyCounteract(rider, context) {
                     // on the Reiatsu DC without the content having to name it.
                     statistic: rider.apply.statistic ?? RiderExtensions.defaultStatistic(context.originActor),
                     suppress: rider.apply.suppress ?? false,
+                    dcFrom: rider.apply.dcFrom ?? null,
+                    // The rank it was cast at: the item named above is the sheet's, at its own rank.
+                    rank: castItemOf(context)?.rank ?? null,
                 },
             },
         },
     });
+}
+
+/** The item an effect came from, if it says and it can still be found. */
+function originItemOf(effect) {
+    const uuid = effect?.system?.context?.origin?.item;
+    if (!uuid) return null;
+    try {
+        return fromUuidSync(uuid);
+    } catch {
+        return null;
+    }
+}
+
+/** Is this a spell's effect? Its origin is a spell, or it is one of pf2e's own *Spell Effect*s. */
+export function isSpellEffect(item, originType) {
+    if (item?.type !== "effect") return false;
+    return originType === "spell" || String(item.slug ?? item.system?.slug ?? "").startsWith("spell-effect-");
+}
+
+/**
+ * The DC to counteract a spell's effect: "If the target is a spell, use its caster's spell DC" — the spell's own
+ * spellcasting, else its caster's best. `null` when the effect does not say, for the level table to answer.
+ */
+function spellDcOf(effect) {
+    const origin = originItemOf(effect);
+    const own = origin?.spellcasting?.statistic?.dc?.value;
+    if (Number.isFinite(own)) return own;
+    const actorUuid = effect?.system?.context?.origin?.actor;
+    let caster = null;
+    try {
+        caster = actorUuid ? fromUuidSync(actorUuid) : null;
+    } catch {
+        caster = null;
+    }
+    const best = RiderExtensions.statistic(caster, "spellcasting")?.dc?.value;
+    return Number.isFinite(best) ? best : null;
 }
 
 /**
@@ -1300,21 +1346,21 @@ export async function resolveCounteract(payload) {
     // "Cannot be counteracted below Nth rank" — Null Shroud's darkness (#95). The floor rides on the effect, and a
     // counteract of lower rank fails without a roll.
     const floor = Number(flagOf(effect, "counteractFloor")) || 0;
-    if (floor && counteractRank(actor, item) < floor) {
+    if (floor && counteractRank(actor, item, payload.rank) < floor) {
         await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), flavor: item?.name ?? t("Counteract.Title"),
             flags: { [LIB_ID]: { counteractFloor: { effect: effect.uuid, floor } } },
-            content: `<p>${t("Counteract.Floor", { effect: effect.name, floor, rank: counteractRank(actor, item) })}</p>` });
+            content: `<p>${t("Counteract.Floor", { effect: effect.name, floor, rank: counteractRank(actor, item, payload.rank) })}</p>` });
         return;
     }
     const roll = await statistic.roll({
-        dc: { value: dcByLevel(effect.system?.level?.value ?? actor.level) },
+        dc: { value: (payload.dcFrom === "effect" ? spellDcOf(effect) : null) ?? dcByLevel(effect.system?.level?.value ?? actor.level) },
         skipDialog: true,
         label: `Counteract — ${effect.name}`,
         extraRollOptions: [`${LIB_ID}:counteract`],
     });
     const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
 
-    const ourRank = counteractRank(actor, item);
+    const ourRank = counteractRank(actor, item, payload.rank);
     const reach = { criticalSuccess: 3, success: 1, failure: -1, criticalFailure: -Infinity }[outcome] ?? -Infinity;
     const counteracted = targetRank <= ourRank + reach;
     // Anything that answers a counteract hears it here: `(actor, { effect, counteracted, outcome })`.
@@ -1358,9 +1404,9 @@ export async function resolveCounteract(payload) {
     });
 }
 
-/** The counteract rank: the item's rank, or half the actor's level, plus whatever is registered. */
-function counteractRank(actor, item) {
-    return Math.max(1, Number(item?.rank) || Math.ceil((actor.level ?? 1) / 2)) + RiderExtensions.counteractRankBonus(actor, item);
+/** The counteract rank: the rank it was cast at, else the item's rank, else half the actor's level, plus whatever is registered. */
+function counteractRank(actor, item, castRank = null) {
+    return Math.max(1, Number(castRank) || Number(item?.rank) || Math.ceil((actor.level ?? 1) / 2)) + RiderExtensions.counteractRankBonus(actor, item);
 }
 
 /** pf2e's level-based DC table, which a module cannot import and which has not moved in four editions. */

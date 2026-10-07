@@ -356,6 +356,20 @@
                 }
             ]
         },
+        "dispel-magic": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "counteract",
+                        "spellEffects": true,
+                        "includesSelf": false,
+                        "statistic": "spellcasting",
+                        "dcFrom": "effect"
+                    }
+                }
+            ]
+        },
         "dizzying-colors": {
             "areaTargeting": {
                 "affects": "all",
