@@ -19,6 +19,7 @@ import { registerEnemyTerrain } from "./targeting/enemy-terrain.mjs";
 import { Extensions } from "./targeting/extensions.mjs";
 import { AreaTargeting } from "./targeting/index.mjs";
 import { Lingering } from "./targeting/lingering.mjs";
+import { Inside } from "./targeting/inside.mjs";
 import { Overlap } from "./targeting/overlap.mjs";
 import { CastShape } from "./targeting/cast-shape.mjs";
 import { MoveCaster } from "./targeting/move-caster.mjs";
@@ -57,6 +58,7 @@ export const RIDER_INIT = [
     ["the banishment register", () => { Banish.registerSettings(); Banish.registerHooks(); }],
     ["enemies-only difficult terrain", () => registerEnemyTerrain()],
     ["lingering areas", () => { Lingering.register(); Lingering.registerHooks(); }],
+    ["areas held while inside", () => Inside.registerHooks()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],

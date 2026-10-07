@@ -5,6 +5,7 @@ import { testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
 import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
 import { LIB_ID } from "../id.mjs";
+import { Inside, insidePayload } from "./inside.mjs";
 
 export const FLAG = "lingering";
 
@@ -132,6 +133,15 @@ export const Lingering = {
                 system: { events: spec.events ?? ["tokenMoveIn", "tokenTurnEnd"] },
             });
         }
+        // An area that changes whoever stands in it — *Mist*'s concealment — holds an effect on them while
+        // they are inside, and `inside.mjs` puts it on and takes it off.
+        if (spec.inside) {
+            behaviors.push({
+                type: BEHAVIOR_TYPE,
+                name: spec.name ?? config.item.name,
+                system: { role: "inside", events: ["tokenEnter", "tokenExit"] },
+            });
+        }
         // A patch of ground that only glows still needs somewhere to record when it stops. *Lightning
         // Crown*'s pillars carry no behavior at all — they shed light and block sight, which are a light
         // source and a set of walls rather than anything a Region does — so the Region here is the thing
@@ -162,6 +172,7 @@ export const Lingering = {
                             // their own Respira came away with persistent void damage, and so did the
                             // ally beside them.
                             affects: spec.affects ?? null,
+                            inside: insidePayload(spec.inside, config.item),
                             ...scenery,
                         },
                     },
@@ -342,9 +353,14 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
                     CONST.REGION_EVENTS.TOKEN_TURN_START,
                     CONST.REGION_EVENTS.TOKEN_TURN_END,
                     CONST.REGION_EVENTS.TOKEN_ROUND_END,
+                    CONST.REGION_EVENTS.TOKEN_EXIT,
                 ],
                 initial: [CONST.REGION_EVENTS.TOKEN_MOVE_IN, CONST.REGION_EVENTS.TOKEN_TURN_END],
             }),
+            // What this behavior does: burn or test whoever is on the ground, or hold an effect on whoever is
+            // inside (`inside.mjs`). One declared type for both, so a new kind of area needs no new subtype —
+            // and no world restart for Foundry to learn one.
+            role: new foundry.data.fields.StringField({ required: true, choices: ["ground", "inside"], initial: "ground" }),
         };
     }
 
@@ -352,6 +368,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
         if (game.users?.activeGM?.id !== game.user?.id) return;
 
         const region = this.parent?.region ?? this.parent?.parent;
+        if (this.role === "inside") return Inside.handle(event, region);
         const payload = flagOf(region, FLAG);
         const damage = payload?.damage;
         const actor = event.data?.token?.actor;

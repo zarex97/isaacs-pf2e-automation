@@ -42,7 +42,7 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 | ID | Spell | Rank | Shape | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-06 | `wall-of-fire` | 4 | A wall, line or ring | "a straight line up to 60 feet long … or a … 10-foot-radius ring" | The caster chooses line or ring; crossing it or starting a turn in it deals the fire damage | `content/vanilla/wall-of-fire.json` (`placeOnly`, shapes 60-ft line / 10-ft ring, a lingering 4d6 fire that is not persistent, on entering and at turn start, 1 minute); `placeOnly` validation and config tests | ✅ | **Placed, nobody targeted:** the choice offered line and ring; a ring centred at (3350, 1950) posted the card with no targets and left a lingering *Wall of Fire* Region (events: entering, turn start), its interior a hole. **Crossing:** Capricorn moved onto the band → 11 fire (4d6), applied directly, no persistent condition; Leo's move from outside to the centre crossed the band → 14 fire. **Inside, off the band (control):** Leo moved 5 ft within the ring → nothing, and in no Region. **Turn start:** a combat with Capricorn on the band → its turn began with 12 fire. Combat, Region and items removed; positions and HP restored. Fixed on the way: *Ice Storm*'s lingering tick was persistent damage — it is now direct (`persistent: false`). |
-| VS-07 | `mist` | 2 | Concealment both ways | "All creatures within the mist become Concealed" | Creatures inside are concealed, and those outside are concealed to them, while the cloud stands | | ☐ | |
+| VS-07 | `mist` | 2 | Concealment both ways | "All creatures within the mist become Concealed" | Creatures inside are concealed, and those outside are concealed to them, while the cloud stands | `content/vanilla/mist.json` (`placeOnly`; a lingering area with `inside: { conditions: [concealed], rules: [EphemeralEffect concealed on targets] }`, 1 minute); `scripts/targeting/inside.mjs` (the lingering behavior's `inside` role); effect-source, held-from and validation tests | ✅ | **Already inside:** Leo stood where the 20-ft burst was placed (centred 3400, 2000); as the cloud appeared Leo — and *quincy*, also there — held a *Mist* effect and were **concealed**; nobody was targeted. **Entering / leaving:** Capricorn walked in → effect and concealed; teleported out → both gone. **Concealed to those within:** Leo's Strike at the Ghoul outside carried `target:condition:concealed`; Capricorn's from outside did not (control). **Into the mist:** Capricorn's Strike at Leo got pf2e-flatcheck-helper's DC 5 concealed check. **Dismiss:** deleting the Region took the effect and concealed off Leo and quincy. Gap: nothing rolls the flat check for the outward half — pf2e rolls none, and the helper reads only real conditions (#21). |
 | VS-08 | `darkness` | 2 | Light suppressed | "Light does not enter the area" | A burst of darkness that non-magical light does not enter or leave | | ☐ | |
 | VS-09 | `web` | 2 | Terrain, save on moving, Escape | "begins to use a move action or enters the web" | Difficult terrain; moving in it asks Athletics or Reflex, failure immobilized with an Escape against the spell DC | | ☐ | |
 | VS-10 | `entangling-flora` | 2 | A save at turn start | "Each round that a creature starts its turn in the area" | Difficult terrain; a Reflex save at each turn start in it; −10 ft, immobilized on a critical failure; Escape removes them | | ☐ | |
@@ -106,8 +106,8 @@ check** why it needs none). Drives run with this module alone — PF2e Automatio
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 34 |
-| ✅ | 6 |
+| ☐ not yet driven | 33 |
+| ✅ | 7 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

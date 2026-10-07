@@ -64,6 +64,7 @@ export function docs(built, index, en) {
     const linger = (l) => (l
         ? [
             l.difficultTerrain ? "difficult terrain" : null,
+            l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
             l.damage ? `${l.damage.formula}${l.damage.persistent === false ? "" : " persistent"} ${l.damage.type ?? ""} on ${(l.events ?? ["tokenMoveIn", "tokenTurnEnd"]).map((e) => ({ tokenMoveIn: "entering", tokenTurnStart: "turn start", tokenTurnEnd: "turn end" })[e] ?? e).join(" / ")}`.trim() : null,
             l.duration ? `${l.duration.value} ${l.duration.unit}` : null,
         ].filter(Boolean).join(", ")
@@ -145,6 +146,15 @@ export function problemsWith(slug, entry, ctx) {
             if (choice.type !== "none" && !ctx.areaShapes.includes(choice.type)) at(`${where} areaTargetingShapes[${i}]`, `"${choice.type}" is not a shape or none`);
             if (choice.type !== "none" && !(Number(choice.value) > 0)) at(`${where} areaTargetingShapes[${i}]`, "a size in feet");
         }
+        for (const [i, spec] of [object.lingering ?? []].flat().entries()) {
+            if (spec?.inside === undefined) continue;
+            const inside = spec.inside;
+            const at2 = (what) => at(`${where} lingering${Array.isArray(object.lingering) ? `[${i}]` : ""}.inside`.trim(), what);
+            if (!inside || typeof inside !== "object") { at2("an object: { conditions?, rules?, description? }"); continue; }
+            for (const slug of inside.conditions ?? []) if (!ctx.index.conditions[slug]) at2(`no pf2e condition "${slug}"`);
+            if (inside.rules !== undefined && (!Array.isArray(inside.rules) || inside.rules.some((r) => typeof r?.key !== "string"))) at2("rules are a list of rule elements, each with a key");
+            if (!(inside.conditions?.length || inside.rules?.length)) at2("holds a condition or a rule");
+        }
         if (object.riders !== undefined && object.riders !== false) {
             if (!Array.isArray(object.riders)) at(`${where} riders`, "a list");
             else object.riders.forEach((rider, i) => checkRider(`${where} riders[${i}]`.trim(), rider));
@@ -167,7 +177,7 @@ export function problemsWith(slug, entry, ctx) {
 
     /** Words in an entry are i18n keys under ISAACS_AUTOMATION.Vanilla, and each must exist. */
     function walkText(where, value, field = null) {
-        if (typeof value === "string" && ["text", "prompt", "label", "title", "note", "name"].includes(field)) {
+        if (typeof value === "string" && ["text", "prompt", "label", "title", "note", "name", "description"].includes(field)) {
             if (!value.startsWith("ISAACS_AUTOMATION.Vanilla.")) at(where, `${field} must be an i18n key under ISAACS_AUTOMATION.Vanilla, not "${value}"`);
             else if (!ctx.i18nKeys.has(value)) at(where, `${value} is not in lang/en.json`);
         } else if (Array.isArray(value)) value.forEach((v) => walkText(where, v, field));
