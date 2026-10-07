@@ -549,13 +549,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-80a | "its heat grants you cold resistance 5" | Cold resistance 5 | | ☐ | |
+| VS-80a | "its heat grants you cold resistance 5" | Cold resistance 5 | pf2e's *Spell Effect: Fire Shield* (`Resistance` cold, by `@item.level`), `atCastRank` | ✅ | Rank 4 on Aries: **cold resistance 5** |
 | VS-80b | "makes you immune to mild and severe environmental cold" | — | | — | Nothing to automate: environmental cold is the GM's |
-| VS-80c | "You can Raise a Shield with the fire shield as a normal shield to gain a +1 circumstance bonus to AC" | Raise a Shield gives +1 AC | | ☐ | |
-| VS-80d | "You can use the Shield Block reaction with the fire shield , which has Hardness 10, is immune to fire, and has 40 HP (with no Broken Threshold)" | Shield Block with Hardness 10 and 40 HP; fire passes through it untouched | | ☐ | |
-| VS-80e | "its Hardness is halved against effects that have the water trait" | Hardness 5 against water | | ☐ | |
-| VS-80f | "If you Shield Block a melee attack that is either an unarmed attack or made by an adjacent attacker, the attacker takes 2d6 fire damage" | Blocking such an attack burns the attacker for 2d6 | | ☐ | |
-| VS-80g | "The cold resistance increases by 5, the HP increase by 10, and the fire damage increases by 1d6" | Rank 6: 10, 50 HP, 3d6 | | ☐ | |
+| VS-80c | "You can Raise a Shield with the fire shield as a normal shield to gain a +1 circumstance bonus to AC" | Raise a Shield gives +1 AC | `shield.raise` (`scripts/riders/spell-shield.mjs`): the shield lowered until pf2e's *Effect: Raise a Shield* is on; `originAction` *Raise the Fire Shield* puts it there | ✅ | Cast: AC 34, shield **lowered**; a Shield Block then was refused by pf2e (18 of 18 taken). *Raise the Fire Shield* used: **AC 35**, shield raised |
+| VS-80d | "You can use the Shield Block reaction with the fire shield , which has Hardness 10, is immune to fire, and has 40 HP (with no Broken Threshold)" | Shield Block with Hardness 10 and 40 HP; fire passes through it untouched | pf2e's effect (Hardness 10, no Broken Threshold); `shield.hp` 40 kept on the effect, `immune: [fire]`; at 0 the effect ends | ✅ | A blocked 18 slashing: Aries took 8, **shield 40 → 32**. A blocked 18 fire: Aries took 8, **shield unchanged**. Down to 3 HP, a blocked 18: "the shield takes 8 damage and is destroyed" — effect, cold resistance and the Raise action gone; the next block took the full 18 |
+| VS-80e | "its Hardness is halved against effects that have the water trait" | Hardness 5 against water | `shield.halvedAgainst: [water]`: a damage stage halves the shield's Hardness for a blow with the water trait | ✅ | A blocked 18 slashing with the water trait: **Hardness 5** — Aries took 13, the shield 16 → 3 |
+| VS-80f | "If you Shield Block a melee attack that is either an unarmed attack or made by an adjacent attacker, the attacker takes 2d6 fire damage" | Blocking such an attack burns the attacker for 2d6 | `carries` a `damage-received` `damage` 2d6 fire, predicated on `rider:damage:blocked`, `rider:damage:melee` and `unarmed` or `adjacent` (new damage options) | ✅ | Blocked from 95 ft: a sword — **no burn**; a claw (unarmed) — Ghoul 200 → 197. Adjacent, a sword: Ghoul **197 → 190** |
+| VS-80g | "The cold resistance increases by 5, the HP increase by 10, and the fire damage increases by 1d6" | Rank 6: 10, 50 HP, 3d6 | `hpPerStep` 10 and `perStep` 1d6 at `perStepInterval` 2; pf2e's resistance formula | ✅ | Rank 6: **cold 10**, shield **50/50**; an adjacent claw blocked: the Ghoul took **3d6** = 16, shield 50 → 42 |
 
 ### VS-81 · Share Life
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 88 |
-| ✅ | 228 |
+| ☐ not yet driven | 82 |
+| ✅ | 234 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

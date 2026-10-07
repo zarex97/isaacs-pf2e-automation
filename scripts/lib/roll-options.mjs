@@ -88,12 +88,16 @@ export function describeActor(actor, prefix = "target") {
     return options;
 }
 
-/** What the damage was, for a `damage-applied` rider to predicate on. */
-export function describeDamage({ types = [], total = 0, outcome = null } = {}) {
+/** What the damage was, for a `damage-applied` rider to predicate on — and how the blow came, for `damage-received`. */
+export function describeDamage({ types = [], total = 0, outcome = null, blocked = false, melee = false, unarmed = false, adjacent = false } = {}) {
     const options = [`${RIDER}:damage`];
     for (const type of types) if (type) options.push(`${RIDER}:damage:type:${type}`);
     if (total > 0) options.push(`${RIDER}:damage:dealt`);
     if (outcome) options.push(`${RIDER}:damage:outcome:${outcome}`);
+    if (blocked) options.push(`${RIDER}:damage:blocked`);
+    if (melee) options.push(`${RIDER}:damage:melee`);
+    if (unarmed) options.push(`${RIDER}:damage:unarmed`);
+    if (adjacent) options.push(`${RIDER}:damage:adjacent`);
     return options;
 }
 

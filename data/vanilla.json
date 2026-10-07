@@ -1244,6 +1244,67 @@
                 }
             ]
         },
+        "fire-shield": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.1RsScTvNdGD9zGWe",
+                        "atCastRank": true,
+                        "perStepInterval": 2,
+                        "shield": {
+                            "raise": true,
+                            "hp": 40,
+                            "hpPerStep": 10,
+                            "immune": [
+                                "fire"
+                            ],
+                            "halvedAgainst": [
+                                "water"
+                            ]
+                        },
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.fire-shield.Raise",
+                            "actions": 1,
+                            "traits": [],
+                            "spends": false,
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "self": true,
+                                    "apply": {
+                                        "type": "effect",
+                                        "uuid": "Compendium.pf2e.equipment-effects.Item.2YgXoHvJfrDHucMr"
+                                    }
+                                }
+                            ]
+                        },
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "predicate": [
+                                    "rider:damage:blocked",
+                                    "rider:damage:melee",
+                                    {
+                                        "or": [
+                                            "rider:damage:unarmed",
+                                            "rider:damage:adjacent"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "2d6",
+                                    "perStep": "1d6",
+                                    "damageType": "fire"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "floating-flame": {
             "areaTargeting": {
                 "affects": "all"

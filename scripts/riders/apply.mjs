@@ -31,6 +31,7 @@ import { RiderExtensions } from "./extensions.mjs";
 import { offerReaction } from "./reactions.mjs";
 import { gateByRound } from "./round-gate.mjs";
 import { selectRiders } from "./select.mjs";
+import { spellShieldSource } from "./spell-shield.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
 const DEGREES = ["criticalFailure", "failure", "success", "criticalSuccess"];
@@ -1938,6 +1939,8 @@ async function applyEffect(rider, context) {
     }
     // *Shield*: the spell ends when its shield blocks (`shield-block.mjs`).
     if (rider.apply.endsOnBlock) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnBlock: rider.apply.endsOnBlock } });
+    // A shield the spell makes — *Fire Shield*: raised by an action, its own Hit Points (`spell-shield.mjs`).
+    if (rider.apply.shield) spellShieldSource(source, rider.apply.shield, riderSteps({ apply: { perStepInterval: rider.apply.perStepInterval } }, context));
     // What the form forbids its holder — *Vapor Form* (`forbids.mjs`).
     if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids } });
     const castRank = Number(castItemOf(context)?.rank);
@@ -3089,7 +3092,8 @@ function effectSource(label, rules, rider, context) {
 /**
  * Riders an effect takes with it, bound to the cast that gave it: each `"$cast:<flag>"` in a string becomes what was
  * chosen as the spell was cast, and each `maxLevel` grows by its `maxLevelPerStep` — *Seal Fate*'s "If the creature is
- * reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies … the maximum level … increases by 4".
+ * reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies … the maximum level … increases by 4" —
+ * and each `formula` by its `perStep`: *Fire Shield*'s 2d6 to an attacker, "the fire damage increases by 1d6".
  */
 export function withCast(value, cast = {}, steps = 0) {
     if (typeof value === "string") return value.replace(/\$cast:(\w+)/g, (_m, flag) => cast[flag] ?? "none");
@@ -3099,6 +3103,10 @@ export function withCast(value, cast = {}, steps = 0) {
     if (Number.isFinite(Number(out.maxLevel)) && out.maxLevelPerStep !== undefined) {
         out.maxLevel = Number(out.maxLevel) + (Number(out.maxLevelPerStep) || 0) * steps;
         delete out.maxLevelPerStep;
+    }
+    if (typeof out.formula === "string" && out.perStep !== undefined) {
+        out.formula = growByStep(out.formula, out.perStep, steps);
+        delete out.perStep;
     }
     return out;
 }
