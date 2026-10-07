@@ -113,9 +113,14 @@ export const RiderExtensions = {
             const value = fn(dc, context);
             if (value !== undefined) return value;
         }
-        // Nothing named, nothing registered answered: what pf2e itself would reach for — the origin's class DC,
-        // then the best DC among its spellcasting entries. An unknown word stays unresolved, and says so.
-        if (dc === undefined || dc === null) return defaultDC(context?.originActor);
+        // Nothing named, nothing registered answered: what pf2e itself would reach for — a spell's own
+        // spellcasting DC, else the origin's class DC, else the best DC among its spellcasting entries. A
+        // wizard's Fear is against the arcane DC, not a class DC. An unknown word stays unresolved, and says so.
+        if (dc === undefined || dc === null) {
+            const item = context?.item ?? context?.riderItem;
+            const spellDC = item?.type === "spell" ? item.spellcasting?.statistic?.dc?.value : null;
+            return spellDC ?? defaultDC(context?.originActor);
+        }
         return null;
     },
 

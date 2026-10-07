@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "7vbvdrv2cl87sqta": {
+            "areaTargeting": {
+                "affects": "all",
+                "includesSelf": true
+            }
+        }
+    }
+}

@@ -277,7 +277,7 @@ function boundsOf(region) {
  * not, so the growth is applied at the moment the ground is set alight. `config.steps` is the count area
  * targeting already worked out, sky included.
  */
-function scaledDamage(damage, steps) {
+export function scaledDamage(damage, steps) {
     const grown = { ...damage };
     // `perStepInterval: 2` is "+1d6 at every *other* increment", which two Techniques say out loud —
     // Ennetsu Jigoku's persistent fire, where the rider machinery already honoured it, and Respira's
@@ -289,6 +289,9 @@ function scaledDamage(damage, steps) {
         const per = /^(\d*)d(\d+)$/.exec(String(damage.perStep).trim());
         if (base && per && base[2] === per[2]) {
             grown.formula = `${(Number(base[1]) || 1) + (Number(per[1]) || 1) * earned}d${base[2]}`;
+        } else if (/^\d+$/.test(String(damage.formula).trim()) && /^\d+$/.test(String(damage.perStep).trim())) {
+            // A flat tick that grows by a flat amount — Ice Storm's "increases by 1".
+            grown.formula = String(Number(damage.formula) + Number(damage.perStep) * earned);
         }
     }
     delete grown.perStep;

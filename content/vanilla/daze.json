@@ -1,0 +1,14 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "stunned",
+                "value": 1
+            }
+        }
+    ]
+}

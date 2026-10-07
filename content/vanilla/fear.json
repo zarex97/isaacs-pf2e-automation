@@ -1,0 +1,58 @@
+{
+    "areaTargeting": {
+        "maxTargets": 1,
+        "heightening": {
+            "atRank": {
+                "3": {
+                    "maxTargets": 4
+                }
+            }
+        }
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "frightened",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "frightened",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "frightened",
+                "value": 3
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "fleeing"
+            }
+        }
+    ]
+}

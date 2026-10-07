@@ -1,0 +1,19 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.DdqWMj7cuf4S1bgr",
+                "substitutions": [
+                    {
+                        "path": "system.level.value",
+                        "value": "origin.item.rank"
+                    }
+                ]
+            }
+        }
+    ]
+}

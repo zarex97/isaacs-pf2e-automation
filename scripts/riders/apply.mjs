@@ -2272,6 +2272,12 @@ function resolveFromOrigin(expression, context) {
 
     // How far the Technique itself has heightened, sky included — the growth a Strike inherits when the
     // Technique says "each Strike's damage increases by 1d6".
+    // The rank the ability was cast at — a pf2e spell effect's `@item.level` is the spell's rank.
+    if (expression === "origin.item.rank") {
+        const item = context.item ?? context.riderItem;
+        return item?.rank ?? item?.system?.level?.value ?? null;
+    }
+
     if (expression === "origin.item.steps") {
         const item = context.item ?? context.riderItem;
         if (!item) return null;

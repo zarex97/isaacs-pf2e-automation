@@ -71,6 +71,10 @@ id registered with `api.flags.registerFlagScope`, so a module keeps authoring un
 ("heighten as though you were 4 levels higher"); answers add up. Also `bonusStepsFrom(options)`,
 `effectiveLevel(actor)`, `stepsFor`, `applyHeightening`, `applyThresholds`, `thresholdsCrossed`, `valueAtLevel`.
 
+An authored `heightening` block grows `maxTargets`, `range`, `areas` and `length` per step (`interval` ranks
+each), at named character levels (`at: { level: gains }`), and — since 1.2.0 — at named cast ranks
+(`atRank: { rank: gains }`, pf2e's own "Heightened (3rd) You can target up to five creatures").
+
 ## Allowances
 
 - `api.spellFrequency` — a spell's `system.frequency` is spent on cast and refused at zero.
@@ -182,6 +186,10 @@ is dropped when the spell is already covered by another active automation module
   a mark on its sheet header and its chat card that opens it. The GM's switches only touch what this module
   owns — a table or registered key (switching it off writes `false` under this module's id) or such a
   `false` (switching it back on removes it) — never an item's own authored config.
+
+Since 1.2.0, a save rider with no `dc` on a spell is against that spell's own spellcasting DC; a substitution
+may ask for `origin.item.rank`, the rank the ability was cast at (a pf2e spell effect's `@item.level`); and a
+lingering area's flat `damage.formula` grows by a flat `perStep`.
 
 ## Hooks this module fires
 

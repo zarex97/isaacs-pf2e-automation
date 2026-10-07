@@ -89,6 +89,16 @@ export function applyHeightening(base, heightening, ranks) {
     // grows a die a step. Returning 0 here left the black flame at 4d6 from 16th to 20th.
     const steps = stepsFor({ ...ranks, interval: heightening?.interval });
     result.steps = steps;
+    // pf2e's own "Heightened (3rd) You can target up to five creatures": growth at a named *cast rank*,
+    // which neither a per-step increment nor a character-level threshold can say. Gains add up across every
+    // rank reached, so `{ "3": { maxTargets: 4 } }` takes one target to five.
+    for (const [rank, gains] of Object.entries(heightening?.atRank ?? {})) {
+        if ((Number(ranks?.castRank) || 0) < Number(rank)) continue;
+        if (gains.maxTargets) result.maxTargets += Number(gains.maxTargets);
+        if (gains.range) result.range += Number(gains.range);
+        if (gains.areas) result.areas += Number(gains.areas);
+        if (gains.length) result.length += Number(gains.length);
+    }
     if (!heightening || steps === 0) return result;
 
     if (heightening.maxTargets && result.maxTargets > 0) {

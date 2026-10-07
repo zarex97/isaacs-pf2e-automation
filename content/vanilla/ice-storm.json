@@ -1,0 +1,24 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "heightening": {
+            "interval": 2
+        }
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.ice-storm.Area",
+        "difficultTerrain": 2,
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "events": [
+            "tokenTurnEnd"
+        ],
+        "damage": {
+            "formula": "2",
+            "type": "cold",
+            "perStep": "1"
+        }
+    }
+}

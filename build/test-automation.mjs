@@ -483,6 +483,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const carriageReturn = new RegExp(String.fromCharCode(13), "g");
     check("data/vanilla.json is what content/vanilla builds (npm run build:vanilla)", fs.readFileSync(V.BUNDLE, "utf8").replace(carriageReturn, ""), V.serialise(built));
     check("the bundle names the pf2e it was checked against", built.pf2e, index.pf2e);
+    check("Docs/vanilla.md is what content/vanilla builds (npm run build:vanilla)", fs.readFileSync(V.DOC, "utf8").replace(carriageReturn, ""), V.docs(built, index, en));
     check("every vanilla entry is sound", Object.entries(built.entries).flatMap(([slug, entry]) => V.problemsWith(slug, entry, ctx)), []);
     check("every alias leads to an entry, and shadows no live slug", V.aliasProblems(built.aliases, built.entries, index), []);
 
@@ -588,6 +589,28 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     Vanilla.setRiderDeferral(null);
     Vanilla.setTable({ aliases: {}, entries: {} });
     Object.assign(globalThis, saved);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  What the pilot needed from the engine                                                        */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { applyHeightening } = await import("../scripts/targeting/heightening.mjs");
+    const fearAt = (castRank) => applyHeightening({ maxTargets: 1 }, { atRank: { 3: { maxTargets: 4 } } }, { baseRank: 1, castRank }).maxTargets;
+    check("Heightened (3rd): Fear targets one creature, then five from rank 3 on", [fearAt(1), fearAt(2), fearAt(3), fearAt(9)], [1, 1, 5, 5]);
+    const barrage = (castRank) => applyHeightening({ maxTargets: 3 }, { interval: 2, maxTargets: 3 }, { baseRank: 1, castRank }).maxTargets;
+    check("Heightened (+2): Force Barrage's shards grow every other rank", [barrage(1), barrage(2), barrage(3), barrage(5)], [3, 3, 6, 9]);
+
+    const { scaledDamage } = await import("../scripts/targeting/lingering.mjs");
+    const storm = { formula: "2", type: "cold", perStep: "1" };
+    check("Ice Storm's flat tick grows by a flat 1 per step", [0, 1, 3].map((steps) => scaledDamage(storm, steps).formula), ["2", "3", "5"]);
+    check("…and dice still grow as dice", scaledDamage({ formula: "1d6", perStep: "1d6" }, 2).formula, "3d6");
+
+    const wizard = { classDC: { slug: "wizard", dc: { value: 20 } }, spellcasting: [{ statistic: { dc: { value: 24 } } }] };
+    const fearSpell = { type: "spell", spellcasting: { statistic: { dc: { value: 23 } } } };
+    check("a save with no DC on a spell is against that spell's own DC", RiderExtensions.resolveDC(undefined, { originActor: wizard, item: fearSpell }), 23);
+    check("…and on anything else, the class DC as before", RiderExtensions.resolveDC(undefined, { originActor: wizard, item: { type: "feat" } }), 20);
 }
 
 /* -------------------------------------------------------------------------------------------- */

@@ -1,0 +1,67 @@
+{
+    "areaTargeting": {
+        "maxTargets": 1,
+        "heightening": {
+            "atRank": {
+                "9": {
+                    "maxTargets": 4
+                }
+            }
+        }
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.7YeHvdvCxVnTVfvo"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.HS99qGvP1OvejSQp",
+                "substitutions": [
+                    {
+                        "path": "system.rules.0.selection",
+                        "value": {
+                            "literal": "failure"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.HS99qGvP1OvejSQp",
+                "substitutions": [
+                    {
+                        "path": "system.rules.0.selection",
+                        "value": {
+                            "literal": "critical-failure"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "stunned",
+                "value": 2
+            }
+        }
+    ]
+}
