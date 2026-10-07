@@ -1,0 +1,34 @@
+{
+    "riders": [
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "criticalSuccess"
+            ],
+            "apply": {
+                "type": "persistent-damage",
+                "formula": "1d4",
+                "perStep": "1d4",
+                "damageType": "fire"
+            }
+        }
+    ],
+    "variants": {
+        "xYyA7CV1GaFTRjBQ": {
+            "riders": [
+                {
+                    "event": "strike-resolved",
+                    "outcomes": [
+                        "criticalSuccess"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "1d6",
+                        "perStep": "1d6",
+                        "damageType": "fire"
+                    }
+                }
+            ]
+        }
+    }
+}
