@@ -138,8 +138,10 @@ async function applyToTarget(target, candidates, context, payload) {
         choices: [],
         picks: [],
         moves: [],
+        // What this pass itself created, which is what its receipt may later take back. Diffing the sheet
+        // instead caught whatever another module applied in the same moment, and a reroll removed theirs too.
+        created: [],
     };
-    const before = new Set(actor.items.map((i) => i.id));
 
     for (const { rider, item, index } of chosen) {
         try {
@@ -183,7 +185,7 @@ async function applyToTarget(target, candidates, context, payload) {
     if (context.message) {
         const receipt = {
             outcome: payload.outcome ?? null,
-            itemIds: actor.items.map((i) => i.id).filter((id) => !before.has(id)),
+            itemIds: [...new Set(work.created)].filter((id) => actor.items.has(id)),
             adjustments: work.adjustments,
             moves: work.moves,
         };
@@ -722,6 +724,7 @@ async function applyStrikes(rider, context) {
             applySubstitutions(source, rider.apply.substitutions, context);
             source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: rider.apply.uuid });
             [effect] = await actor.createEmbeddedDocuments("Item", [source]);
+            record(context, effect);
         } else {
             console.warn(`Isaac's PF2e Automation | volley effect not found: ${rider.apply.uuid}`);
         }
@@ -1417,7 +1420,7 @@ async function applyCondition(rider, context) {
         // rider is meant to accumulate at all.
         const max = Number(rider.apply.max);
         if (max) {
-            await context.actor.increaseCondition(slug, value ? { value, max } : { max });
+            await increaseRecorded(context.actor, slug, value ? { value, max } : { max }, context);
             await grantEscape(rider, context, { conditions: [slug] });
             return;
         }
@@ -1436,7 +1439,7 @@ async function applyCondition(rider, context) {
          */
         const existing = context.actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
         if (!existing) {
-            await context.actor.increaseCondition(slug, value ? { value } : {});
+            await increaseRecorded(context.actor, slug, value ? { value } : {}, context);
             await grantEscape(rider, context, { conditions: [slug] });
             return;
         }
@@ -1495,6 +1498,7 @@ async function applyCondition(rider, context) {
         "Item",
         [effectSource(label, [grant], rider, context)],
     );
+    record(context, created);
     await grantEscape(rider, context, { conditions: [slug], effectId: created?.id ?? null });
 }
 
@@ -1509,7 +1513,7 @@ async function applyCondition(rider, context) {
  */
 async function grantEscape(rider, context, release) {
     if (!rider.apply.escapeDc) return;
-    await Escape.grant(rider, context, release);
+    record(context, await Escape.grant(rider, context, release));
 }
 
 /**
@@ -1603,6 +1607,7 @@ async function applyEffect(rider, context) {
     }
 
     const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
+    record(context, created);
 
     // Whatever has to follow an effect's arrival — an Arm put into the hands that were just granted it.
     await RiderExtensions.afterEffect(rider, context, created);
@@ -1690,12 +1695,13 @@ async function applyPersistent(rider, context) {
     const scaled = perStep && steps > 0 ? growByStep(counted, perStep, steps) : counted;
     if (!scaled) return;
 
-    await inflictPersistent(context.actor, {
+    const persistent = await inflictPersistent(context.actor, {
         formula: scaled,
         damageType,
         dc: Number(rider.apply.dc) || 15,
         flags: riderFlags(rider, context),
     });
+    record(context, persistent);
 }
 
 /**
@@ -1726,7 +1732,8 @@ export async function inflictPersistent(actor, { formula, damageType = "bleed", 
     if (!source) return;
     source.system.persistent = { formula, damageType, dc };
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, flags);
-    await actor.createEmbeddedDocuments("Item", [source]);
+    const [created] = await actor.createEmbeddedDocuments("Item", [source]);
+    return created ?? null;
 }
 
 /**
@@ -2352,6 +2359,23 @@ function outcomeSuffix(context) {
  * A rider that genuinely wants the shorter window says `expiry: "turn-start"` for itself. None of the
  * shipped content did, which is what made this a silent default rather than a decision.
  */
+
+/** Note documents this pass created on its receipt (`context.created`), when there is a pass to note them on. */
+function record(context, ...documents) {
+    for (const document of documents.flat()) if (document?.id) context?.created?.push(document.id);
+}
+
+/**
+ * `Actor#increaseCondition`, and the condition it created if it created one.
+ *
+ * pf2e answers nothing useful, so the new item is the one with this slug that was not there before the
+ * call — narrower than diffing the whole sheet, which also caught other modules' items.
+ */
+async function increaseRecorded(actor, slug, options, context) {
+    const had = new Set(actor.itemTypes.condition.filter((c) => c.slug === slug).map((c) => c.id));
+    await actor.increaseCondition(slug, options);
+    record(context, actor.itemTypes.condition.filter((c) => c.slug === slug && !had.has(c.id)));
+}
 
 function durationData(duration) {
     return {

@@ -55,11 +55,14 @@ export const Encasement = {
         const conditions = [spec.conditions].flat().filter(Boolean);
         for (const slug of conditions) {
             const value = Number(spec.value) || undefined;
+            const had = new Set(target.itemTypes.condition.filter((c) => c.slug === slug).map((c) => c.id));
             await target.increaseCondition(slug, value ? { value } : {});
+            for (const c of target.itemTypes.condition) if (c.slug === slug && !had.has(c.id)) context.created?.push(c.id);
         }
 
         if (spec.escapeDc) {
-            await target.createEmbeddedDocuments("Item", [escapeAction(spec, hazard, context)]);
+            const [escape] = await target.createEmbeddedDocuments("Item", [escapeAction(spec, hazard, context)]);
+            if (escape) context.created?.push(escape.id);
         }
 
         await ChatMessage.create({
