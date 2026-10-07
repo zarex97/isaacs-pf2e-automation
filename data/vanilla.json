@@ -3193,6 +3193,55 @@
                 }
             ]
         },
+        "planar-tether": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.planar-tether.Tether",
+                        "rules": [],
+                        "tether": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.planar-tether.Tether",
+                        "rules": [],
+                        "tether": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.planar-tether.Tether",
+                        "rules": [],
+                        "tether": true
+                    }
+                }
+            ]
+        },
         "protection": {
             "castChoice": {
                 "flag": "extent",

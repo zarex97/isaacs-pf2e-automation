@@ -1383,4 +1383,10 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a hold's Escape names its rank when a spell or something magical holds", [holdOption({ type: "spell", rank: 3, system: { traits: { value: [] } } }), holdOption({ type: "action", system: { traits: { value: ["magical"] }, level: { value: 9 } } }), holdOption({ type: "action", system: { traits: { value: [] } } }), magicalRank(["escape:magical-rank:7"])], ["escape:magical-rank:3", "escape:magical-rank:5", null, 7]);
 }
 
+{
+    const { counteracts, tethers } = await import("../scripts/riders/tether.mjs");
+    check("a tether's counteract: rank +1 on a success, +3 on a critical, −1 on a failure", [counteracts("success", 4, 5), counteracts("success", 4, 6), counteracts("criticalSuccess", 4, 7), counteracts("failure", 4, 3), counteracts("criticalFailure", 4, 1)], [true, false, true, true, false]);
+    check("a tether answers teleportation and banishment, not a push", [tethers({ system: { traits: { value: ["teleportation"] } } }, "teleport"), tethers({ system: { traits: { value: ["air"] } } }, "teleport"), tethers(null, "banish")], [true, false, true]);
+}
+
 report("Automation tests");

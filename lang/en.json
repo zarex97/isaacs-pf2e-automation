@@ -287,6 +287,11 @@
             "Off": "{actor} took acid or fire damage: no regeneration this turn.",
             "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
         },
+        "Tether": {
+            "Check": "Counteract — {name}",
+            "Held": "{name} holds {actor} in place: {spell} is counteracted.",
+            "Slipped": "{name} fails to hold {actor}: {spell} goes ahead."
+        },
         "Unfettered": {
             "Label": "{name}"
         },
@@ -581,6 +586,9 @@
             },
             "moon-frenzy": {
                 "Shake": "Shake Off the Moon Frenzy"
+            },
+            "planar-tether": {
+                "Tether": "tethered"
             },
             "nudge-fate": {
                 "Nudge": "nudge fate"

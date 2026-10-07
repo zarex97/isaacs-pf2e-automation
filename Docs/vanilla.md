@@ -67,6 +67,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantasmal Calamity | 6 |  | crit. failure: save |  |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
+| Planar Tether | 4 |  | success: tethered (1 minutes); failure: tethered (10 minutes); crit. failure: tethered (1 hours) |  |
 | Protection | 1 |  | spell-effect-protection; protection emanation (1 minutes) |  |
 | Protector Tree | 1 | choose: 5-ft line, all, placed, no targets |  | a wall of squares, in 5-ft sections: AC 10, Hardness 0, 10 HP (+10 per rank), takes a Strike first for your allies beside it, 1 minutes |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
