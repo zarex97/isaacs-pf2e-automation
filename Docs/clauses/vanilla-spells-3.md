@@ -583,10 +583,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-83a | "granting the target a +1 status bonus to one attack roll, Perception check, saving throw, or skill check the target attempts before the duration ends" | +1 to one such roll before the caster's next turn | | ☐ | |
-| VS-83b | "The target chooses which roll to use the bonus on before rolling" | The bonus is a choice on the roll, not automatic | | ☐ | |
-| VS-83c | "If the target uses the bonus, the spell ends" | Used once, it's gone | | ☐ | |
-| VS-83d | "Either way, the target is then temporarily immune for 1 hour" | A second *Guidance* within the hour does nothing | | ☐ | |
+| VS-83a | "granting the target a +1 status bonus to one attack roll, Perception check, saving throw, or skill check the target attempts before the duration ends" | +1 to one such roll before the caster's next turn | pf2e's *Spell Effect: Guidance*: `FlatModifier` status +1 to attack, Perception, saves and skills, predicated on `guidance` | ✅ | Leo, Fortitude with the bonus chosen: **Guidance +1** among the modifiers (+24 → +25) |
+| VS-83b | "The target chooses which roll to use the bonus on before rolling" | The bonus is a choice on the roll, not automatic | The modifier is a toggle in pf2e's check dialog (its predicate is the choice) | ✅ | A Fortitude save with it not chosen: +24, and the effect **stayed** |
+| VS-83c | "If the target uses the bonus, the spell ends" | Used once, it's gone | pf2e's `removeAfterRoll: "if-enabled"` | ✅ | The save it was chosen for: *Spell Effect: Guidance* **gone** afterwards |
+| VS-83d | "Either way, the target is then temporarily immune for 1 hour" | A second *Guidance* within the hour does nothing | `content/vanilla/guidance.json`: pf2e's *Effect: Guidance Immunity* (1 hour) with the spell; every rider predicated on `rider:target:effect:effect-guidance-immunity`, a note when it holds | ✅ | Cast again on Leo within the hour: "The target is temporarily immune to Guidance: the spell does nothing" — no second effect. (The first content read `target:effect:…`, which a cast card's riders don't see; the second cast landed until it read `rider:target:effect:…`.) The immunity is given at the cast, as pf2e's own spell does, so its hour runs from the cast |
 
 ### VS-84 · Nudge Fate
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 72 |
-| ✅ | 244 |
+| ☐ not yet driven | 68 |
+| ✅ | 248 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

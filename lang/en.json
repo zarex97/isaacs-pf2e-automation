@@ -569,6 +569,9 @@
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
             },
+            "guidance": {
+                "AlreadyImmune": "The target is temporarily immune to Guidance: the spell does nothing."
+            },
             "protector-tree": {
                 "Tree": "Protector Tree",
                 "Ground": "protector tree"

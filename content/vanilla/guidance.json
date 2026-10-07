@@ -1,0 +1,38 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "not": "rider:target:effect:effect-guidance-immunity"
+                }
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.3qHKBDF7lrHw8jFK"
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "not": "rider:target:effect:effect-guidance-immunity"
+                }
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.3LyOkV25p7wA181H"
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                "rider:target:effect:effect-guidance-immunity"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.guidance.AlreadyImmune"
+            }
+        }
+    ]
+}
