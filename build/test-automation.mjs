@@ -899,6 +899,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         withCast([{ predicate: ["rider:damage:type:$cast:damageType"], apply: { type: "death", maxLevel: 7, maxLevelPerStep: 4 } }], { damageType: "cold" }, 1),
         [{ predicate: ["rider:damage:type:cold"], apply: { type: "death", maxLevel: 11 } }]);
     check("…and a formula that grows by its perStep — Fire Shield's 2d6, 3d6 at rank 6", withCast([{ apply: { type: "damage", formula: "2d6", perStep: "1d6" } }], {}, 1), [{ apply: { type: "damage", formula: "3d6" } }]);
+    check("a weapon ChoiceSet answered with the one held weapon — and left to pf2e without one", [preselected([{ key: "ChoiceSet", flag: "weapon" }], { weapon: "$held" }, null, {}, { held: "abc" })[0].selection, preselected([{ key: "ChoiceSet", flag: "weapon" }], { weapon: "$held" }, null, {})[0].selection], ["abc", undefined]);
     check("…or one named only by its roll option", preselected([{ key: "ChoiceSet", rollOption: "tangle-vine" }], { "tangle-vine": "$outcome" }, "success")[0].selection, "success");
     check("a pf2e ChoiceSet is answered from the save, leaving other rules alone", [preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[0].selection, preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[1], preselected(omen, { other: "x" }, "failure")[0].selection], ["critical-failure", omen[1], undefined]);
     check("a chosen compass point is a direction on the grid, y downwards", [compassVector("n"), compassVector("se"), compassVector("up")], [{ x: 0, y: -1 }, { x: 1, y: 1 }, null]);

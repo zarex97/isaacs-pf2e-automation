@@ -69,6 +69,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
+| Runic Weapon | 1 |  | spell-effect-runic-weapon |  |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |

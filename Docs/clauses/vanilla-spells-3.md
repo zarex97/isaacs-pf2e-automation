@@ -601,9 +601,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-85a | "The target becomes a +1 striking weapon , gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | The chosen weapon's Strikes: +1 to hit, two dice | | ☐ | |
-| VS-85b | "Heightened (6th) The weapon is +2 greater striking" | Rank 6: +2, three dice | | ☐ | |
-| VS-85c | "Heightened (9th) The weapon is +3 major striking" | Rank 9: +3, four dice | | ☐ | |
+| VS-85a | "The target becomes a +1 striking weapon , gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | The chosen weapon's Strikes: +1 to hit, two dice | pf2e's *Spell Effect: Runic Weapon* (`ItemAlteration` potency and striking), `atCastRank`; its weapon ChoiceSet answered `preselect: { weapon: "$held" }` — the target's one held weapon; with two, pf2e asks | ✅ | Leo holding a longsword: no prompt; its Strike **+0 → +1**, **1d8 → 2d8** (runes +1/striking). Holding a longsword and a dagger: pf2e's "Select a weapon" with both |
+| VS-85b | "Heightened (6th) The weapon is +2 greater striking" | Rank 6: +2, three dice | pf2e's alteration at level 6 | ✅ | Rank 6: **+2**, **3d8** |
+| VS-85c | "Heightened (9th) The weapon is +3 major striking" | Rank 9: +3, four dice | pf2e's alteration at level 9 | ✅ | Rank 9: **+3**, **4d8** |
 
 ### VS-86 · Infuse Vitality
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 64 |
-| ✅ | 252 |
+| ☐ not yet driven | 61 |
+| ✅ | 255 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

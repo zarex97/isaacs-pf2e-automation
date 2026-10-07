@@ -654,14 +654,16 @@ function areaLeftBy(originActor, item) {
  * An effect's ChoiceSets answered before it lands, so no dialog stops the rider. `preselect` maps a ChoiceSet's
  * `flag` to its answer; `""` is the save's degree as pf2e spells it (`critical-failure`).
  */
-export function preselected(rules, preselect, outcome, cast = {}) {
+export function preselected(rules, preselect, outcome, cast = {}, { held = null } = {}) {
     const degree = { criticalSuccess: "critical-success", success: "success", failure: "failure", criticalFailure: "critical-failure" }[outcome] ?? null;
     return (rules ?? []).map((rule) => {
         // Named by its `flag`, or — pf2e's *Tangle Vine* has none — by its `rollOption`.
         const key = [rule?.flag, rule?.rollOption].find((k) => k && k in preselect);
         if (rule?.key !== "ChoiceSet" || !key) return rule;
         // `"$cast"`: what the caster chose as the spell was cast — *Seal Fate*'s damage type.
-        const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key];
+        // `"$held"`: the creature's one held weapon — *Runic Weapon*'s "1 weapon … wielded by a willing creature"; with
+        // two or none, pf2e asks.
+        const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key] === "$held" ? held : preselect[key];
         return answer === null ? rule : { ...rule, selection: choiceValue(rule, answer) };
     });
 }
@@ -1931,7 +1933,10 @@ async function applyEffect(rider, context) {
     applySubstitutions(source, rider.apply.substitutions, context);
     // A pf2e effect that asks — *Ill Omen*'s "failure or critical failure?" — is told instead, from the outcome.
     const cast = castChoicesOf(context);
-    if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome, cast);
+    if (rider.apply.preselect) {
+        const held = heldWeapons(context.actor);
+        source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome, cast, { held: held.length === 1 ? held[0].id : null });
+    }
     // *Heroism*'s +1 / +2 / +3 reads `@item.level` — the effect's own level, which pf2e sets to the spell's rank
     // when the effect is taken from a cast. Taken from the compendium, it is whatever the effect was saved at.
     // A pf2e effect that should take riders with it — *Mirror Image*'s images answer the attacks on their caster.
