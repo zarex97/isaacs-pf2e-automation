@@ -15,6 +15,7 @@ import { Affliction } from "./riders/affliction.mjs";
 import { Unobserved } from "./riders/unobserved.mjs";
 import { SetAside } from "./riders/set-aside.mjs";
 import { Fall } from "./riders/fall.mjs";
+import { Forbids } from "./riders/forbids.mjs";
 import { CastZones } from "./targeting/zones.mjs";
 import { Repels } from "./targeting/repels.mjs";
 import { Barrier } from "./targeting/barrier.mjs";
@@ -90,6 +91,7 @@ export const RIDER_INIT = [
     ["a creature one cannot observe", () => Unobserved.register()],
     ["what a near-miss counteract set aside, put back", () => SetAside.registerHooks()],
     ["a creature kept on the ground", () => Fall.registerHooks()],
+    ["what a form forbids", () => Forbids.register()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],

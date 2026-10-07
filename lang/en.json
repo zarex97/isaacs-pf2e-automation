@@ -217,6 +217,10 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Forbids": {
+            "Refused": "{actor} can't use {name}: {effect} forbids it.",
+            "Attack": "an attack"
+        },
         "Fall": {
             "Fell": "{actor} falls {feet} feet, safely; still {left} feet up.",
             "Landed": "{actor} falls {feet} feet to the ground, safely.",

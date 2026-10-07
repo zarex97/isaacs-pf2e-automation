@@ -513,11 +513,11 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-76a | "It loses any item bonus to AC and all other effects and bonuses from armor, and it uses its proficiency modifier for unarmored defense" | AC from unarmored proficiency, armor ignored | | ☐ | |
-| VS-76b | "It gains resistance 8 to physical damage and is immune to precision damage" | Resistance 8 physical, precision immunity | | ☐ | |
-| VS-76c | "It can't cast spells, activate items, or use actions that have the attack or manipulate trait" | Its casts and attacks are refused | | ☐ | |
-| VS-76d | "It gains a fly Speed of 10 feet" | Fly 10 ft | | ☐ | |
-| VS-76e | "The target can Dismiss the spell" | Dismissing it ends the form | | ☐ | |
+| VS-76a | "It loses any item bonus to AC and all other effects and bonuses from armor, and it uses its proficiency modifier for unarmored defense" | AC from unarmored proficiency, armor ignored | pf2e's *Spell Effect: Vapor Form*: `AdjustModifier` suppresses item bonuses to AC | ⚠️ | The effect suppresses any item bonus to AC (pf2e's rule; Aries, unarmored, stayed at 34). **Gap:** an armored creature keeps its armor's proficiency and other armor effects; swapping them for its unarmored defense is the table's |
+| VS-76b | "It gains resistance 8 to physical damage and is immune to precision damage" | Resistance 8 physical, precision immunity | pf2e's effect: `Resistance` physical 8, `Immunity` precision | ✅ | Aries: **resistance physical 8**, **immune precision** |
+| VS-76c | "It can't cast spells, activate items, or use actions that have the attack or manipulate trait" | Its casts and attacks are refused | `forbids: [cast, attack, manipulate]` (`scripts/riders/forbids.mjs`): a cast stage, a check gate, the action wrap | ✅ | In vapor form: casting *Fly* — refused, nothing posted; a Strike — refused; an action with the manipulate trait — refused. After the form ended, the same Strike rolled |
+| VS-76d | "It gains a fly Speed of 10 feet" | Fly 10 ft | pf2e's effect: `BaseSpeed` fly 10 | ✅ | **fly 10** |
+| VS-76e | "The target can Dismiss the spell" | Dismissing it ends the form | `dismissable: "holder"`: the Dismiss given to the target | ✅ | Aries (the target) got **Dismiss Drive: Vapor Form**; using it: "Aries dismisses Spell Effect: Vapor Form." — resistance, immunity and fly gone |
 
 ## Batch 7 — Protection
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 102 |
-| ✅ | 215 |
-| ⚠️ | 8 |
+| ☐ not yet driven | 97 |
+| ✅ | 219 |
+| ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

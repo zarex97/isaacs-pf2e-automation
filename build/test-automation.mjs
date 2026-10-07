@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.forbids} what a form forbids`, `${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];

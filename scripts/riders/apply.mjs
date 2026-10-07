@@ -1938,6 +1938,8 @@ async function applyEffect(rider, context) {
     }
     // *Shield*: the spell ends when its shield blocks (`shield-block.mjs`).
     if (rider.apply.endsOnBlock) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnBlock: rider.apply.endsOnBlock } });
+    // What the form forbids its holder — *Vapor Form* (`forbids.mjs`).
+    if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids } });
     const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
@@ -1963,8 +1965,12 @@ async function applyEffect(rider, context) {
 
     const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
     record(context, created);
-    // "You can Dismiss the spell" — *Animal Form*: its caster is given the action that ends it.
-    if (created && rider.apply.dismissable && context.originActor) await Dismiss.grantForEffect(context.originActor, castItemOf(context) ?? context.item, created);
+    // "You can Dismiss the spell" — *Animal Form*: its caster is given the action that ends it; "The target can Dismiss
+    // the spell" — *Vapor Form*: its holder (`dismissable: "holder"`).
+    if (created && rider.apply.dismissable) {
+        const who = rider.apply.dismissable === "holder" ? context.actor : context.originActor;
+        if (who) await Dismiss.grantForEffect(who, castItemOf(context) ?? context.item, created);
+    }
     // …or an action that does something with it (`origin-action.mjs`) — *Levitate*'s Sustain to move it.
     if (created && rider.apply.originAction) {
         await OriginAction.grant(created, rider.apply.originAction, context, {
