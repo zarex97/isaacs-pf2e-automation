@@ -65,7 +65,7 @@ and `npm test` fails if this table and that switch disagree.
 | `death` | Applies dying, or kills outright — whom it may kill is the **Automate death effects** setting. |
 | `banish` | Removes a creature from the scene, and brings it back. |
 | `teleport` | Moves along the caster→target line, grid-snapped and clamped to the scene. `measure: "from-origin"` makes it a destination rather than a delta. `stopsAtWalls` makes it a push: it stops short of the first wall that blocks movement. `direction: "choose"` asks which way — a compass point, away or toward. |
-| `encasement` | Traps a creature in a hazard with its own escape DC. |
+| `encasement` | Traps a creature in a hazard with its own escape DC. `ac` may be a DC word (`"spell"`); `hpPerStepInterval` grows its Hit Points every so many ranks; `atOnce` makes it break only to one blow of its Hit Points or more; `withArea` frees the creature when the cast's lingering area ends; `onePerTarget` keeps one hold per spell per creature, adding the new result's conditions to it (*Slither*). |
 | `escape` | Offers an escape attempt against something holding the target. |
 | `expire` | Takes a named effect back off before its own timer would. |
 | `sustain` | The *Sustain* action an effect with `sustain` grants; not written by hand. |

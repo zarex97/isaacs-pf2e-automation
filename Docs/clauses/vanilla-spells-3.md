@@ -210,15 +210,15 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-50a | "it's Grabbed or Restrained depending on its Reflex save" | Each creature in the 20-ft burst at the cast saves | | ☐ | |
-| VS-50b | "A creature that ends its turn in the area must also attempt this save, even if it's already grabbed or restrained by the snakes" | A save at the end of every turn inside, grabbed or not | | ☐ | |
-| VS-50c | "Failure The creature takes full damage and is grabbed by a snake" | Piercing and persistent poison damage, and grabbed | | ☐ | |
-| VS-50d | "As failure, but the creature takes double damage and is restrained by a snake" | Double damage, restrained | | ☐ | |
-| VS-50e | "The snakes' Escape DC is equal to your spell DC" | An Escape against the caster's spell DC frees it | | ☐ | |
-| VS-50f | "A creature can attack a snake to release the creature" | A snake can be struck (AC = spell DC); 12 damage at once destroys it and frees its creature | | ☐ | |
-| VS-50g | "Success The creature is unaffected" | Nothing | | ☐ | |
-| VS-50h | "You can Dismiss the spell" | Dismissing it frees everyone | | ☐ | |
-| VS-50i | "The persistent poison damage increases by 1d6 and snake HP increases by 6" | Rank 7: 2d6 persistent, 18 to destroy a snake | | ☐ | |
+| VS-50a | "it's Grabbed or Restrained depending on its Reflex save" | Each creature in the 20-ft burst at the cast saves | `content/vanilla/slither.json` (riders by the save's outcome) | ✅ | Aries cast it (rank 5) on a 20-ft burst at (4100, 1500), placed through Foundry's placement: Capricorn and ZZ Victim inside were targeted, Leo outside wasn't. Each rolled the card's Reflex save against DC 34 (ZZ Victim critical failure, Capricorn failure) |
+| VS-50b | "A creature that ends its turn in the area must also attempt this save, even if it's already grabbed or restrained by the snakes" | A save at the end of every turn inside, grabbed or not | lingering `save` on `tokenTurnEnd`; `onePerTarget` | ✅ | At the end of their turns inside: Capricorn (freed by then) failure → held again; ZZ Victim, already restrained, critical failure → damaged again, still **one** snake on him |
+| VS-50c | "Failure The creature takes full damage and is grabbed by a snake" | Piercing and persistent poison damage, and grabbed | failure riders: 3d6 piercing, 1d6 persistent poison, a snake that grabs | ✅ | Capricorn: 13 piercing (200 → 187), persistent poison **1d6**, **grabbed**, an Escape action, and a *shadow snake* hazard holding him |
+| VS-50d | "As failure, but the creature takes double damage and is restrained by a snake" | Double damage, restrained | critical failure riders: damage ×2, 2d6 persistent, a snake that restrains | ✅ | ZZ Victim: 20 piercing, persistent poison **2d6**, **restrained**, and its own snake |
+| VS-50e | "The snakes' Escape DC is equal to your spell DC" | An Escape against the caster's spell DC frees it | `encasement` with `escapeDc: "spell"` | ✅ | ZZ Victim's *Escape shadow snake*: Athletics against **DC 34** — the spell DC — critical failure, "does not break free", still restrained |
+| VS-50f | "A creature can attack a snake to release the creature" | A snake can be struck (AC = spell DC); 12 damage at once destroys it and frees its creature | `encasement` with `ac: "spell"`, `hp: 12`, `atOnce` | ✅ | Each snake: **AC 34** (the spell DC), 12 HP. 11 slashing on Capricorn's snake: back to **12** — no harm done. 12 at once: destroyed, and Capricorn released (no grabbed, no Escape left) |
+| VS-50g | "Success The creature is unaffected" | Nothing | no rider on success | ✅ | The success and critical-success branches carry nothing; Leo, outside the area, was never asked. (Both creatures inside failed or worse on every roll of the drive.) |
+| VS-50h | "You can Dismiss the spell" | Dismissing it frees everyone | `dismiss: true`; the snakes `withArea` | ✅ | *Dismiss Drive: Slither*: "Aries dismisses Slither.", then "ZZ Victim breaks free of shadow snake.", "Capricorn breaks free of shadow snake." — the snakes, their holds and their Escape actions gone |
+| VS-50i | "The persistent poison damage increases by 1d6 and snake HP increases by 6" | Rank 7: 2d6 persistent, 18 to destroy a snake | `perStep` with `perStepInterval: 2`; `hpPerStep: 6`, `hpPerStepInterval: 2` | ✅ | Cast at **rank 7**: ZZ Victim's critical failure brought **4d6** persistent poison (2 × 2d6) and a snake of **18** HP |
 
 ### VS-51 · Tangling Creepers
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 263 |
-| ✅ | 59 |
+| ☐ not yet driven | 254 |
+| ✅ | 68 |
 | ⚠️ | 3 |
 | ❌ | 0 |
 | 🔧 | 0 |

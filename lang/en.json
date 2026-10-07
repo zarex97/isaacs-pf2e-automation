@@ -463,6 +463,10 @@
             "sanctuary": {
                 "Ward": "sanctuary"
             },
+            "slither": {
+                "Snakes": "Slither",
+                "Snake": "shadow snake"
+            },
             "hypnotize": {
                 "Cloud": "Hypnotize",
                 "Fascinated": "fascinated by the cloud",
