@@ -157,14 +157,14 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-46a | "you can make the area any radius you choose, up to 40 feet" | The cast asks for a radius from 5 to 40 ft; the emanation follows the caster | | ☐ | |
-| VS-46b | "A creature must attempt a Will save if it's within the area when you Cast the Spell or as soon as it enters the area while the spell is in effect" | Creatures inside at the cast save; one that enters later saves on entering | | ☐ | |
-| VS-46c | "Once a creature has attempted the save, it uses the same result for that casting of repulsion" | Leaving and coming back asks no new save | | ☐ | |
-| VS-46d | "Any restrictions on a creature's movement apply only if it voluntarily moves toward you" | Moving sideways or away is never stopped | | ☐ | |
-| VS-46e | "if you move closer to a creature, it doesn't then need to move away" | The caster walking up to a creature moves nobody | | ☐ | |
-| VS-46f | "Success The creature treats each square in the area as difficult terrain when moving closer to you" | A step toward the caster inside the aura costs double | | ☐ | |
-| VS-46g | "Failure The creature can't move closer to you within the area" | A move that would end nearer the caster inside the aura is stopped | | ☐ | |
-| VS-46h | "Critical Success The creature's movement is not restricted" | Nothing | | ☐ | |
+| VS-46a | "you can make the area any radius you choose, up to 40 feet" | The cast asks for a radius from 5 to 40 ft; the emanation follows the caster | `content/vanilla/repulsion.json` (`areaTargetingShapes`: emanations of 5 to 40 ft; a lingering area with `followsCaster` and `repels`) | ✅ | Aries cast it at rank 6: the cast offered **5-foot … 40-foot emanation**, eight choices; 20 ft made a 20-ft emanation Region on Aries (radius 400 px). Walking Aries 5 ft east moved the aura's base with him (3500 → 3600) |
+| VS-46b | "A creature must attempt a Will save if it's within the area when you Cast the Spell or as soon as it enters the area while the spell is in effect" | Creatures inside at the cast save; one that enters later saves on entering | `Repels.save` (at the creation for everyone inside; on `tokenEnter` after) | ✅ | At the cast, ZZ Victim and Capricorn — inside — rolled Will against DC 34 (critical failure, failure) and the results were kept on the aura; Leo, outside, rolled nothing. Leo then walked in: **one** Will save on entering (failure) |
+| VS-46c | "Once a creature has attempted the save, it uses the same result for that casting of repulsion" | Leaving and coming back asks no new save | `repelled` (kept per creature, per casting) | ✅ | Leo walked out and back in: **no** second save (Leo's saves during the drive: 1) |
+| VS-46d | "Any restrictions on a creature's movement apply only if it voluntarily moves toward you" | Moving sideways or away is never stopped | `movesCloser`, `barsApproach` tests; `preMoveToken` passes `forcedMovement` | ✅ | ZZ Victim (critical failure) 15 ft from Aries: a step away (3800 → 3900) and a step sideways (1500 → 1600, ending farther off) were allowed; only steps ending nearer Aries inside the aura were refused. A move closer marked `forcedMovement` — as the module's own pushes, pulls and teleports are — went through (3900 → 3700) |
+| VS-46e | "if you move closer to a creature, it doesn't then need to move away" | The caster walking up to a creature moves nobody | nothing moves anyone but the mover; `followsCaster` | ✅ | Aries walked 5 ft toward ZZ Victim, who had failed: ZZ Victim stayed at (3700, 1600); only the aura moved, with Aries |
+| VS-46f | "Success The creature treats each square in the area as difficult terrain when moving closer to you" | A step toward the caster inside the aura costs double | `Repels.register` — a stage on the movement cost (`scripts/lib/movement-cost.mjs`, one wrap on `Token#_getMovementCostFunction`) | ✅ | The Ghoul (temporarily Will +29) succeeded. Its moves inside the aura, priced by Foundry's own path measure: one square **closer** costs **10** ft and two cost **20**; one square **away** costs **5**, one **sideways** 5. Found on the way: a Region's terrain behavior is priced by where a step lands, never by which way it goes — so the price is set per step, where the direction is known |
+| VS-46g | "Failure The creature can't move closer to you within the area" | A move that would end nearer the caster inside the aura is stopped | `preMoveToken` (on the mover's own client) | ✅ | ZZ Victim, then Leo (both failures), trying to step closer to Aries inside the aura: the move was refused — "ZZ Victim can't move closer to Aries within Repulsion.", "Leo can't move closer to Aries within Repulsion." — and the token stayed put |
+| VS-46h | "Critical Success The creature's movement is not restricted" | Nothing | `barsApproach` (a critical success bars nothing); the cost stage only touches a success | ✅ | The Ghoul (temporarily Will +40) critically succeeded: a step closer cost **5** and the move went through (3100 → 3200) |
 
 ## Batch 2 — Walls and grasping ground
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 293 |
-| ✅ | 31 |
+| ☐ not yet driven | 285 |
+| ✅ | 39 |
 | ⚠️ | 1 |
 | ❌ | 0 |
 | 🔧 | 0 |

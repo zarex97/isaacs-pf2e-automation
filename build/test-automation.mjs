@@ -924,6 +924,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { tooClose } = await import("../scripts/targeting/index.mjs");
     const { withinOfAny } = await import("../scripts/targeting/zones.mjs");
     const { pullSteps, pullFeet } = await import("../scripts/riders/pull.mjs");
+    const { movesCloser, barsApproach, centreAt } = await import("../scripts/targeting/repels.mjs");
+    check("closing in is a move that ends nearer the caster; sideways and away are not", [movesCloser({ x: 500, y: 0 }, { x: 400, y: 0 }, { x: 0, y: 0 }), movesCloser({ x: 500, y: 0 }, { x: 500, y: 100 }, { x: 0, y: 0 }), movesCloser({ x: 400, y: 0 }, { x: 500, y: 0 }, { x: 0, y: 0 })], [true, false, false]);
+    check("a failure or worse bars it; a success or better does not", ["criticalFailure", "failure", "success", "criticalSuccess", undefined].map(barsApproach), [true, true, false, false, false]);
+    check("a token's centre at a position", centreAt({ x: 100, y: 200 }, { width: 2, height: 1 }, 100), { x: 200, y: 250 });
     const one = { w: 100, h: 100 };
     check("a pull walks square by square at the centre and never past it", [pullSteps({ x: 0, y: 0 }, one, { x: 550, y: 50 }, 3, 100), pullSteps({ x: 0, y: 0 }, one, { x: 250, y: 50 }, 6, 100), pullSteps({ x: 0, y: 0 }, one, { x: 350, y: 350 }, 6, 100)],
         [[{ x: 100, y: 0 }, { x: 200, y: 0 }, { x: 300, y: 0 }], [{ x: 100, y: 0 }, { x: 200, y: 0 }], [{ x: 100, y: 100 }, { x: 200, y: 200 }, { x: 300, y: 300 }]]);
@@ -1130,6 +1134,7 @@ const sources = mjsUnder(SCRIPTS).map((file) => ({ file, rel: path.relative(ROOT
         "CONFIG.PF2E.Item.documentClasses.action.prototype.toMessage",
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.cast",
         "CONFIG.Token.documentClass.prototype._prepareDetectionModes",
+        "CONFIG.Token.objectClass.prototype._getMovementCostFunction",
         "game.pf2e.Check.rerollFromMessage",
         "game.pf2e.Check.roll",
     ]);

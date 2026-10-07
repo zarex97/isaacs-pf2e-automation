@@ -2413,7 +2413,7 @@ async function undo(actor, receipt) {
     // failure into a success has to walk the creature back to where it was standing.
     for (const move of receipt.moves ?? []) {
         const token = await fromUuid(move.tokenUuid).catch(() => null);
-        if (token?.documentName === "Token") await token.update({ x: move.x, y: move.y }, { animate: false });
+        if (token?.documentName === "Token") await token.update({ x: move.x, y: move.y }, { animate: false, forcedMovement: true });
     }
 }
 

@@ -1718,6 +1718,57 @@
                 }
             ]
         },
+        "repulsion": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "emanation",
+                    "value": 5
+                },
+                {
+                    "type": "emanation",
+                    "value": 10
+                },
+                {
+                    "type": "emanation",
+                    "value": 15
+                },
+                {
+                    "type": "emanation",
+                    "value": 20
+                },
+                {
+                    "type": "emanation",
+                    "value": 25
+                },
+                {
+                    "type": "emanation",
+                    "value": 30
+                },
+                {
+                    "type": "emanation",
+                    "value": 35
+                },
+                {
+                    "type": "emanation",
+                    "value": 40
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.repulsion.Aura",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "followsCaster": true,
+                "repels": {
+                    "statistic": "will"
+                }
+            }
+        },
         "sanctuary": {
             "riders": [
                 {

@@ -92,7 +92,7 @@ async function resolvePull(rider, context, centre) {
         }
         if (at.x === plan.token.x && at.y === plan.token.y) continue;
         const travelled = Math.round((Math.max(Math.abs(at.x - plan.token.x), Math.abs(at.y - plan.token.y)) / grid) * (scene.grid.distance || 5));
-        await plan.token.update({ x: at.x, y: at.y }, { animate: false });
+        await plan.token.update({ x: at.x, y: at.y }, { animate: false, forcedMovement: true });
         moved.push(t("Pull.Moved", { name: plan.token.name, feet: travelled, wanted: plan.feet }));
     }
     if (moved.length > 0) {

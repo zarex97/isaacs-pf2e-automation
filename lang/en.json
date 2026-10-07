@@ -176,6 +176,9 @@
             "Bolted": "a bolt falls on {name}",
             "NoBolt": "no bolt"
         },
+        "Repels": {
+            "Barred": "{name} can't move closer to {caster} within {area}."
+        },
         "Pull": {
             "Moved": "{name} is pulled {feet} ft toward the centre (of {wanted})."
         },
@@ -450,6 +453,9 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "repulsion": {
+                "Aura": "Repulsion"
             },
             "falling-stars": {
                 "Asteroids": "Asteroids (fire)",

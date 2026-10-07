@@ -11,6 +11,7 @@ import { Dismiss } from "../riders/dismiss.mjs";
 import { RiderExtensions } from "../riders/extensions.mjs";
 import { combatOf } from "../lib/combat.mjs";
 import { Relay } from "../riders/relay.mjs";
+import { Repels } from "./repels.mjs";
 
 export const FLAG = "lingering";
 
@@ -189,6 +190,10 @@ export const Lingering = {
                 system: { role: "inside", events: ["tokenEnter", "tokenExit"] },
             });
         }
+        // *Repulsion*: a Will save on entering, once; what the result does to moving closer is `repels.mjs`'s.
+        if (spec.repels) {
+            behaviors.push({ type: BEHAVIOR_TYPE, name: spec.name ?? config.item.name, system: { events: ["tokenEnter"] } });
+        }
         // A patch of ground that only glows still needs somewhere to record when it stops. *Lightning
         // Crown*'s pillars carry no behavior at all — they shed light and block sight, which are a light
         // source and a set of walls rather than anything a Region does — so the Region here is the thing
@@ -215,6 +220,8 @@ export const Lingering = {
                             followsCaster: spec.followsCaster === true,
                             drifts: spec.drifts ?? null,
                             castId,
+                            repels: spec.repels ?? null,
+                            repelled: {},
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
                             sustain: spec.sustain ? scaledSustain(spec.sustain, config.steps ?? 0) : null,
                             // Who the cast itself already reached: a Sustain's "not yet affected" leaves them be.
@@ -240,6 +247,12 @@ export const Lingering = {
         ]);
         if (created && spec.sustain && first) await Sustain.grantForRegion(config.item?.actor, config.item, created, spec.sustain);
         if (created && spec.dismiss && first) await Dismiss.grantForRegion(config.item?.actor, config.item, created);
+        // "Within the area when you Cast the Spell": everyone already inside saves now. Foundry works out who is
+        // inside once the Region is saved.
+        if (created && spec.repels) {
+            await new Promise((resolve) => setTimeout(resolve, 250));
+            for (const token of created.tokens ?? []) await Repels.save(created, token);
+        }
         return created ?? null;
     },
 
@@ -780,6 +793,10 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         const region = this.parent?.region ?? this.parent?.parent;
         if (this.role === "inside") return Inside.handle(event, region);
+        if (flagOf(region, FLAG)?.repels) {
+            if (event.name === CONST.REGION_EVENTS.TOKEN_ENTER) await Repels.save(region, event.data?.token);
+            return;
+        }
         // Out of the area, out of what it does while you are in it — *Web*'s penalty to Speeds.
         if (event.name === CONST.REGION_EVENTS.TOKEN_EXIT) return Inside.leave(region, event.data?.token);
         const payload = flagOf(region, FLAG);

@@ -80,6 +80,7 @@ export function docs(built, index, en) {
             l.replacesPrevious ? "ends your previous one" : null,
             l.until === "originTurnStart" ? "until your next turn" : null,
             l.followsCaster ? "moves with you" : null,
+            l.repels ? `repels: a ${l.repels.statistic ?? "will"} save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in` : null,
             l.drifts ? `drifts ${l.drifts.feet} ft away from you each round` : null,
             l.dismiss ? "Dismiss" : null,
             l.sustain?.bolt ? `bolt: ${l.sustain.bolt.formula} ${l.sustain.bolt.type ?? ""} on a creature in the storm (basic ${l.sustain.bolt.save ?? "reflex"}), at the cast and on each Sustain`.replace(/\s+/g, " ") : null,
@@ -174,6 +175,7 @@ export function problemsWith(slug, entry, ctx) {
             if (spec?.until !== undefined && spec.until !== "originTurnStart") at(`${where} lingering.until`.trim(), "originTurnStart or absent");
             if (spec?.followsCaster !== undefined && spec.followsCaster !== true) at(`${where} lingering.followsCaster`.trim(), "true or absent");
             if (spec?.drifts !== undefined && !(Number(spec.drifts?.feet) > 0)) at(`${where} lingering.drifts`.trim(), "{ feet } it moves each round");
+            if (spec?.repels !== undefined && (typeof spec.repels !== "object" || !spec.repels)) at(`${where} lingering.repels`.trim(), "{ statistic }");
             if (spec?.dismiss !== undefined && spec.dismiss !== true) at(`${where} lingering.dismiss`.trim(), "true or absent");
             if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0) && !spec.sustain?.bolt?.formula) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
             if (spec?.sustain?.move && spec.sustain.damage && !spec.sustain.damage.formula) at(`${where} lingering.sustain.damage`.trim(), "a formula");

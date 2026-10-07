@@ -46,6 +46,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
+| Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
