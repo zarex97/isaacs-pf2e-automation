@@ -1,0 +1,19 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "condition",
+                "slug": "dying",
+                "remove": true
+            }
+        },
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "condition",
+                "slug": "unconscious"
+            }
+        }
+    ]
+}

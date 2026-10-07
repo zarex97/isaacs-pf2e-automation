@@ -1614,7 +1614,8 @@ async function applyCondition(rider, context) {
     if (rider.apply.remove === true) {
         const held = context.actor?.itemTypes?.condition?.find((c) => c.slug === slug && c.active);
         if (!held) return;
-        await context.actor.decreaseCondition(slug, { forceRemove: true });
+        if (slug === "dying") await loseDying(context.actor, context);
+        else await context.actor.decreaseCondition(slug, { forceRemove: true });
         context.notes.push(t("Condition.Removed", { actor: context.actor.name, slug }));
         return;
     }
@@ -2596,9 +2597,16 @@ function triggerSide(context) {
     return [origin.isAllyOf(other) ? "rider:trigger:ally" : "rider:trigger:enemy", ...mode];
 }
 
+/** "Whenever you lose the dying condition, you gain the wounded condition, or increase its value by 1." */
+export async function loseDying(actor, context) {
+    if (!actor?.hasCondition?.("dying")) return;
+    await actor.decreaseCondition("dying", { forceRemove: true });
+    await increaseRecorded(actor, "wounded", {}, context);
+}
+
 /** Back from the brink: no longer dying, dead or defeated; awake if it has Hit Points again. */
 async function revive(actor, context) {
-    if (actor.hasCondition?.("dying")) await actor.decreaseCondition("dying", { forceRemove: true });
+    await loseDying(actor, context);
     if (actor.statuses?.has?.("dead")) await actor.toggleStatusEffect("dead", { active: false, overlay: true });
     if ((actor.hitPoints?.value ?? 0) > 0 && actor.hasCondition?.("unconscious")) await actor.decreaseCondition("unconscious", { forceRemove: true });
     const combatant = (context.target?.document ?? context.target)?.combatant;

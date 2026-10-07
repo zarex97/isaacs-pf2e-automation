@@ -423,8 +423,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-68a | "The target loses the Dying condition" | Dying gone (and wounded rises, as losing dying always does) | | ☐ | |
-| VS-68b | "though it remains Unconscious at 0 Hit Points" | Still unconscious, still at 0 HP | | ☐ | |
+| VS-68a | "The target loses the Dying condition" | Dying gone (and wounded rises, as losing dying always does) | `content/vanilla/stabilize.json`: `condition` `dying` `remove: true` — `loseDying` raises wounded | ✅ | Leo at 0 HP, dying 2: "Leo is no longer dying." — dying gone, **wounded 1**. Found on the way: taking dying off took neither wounded on (the rule: losing dying always raises it) nor left the unconscious pf2e's dying had granted |
+| VS-68b | "though it remains Unconscious at 0 Hit Points" | Still unconscious, still at 0 HP | an `unconscious` rider after the removal | ✅ | Leo stayed **unconscious** (blinded and prone with it) at **0 HP** |
 
 ### VS-69 · Sound Body
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 147 |
-| ✅ | 170 |
+| ☐ not yet driven | 145 |
+| ✅ | 172 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |
