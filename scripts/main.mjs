@@ -12,6 +12,7 @@ import { SpellShield } from "./riders/spell-shield.mjs";
 import { ShareDamage } from "./riders/share-damage.mjs";
 import { Nudge } from "./riders/nudge.mjs";
 import { ConditionFloor } from "./riders/condition-floor.mjs";
+import { Unfettered } from "./riders/unfettered.mjs";
 import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
 import { OriginAction } from "./riders/origin-action.mjs";
@@ -65,6 +66,7 @@ export const INIT = [
     ["damage shared with a caster", () => { ShareDamage.register(); ShareDamage.registerHooks(); }],
     ["a nudge after the die falls", () => Nudge.register()],
     ["a condition held at a value", () => ConditionFloor.registerHooks()],
+    ["an escape unfettered movement makes", () => Unfettered.register()],
     ["fast healing and regeneration, applied", () => FastHealing.registerHooks()],
     // Not awaited: nothing reads the table before a cast, and a failed fetch leaves vanilla content as it was.
     ["the vanilla table", () => void Vanilla.load()],

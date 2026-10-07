@@ -95,6 +95,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Telekinetic Maneuver | 2 |  | choice |  |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
+| Unfettered Movement | 4 |  | spell-effect-unfettered-movement |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
 | Vapor Form | 4 |  | spell-effect-vapor-form |  |
 | Vision of Death | 4 |  | success: 8d6 mental; success: death; success: frightened 1; failure: 8d6 mental; failure: death; failure: frightened 2; crit. failure: 8d6 mental; crit. failure: death; crit. failure: frightened 4; crit. failure: fleeing (no end) |  |

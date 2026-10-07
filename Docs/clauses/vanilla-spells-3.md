@@ -640,8 +640,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-89a | "the target ignores effects that would give them a circumstance penalty to Speed" | Circumstance penalties to its Speed don't apply | | ☐ | |
-| VS-89b | "When they attempt to Escape an effect that has them Immobilized, Grabbed, or Restrained, they automatically succeed unless the effect is magical and of a higher rank than the unfettered movement spell" | Its Escape succeeds without a roll, unless the hold is magic of a higher rank | | ☐ | |
+| VS-89a | "the target ignores effects that would give them a circumstance penalty to Speed" | Circumstance penalties to its Speed don't apply | pf2e's *Spell Effect: Unfettered Movement* (`AdjustModifier` suppressing circumstance penalties on `land-speed`); `addRules`: the same on `all-speeds` | ✅ | Leo with a −10 circumstance penalty to every Speed: land 15, fly 10. After the spell: **land 25, fly 20** |
+| VS-89b | "When they attempt to Escape an effect that has them Immobilized, Grabbed, or Restrained, they automatically succeed unless the effect is magical and of a higher rank than the unfettered movement spell" | Its Escape succeeds without a roll, unless the hold is magic of a higher rank | `unfettered` (`scripts/riders/unfettered.mjs`): a check stage raises a failed `action:escape` check to a success unless it carries `escape:magical-rank:<n>` above the cast's rank; this module's Escape adds `action:escape` and the holding spell's rank (`holdOption`) | ✅ | An Athletics check with `action:escape`, 25 vs DC 45: **critical failure → success**; with a rank-4 magical hold, success; with a rank-9 one, **stays a critical failure**; without `action:escape`, untouched. Tangle Vine (a cantrip, rank 10 from a level-20 caster) on Leo with Unfettered at rank 4: Leo's granted Escape critically failed and **held** (the hold is the higher rank); with Unfettered at rank 10: "Leo breaks free of Drive: Tangle Vine" — **critical failure → success**, the effect gone |
 
 ### VS-90 · Planar Tether
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 48 |
-| ✅ | 267 |
+| ☐ not yet driven | 46 |
+| ✅ | 269 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |

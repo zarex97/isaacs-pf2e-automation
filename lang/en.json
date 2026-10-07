@@ -287,6 +287,9 @@
             "Off": "{actor} took acid or fire damage: no regeneration this turn.",
             "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
         },
+        "Unfettered": {
+            "Label": "{name}"
+        },
         "Floor": {
             "Held": "{actor}'s {name} can't go below {value} while {effect} lasts."
         },

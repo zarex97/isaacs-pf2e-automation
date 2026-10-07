@@ -1377,4 +1377,10 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a lowered condition is held at its floor", [clamped(0, 1), clamped(1, 1), clamped(2, 1)], [1, 1, 2]);
 }
 
+{
+    const { freesFrom, holdOption, magicalRank } = await import("../scripts/riders/unfettered.mjs");
+    check("an unfettered Escape: any grab, and a magical hold no higher than the spell", [freesFrom(["action:escape"], 4), freesFrom(["action:escape", "escape:magical-rank:4"], 4), freesFrom(["action:escape", "escape:magical-rank:5"], 4), freesFrom(["action:stride"], 4)], [true, true, false, false]);
+    check("a hold's Escape names its rank when a spell or something magical holds", [holdOption({ type: "spell", rank: 3, system: { traits: { value: [] } } }), holdOption({ type: "action", system: { traits: { value: ["magical"] }, level: { value: 9 } } }), holdOption({ type: "action", system: { traits: { value: [] } } }), magicalRank(["escape:magical-rank:7"])], ["escape:magical-rank:3", "escape:magical-rank:5", null, 7]);
+}
+
 report("Automation tests");
