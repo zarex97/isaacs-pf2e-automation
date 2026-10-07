@@ -414,10 +414,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-67a | "Trigger A living creature within range would die" | When a living creature within 60 ft would die, the caster is offered the reaction before it does | | ☐ | |
-| VS-67b | "You prevent the target from dying and restore 5d8 Hit Points to the target" | It lives, at 5d8 HP | | ☐ | |
-| VS-67c | "You can't use breath of life if the triggering effect was a death effect or an effect that leaves no remains, such as Disintegrate" | No offer for a death effect or *Disintegrate* | | ☐ | |
-| VS-67d | "The healing increases by 1d8" | Rank 7: 6d8 | | ☐ | |
+| VS-67a | "Trigger A living creature within range would die" | When a living creature within 60 ft would die, the caster is offered the reaction before it does | `creature-dying` event (`Sources.onWouldDie`; `wouldDie` test: a character at its dying maximum, anything else brought to 0), `range: 60`, `rider:trigger:mode:living`; a reaction whose nested `cast` (`trigger: true`) aims at the dying creature | ✅ | Capricorn's longsword took ZZ Victim (living, 35 feet from Aries) from 5 to 0: "Drive: Breath of Life can be used as a reaction." offered to Aries, before anything else was decided. The character half — dying at its maximum — is covered by the `wouldDie` test; the one character driven (Leo) holds at 1 HP by his own ability |
+| VS-67b | "You prevent the target from dying and restore 5d8 Hit Points to the target" | It lives, at 5d8 HP | the cast's `action-used` `heal` (`formula: "5d8"`) with `revive`: no longer dying, dead or defeated | ✅ | Using it cast *Breath of Life* at ZZ Victim: "ZZ Victim regains 27 Hit Points" (5d8) — up from 0, not dead |
+| VS-67c | "You can't use breath of life if the triggering effect was a death effect or an effect that leaves no remains, such as Disintegrate" | No offer for a death effect or *Disintegrate* | `leavesNothing` (a `death` trait, or *Disintegrate*) keeps `creature-dying` from firing; this module's own `death` sets 0 HP without damage, so never fires it; test | ✅ | ZZ Victim taken from 5 to 0 by *Disintegrate*: no reaction offered |
+| VS-67d | "The healing increases by 1d8" | Rank 7: 6d8 | `perStep: "1d8"`, `perStepInterval: 2` (pf2e's data heightens it every rank; the text, every 2) | ✅ | Cast at **rank 7**: "ZZ Victim regains 24 Hit Points" — **6d8** |
 
 ### VS-68 · Stabilize
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 151 |
-| ✅ | 166 |
+| ☐ not yet driven | 147 |
+| ✅ | 170 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |

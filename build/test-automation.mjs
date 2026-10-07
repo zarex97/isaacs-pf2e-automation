@@ -953,6 +953,11 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
     const { nextStage } = await import("../scripts/riders/affliction.mjs");
     const { tallyState } = await import("../scripts/riders/aftermath.mjs");
+    const { wouldDie, leavesNothing } = await import("../scripts/riders/sources.mjs");
+    const pc = (dying) => ({ type: "character", attributes: { dying: { max: 4 } }, getCondition: () => (dying ? { value: dying } : null) });
+    const npc = (hp) => ({ type: "npc", hitPoints: { value: hp } });
+    check("a creature would die: a character at its dying maximum, anything else brought to 0", [wouldDie(pc(4), 0), wouldDie(pc(3), 0), wouldDie(npc(0), 12), wouldDie(npc(0), 0), wouldDie(npc(5), 12)], [true, false, true, false, false]);
+    check("a death effect, or Disintegrate, leaves nothing to save", [leavesNothing({ system: { traits: { value: ["death"] } } }), leavesNothing({ slug: "disintegrate", system: { traits: { value: [] } } }), leavesNothing({ slug: "fireball", system: { traits: { value: ["fire"] } } })], [true, true, false]);
     check("a cast's tally is read once nobody is left to answer, and knows whether anybody died",
         [tallyState({ awaiting: new Set(["a"]), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set(["b"]) })],
         [{ done: false, died: false }, { done: true, died: false }, { done: true, died: true }]);

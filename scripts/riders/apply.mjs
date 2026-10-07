@@ -1088,6 +1088,8 @@ async function applyHeal(rider, context) {
         const roll = await new Roll(String(dice)).evaluate();
         const healed = Math.max(0, Math.min(roll.total, hp.max - hp.value));
         if (healed > 0) await actor.update({ "system.attributes.hp.value": hp.value + healed });
+        // "You prevent the target from dying" — *Breath of Life*: dying, dead and defeated undone.
+        if (rider.apply.revive) await revive(actor, context);
         await roll.toMessage({
             speaker: ChatMessage.getSpeaker({ actor }),
             flavor: t("Heal.Regains", { item: context.item?.name ?? t("Rider.Name"), actor: actor.name, healed }),
@@ -2586,9 +2588,21 @@ async function applyCast(_rider, context) {
  */
 function triggerSide(context) {
     const origin = context.originActor;
-    const other = context.target?.actor ?? null;
-    if (!origin || !other || origin === other || typeof origin.isAllyOf !== "function") return [];
-    return [origin.isAllyOf(other) ? "rider:trigger:ally" : "rider:trigger:enemy"];
+    const other = context.eventTarget?.actor ?? context.target?.actor ?? null;
+    if (!origin || !other || origin === other) return [];
+    // …and what it is: *Breath of Life* answers only for "a living creature".
+    const mode = other.modeOfBeing ? [`rider:trigger:mode:${other.modeOfBeing}`] : [];
+    if (typeof origin.isAllyOf !== "function") return mode;
+    return [origin.isAllyOf(other) ? "rider:trigger:ally" : "rider:trigger:enemy", ...mode];
+}
+
+/** Back from the brink: no longer dying, dead or defeated; awake if it has Hit Points again. */
+async function revive(actor, context) {
+    if (actor.hasCondition?.("dying")) await actor.decreaseCondition("dying", { forceRemove: true });
+    if (actor.statuses?.has?.("dead")) await actor.toggleStatusEffect("dead", { active: false, overlay: true });
+    if ((actor.hitPoints?.value ?? 0) > 0 && actor.hasCondition?.("unconscious")) await actor.decreaseCondition("unconscious", { forceRemove: true });
+    const combatant = (context.target?.document ?? context.target)?.combatant;
+    if (combatant?.defeated) await combatant.update({ defeated: false });
 }
 
 /** The parts of a damage roll of the named types, as one formula — null when none is left. */

@@ -453,6 +453,39 @@
                 }
             ]
         },
+        "breath-of-life": {
+            "riders": [
+                {
+                    "event": "creature-dying",
+                    "range": 60,
+                    "self": true,
+                    "predicate": [
+                        "rider:trigger:mode:living"
+                    ],
+                    "apply": {
+                        "type": "reaction",
+                        "riders": [
+                            {
+                                "trigger": true,
+                                "apply": {
+                                    "type": "cast"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "heal",
+                        "formula": "5d8",
+                        "perStep": "1d8",
+                        "perStepInterval": 2,
+                        "revive": true
+                    }
+                }
+            ]
+        },
         "calm": {
             "areaTargeting": {
                 "affects": "all"
