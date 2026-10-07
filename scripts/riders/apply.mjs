@@ -16,6 +16,7 @@ import { OriginAction } from "./origin-action.mjs";
 import { Affliction } from "./affliction.mjs";
 import { Aftermath } from "./aftermath.mjs";
 import { Unobserved } from "./unobserved.mjs";
+import { setAside } from "./set-aside.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -1263,6 +1264,8 @@ async function applyCounteract(rider, context) {
     // *Dispel Magic*: "1 spell effect" — any effect a spell left, whatever its traits.
     const spellEffects = rider.apply.spellEffects === true;
     const traits = spellEffects ? ["spell"] : (rider.apply.traits ?? ["mental"]);
+    // *Sound Body*: "an effect of your choice imposing one of these conditions on the target", the list growing by rank.
+    const conditions = Array.isArray(rider.apply.conditions) ? conditionsAt(rider.apply, castItemOf(context)?.rank) : null;
     const tokens = [...(context.targets ?? [])];
     if (rider.apply.includesSelf !== false && context.originToken) tokens.unshift(context.originToken);
 
@@ -1273,7 +1276,9 @@ async function applyCounteract(rider, context) {
         if (!actor || seen.has(actor.uuid)) continue;
         seen.add(actor.uuid);
         for (const item of [...(actor.itemTypes.effect ?? []), ...(actor.itemTypes.condition ?? [])]) {
-            if (spellEffects) {
+            if (conditions) {
+                if (!imposesListed(item, actor, conditions)) continue;
+            } else if (spellEffects) {
                 if (!isSpellEffect(item, originItemOf(item)?.type)) continue;
             } else {
                 const itemTraits = item.system?.traits?.value ?? [];
@@ -1298,7 +1303,7 @@ async function applyCounteract(rider, context) {
         for (const uuid of buttons.map((b) => /data-effect="([^"]+)"/.exec(b)?.[1]).filter(Boolean)) {
             await resolveCounteract({ originUuid: context.originActor?.uuid ?? null, effectUuid: uuid,
                 itemUuid: (context.item ?? context.riderItem)?.uuid ?? null, statistic, suppress: rider.apply.suppress ?? false, dcFrom: rider.apply.dcFrom ?? null,
-                rank: castItemOf(context)?.rank ?? null });
+                rank: castItemOf(context)?.rank ?? null, nearMiss: rider.apply.nearMiss ?? null });
         }
         return;
     }
@@ -1321,6 +1326,8 @@ async function applyCounteract(rider, context) {
                     dcFrom: rider.apply.dcFrom ?? null,
                     // The rank it was cast at: the item named above is the sheet's, at its own rank.
                     rank: castItemOf(context)?.rank ?? null,
+                    // "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower" — *Sound Body*.
+                    nearMiss: rider.apply.nearMiss ?? null,
                 },
             },
         },
@@ -1418,6 +1425,16 @@ export async function resolveCounteract(payload) {
     // counteracted state is ended like anything else.
     const suppressible = payload.suppress === "any" || (payload.suppress && RiderExtensions.isSuppressible(effect));
 
+    // *Sound Body*: "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead
+    // suppress the effect until the beginning of your next turn. The effect's duration doesn't elapse while it's
+    // suppressed." Set aside, and put back as the caster's next turn begins with its clock moved on by the time away.
+    if (!counteracted && Number(payload.nearMiss) > 0 && targetRank - Number(payload.nearMiss) <= ourRank + reach) {
+        await setAside(effect, actor);
+        await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), flavor: item?.name ?? t("Counteract.Title"),
+            content: `<p>${t("Counteract.NearMiss", { effect: effect.name, actor: actor.name })}</p>` });
+        return;
+    }
+
     let suppression = null;
     if (counteracted && suppressible) {
         suppression = await RiderExtensions.suppress(effect, { actor, outcome, item });
@@ -1447,6 +1464,25 @@ export async function resolveCounteract(payload) {
                 ? `<p>${t("Counteract.Gone", { effect: effect.name })}</p>`
                 : `<p>${t("Counteract.Holds", { effect: effect.name, rank: targetRank, ours: ourRank, outcome: outcome ? outcomeLabel(outcome) : t("Counteract.FailedCheck") })}</p>`,
     });
+}
+
+/** The conditions listed for a cast's rank: `conditions`, and every `conditionsAtRank` reached. */
+export function conditionsAt(spec, rank) {
+    const extra = Object.entries(spec.conditionsAtRank ?? {}).filter(([at]) => (Number(rank) || 0) >= Number(at)).flatMap(([, list]) => list);
+    return [...new Set([...(spec.conditions ?? []), ...extra])];
+}
+
+/**
+ * Does this item impose one of these conditions on the creature? An effect that grants one, or the condition itself
+ * when nothing granted it. Never a curse's or a disease's — *Sound Body* "can't counteract or suppress curses,
+ * diseases, or conditions that are part of the target's normal state".
+ */
+function imposesListed(item, actor, slugs) {
+    const traits = item.system?.traits?.value ?? [];
+    if (traits.includes("curse") || traits.includes("disease")) return false;
+    if (item.type === "condition") return slugs.includes(item.slug) && !item.flags?.pf2e?.grantedBy?.id;
+    const granted = Object.values(item.flags?.pf2e?.itemGrants ?? {}).map((grant) => actor.items.get(grant.id)?.slug);
+    return granted.some((slug) => slugs.includes(slug));
 }
 
 /** The counteract rank: the rank it was cast at, else the item's rank, else half the actor's level, plus whatever is registered. */

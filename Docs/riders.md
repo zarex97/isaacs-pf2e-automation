@@ -62,7 +62,7 @@ and `npm test` fails if this table and that switch disagree.
 | `heal` | Heals. Lands on the origin when the rider is `self`. `revive`: no longer dying, dead or defeated (*Breath of Life*). |
 | `save` | The target rolls a save and the rider carries its own riders, chosen by the result. A lingering area's check may name `statistics` instead of `statistic`; the creature rolls the better. `dc: "spell"` is the spell's own DC. |
 | `flat-check` | Rolls a flat check and branches on it. |
-| `counteract` | Rolls a counteract check against an effect. `spellEffects: true` offers every effect a spell left, whatever its traits (*Dispel Magic*), and `dcFrom: "effect"` sets the DC to that spell's caster's spell DC rather than the level table. |
+| `counteract` | Rolls a counteract check against an effect. `spellEffects: true` offers every effect a spell left, whatever its traits (*Dispel Magic*), and `dcFrom: "effect"` sets the DC to that spell's caster's spell DC rather than the level table. `conditions` (+`conditionsAtRank`) offers the effects imposing those conditions instead, never a curse's or a disease's; `nearMiss: 2` suppresses one it would have counteracted 2 ranks lower until the caster's next turn, its clock stopped (*Sound Body*). |
 | `pool` | Spends focus points (`spend`), or refunds them (`gain`), with an optional `oncePerEncounter`. |
 | `death` | Applies dying, or kills outright — whom it may kill is the **Automate death effects** setting. `hpFraction`: only at or below that share of its Hit Points; `maxLevel` (+`maxLevelPerStep` per step, in `carries`): only a creature of that level or lower (*Seal Fate*). |
 | `banish` | Removes a creature from the scene, and brings it back. |

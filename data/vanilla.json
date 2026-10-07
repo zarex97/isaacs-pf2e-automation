@@ -3275,6 +3275,40 @@
                 }
             ]
         },
+        "sound-body": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "counteract",
+                        "conditions": [
+                            "blinded",
+                            "dazzled",
+                            "deafened",
+                            "enfeebled",
+                            "sickened"
+                        ],
+                        "conditionsAtRank": {
+                            "4": [
+                                "drained",
+                                "slowed"
+                            ],
+                            "6": [
+                                "petrified"
+                            ],
+                            "8": [
+                                "stunned"
+                            ]
+                        },
+                        "includesSelf": false,
+                        "nearMiss": 2,
+                        "dcFrom": "effect",
+                        "statistic": "spellcasting"
+                    }
+                }
+            ]
+        },
         "spider-sting": {
             "riders": [
                 {

@@ -951,6 +951,12 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    const { conditionsAt } = await import("../scripts/riders/apply.mjs");
+    const { resumedStart } = await import("../scripts/riders/set-aside.mjs");
+    check("an effect set aside for 12 seconds comes back with its start 12 seconds later — its clock stopped", resumedStart(100, 200, 212), 112);
+    const sound = { conditions: ["blinded", "sickened"], conditionsAtRank: { 4: ["drained", "slowed"], 6: ["petrified"], 8: ["stunned"] } };
+    check("Sound Body's list grows by rank, each heightening as the 4th plus its own", [conditionsAt(sound, 2), conditionsAt(sound, 4), conditionsAt(sound, 6), conditionsAt(sound, 8)],
+        [["blinded", "sickened"], ["blinded", "sickened", "drained", "slowed"], ["blinded", "sickened", "drained", "slowed", "petrified"], ["blinded", "sickened", "drained", "slowed", "petrified", "stunned"]]);
     const { nextStage } = await import("../scripts/riders/affliction.mjs");
     const { tallyState } = await import("../scripts/riders/aftermath.mjs");
     const { wouldDie, leavesNothing } = await import("../scripts/riders/sources.mjs");

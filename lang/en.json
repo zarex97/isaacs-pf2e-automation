@@ -385,7 +385,9 @@
             "UntilNextTurn": "until the end of {actor}'s next turn",
             "Gone": "<strong>{effect}</strong> is counteracted and gone.",
             "Holds": "<strong>{effect}</strong> holds — rank {rank} against a counteract rank of {ours} on a {outcome}.",
-            "FailedCheck": "failed check"
+            "FailedCheck": "failed check",
+            "NearMiss": "{effect} is not counteracted, but suppressed until the start of {actor}'s next turn; its duration does not run meanwhile.",
+            "Back": "{effect} returns to {actor}."
         },
         "Readout": {
             "Title": "What the senses tell",

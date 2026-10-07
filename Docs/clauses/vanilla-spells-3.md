@@ -430,13 +430,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-69a | "Attempt to counteract an effect of your choice imposing one of these conditions on the target: Blinded, Dazzled, Deafened, Enfeebled, or Sickened" | A card offers the effects imposing those conditions; a counteract check ends the one chosen | | ☐ | |
-| VS-69b | "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead suppress the effect until the beginning of your next turn" | A near miss suppresses it until the caster's next turn | | ☐ | |
-| VS-69c | "The effect's duration doesn't elapse while it's suppressed" | The suppressed effect's clock stops | | ☐ | |
-| VS-69d | "This spell can't counteract or suppress curses, diseases, or conditions that are part of the target's normal state" | Curses and diseases are not offered | | ☐ | |
-| VS-69e | "Heightened (4th) Add Drained and Slowed to the list of conditions" | Rank 4 offers drained and slowed | | ☐ | |
-| VS-69f | "Heightened (6th) As 4th rank, plus add Petrified" | Rank 6, petrified | | ☐ | |
-| VS-69g | "Heightened (8th) As 4th rank, plus add petrified and Stunned" | Rank 8, stunned | | ☐ | |
+| VS-69a | "Attempt to counteract an effect of your choice imposing one of these conditions on the target: Blinded, Dazzled, Deafened, Enfeebled, or Sickened" | A card offers the effects imposing those conditions; a counteract check ends the one chosen | `content/vanilla/sound-body.json`: `counteract` with `conditions` — the effects imposing them (`imposesListed`), on the target only | ✅ | Cast at Leo, carrying *Blinding Flash* (blinded), *Deep Blindness* (blinded), *Curse of Night* (dazzled, a curse) and *Weakness* (drained): the card offered **Blinding Flash** and **Deep Blindness**. Counteracting *Deep Blindness* (level 5) with a critical success: "counteracted and gone", its blinded with it. The drive rolled Aries' default counteract statistic; the content now names `spellcasting`, the spell's own |
+| VS-69b | "If you didn't counteract the effect, but you would have if its counteract rank were 2 lower, instead suppress the effect until the beginning of your next turn" | A near miss suppresses it until the caster's next turn | `nearMiss: 2` in `resolveCounteract`; `set-aside.mjs` (until the caster's next turn) | ✅ | *Deep Blindness* at level 7, a critical success at counteract rank 2 (reaching 5): "not counteracted, but suppressed until the start of Aries's next turn" — taken off Leo, its blinded with it. As Aries' next turn began: "Drive: Deep Blindness returns to Leo.", blinded again |
+| VS-69c | "The effect's duration doesn't elapse while it's suppressed" | The suppressed effect's clock stops | `resumedStart` (test): the start moved on by the time away | ✅ | Set aside at world time 232635 and back 12 seconds later: its start **232647**, its remaining duration the full **600 seconds** it had |
+| VS-69d | "This spell can't counteract or suppress curses, diseases, or conditions that are part of the target's normal state" | Curses and diseases are not offered | `imposesListed` leaves out curse and disease effects | ✅ | *Curse of Night* — a curse imposing dazzled, a listed condition — was not offered |
+| VS-69e | "Heightened (4th) Add Drained and Slowed to the list of conditions" | Rank 4 offers drained and slowed | `conditionsAtRank: { 4: [drained, slowed] }`; `conditionsAt` test | ✅ | At rank 2, *Weakness* (drained) was not offered; at **rank 4**, the card offered **Blinding Flash / Weakness / Deep Blindness** |
+| VS-69f | "Heightened (6th) As 4th rank, plus add Petrified" | Rank 6, petrified | `conditionsAtRank: { 6: [petrified] }`; `conditionsAt` test | ✅ | `conditionsAt` at rank 6: blinded, dazzled, deafened, enfeebled, sickened, drained, slowed, **petrified** — the same list the rank-4 drive read its drained from |
+| VS-69g | "Heightened (8th) As 4th rank, plus add petrified and Stunned" | Rank 8, stunned | `conditionsAtRank: { 8: [stunned] }`; `conditionsAt` test | ✅ | `conditionsAt` at rank 8: the rank-6 list plus **stunned** |
 
 ### VS-70 · Cleanse Affliction
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 145 |
-| ✅ | 172 |
+| ☐ not yet driven | 138 |
+| ✅ | 179 |
 | ⚠️ | 8 |
 | ❌ | 0 |
 | 🔧 | 0 |

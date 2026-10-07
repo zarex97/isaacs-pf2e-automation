@@ -65,6 +65,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Slither | 5 | 20-ft burst (pf2e's), all | failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area) | Dismiss, reflex on turn end — failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area), 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Soothe | 1 |  | heals 1d10+4 (+1d10+4 per rank); spell-effect-soothe |  |
+| Sound Body | 2 |  | counteract (on you) |  |
 | Spider Sting | 1 |  | success: 1d4 poison; failure: affliction; crit. failure: affliction |  |
 | Spirit Link | 1 |  | transfer; spirit link (10 minutes, carries turn-start transfer, on you) |  |
 | Spiritual Armament | 2 |  | Spiritual Armament (1 minutes, while Sustained, on you) |  |
