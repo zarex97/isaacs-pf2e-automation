@@ -13,6 +13,8 @@ import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
 import { OriginAction } from "./origin-action.mjs";
+import { Affliction } from "./affliction.mjs";
+import { Aftermath } from "./aftermath.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -459,6 +461,12 @@ async function applyOne(rider, context) {
             return Dismiss.apply(rider, context);
         case "spend-charge":
             return OriginAction.spend(rider, context);
+        case "aftermath":
+            return Aftermath.open(rider, context, { castItem: castItemOf(context) ?? context.item });
+        case "aftermath-mark":
+            return Aftermath.mark(rider, context, { castItem: castItemOf(context) ?? context.item });
+        case "affliction":
+            return Affliction.apply(rider, context, { dc: Number(rider.apply.dc) || RiderExtensions.resolveDC("spell", context), item: castItemOf(context) ?? context.item });
         case "area-damage":
             return applyAreaDamage(rider, context);
         case "pull":
@@ -631,13 +639,14 @@ function areaLeftBy(originActor, item) {
  * An effect's ChoiceSets answered before it lands, so no dialog stops the rider. `preselect` maps a ChoiceSet's
  * `flag` to its answer; `""` is the save's degree as pf2e spells it (`critical-failure`).
  */
-export function preselected(rules, preselect, outcome) {
+export function preselected(rules, preselect, outcome, cast = {}) {
     const degree = { criticalSuccess: "critical-success", success: "success", failure: "failure", criticalFailure: "critical-failure" }[outcome] ?? null;
     return (rules ?? []).map((rule) => {
         // Named by its `flag`, or — pf2e's *Tangle Vine* has none — by its `rollOption`.
         const key = [rule?.flag, rule?.rollOption].find((k) => k && k in preselect);
         if (rule?.key !== "ChoiceSet" || !key) return rule;
-        const answer = preselect[key] === "$outcome" ? degree : preselect[key];
+        // `"$cast"`: what the caster chose as the spell was cast — *Seal Fate*'s damage type.
+        const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key];
         return answer === null ? rule : { ...rule, selection: answer };
     });
 }
@@ -1636,6 +1645,12 @@ async function applyCondition(rider, context) {
         const existing = context.actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
         if (!existing) {
             await increaseRecorded(context.actor, slug, value ? { value } : {}, context);
+            // "Fleeing for as long as it's frightened" — *Vision of Death*: it ends with that condition
+            // (`registerEndsWith`).
+            if (Array.isArray(rider.apply.endsWith)) {
+                const made = context.actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
+                await made?.setFlag(LIB_ID, "endsWith", rider.apply.endsWith);
+            }
             await dropGrants(context.actor, slug, rider.apply.withoutGrants);
             await grantEscape(rider, context, { conditions: [slug] });
             return;
@@ -1847,12 +1862,14 @@ async function applyEffect(rider, context) {
 
     applySubstitutions(source, rider.apply.substitutions, context);
     // A pf2e effect that asks — *Ill Omen*'s "failure or critical failure?" — is told instead, from the outcome.
-    if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome);
+    const cast = castChoicesOf(context);
+    if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome, cast);
     // *Heroism*'s +1 / +2 / +3 reads `@item.level` — the effect's own level, which pf2e sets to the spell's rank
     // when the effect is taken from a cast. Taken from the compendium, it is whatever the effect was saved at.
     // A pf2e effect that should take riders with it — *Mirror Image*'s images answer the attacks on their caster.
     if (Array.isArray(rider.apply.carries)) {
-        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, RiderExtensions.resolveDC(undefined, context)) } });
+        const bound = withCast(rider.apply.carries, cast, riderSteps({ apply: { perStepInterval: rider.apply.perStepInterval } }, context));
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(bound, RiderExtensions.resolveDC(undefined, context)) } });
     }
     // *Shield*: the spell ends when its shield blocks (`shield-block.mjs`).
     if (rider.apply.endsOnBlock) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnBlock: rider.apply.endsOnBlock } });
@@ -2128,6 +2145,9 @@ async function applyDeath(rider, context) {
     // against a snapshot taken before anything is applied, which is exactly what makes an escalation ladder
     // advance one step at a time. This reads the hit points as they are now, with the riders of one pass
     // applied in the order they are authored.
+    // "Its level is 7 or less" — *Seal Fate*: only so strong a creature dies of it.
+    const maxLevel = Number(rider.apply.maxLevel);
+    if (Number.isFinite(maxLevel) && rider.apply.maxLevel !== null && (context.actor?.level ?? 0) > maxLevel) return;
     const fraction = Number(rider.apply.hpFraction);
     if (Number.isFinite(fraction)) {
         const now = context.actor.hitPoints;
@@ -2940,6 +2960,30 @@ function effectSource(label, rules, rider, context) {
  * The riders an effect carries, with the caster's DC written in. They fire on the *holder's* turn, where the
  * holder is the only actor in sight — "against your spell DC" has to be a number by then.
  */
+/**
+ * Riders an effect takes with it, bound to the cast that gave it: each `"$cast:<flag>"` in a string becomes what was
+ * chosen as the spell was cast, and each `maxLevel` grows by its `maxLevelPerStep` — *Seal Fate*'s "If the creature is
+ * reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies … the maximum level … increases by 4".
+ */
+export function withCast(value, cast = {}, steps = 0) {
+    if (typeof value === "string") return value.replace(/\$cast:(\w+)/g, (_m, flag) => cast[flag] ?? "none");
+    if (Array.isArray(value)) return value.map((entry) => withCast(entry, cast, steps));
+    if (!value || typeof value !== "object") return value;
+    const out = Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, withCast(entry, cast, steps)]));
+    if (Number.isFinite(Number(out.maxLevel)) && out.maxLevelPerStep !== undefined) {
+        out.maxLevel = Number(out.maxLevel) + (Number(out.maxLevelPerStep) || 0) * steps;
+        delete out.maxLevelPerStep;
+    }
+    return out;
+}
+
+/** What the caster chose as this spell was cast (`castChoice`, `vanilla/requires.mjs`). */
+function castChoicesOf(context) {
+    const spell = castItemOf(context) ?? context.item;
+    const id = (spell?.original ?? spell)?.id;
+    return (id && context.originActor?.flags?.[LIB_ID]?.castChoices?.[id]) || {};
+}
+
 export function carried(riders, dc) {
     const fix = (rider) => {
         const apply = rider.apply ?? {};
@@ -3239,7 +3283,8 @@ function durationData(duration) {
         expiry: duration?.expiry ?? "turn-end",
         sustained: false,
         unit: duration?.unit ?? "rounds",
-        value: Number(duration?.value) || 1,
+        // 0 is a duration too: "slowed 1 for that turn" — *Wave of Despair* — ends with the turn it began in.
+        value: Number(duration?.value) === 0 ? 0 : Number(duration?.value) || 1,
     };
 }
 

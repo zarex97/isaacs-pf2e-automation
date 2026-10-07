@@ -14,6 +14,7 @@ export const CAST_PRIORITY = {
     requires: 5,
     weaponVariant: 7,
     actionVariant: 8,
+    castChoice: 9,
     aim: 10,
     spellFrequency: 50,
 };
@@ -82,6 +83,8 @@ export const CastPipeline = {
         CastPipeline.before("a variant from the weapon in hand", CAST_PRIORITY.weaponVariant, async (spell, options) => (await import("./vanilla/requires.mjs")).weaponVariant(spell, options));
         // A spell cast with 1 to 3 actions: how many, and pf2e's variant for that many.
         CastPipeline.before("the actions spent", CAST_PRIORITY.actionVariant, async (spell, options) => (await import("./vanilla/requires.mjs")).actionVariant(spell, options));
+        // A choice the spell asks for as it is cast — *Seal Fate*'s damage type.
+        CastPipeline.before("a choice made as it is cast", CAST_PRIORITY.castChoice, async (spell, options) => (await import("./vanilla/requires.mjs")).castChoice(spell, options));
         CastPipeline.before("area targeting", CAST_PRIORITY.aim, (spell, options) => AreaTargeting.run(spell, options));
         // pf2e never spends a *spell's* Frequency, so a spell that says "once per round" was limited by
         // nothing until this step existed.

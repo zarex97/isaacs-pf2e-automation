@@ -217,6 +217,15 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "Aftermath": {
+            "NoneDied": "{name} killed no one: the void energy turns back."
+        },
+        "Affliction": {
+            "Again": "{actor} is exposed to {name} again: stage {stage}.",
+            "Stage": "stage {stage}",
+            "Cured": "{actor} recovers from {name}.",
+            "Expired": "{name} runs its course on {actor}."
+        },
         "OriginAction": {
             "Description": "{name}: from {target}, the creature {spell} marked. Each use spends one.",
             "Left": "{name}: {left} left.",
@@ -430,6 +439,7 @@
             "ActionVariants": "Cast with {counts} actions, the variant for each",
             "TargetsPerAction": "A creature for each action spent",
             "SameAttackPenalty": "Every attack of the cast at one penalty",
+            "CastChoice": "One of {count} choices, made as it is cast",
             "Key": {
                 "areaTargeting": "Area and targets",
                 "areaTargetingShapes": "Shape choice",
@@ -442,7 +452,8 @@
                 "variantFromWeapon": "Weapon variant",
                 "actionVariants": "Actions spent",
                 "targetsPerAction": "Targets per action",
-                "sameAttackPenalty": "One attack penalty"
+                "sameAttackPenalty": "One attack penalty",
+                "castChoice": "A choice as it is cast"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -511,6 +522,18 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "wave-of-despair": {
+                "Despair": "despair: no reactions, a Will save at the start of each turn"
+            },
+            "vision-of-death": {
+                "Real": "its vision becomes reality, and it dies."
+            },
+            "seal-fate": {
+                "Choose": "Which damage will be its end?"
+            },
+            "spider-sting": {
+                "Venom": "Spider Venom"
             },
             "blister": {
                 "Blisters": "Blisters",

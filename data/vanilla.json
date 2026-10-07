@@ -1656,6 +1656,360 @@
                 }
             }
         },
+        "massacre": {
+            "areaTargeting": {
+                "anchor": "caster"
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "aftermath",
+                        "awaits": [
+                            "target:mode:living",
+                            {
+                                "or": [
+                                    {
+                                        "lte": [
+                                            "target:level",
+                                            17
+                                        ]
+                                    },
+                                    {
+                                        "and": [
+                                            {
+                                                "gte": [
+                                                    "item:rank",
+                                                    10
+                                                ]
+                                            },
+                                            {
+                                                "lte": [
+                                                    "target:level",
+                                                    19
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "none": [
+                            {
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "30",
+                                    "damageType": "void"
+                                }
+                            }
+                        ],
+                        "noneTo": [
+                            "target:mode:living"
+                        ],
+                        "noneSelf": [
+                            {
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "30",
+                                    "damageType": "void"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "lt": [
+                                "item:rank",
+                                10
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "9d6",
+                        "damageType": "void"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "gte": [
+                                "item:rank",
+                                10
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "10d6",
+                        "damageType": "void"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "lt": [
+                                "item:rank",
+                                10
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "100",
+                        "damageType": "void"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "gte": [
+                                "item:rank",
+                                10
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "115",
+                        "damageType": "void"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success",
+                        "failure"
+                    ],
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "death",
+                        "hpFraction": 0
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "death"
+                    }
+                },
+                {
+                    "predicate": [
+                        "target:mode:living",
+                        {
+                            "or": [
+                                {
+                                    "lte": [
+                                        "target:level",
+                                        17
+                                    ]
+                                },
+                                {
+                                    "and": [
+                                        {
+                                            "gte": [
+                                                "item:rank",
+                                                10
+                                            ]
+                                        },
+                                        {
+                                            "lte": [
+                                                "target:level",
+                                                19
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "aftermath-mark"
+                    }
+                }
+            ]
+        },
         "mirror-image": {
             "areaTargeting": false,
             "riders": [
@@ -1984,6 +2338,57 @@
                 }
             ]
         },
+        "phantasmal-calamity": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "save",
+                        "statistic": "reflex",
+                        "riders": [
+                            {
+                                "outcomes": [
+                                    "failure",
+                                    "criticalFailure"
+                                ],
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "minutes"
+                                },
+                                "apply": {
+                                    "type": "condition",
+                                    "slug": "stunned",
+                                    "carries": [
+                                        {
+                                            "event": "turn-end",
+                                            "self": true,
+                                            "apply": {
+                                                "type": "save",
+                                                "statistic": "will",
+                                                "riders": [
+                                                    {
+                                                        "outcomes": [
+                                                            "success",
+                                                            "criticalSuccess"
+                                                        ],
+                                                        "apply": {
+                                                            "type": "shorten",
+                                                            "rounds": "all"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "phantom-pain": {
             "riders": [
                 {
@@ -2121,6 +2526,106 @@
                 "difficultTerrain": 2,
                 "replacesPrevious": true
             }
+        },
+        "seal-fate": {
+            "castChoice": {
+                "flag": "damageType",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.seal-fate.Choose",
+                "choices": [
+                    "acid",
+                    "bludgeoning",
+                    "cold",
+                    "electricity",
+                    "fire",
+                    "piercing",
+                    "slashing",
+                    "sonic",
+                    "void"
+                ]
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-end"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.r4XX7yzeEOPK7l2a",
+                        "atCastRank": true,
+                        "preselect": {
+                            "damageType": "$cast"
+                        },
+                        "perStepInterval": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.r4XX7yzeEOPK7l2a",
+                        "atCastRank": true,
+                        "preselect": {
+                            "damageType": "$cast"
+                        },
+                        "perStepInterval": 2,
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "self": true,
+                                "predicate": [
+                                    "rider:damage:type:$cast:damageType"
+                                ],
+                                "apply": {
+                                    "type": "death",
+                                    "hpFraction": 0,
+                                    "maxLevel": 7,
+                                    "maxLevelPerStep": 4
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.r4XX7yzeEOPK7l2a",
+                        "atCastRank": true,
+                        "preselect": {
+                            "damageType": "$cast"
+                        },
+                        "perStepInterval": 2,
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "self": true,
+                                "predicate": [
+                                    "rider:damage:type:$cast:damageType"
+                                ],
+                                "apply": {
+                                    "type": "death",
+                                    "hpFraction": 0,
+                                    "maxLevel": 7,
+                                    "maxLevelPerStep": 4
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "shield": {
             "areaTargeting": false,
@@ -2562,6 +3067,128 @@
                         "type": "effect",
                         "uuid": "Compendium.pf2e.spell-effects.Item.nkk4O5fyzrC0057i",
                         "replace": true
+                    }
+                }
+            ]
+        },
+        "spider-sting": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "1d4",
+                        "damageType": "poison"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "affliction",
+                        "name": "ISAACS_AUTOMATION.Vanilla.spider-sting.Venom",
+                        "stage": 1,
+                        "save": "fortitude",
+                        "level": 1,
+                        "traits": [
+                            "poison"
+                        ],
+                        "maxRounds": 4,
+                        "stages": [
+                            {
+                                "damage": [
+                                    {
+                                        "formula": "1d4",
+                                        "type": "poison"
+                                    }
+                                ],
+                                "conditions": [
+                                    {
+                                        "slug": "enfeebled",
+                                        "value": 1
+                                    }
+                                ],
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "rounds"
+                                }
+                            },
+                            {
+                                "damage": [
+                                    {
+                                        "formula": "1d4",
+                                        "type": "poison"
+                                    }
+                                ],
+                                "conditions": [
+                                    {
+                                        "slug": "enfeebled",
+                                        "value": 2
+                                    }
+                                ],
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "rounds"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "affliction",
+                        "name": "ISAACS_AUTOMATION.Vanilla.spider-sting.Venom",
+                        "stage": 2,
+                        "save": "fortitude",
+                        "level": 1,
+                        "traits": [
+                            "poison"
+                        ],
+                        "maxRounds": 4,
+                        "stages": [
+                            {
+                                "damage": [
+                                    {
+                                        "formula": "1d4",
+                                        "type": "poison"
+                                    }
+                                ],
+                                "conditions": [
+                                    {
+                                        "slug": "enfeebled",
+                                        "value": 1
+                                    }
+                                ],
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "rounds"
+                                }
+                            },
+                            {
+                                "damage": [
+                                    {
+                                        "formula": "1d4",
+                                        "type": "poison"
+                                    }
+                                ],
+                                "conditions": [
+                                    {
+                                        "slug": "enfeebled",
+                                        "value": 2
+                                    }
+                                ],
+                                "duration": {
+                                    "value": 1,
+                                    "unit": "rounds"
+                                }
+                            }
+                        ]
                     }
                 }
             ]
@@ -3194,6 +3821,117 @@
                 }
             ]
         },
+        "vision-of-death": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "8d6",
+                        "perStep": "2d6",
+                        "damageType": "mental",
+                        "multiplier": 0.5
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "apply": {
+                        "type": "death",
+                        "hpFraction": 0,
+                        "text": "ISAACS_AUTOMATION.Vanilla.vision-of-death.Real"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "frightened",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "8d6",
+                        "perStep": "2d6",
+                        "damageType": "mental"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "death",
+                        "hpFraction": 0,
+                        "text": "ISAACS_AUTOMATION.Vanilla.vision-of-death.Real"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "frightened",
+                        "value": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "8d6",
+                        "perStep": "2d6",
+                        "damageType": "mental",
+                        "multiplier": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "death",
+                        "hpFraction": 0,
+                        "text": "ISAACS_AUTOMATION.Vanilla.vision-of-death.Real"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "frightened",
+                        "value": 4
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "fleeing",
+                        "endsWith": [
+                            "frightened"
+                        ]
+                    }
+                }
+            ]
+        },
         "wall-of-fire": {
             "areaTargeting": {
                 "affects": "all",
@@ -3339,6 +4077,122 @@
                     "cover": true
                 }
             }
+        },
+        "wave-of-despair": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.wave-of-despair.Despair",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "self:cannot-react"
+                            }
+                        ],
+                        "carries": [
+                            {
+                                "event": "turn-start",
+                                "self": true,
+                                "apply": {
+                                    "type": "save",
+                                    "statistic": "will",
+                                    "riders": [
+                                        {
+                                            "outcomes": [
+                                                "failure",
+                                                "criticalFailure"
+                                            ],
+                                            "duration": {
+                                                "value": 0,
+                                                "unit": "rounds",
+                                                "expiry": "turn-end"
+                                            },
+                                            "apply": {
+                                                "type": "condition",
+                                                "slug": "slowed",
+                                                "value": 1
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.wave-of-despair.Despair",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "self:cannot-react"
+                            }
+                        ],
+                        "carries": [
+                            {
+                                "event": "turn-start",
+                                "self": true,
+                                "apply": {
+                                    "type": "save",
+                                    "statistic": "will",
+                                    "riders": [
+                                        {
+                                            "outcomes": [
+                                                "failure",
+                                                "criticalFailure"
+                                            ],
+                                            "duration": {
+                                                "value": 0,
+                                                "unit": "rounds",
+                                                "expiry": "turn-end"
+                                            },
+                                            "apply": {
+                                                "type": "condition",
+                                                "slug": "slowed",
+                                                "value": 1
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1
+                    }
+                }
+            ]
         },
         "weapon-storm": {
             "requires": "held-weapon",

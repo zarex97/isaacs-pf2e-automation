@@ -45,20 +45,24 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Live Wire | 1 |  | rays (on you) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
+| Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
+| Phantasmal Calamity | 6 |  | crit. failure: save |  |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
+| Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |
 | Slither | 5 | 20-ft burst (pf2e's), all | failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area) | Dismiss, reflex on turn end — failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area), 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Soothe | 1 |  | heals 1d10+4 (+1d10+4 per rank); spell-effect-soothe |  |
+| Spider Sting | 1 |  | success: 1d4 poison; failure: affliction; crit. failure: affliction |  |
 | Spirit Link | 1 |  | transfer; spirit link (10 minutes, carries turn-start transfer, on you) |  |
 | Spiritual Armament | 2 |  | Spiritual Armament (1 minutes, while Sustained, on you) |  |
 | Sure Strike | 1 |  | spell-effect-sure-strike (on you); temporarily immune to sure strike (10 minutes, on you); GM note: “You are temporarily immune to sure strike: this casting has no effect.” (on you) |  |
@@ -69,9 +73,11 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
+| Vision of Death | 4 |  | success: 8d6 mental; success: death; success: frightened 1; failure: 8d6 mental; failure: death; failure: frightened 2; crit. failure: 8d6 mental; crit. failure: death; crit. failure: frightened 4; crit. failure: fleeing (no end) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
 | Wall of Stone | 5 | choose: 120-ft line or 60-ft line or 30-ft line or 2 × 60-ft line or 3 × 40-ft line or 4 × 30-ft line, all, placed, no targets |  | a wall of borders, in 10-ft sections: AC 10, Hardness 14, 50 HP (+15 per 2 ranks), rubble when breached |
 | Wall of Thorns | 3 | choose: 60-ft line or 30-ft line or 10-ft line, all, placed, no targets |  | difficult terrain, a wall of squares, in 10-ft sections: AC 10, Hardness 10, 20 HP (+5 per rank), cover across it, 3d4 piercing on entering, 1 minutes |
+| Wave of Despair | 5 |  | success: despair: no reactions, a Will save at the start of each turn (1 rounds, carries turn-start will save); failure / crit. failure: despair: no reactions, a Will save at the start of each turn (1 minutes, carries turn-start will save); crit. failure: slowed 1 (1 minutes) |  |
 | Weapon Storm | 4 | choose: 30-ft cone or 10-ft emanation, from you, all | rolled once: 4 dice of the held weapon (+1 per rank), one basic reflex each, critical specialization on a critical failure |  |
 | Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
 

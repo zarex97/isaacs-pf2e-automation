@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -890,6 +890,11 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 {
     const { stopShortOfWalls, compassVector, preselected } = await import("../scripts/riders/apply.mjs");
     const omen = [{ key: "ChoiceSet", flag: "illOmen", choices: [] }, { key: "RollTwice", keep: "lower" }];
+    check("a ChoiceSet answered from the choice made as the spell was cast", preselected([{ key: "ChoiceSet", flag: "damageType" }], { damageType: "$cast" }, "failure", { damageType: "fire" })[0].selection, "fire");
+    const { withCast } = await import("../scripts/riders/apply.mjs");
+    check("riders an effect carries are bound to the cast: its choice, and a level that grows by rank",
+        withCast([{ predicate: ["rider:damage:type:$cast:damageType"], apply: { type: "death", maxLevel: 7, maxLevelPerStep: 4 } }], { damageType: "cold" }, 1),
+        [{ predicate: ["rider:damage:type:cold"], apply: { type: "death", maxLevel: 11 } }]);
     check("…or one named only by its roll option", preselected([{ key: "ChoiceSet", rollOption: "tangle-vine" }], { "tangle-vine": "$outcome" }, "success")[0].selection, "success");
     check("a pf2e ChoiceSet is answered from the save, leaving other rules alone", [preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[0].selection, preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[1], preselected(omen, { other: "x" }, "failure")[0].selection], ["critical-failure", omen[1], undefined]);
     check("a chosen compass point is a direction on the grid, y downwards", [compassVector("n"), compassVector("se"), compassVector("up")], [{ x: 0, y: -1 }, { x: 1, y: 1 }, null]);
@@ -946,6 +951,14 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals, keptInstances, worseDegree } = await import("../scripts/riders/apply.mjs");
     const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    const { nextStage } = await import("../scripts/riders/affliction.mjs");
+    const { tallyState } = await import("../scripts/riders/aftermath.mjs");
+    check("a cast's tally is read once nobody is left to answer, and knows whether anybody died",
+        [tallyState({ awaiting: new Set(["a"]), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set() }), tallyState({ awaiting: new Set(), died: new Set(["b"]) })],
+        [{ done: false, died: false }, { done: true, died: false }, { done: true, died: true }]);
+    check("a save moves an affliction's stage: two down, one down, one up, two up, cured below 1, capped at the last",
+        [nextStage(2, "criticalSuccess", 2), nextStage(2, "success", 2), nextStage(1, "failure", 2), nextStage(1, "criticalFailure", 3), nextStage(2, "criticalFailure", 2)],
+        [0, 1, 2, 3, 2]);
     check("an action granted from a cast keeps the cast's rank and DC",
         bakeCast([{ apply: { type: "area-damage", parts: [{ formula: "7d6", perStep: "1d6", type: "acid" }] } }], { steps: 2, dc: 31 }),
         [{ apply: { type: "area-damage", parts: [{ formula: "9d6", type: "acid" }], dc: 31 } }]);

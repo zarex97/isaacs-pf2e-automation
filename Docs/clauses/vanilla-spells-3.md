@@ -321,71 +321,71 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-59a | "You deal 1d4 piercing damage to the touched creature" | 1d4 piercing whatever the save | | ☐ | |
-| VS-59b | "Critical Success The target is unaffected" | Nothing more | | ☐ | |
-| VS-59c | "Success The target takes 1d4[poison] damage" | 1d4 poison, no affliction | | ☐ | |
-| VS-59d | "Failure The target is afflicted with spider venom at stage 1" | The affliction at stage 1: 1d4 poison and enfeebled 1 | | ☐ | |
-| VS-59e | "Critical Failure The target is afflicted with spider venom at stage 2" | Stage 2: 1d4 poison and enfeebled 2 | | ☐ | |
-| VS-59f | "Stage 1 1d4 poison damage and Enfeebled 1 (1 round)" | At the end of each of its turns a Fortitude save moves the stage, and stage 1 deals its damage and condition | | ☐ | |
-| VS-59g | "Stage 2 1d4 poison damage and Enfeebled 2 (1 round)" | Stage 2's damage and condition | | ☐ | |
-| VS-59h | "Maximum Duration 4 rounds" | After four rounds the venom ends | | ☐ | |
+| VS-59a | "You deal 1d4 piercing damage to the touched creature" | 1d4 piercing whatever the save | pf2e's own spell card (its damage, 1d4 piercing) | ✅ | The card's damage button rolled **1d4 piercing** (1) for ZZ Victim, whatever its save — pf2e's own, as for any spell's damage |
+| VS-59b | "Critical Success The target is unaffected" | Nothing more | no rider on `criticalSuccess` | ✅ | A critical success (44): no damage roll, no venom, no condition |
+| VS-59c | "Success The target takes 1d4[poison] damage" | 1d4 poison, no affliction | `content/vanilla/spider-sting.json`: `success` → `damage` 1d4 poison | ✅ | A success (34): "1d4 poison" = 4, ZZ Victim took 4; no venom |
+| VS-59d | "Failure The target is afflicted with spider venom at stage 1" | The affliction at stage 1: 1d4 poison and enfeebled 1 | `failure` → `affliction` at `stage: 1` (`scripts/riders/affliction.mjs`) | ✅ | A failure (20): *Spider Venom (stage 1)* — badge 1 — **enfeebled 1**, and its stage damage rolled and applied at once: 1d4 poison = 3 |
+| VS-59e | "Critical Failure The target is afflicted with spider venom at stage 2" | Stage 2: 1d4 poison and enfeebled 2 | `criticalFailure` → `stage: 2` | ✅ | A critical failure (2): *Spider Venom (stage 2)*, **enfeebled 2**, 1d4 poison applied |
+| VS-59f | "Stage 1 1d4 poison damage and Enfeebled 1 (1 round)" | At the end of each of its turns a Fortitude save moves the stage, and stage 1 deals its damage and condition | `pf2e.endTurn` → `Affliction.recover`: the save against the venom's DC; `nextStage` test (−2/−1/+1/+2) | ✅ | In an encounter, at the end of ZZ Victim's turn: "Spider Venom DC 34", a failure → stage 2. With +30 Fortitude, a success at stage 2 → **stage 1**: enfeebled 2 became **enfeebled 1**, and 1d4 poison was dealt; a critical success at stage 1: "ZZ Victim recovers from Spider Venom." and the enfeebled went with it |
+| VS-59g | "Stage 2 1d4 poison damage and Enfeebled 2 (1 round)" | Stage 2's damage and condition | stage 2's own conditions and damage; the same stage again is its damage again | ✅ | At stage 2: **enfeebled 2** and 1d4 poison; a critical failure there kept it at stage 2 (the last) and dealt its 1d4 again (1) |
+| VS-59h | "Maximum Duration 4 rounds" | After four rounds the venom ends | `maxRounds: 4` | ✅ | After the fourth end of turn: "Spider Venom runs its course on ZZ Victim." — the effect and its enfeebled gone |
 
 ### VS-60 · Seal Fate
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-60a | "Choose one type of damage from the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void" | The cast asks for one of the nine | | ☐ | |
-| VS-60b | "Success The target gains weakness 2 to the chosen damage type until the end of your next turn" | Weakness 2 to that type, ending on the caster's next turn | | ☐ | |
-| VS-60c | "Failure As success, but the duration is 1 minute" | One minute | | ☐ | |
-| VS-60d | "If the creature is reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies" | 0 HP from that type kills a creature of level 7 or lower outright | | ☐ | |
-| VS-60e | "Critical Failure As failure, but the duration is unlimited" | No end | | ☐ | |
-| VS-60f | "Critical Success The target is unaffected" | Nothing | | ☐ | |
-| VS-60g | "The weakness increases by 1, and the maximum level of creature that can be automatically killed increases by 4" | Rank 6: weakness 3, level 11 | | ☐ | |
+| VS-60a | "Choose one type of damage from the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void" | The cast asks for one of the nine | `castChoice` (`content/vanilla/seal-fate.json`); a cast stage, `a choice made as it is cast` | ✅ | Every cast asked "Which damage will be its end?" with **acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, void**; the choice reached pf2e's *Spell Effect: Seal Fate* without its own prompt (`preselect: "$cast"`) — *Seal Fate (Fire)*, *(Cold)*, *(Acid)* |
+| VS-60b | "Success The target gains weakness 2 to the chosen damage type until the end of your next turn" | Weakness 2 to that type, ending on the caster's next turn | `success`: the effect for `1 round, turn-end`, timed from the caster's turn | ✅ | A success (34, with +30 Fortitude): *Seal Fate (Acid)*, **weakness acid 2**, lasting 1 round to the end of a turn — the end of Aries' next turn, pf2e's reckoning from the turn it was cast in |
+| VS-60c | "Failure As success, but the duration is 1 minute" | One minute | `failure`: 1 minute | ✅ | A failure (20): *Seal Fate (Fire)*, **weakness fire 2**, **1 minute** |
+| VS-60d | "If the creature is reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies" | 0 HP from that type kills a creature of level 7 or lower outright | `carries`: a `damage-received` `death` (`hpFraction: 0`, `maxLevel: 7`) predicated on the chosen type (`"$cast:damageType"`, `withCast` test) | ✅ | ZZ Victim (level 1) at 10 HP: 15 **cold** took it to 0 and it lived (not the chosen type); 15 **fire** — 17 with the weakness — took it to 0: "ZZ Victim is reduced to 0 Hit Points — it dies.", marked dead. At level 9, cast at rank 4, the same fire left it at 0 and alive |
+| VS-60e | "Critical Failure As failure, but the duration is unlimited" | No end | `criticalFailure`: the effect with no duration of its own | ✅ | A critical failure (2): *Seal Fate (Cold)*, weakness cold 2, **unlimited**, carrying the death rider |
+| VS-60f | "Critical Success The target is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): no effect, no weakness |
+| VS-60g | "The weakness increases by 1, and the maximum level of creature that can be automatically killed increases by 4" | Rank 6: weakness 3, level 11 | `atCastRank` (pf2e's floor(level / 2)); `maxLevelPerStep: 4` every 2 ranks | ✅ | Rank 6: **weakness fire 3**, and the death rider's level limit **11** — the level-9 ZZ Victim, burned to 0, died |
 
 ### VS-61 · Vision of Death
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-61a | "It takes 8d6 mental damage with a Will save" | A Will save against 8d6 mental | | ☐ | |
-| VS-61b | "If the target is reduced to 0 HP by this spell, its vision becomes reality and kills it instantly" | 0 HP from this spell is death | | ☐ | |
-| VS-61c | "Success The target takes half damage and is Frightened 1" | Half, frightened 1 | | ☐ | |
-| VS-61d | "Failure The target takes full damage and is Frightened 2" | Full, frightened 2 | | ☐ | |
-| VS-61e | "Critical Failure The target takes double damage, is Frightened 4 and is Fleeing for as long as it's frightened" | Double, frightened 4, and fleeing that ends with the frightened | | ☐ | |
-| VS-61f | "The damage increases by 2d6" | Rank 5: 10d6 | | ☐ | |
+| VS-61a | "It takes 8d6 mental damage with a Will save" | A Will save against 8d6 mental | `content/vanilla/vision-of-death.json`: `damage` 8d6 mental by the Will save's result (not a basic save in pf2e, so the shares are riders) | ✅ | pf2e's card's Will save against **DC 34**; a failure (20): **8d6 mental** = 26, ZZ Victim took 26 |
+| VS-61b | "If the target is reduced to 0 HP by this spell, its vision becomes reality and kills it instantly" | 0 HP from this spell is death | `death` (`hpFraction: 0`) after the damage, each result | ✅ | ZZ Victim at 5 HP, failing: 26 mental, then "ZZ Victim is reduced to 0 Hit Points — its vision becomes reality, and it dies." — marked dead |
+| VS-61c | "Success The target takes half damage and is Frightened 1" | Half, frightened 1 | `success`: `multiplier: 0.5`, frightened 1 | ✅ | A success (34, with +30 Will): **8d6 × 0.5** = 13, and **frightened 1** |
+| VS-61d | "Failure The target takes full damage and is Frightened 2" | Full, frightened 2 | `failure`: full, frightened 2 | ✅ | A failure: 26 in full, **frightened 2** |
+| VS-61e | "Critical Failure The target takes double damage, is Frightened 4 and is Fleeing for as long as it's frightened" | Double, frightened 4, and fleeing that ends with the frightened | `criticalFailure`: `multiplier: 2`, frightened 4, fleeing with `endsWith: ["frightened"]` (`registerEndsWith`) | ✅ | A critical failure (2): **8d6 × 2** = 74, **frightened 4** and **fleeing**; with the frightened gone, "ZZ Victim is no longer frightened: Fleeing ends." |
+| VS-61f | "The damage increases by 2d6" | Rank 5: 10d6 | `perStep: "2d6"` | ✅ | Rank 5: **8d6 + 2d6** mental — 10d6 |
 
 ### VS-62 · Wave of Despair
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-62a | "Success For 1 round, the creature can't use reactions and must attempt another save at the start of its turn" | No reactions for a round, and a Will save at the start of its next turn | | ☐ | |
-| VS-62b | "on a failure, it is Slowed 1 for that turn as it sobs uncontrollably" | A failed turn-start save slows it 1 for that turn only | | ☐ | |
-| VS-62c | "Failure As success, but the duration is 1 minute" | No reactions and a save at each turn start, for a minute | | ☐ | |
-| VS-62d | "Critical Failure As failure, and the creature is automatically slowed 1 for 1 minute" | Slowed 1 for the minute, whatever the turn-start saves | | ☐ | |
-| VS-62e | "Critical Success The creature is unaffected" | Nothing | | ☐ | |
-| VS-62f | "Heightened (7th) The area increases to a 60-foot cone" | A 60-ft cone at rank 7 | | ☐ | |
+| VS-62a | "Success For 1 round, the creature can't use reactions and must attempt another save at the start of its turn" | No reactions for a round, and a Will save at the start of its next turn | `content/vanilla/wave-of-despair.json`: `success` → a written-out effect for `1 round, turn-start` with `self:cannot-react` and a carried `turn-start` Will save | ⚠️ | A success (34, +30 Will): *despair: no reactions, a Will save at the start of each turn* for **1 round** to the start of a turn, and the creature carries `self:cannot-react` — every reaction this module offers (`reactions.mjs`) is refused it. **Gap:** pf2e itself has no way to refuse a reaction, so its own reactions (*Reactive Strike*, a Shield Block) are not stopped — as for VS-49g |
+| VS-62b | "on a failure, it is Slowed 1 for that turn as it sobs uncontrollably" | A failed turn-start save slows it 1 for that turn only | the carried save's failure → slowed 1 for `0 rounds, turn-end` (a rider's duration may be 0) | ✅ | In an encounter, at the start of ZZ Victim's turn: one Will save against DC 34, a critical failure (2) → **slowed 1** for 0 rounds, gone at the end of that same turn; the next turn's save a success (40) → no slowed |
+| VS-62c | "Failure As success, but the duration is 1 minute" | No reactions and a save at each turn start, for a minute | `failure` → the same effect for 1 minute | ✅ | A failure (20): the despair effect for **1 minute**, `self:cannot-react`, and a save at the start of each of its turns (above) |
+| VS-62d | "Critical Failure As failure, and the creature is automatically slowed 1 for 1 minute" | Slowed 1 for the minute, whatever the turn-start saves | `criticalFailure` → the effect for 1 minute and slowed 1 for 1 minute | ✅ | A critical failure (2): the despair effect for 1 minute and **slowed 1 for 1 minute**, whatever the turn-start saves |
+| VS-62e | "Critical Success The creature is unaffected" | Nothing | no rider on `criticalSuccess` | ✅ | A critical success (44): no effect, reactions untouched |
+| VS-62f | "Heightened (7th) The area increases to a 60-foot cone" | A 60-ft cone at rank 7 | pf2e's own heightening of the area | ✅ | pf2e's variant at rank 7 is a **60-foot cone** (30 at ranks 5 and 6), and area targeting aims what the variant says. Found on the way: an added +30 at rank 7 made it 90 — pf2e already carries it, and nothing is added |
 
 ### VS-63 · Phantasmal Calamity
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-63a | "The vision deals 11d6 mental damage (basic Will save)" | A basic Will save in the 30-ft burst | | ☐ | |
-| VS-63b | "On a critical failure, the creature must also succeed at a reflex save or believe it's trapped" | A critical failure asks a Reflex save next | | ☐ | |
-| VS-63c | "If it fails the second save, it's also Stunned for 1 minute" | A failed Reflex save stuns for a minute | | ☐ | |
-| VS-63d | "It can attempt a new Will save at the end of each of its turns, and on a success, it disbelieves the illusion and recovers from the stunned condition" | A Will save at each turn's end; a success ends the stun | | ☐ | |
-| VS-63e | "The damage increases by 2d6" | Rank 7: 13d6 | | ☐ | |
+| VS-63a | "The vision deals 11d6 mental damage (basic Will save)" | A basic Will save in the 30-ft burst | pf2e's own card: a basic Will save, 11d6 mental, in the 30-foot burst area targeting placed | ✅ | The burst caught ZZ Victim; the card's save is pf2e's **basic** Will save against DC 34, its damage 11d6 mental (13d6 at rank 7), halved or doubled by the save on pf2e's own damage card |
+| VS-63b | "On a critical failure, the creature must also succeed at a reflex save or believe it's trapped" | A critical failure asks a Reflex save next | `content/vanilla/phantasmal-calamity.json`: `criticalFailure` → a `save` rider (`statistic: "reflex"`) | ✅ | A critical failure on the Will save (2): a **Reflex save** rolled at once against DC 34. A success there (40, with +30 Reflex): nothing more |
+| VS-63c | "If it fails the second save, it's also Stunned for 1 minute" | A failed Reflex save stuns for a minute | the Reflex save's `failure`/`criticalFailure` → stunned for 1 minute | ✅ | A critical failure on the Reflex save (2): *Phantasmal Calamity: Stunned* for **1 minute**, ZZ Victim **stunned** |
+| VS-63d | "It can attempt a new Will save at the end of each of its turns, and on a success, it disbelieves the illusion and recovers from the stunned condition" | A Will save at each turn's end; a success ends the stun | the stun's `carries`: a `turn-end` Will save, a success `shorten: "all"` | ✅ | In an encounter, at the end of ZZ Victim's turn: a Will save against DC 34 — a critical failure (2) kept the stun; next turn's success (40): "Drive: Phantasmal Calamity: Stunned on ZZ Victim ends." and the stunned condition went with it |
+| VS-63e | "The damage increases by 2d6" | Rank 7: 13d6 | pf2e's own heightening (+2d6) | ✅ | Rank 7: the card's damage **13d6** mental |
 
 ### VS-64 · Massacre
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-64a | "Each living creature of 17th level or lower in the line must attempt a Fortitude save" | The 60-ft line catches living creatures of level 17 or lower; others don't save | | ☐ | |
-| VS-64b | "If the damage from massacre reduces a creature to 0 Hit Points, that creature dies instantly" | 0 HP from it is death | | ☐ | |
-| VS-64c | "Success The creature takes 9d6 void damage" | 9d6 | | ☐ | |
-| VS-64d | "Failure The creature takes" | 100 void damage | | ☐ | |
-| VS-64e | "Critical Failure The creature dies" | Dead | | ☐ | |
-| VS-64f | "If massacre doesn't kill even a single creature, the void energy hungrily turns backward toward you" | With nobody dead, the backlash follows | | ☐ | |
-| VS-64g | "damage to every living creature in the line (even those above 17th level) and 30 void damage to you" | 30 void to every living creature in the line and 30 to the caster | | ☐ | |
-| VS-64h | "Heightened (10th) The spell can affect living creatures up to 19th level" | Level 19 at rank 10, with 10d6 and 115 | | ☐ | |
+| VS-64a | "Each living creature of 17th level or lower in the line must attempt a Fortitude save" | The 60-ft line catches living creatures of level 17 or lower; others don't save | `content/vanilla/massacre.json`: every rider predicated on `target:mode:living` and level ≤ 17 (≤ 19 at rank 10); the line aimed from the caster | ✅ | The 60-foot line from Aries caught ZZ Victim (level 1), the Ghoul Soldier (undead) and Capricorn (level 20); only ZZ Victim's save did anything. Made level 19, at rank 9 its save did nothing — not of 17th level or lower |
+| VS-64b | "If the damage from massacre reduces a creature to 0 Hit Points, that creature dies instantly" | 0 HP from it is death | `death` (`hpFraction: 0`) after the damage | ✅ | ZZ Victim at 50 HP, failing: 100 void, then "ZZ Victim is reduced to 0 Hit Points — it dies." |
+| VS-64c | "Success The creature takes 9d6 void damage" | 9d6 | `success` → 9d6 void (rank < 10) | ✅ | A success (34, with +30 Fortitude): **9d6 void** = 33 |
+| VS-64d | "Failure The creature takes" | 100 void damage | `failure` → 100 void (rank < 10) | ✅ | A failure (20) at 400 HP: **100 void**, ZZ Victim at 300 |
+| VS-64e | "Critical Failure The creature dies" | Dead | `criticalFailure` → `death` | ✅ | A critical failure (2): "ZZ Victim is reduced to 0 Hit Points — it dies.", marked dead |
+| VS-64f | "If massacre doesn't kill even a single creature, the void energy hungrily turns backward toward you" | With nobody dead, the backlash follows | `aftermath` on the cast (`awaits` the answering creatures), `aftermath-mark` last of each one's riders (`scripts/riders/aftermath.mjs`; `tallyState` test) | ✅ | With ZZ Victim surviving its result (a success, 9d6; a failure, 100; at rank 10, 115) — and with nobody able to answer at all (level 19, rank 9) — "Drive: Massacre killed no one: the void energy turns back." When ZZ Victim died (a critical failure, or 100 at 50 HP), no backlash |
+| VS-64g | "damage to every living creature in the line (even those above 17th level) and 30 void damage to you" | 30 void to every living creature in the line and 30 to the caster | `none` 30 void on every reached creature `noneTo: ["target:mode:living"]` admits; `noneSelf` 30 void on the caster | ✅ | The backlash: **30 void** to ZZ Victim and to Capricorn (level 20 — above 17th, still taken), none to the undead Ghoul Soldier, and **30 void to Aries** |
+| VS-64h | "Heightened (10th) The spell can affect living creatures up to 19th level" | Level 19 at rank 10, with 10d6 and 115 | rank-10 riders (`item:rank` ≥ 10): level 19, 10d6, 115 | ✅ | Rank 10, ZZ Victim at level 19: a failure dealt **115** void, a success **10d6** void — both answering, where at rank 9 the same level was out of reach |
 
 ## Batch 5 — Reactions and recovery
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 202 |
-| ✅ | 117 |
-| ⚠️ | 6 |
+| ☐ not yet driven | 162 |
+| ✅ | 156 |
+| ⚠️ | 7 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |
