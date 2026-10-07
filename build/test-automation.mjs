@@ -522,7 +522,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         empty: wrong("mist", { lingering: { inside: {} } }),
         rules: wrong("mist", { lingering: { inside: { rules: [{ value: 1 }] } } }),
         listed: wrong("mist", { lingering: [{ inside: { conditions: ["foggy"] } }] }),
-    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1 });
+        darkness: wrong("darkness", { lingering: { darkness: "yes" } }),
+        darknessOk: wrong("darkness", { lingering: { darkness: true } }),
+    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0 });
     check("an alias to nothing, or over a live slug, is caught", V.aliasProblems({ "magic-missile": "force-barrage", fear: "calm" }, { calm: {} }, index).length, 2);
 
     // The words a table entry names by key are read back translated; an item's own text is left alone.
@@ -707,6 +709,18 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         { id: "c", flags: {} },
     ] } };
     check("leaving one area takes off only what that area gave", heldFrom(actor, "Scene.s.Region.r").map((e) => e.id), ["a"]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  Darkness that outshines light up to its rank (VS-08)                                         */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { darknessSource } = await import("../scripts/targeting/lingering.mjs");
+    const burst = darknessSource({ x: 3000, y: 1600, width: 800, height: 800 }, 2, 100, 5);
+    check("a 20-ft burst of darkness is a 20-ft darkness source at its centre", [burst.x, burst.y, burst.config.negative, burst.config.bright, burst.config.dim], [3400, 2000, true, 20, 20]);
+    check("its priority is the cast rank, so light of that rank or lower is put out", [burst.config.priority, darknessSource({ x: 0, y: 0, width: 100, height: 100 }, 5, 100, 5).config.priority], [2, 5]);
+    check("a darkness with no rank still puts out ordinary light", darknessSource({ x: 0, y: 0, width: 100, height: 100 }, undefined, 100, 5).config.priority, 0);
 }
 
 /* -------------------------------------------------------------------------------------------- */

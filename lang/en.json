@@ -333,6 +333,11 @@
                 "Ring": "A ring: 10-foot radius",
                 "Wall": "Wall of Fire"
             },
+            "darkness": {
+                "Shroud": "Darkness",
+                "Seen": "Darkness (seen through)",
+                "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
+            },
             "mist": {
                 "Cloud": "Mist",
                 "Inside": "<p>You are within the mist: you are concealed, and creatures outside the mist are concealed to you.</p>"
