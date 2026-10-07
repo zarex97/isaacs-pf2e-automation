@@ -300,7 +300,8 @@
                 "damage": {
                     "formula": "2",
                     "type": "cold",
-                    "perStep": "1"
+                    "perStep": "1",
+                    "persistent": false
                 }
             }
         },
@@ -464,6 +465,41 @@
                     }
                 }
             ]
+        },
+        "wall-of-fire": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 60,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-fire.Line"
+                },
+                {
+                    "type": "ring",
+                    "value": 10,
+                    "label": "ISAACS_AUTOMATION.Vanilla.wall-of-fire.Ring"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.wall-of-fire.Wall",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "events": [
+                    "tokenMoveIn",
+                    "tokenTurnStart"
+                ],
+                "damage": {
+                    "formula": "4d6",
+                    "type": "fire",
+                    "perStep": "1d6",
+                    "persistent": false
+                }
+            }
         }
     }
 }

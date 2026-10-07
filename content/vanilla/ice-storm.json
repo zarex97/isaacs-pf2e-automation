@@ -18,7 +18,8 @@
         "damage": {
             "formula": "2",
             "type": "cold",
-            "perStep": "1"
+            "perStep": "1",
+            "persistent": false
         }
     }
 }

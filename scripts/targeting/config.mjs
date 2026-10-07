@@ -137,6 +137,8 @@ export function configFor(item, override = {}) {
         chain: Number(flag?.chain?.link) > 0 ? { link: Number(flag.chain.link) } : null,
         // The caster moves to the placement — see `move-caster.mjs`.
         moveCaster: flag?.moveCaster ? { ...flag.moveCaster } : null,
+        // Aimed for where it stands, not for whom it catches: a wall that harms only those who cross it.
+        placeOnly: flag?.placeOnly === true,
     };
 }
 
