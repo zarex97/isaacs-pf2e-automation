@@ -438,6 +438,8 @@ async function applyOne(rider, context) {
             return applyDecoy(rider, context);
         case "transfer":
             return applyTransfer(rider, context);
+        case "temp-hp":
+            return applyTempHp(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2669,6 +2671,33 @@ async function applyDecoy(rider, context) {
  * How many Hit Points move. *Spirit Link*: "it regains 2 Hit Points (or the difference between its current and
  * maximum Hit Points, if that's lower). You lose as many Hit Points as the target regained."
  */
+/** Temporary Hit Points from an amount and a share of it, rounded down: *Vampiric Feast*'s "half the void damage". */
+export function tempHpFrom(amount, times = 1) {
+    const value = Math.floor((Number(amount) || 0) * (Number(times) || 0));
+    return Math.max(0, value);
+}
+
+/**
+ * Temporary Hit Points, as an effect holding pf2e's own TempHP rule — so the higher of two amounts is kept
+ * rather than both, and they go when the effect does: *Vampiric Feast*'s "You lose any remaining temporary
+ * Hit Points after 1 minute" is the rider's `duration`. `value` is a number or an expression
+ * (`event.damage.total`, what the blow actually took after resistances), `times` a share of it.
+ */
+async function applyTempHp(rider, context) {
+    const actor = context.actor;
+    if (!actor?.hitPoints) return;
+    const declared = typeof rider.apply.value === "string" && isResolvable(rider.apply.value)
+        ? resolveFromOrigin(rider.apply.value, context)
+        : rider.apply.value;
+    const value = tempHpFrom(declared, rider.apply.times ?? 1);
+    if (value <= 0) return;
+    const label = rider.apply.label ?? t("TempHp.Label");
+    const source = effectSource(label, [{ key: "TempHP", value }], rider, context);
+    const [created] = await actor.createEmbeddedDocuments("Item", [source]);
+    record(context, created);
+    context.notes.push(t("TempHp.Gained", { actor: actor.name, value }));
+}
+
 export function transferred(amount, current, max) {
     return Math.max(0, Math.min(Number(amount) || 0, (Number(max) || 0) - (Number(current) || 0)));
 }

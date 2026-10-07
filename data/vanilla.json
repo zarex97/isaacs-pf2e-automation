@@ -2106,6 +2106,25 @@
                 }
             ]
         },
+        "vampiric-feast": {
+            "riders": [
+                {
+                    "event": "damage-applied",
+                    "ownItem": true,
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "temp-hp",
+                        "value": "event.damage.total",
+                        "times": 0.5,
+                        "label": "ISAACS_AUTOMATION.Vanilla.vampiric-feast.Feast"
+                    }
+                }
+            ]
+        },
         "wall-of-fire": {
             "areaTargeting": {
                 "affects": "all",
