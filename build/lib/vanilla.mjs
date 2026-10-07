@@ -42,6 +42,7 @@ export function docs(built, index, en) {
             : a.type === "prompt" ? `GM note: “${words(a.text)}”`
             : a.type === "teleport" ? `${a.stopsAtWalls ? "pushed" : "moved"} ${a.distance} ft${a.direction === "toward" ? " closer" : a.direction === "choose" ? " in a direction you choose" : " away"}`
             : a.type === "persistent-damage" ? `${a.formula}${a.perStep ? ` (+${a.perStep} per ${a.perStepInterval > 1 ? `${a.perStepInterval} ranks` : "rank"})` : ""} persistent ${a.damageType ?? ""}${a.endsWith ? `, ends with ${a.endsWith.join("/")}` : ""}`
+            : a.type === "heal" ? `heals ${a.formula ?? a.value}${a.perStep ? ` (+${a.perStep} per rank)` : ""}`
             : a.type === "banish" ? (r.duration?.unit === "unlimited" ? "banished for good" : "banished")
             : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
