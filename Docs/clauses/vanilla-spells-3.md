@@ -665,10 +665,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-92a | "The target can't use sonic attacks, nor can it use actions with the auditory trait" | Its auditory actions are refused | | ☐ | |
-| VS-92b | "This prevents it from casting spells due to the magical words involved in casting, with the exception of subtle spells" | Its casts are refused unless the spell is subtle | | ☐ | |
+| VS-92a | "The target can't use sonic attacks, nor can it use actions with the auditory trait" | Its auditory actions are refused | pf2e's *Spell Effect: Silence* (`emitsSound` false); `forbids: [cast, auditory]` (`forbids.mjs`, any trait now) | ✅ | Aries silenced: `emitsSound` **false**; an action with the auditory trait — **refused**; a plain action — posted |
+| VS-92b | "This prevents it from casting spells due to the magical words involved in casting, with the exception of subtle spells" | Its casts are refused unless the spell is subtle | `forbidsExcept: { traits: [subtle] }` on `cast` | ✅ | Silenced, Aries casting *Guidance* — **refused**; casting *Silence* (subtle) — **cast**. The effect gone: *Guidance* cast |
 | VS-92c | "The target makes no sound, preventing creatures from noticing it using hearing alone" | — | | — | Nothing to automate: noticing by hearing is the table's |
-| VS-92d | "Heightened (4th) The spell creates an aura in a 10-foot emanation around the touched creature" | Rank 4: everyone within 10 ft of it is silenced too, moving with it | | ☐ | |
+| VS-92d | "Heightened (4th) The spell creates an aura in a 10-foot emanation around the touched creature" | Rank 4: everyone within 10 ft of it is silenced too, moving with it | pf2e's `Aura` at level 4 copies the effect within 10 ft; `forbidsOf` gives the copy the forbids of the effect radiating it | ✅ | Rank 4 on Aries, Leo in the same square: Leo got *Spell Effect: Silence* from the aura, **silent**, Leo's auditory action **refused**. Leo moved 30 ft away: the copy **gone**, the action posted |
 
 ### VS-93 · Summon Animal
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 39 |
-| ✅ | 276 |
+| ☐ not yet driven | 36 |
+| ✅ | 279 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |

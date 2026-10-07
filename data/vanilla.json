@@ -3737,6 +3737,27 @@
                 }
             ]
         },
+        "silence": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.mmJNE57hC7G3SPae",
+                        "atCastRank": true,
+                        "forbids": [
+                            "cast",
+                            "auditory"
+                        ],
+                        "forbidsExcept": {
+                            "traits": [
+                                "subtle"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
         "sleep": {
             "areaTargeting": {
                 "affects": "all"

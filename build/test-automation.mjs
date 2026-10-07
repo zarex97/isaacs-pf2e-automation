@@ -1389,4 +1389,13 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a tether answers teleportation and banishment, not a push", [tethers({ system: { traits: { value: ["teleportation"] } } }, "teleport"), tethers({ system: { traits: { value: ["air"] } } }, "teleport"), tethers(null, "banish")], [true, false, true]);
 }
 
+{
+    const { forbidsOf } = await import("../scripts/riders/forbids.mjs");
+    const L = "isaacs-pf2e-automation";
+    const radiating = { sourceId: "pf2e.silence", flags: { [L]: { forbids: ["cast", "auditory"], forbidsExcept: { traits: ["subtle"] } } } };
+    const origin = { itemTypes: { effect: [radiating] } };
+    const copy = { sourceId: "pf2e.silence", flags: { pf2e: { aura: { origin: "Actor.x", slug: "s" } } } };
+    check("an aura's copy forbids what the effect radiating it forbids", [forbidsOf(copy, () => origin)?.forbids, forbidsOf({ sourceId: "other", flags: { pf2e: { aura: { origin: "Actor.x" } } } }, () => origin), forbidsOf(radiating).except], [["cast", "auditory"], null, { traits: ["subtle"] }]);
+}
+
 report("Automation tests");
