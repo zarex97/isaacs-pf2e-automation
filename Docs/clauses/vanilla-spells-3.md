@@ -525,57 +525,57 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-77a | "Choose acid, cold, electricity, fire, or sonic damage" | The cast asks for one of five | | ☐ | |
-| VS-77b | "The target and its gear gain resistance 5 against the damage type you chose" | Resistance 5 to that type | | ☐ | |
-| VS-77c | "Heightened (4th) The resistance increases to 10, and you can target up to two creatures" | Rank 4: 10, two targets | | ☐ | |
-| VS-77d | "Heightened (7th) The resistance increases to 15, and you can target up to five creatures" | Rank 7: 15, five targets | | ☐ | |
+| VS-77a | "Choose acid, cold, electricity, fire, or sonic damage" | The cast asks for one of five | `content/vanilla/resist-energy.json`: `castChoice` of five types, `preselect: "$cast"` on pf2e's effect | ✅ | The cast asked "Resistance to which damage?" — Acid, Cold, Electricity, Fire, Sonic; the choice went onto every target's effect, no prompt per creature |
+| VS-77b | "The target and its gear gain resistance 5 against the damage type you chose" | Resistance 5 to that type | pf2e's *Spell Effect: Resist Energy* (`Resistance`, by `@item.level`), `atCastRank` | ✅ | Rank 2, Fire, on Leo: **fire 5** |
+| VS-77c | "Heightened (4th) The resistance increases to 10, and you can target up to two creatures" | Rank 4: 10, two targets | `areaTargeting.maxTargets` 1, +1 at rank 4; pf2e's 10 at level 4 | ✅ | Rank 4 with three targeted: "3 targeted, and it reaches 2. Cast anyway?"; with two, Cold: Leo and ZZ Victim **cold 10** |
+| VS-77d | "Heightened (7th) The resistance increases to 15, and you can target up to five creatures" | Rank 7: 15, five targets | `maxTargets` +3 at rank 7 (five); pf2e's 15 at level 7 | ✅ | Rank 7, three targeted, Sonic: Leo, ZZ Victim and Capricorn **sonic 15**, no warning |
 
 ### VS-78 · Mountain Resilience
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-78a | "It gains resistance 5 to physical damage, except adamantine" | Resistance 5 physical, adamantine excepted | | ☐ | |
-| VS-78b | "Each time the target is hit by a bludgeoning, piercing, or slashing attack, mountain resilience 's duration decreases by 1 minute" | Every physical hit takes a minute off its 20 | | ☐ | |
-| VS-78c | "Heightened (6th) The resistance increases to 10" | Rank 6: 10 | | ☐ | |
+| VS-78a | "It gains resistance 5 to physical damage, except adamantine" | Resistance 5 physical, adamantine excepted | pf2e's *Spell Effect: Mountain Resilience* (`Resistance` physical, `exceptions: [adamantine]`), `atCastRank` | ✅ | Leo: **resistance physical 5, except adamantine**; a 10-slashing hit took 5 |
+| VS-78b | "Each time the target is hit by a bludgeoning, piercing, or slashing attack, mountain resilience 's duration decreases by 1 minute" | Every physical hit takes a minute off its 20 | `content/vanilla/mountain-resilience.json`: the effect `carries` a `damage-received` `shorten` (1 of its minutes), predicated on bludgeoning, piercing or slashing from a hit | ✅ | A slashing hit: **20 → 19 minutes**. A fire hit: still 19. Piercing damage that was not an attack: still 19 |
+| VS-78c | "Heightened (6th) The resistance increases to 10" | Rank 6: 10 | pf2e's effect at level 6 | ✅ | Rank 6: **resistance physical 10** |
 
 ### VS-79 · Protection
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-79a | "The target gains a +1 status bonus to Armor Class and saving throws" | +1 AC and saves | | ☐ | |
-| VS-79b | "You can choose to have the benefits also affect all your allies in a 10-foot emanation around the target" | From rank 3, a choice: the bonus also reaches the caster's allies within 10 ft of the target, moving with it | | ☐ | |
+| VS-79a | "The target gains a +1 status bonus to Armor Class and saving throws" | +1 AC and saves | pf2e's *Spell Effect: Protection* (`FlatModifier` status +1 AC and saves) on `action-used` | ✅ | Rank 1 on Leo: no prompt; **AC 34 → 35, Fortitude +24 → +25** |
+| VS-79b | "You can choose to have the benefits also affect all your allies in a 10-foot emanation around the target" | From rank 3, a choice: the bonus also reaches the caster's allies within 10 ft of the target, moving with it | `content/vanilla/protection.json`: `castChoice` `extent` from rank 3; on `rider:cast:extent:emanation`, an effect with pf2e's `Aura` (10 ft, allies, `removeOnExit`) granting the same effect | ✅ | Rank 3 asked "Ward only the target, or every ally within 10 feet of it as well?"; *emanation*: Leo got the bonus and the aura; Aries 5 ft away **AC 35**, Capricorn 20 ft away stayed 34; moved 10 ft from Leo, Capricorn gained it; Aries walked 30 ft out — **lost it**, and walking back in got it again |
 
 ### VS-80 · Fire Shield
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-80a | "its heat grants you cold resistance 5" | Cold resistance 5 | | ☐ | |
+| VS-80a | "its heat grants you cold resistance 5" | Cold resistance 5 | pf2e's *Spell Effect: Fire Shield* (`Resistance` cold, by `@item.level`), `atCastRank` | ✅ | Rank 4 on Aries: **cold resistance 5** |
 | VS-80b | "makes you immune to mild and severe environmental cold" | — | | — | Nothing to automate: environmental cold is the GM's |
-| VS-80c | "You can Raise a Shield with the fire shield as a normal shield to gain a +1 circumstance bonus to AC" | Raise a Shield gives +1 AC | | ☐ | |
-| VS-80d | "You can use the Shield Block reaction with the fire shield , which has Hardness 10, is immune to fire, and has 40 HP (with no Broken Threshold)" | Shield Block with Hardness 10 and 40 HP; fire passes through it untouched | | ☐ | |
-| VS-80e | "its Hardness is halved against effects that have the water trait" | Hardness 5 against water | | ☐ | |
-| VS-80f | "If you Shield Block a melee attack that is either an unarmed attack or made by an adjacent attacker, the attacker takes 2d6 fire damage" | Blocking such an attack burns the attacker for 2d6 | | ☐ | |
-| VS-80g | "The cold resistance increases by 5, the HP increase by 10, and the fire damage increases by 1d6" | Rank 6: 10, 50 HP, 3d6 | | ☐ | |
+| VS-80c | "You can Raise a Shield with the fire shield as a normal shield to gain a +1 circumstance bonus to AC" | Raise a Shield gives +1 AC | `shield.raise` (`scripts/riders/spell-shield.mjs`): the shield lowered until pf2e's *Effect: Raise a Shield* is on; `originAction` *Raise the Fire Shield* puts it there | ✅ | Cast: AC 34, shield **lowered**; a Shield Block then was refused by pf2e (18 of 18 taken). *Raise the Fire Shield* used: **AC 35**, shield raised |
+| VS-80d | "You can use the Shield Block reaction with the fire shield , which has Hardness 10, is immune to fire, and has 40 HP (with no Broken Threshold)" | Shield Block with Hardness 10 and 40 HP; fire passes through it untouched | pf2e's effect (Hardness 10, no Broken Threshold); `shield.hp` 40 kept on the effect, `immune: [fire]`; at 0 the effect ends | ✅ | A blocked 18 slashing: Aries took 8, **shield 40 → 32**. A blocked 18 fire: Aries took 8, **shield unchanged**. Down to 3 HP, a blocked 18: "the shield takes 8 damage and is destroyed" — effect, cold resistance and the Raise action gone; the next block took the full 18 |
+| VS-80e | "its Hardness is halved against effects that have the water trait" | Hardness 5 against water | `shield.halvedAgainst: [water]`: a damage stage halves the shield's Hardness for a blow with the water trait | ✅ | A blocked 18 slashing with the water trait: **Hardness 5** — Aries took 13, the shield 16 → 3 |
+| VS-80f | "If you Shield Block a melee attack that is either an unarmed attack or made by an adjacent attacker, the attacker takes 2d6 fire damage" | Blocking such an attack burns the attacker for 2d6 | `carries` a `damage-received` `damage` 2d6 fire, predicated on `rider:damage:blocked`, `rider:damage:melee` and `unarmed` or `adjacent` (new damage options) | ✅ | Blocked from 95 ft: a sword — **no burn**; a claw (unarmed) — Ghoul 200 → 197. Adjacent, a sword: Ghoul **197 → 190** |
+| VS-80g | "The cold resistance increases by 5, the HP increase by 10, and the fire damage increases by 1d6" | Rank 6: 10, 50 HP, 3d6 | `hpPerStep` 10 and `perStep` 1d6 at `perStepInterval` 2; pf2e's resistance formula | ✅ | Rank 6: **cold 10**, shield **50/50**; an adjacent claw blocked: the Ghoul took **3d6** = 16, shield 50 → 42 |
 
 ### VS-81 · Share Life
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-81a | "The target takes half damage from all effects that deal Hit Point damage, and you take the remainder of the damage" | The target takes half (rounded down); the caster takes the rest | | ☐ | |
-| VS-81b | "When you take damage through this link, you don't apply any resistances, weaknesses, or other abilities you have to that damage" | The caster's half ignores the caster's resistances and weaknesses | | ☐ | |
-| VS-81c | "The spell ends if the target is ever more than 30 feet away from you" | Moving apart beyond 30 ft ends it | | ☐ | |
-| VS-81d | "If either you or the target is reduced to 0 Hit Points, any damage from this spell is resolved and then the spell ends" | 0 HP on either side ends it after the blow | | ☐ | |
+| VS-81a | "The target takes half damage from all effects that deal Hit Point damage, and you take the remainder of the damage" | The target takes half (rounded down); the caster takes the rest | `shareDamage: { share: 0.5 }` (`scripts/riders/share-damage.mjs`): a damage stage alters the blow with pf2e's `DamageRoll#alter` before it lands; the remainder goes to the caster | ✅ | ZZ Victim linked; 20 slashing: **ZZ −10, Aries −10**; 15 slashing: **ZZ −7, Aries −8** ("Aries takes 8 damage through the link with ZZ Victim") |
+| VS-81b | "When you take damage through this link, you don't apply any resistances, weaknesses, or other abilities you have to that damage" | The caster's half ignores the caster's resistances and weaknesses | The caster's remainder is applied `final` — no IWR | ✅ | ZZ resisting slashing 3, Aries slashing 5, 20 slashing: **ZZ −7** (its half, less its resistance), **Aries −10** (none of Aries's resistance) |
+| VS-81c | "The spell ends if the target is ever more than 30 feet away from you" | Moving apart beyond 30 ft ends it | `range: 30`: an `updateToken` hook ends the effect when the two are farther apart | ✅ | ZZ moved to 35 ft: "life linked ends: the linked creatures are too far apart" — effect gone |
+| VS-81d | "If either you or the target is reduced to 0 Hit Points, any damage from this spell is resolved and then the spell ends" | 0 HP on either side ends it after the blow | After the split, either creature at 0 HP ends the effect | ✅ | ZZ at 6, 20 slashing: ZZ **0**, Aries still took his 10, then "ends: one of the linked creatures is at 0 Hit Points". Caster side (the link pointed at the Ghoul at 5 HP, since Aries's homebrew holds Aries at 1): Ghoul **0**, link ended |
 
 ### VS-82 · Protector Tree
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-82a | "A Medium tree suddenly grows in an unoccupied square within range" | A tree is placed in an empty square within 30 ft | | ☐ | |
-| VS-82b | "The tree has AC 10 and 10 Hit Points" | AC 10, 10 HP | | ☐ | |
-| VS-82c | "Whenever an ally adjacent to the tree is hit by a Strike, the tree interposes its branches and takes the damage first" | A Strike on an adjacent ally hurts the tree first | | ☐ | |
-| VS-82d | "Any additional damage beyond what it takes to reduce the tree to 0 Hit Points is dealt to the original target" | What the tree can't take goes on to the ally | | ☐ | |
-| VS-82e | "The tree isn't large enough to impede movement through its square" | Its square can be walked through | | ☐ | |
-| VS-82f | "The tree has an additional 10 Hit Points" | Rank 2: 20 HP | | ☐ | |
+| VS-82a | "A Medium tree suddenly grows in an unoccupied square within range" | A tree is placed in an empty square within 30 ft | `content/vanilla/protector-tree.json`: a 5-ft line, `placeOnly`; `lingering.barrier` of squares in 5-ft sections — one hazard token; an occupied square is refused | ✅ | Placed on Leo's square: "Drive: Protector Tree is lost" — nothing built. Placed in the free square beside Leo, 10 ft from Aries: a **Protector Tree** token there |
+| VS-82b | "The tree has AC 10 and 10 Hit Points" | AC 10, 10 HP | `barrier.ac` 10, `hp` 10 | ✅ | The tree: **AC 10, 10/10 HP** |
+| VS-82c | "Whenever an ally adjacent to the tree is hit by a Strike, the tree interposes its branches and takes the damage first" | A Strike on an adjacent ally hurts the tree first | `interposes: true` (`scripts/targeting/barrier.mjs`): a damage stage catches a Strike that hit an ally of the caster within 5 ft of the tree; the tree takes it, `final` | ✅ | A sword hit for 7 on Leo beside it: **Leo −0, tree 10 → 3**. Not caught: a miss (Leo −7), damage with no Strike (Leo −7), a hit on the caster Aries beside it (−7) |
+| VS-82d | "Any additional damage beyond what it takes to reduce the tree to 0 Hit Points is dealt to the original target" | What the tree can't take goes on to the ally | The blow is altered by what the tree took; the rest lands on the ally; the tree at 0 is removed | ✅ | A hit for 15: "Protector Tree takes the blow for Leo: 3 damage to it, 12 to Leo" — **Leo −12**, tree destroyed; the next hit for 5: Leo −5 |
+| VS-82e | "The tree isn't large enough to impede movement through its square" | Its square can be walked through | A section of squares builds no `Wall` and no movement-cost Region | ✅ | The cast left **0 walls** and no Region with a movement behavior — only the token in the square |
+| VS-82f | "The tree has an additional 10 Hit Points" | Rank 2: 20 HP | `hpPerStep` 10 | ✅ | Rank 2: the tree **20/20 HP** |
 
 ## Batch 8 — One roll, one weapon
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 97 |
-| ✅ | 219 |
+| ☐ not yet driven | 72 |
+| ✅ | 244 |
 | ⚠️ | 9 |
 | ❌ | 0 |
 | 🔧 | 0 |

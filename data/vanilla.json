@@ -1244,6 +1244,67 @@
                 }
             ]
         },
+        "fire-shield": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.1RsScTvNdGD9zGWe",
+                        "atCastRank": true,
+                        "perStepInterval": 2,
+                        "shield": {
+                            "raise": true,
+                            "hp": 40,
+                            "hpPerStep": 10,
+                            "immune": [
+                                "fire"
+                            ],
+                            "halvedAgainst": [
+                                "water"
+                            ]
+                        },
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.fire-shield.Raise",
+                            "actions": 1,
+                            "traits": [],
+                            "spends": false,
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "self": true,
+                                    "apply": {
+                                        "type": "effect",
+                                        "uuid": "Compendium.pf2e.equipment-effects.Item.2YgXoHvJfrDHucMr"
+                                    }
+                                }
+                            ]
+                        },
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "predicate": [
+                                    "rider:damage:blocked",
+                                    "rider:damage:melee",
+                                    {
+                                        "or": [
+                                            "rider:damage:unarmed",
+                                            "rider:damage:adjacent"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "2d6",
+                                    "perStep": "1d6",
+                                    "damageType": "fire"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "floating-flame": {
             "areaTargeting": {
                 "affects": "all"
@@ -2558,6 +2619,43 @@
                 }
             }
         },
+        "mountain-resilience": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.JHpYudY14g0H4VWU",
+                        "atCastRank": true,
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "self": true,
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:damage:type:bludgeoning",
+                                            "rider:damage:type:piercing",
+                                            "rider:damage:type:slashing"
+                                        ]
+                                    },
+                                    {
+                                        "or": [
+                                            "rider:damage:outcome:success",
+                                            "rider:damage:outcome:criticalSuccess"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "shorten",
+                                    "rounds": 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "paralyze": {
             "riders": [
                 {
@@ -2918,6 +3016,92 @@
                 }
             ]
         },
+        "protection": {
+            "castChoice": {
+                "flag": "extent",
+                "fromRank": 3,
+                "prompt": "ISAACS_AUTOMATION.Vanilla.protection.Choose",
+                "choices": [
+                    "target",
+                    "emanation"
+                ],
+                "labels": {
+                    "target": "ISAACS_AUTOMATION.Vanilla.protection.Target",
+                    "emanation": "ISAACS_AUTOMATION.Vanilla.protection.Emanation"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.RawLEPwyT5CtCZ4D"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        "rider:cast:extent:emanation"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.protection.Aura",
+                        "rules": [
+                            {
+                                "key": "Aura",
+                                "slug": "protection-emanation",
+                                "radius": 10,
+                                "traits": [
+                                    "magical"
+                                ],
+                                "effects": [
+                                    {
+                                        "uuid": "Compendium.pf2e.spell-effects.Item.RawLEPwyT5CtCZ4D",
+                                        "affects": "allies",
+                                        "includesSelf": false,
+                                        "removeOnExit": true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "protector-tree": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "line",
+                    "value": 5
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.protector-tree.Ground",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "events": [],
+                "barrier": {
+                    "kind": "squares",
+                    "sectionFeet": 5,
+                    "ac": 10,
+                    "hardness": 0,
+                    "hp": 10,
+                    "hpPerStep": 10,
+                    "interposes": true,
+                    "name": "ISAACS_AUTOMATION.Vanilla.protector-tree.Tree"
+                }
+            }
+        },
         "regenerate": {
             "riders": [
                 {
@@ -2981,6 +3165,45 @@
                     "statistic": "will"
                 }
             }
+        },
+        "resist-energy": {
+            "areaTargeting": {
+                "maxTargets": 1,
+                "heightening": {
+                    "atRank": {
+                        "4": {
+                            "maxTargets": 1
+                        },
+                        "7": {
+                            "maxTargets": 3
+                        }
+                    }
+                }
+            },
+            "castChoice": {
+                "flag": "resistEnergyType",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.resist-energy.Choose",
+                "choices": [
+                    "acid",
+                    "cold",
+                    "electricity",
+                    "fire",
+                    "sonic"
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.con2Hzt47JjpuUej",
+                        "atCastRank": true,
+                        "preselect": {
+                            "resistEnergyType": "$cast"
+                        }
+                    }
+                }
+            ]
         },
         "sanctuary": {
             "riders": [
@@ -3200,6 +3423,26 @@
                                 }
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "share-life": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.share-life.Link",
+                        "rules": [],
+                        "shareDamage": {
+                            "share": 0.5,
+                            "range": 30
+                        }
                     }
                 }
             ]

@@ -119,7 +119,7 @@ export async function castChoice(spell, _options) {
     }
     // Sizes by their names, as pf2e's own choices spell them ("large"); its labels are keyed by the short form ("lg").
     const SIZES = { tiny: "tiny", small: "sm", medium: "med", large: "lg", huge: "huge", gargantuan: "grg" };
-    const label = (value) => game.i18n.localize(CONFIG.PF2E?.damageTypes?.[value] ?? CONFIG.PF2E?.actorSizes?.[SIZES[value] ?? value] ?? value);
+    const label = (value) => game.i18n.localize(spec.labels?.[value] ?? CONFIG.PF2E?.damageTypes?.[value] ?? CONFIG.PF2E?.actorSizes?.[SIZES[value] ?? value] ?? value);
     const chosen = spec.choices.length === 1 ? spec.choices[0] : await foundry.applications.api.DialogV2.wait({
         window: { title: spell.name },
         content: `<p>${game.i18n.localize(spec.prompt ?? "")}</p>`,

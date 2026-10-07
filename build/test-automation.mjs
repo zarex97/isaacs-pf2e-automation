@@ -370,6 +370,7 @@ const { describeActor, describeDamage } = await import("../scripts/lib/roll-opti
     check("rider options say a condition, its value and every value it meets", ["rider:target:condition:frightened", "rider:target:condition:frightened:2", "rider:target:condition:frightened:1+", "rider:target:condition:frightened:2+"].every((o) => options.includes(o)), true);
     check("…a counter badge the same way", ["rider:target:effect:needle:3", "rider:target:effect:needle:3+"].every((o) => options.includes(o)) && !options.includes("rider:target:effect:needle:4+"), true);
     check("…and health", [options.includes("rider:target:hp-half-or-less"), options.includes("rider:target:hp-zero")], [true, false]);
+    check("damage options say how the blow came: blocked, melee, unarmed, from an adjacent attacker", describeDamage({ types: ["slashing"], total: 3, blocked: true, melee: true, adjacent: true }), ["rider:damage", "rider:damage:type:slashing", "rider:damage:dealt", "rider:damage:blocked", "rider:damage:melee", "rider:damage:adjacent"]);
     check("damage options name the type, that it landed, and the Strike's outcome", describeDamage({ types: ["cold"], total: 5, outcome: "success" }), ["rider:damage", "rider:damage:type:cold", "rider:damage:dealt", "rider:damage:outcome:success"]);
 }
 
@@ -897,6 +898,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("riders an effect carries are bound to the cast: its choice, and a level that grows by rank",
         withCast([{ predicate: ["rider:damage:type:$cast:damageType"], apply: { type: "death", maxLevel: 7, maxLevelPerStep: 4 } }], { damageType: "cold" }, 1),
         [{ predicate: ["rider:damage:type:cold"], apply: { type: "death", maxLevel: 11 } }]);
+    check("…and a formula that grows by its perStep — Fire Shield's 2d6, 3d6 at rank 6", withCast([{ apply: { type: "damage", formula: "2d6", perStep: "1d6" } }], {}, 1), [{ apply: { type: "damage", formula: "3d6" } }]);
     check("…or one named only by its roll option", preselected([{ key: "ChoiceSet", rollOption: "tangle-vine" }], { "tangle-vine": "$outcome" }, "success")[0].selection, "success");
     check("a pf2e ChoiceSet is answered from the save, leaving other rules alone", [preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[0].selection, preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[1], preselected(omen, { other: "x" }, "failure")[0].selection], ["critical-failure", omen[1], undefined]);
     check("a chosen compass point is a direction on the grid, y downwards", [compassVector("n"), compassVector("se"), compassVector("up")], [{ x: 0, y: -1 }, { x: 1, y: 1 }, null]);
@@ -1319,6 +1321,33 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("Docs/riders.md invents no apply type", missing(types, dispatched), []);
     check("Docs/riders.md documents every event", missing(events, documentedEvents), []);
     check("Docs/riders.md invents no event", missing(documentedEvents, events), []);
+}
+
+{
+    const { shieldHp, shieldRules, shieldDamage, blowHas } = await import("../scripts/riders/spell-shield.mjs");
+    const fire = { raise: true, hp: 40, hpPerStep: 10, immune: ["fire"], halvedAgainst: ["water"] };
+    check("a spell shield's Hit Points grow by step: Fire Shield 40, 50 at rank 6", [shieldHp(fire, 0), shieldHp(fire, 1)], [40, 50]);
+    const rules = shieldRules(fire, 40);
+    check("a raisable spell shield is lowered until pf2e's Raise a Shield effect is on", [rules[0].path, rules[0].value, rules[0].predicate], ["system.attributes.shield.raised", false, [{ not: "self:effect:raise-a-shield" }]]);
+    check("…and carries its own Hit Points", rules.slice(1).map((r) => [r.path, r.value]), [["system.attributes.shield.hp.max", 40], ["system.attributes.shield.hp.value", 40]]);
+    check("a blocked blow costs the shield what got past its Hardness", shieldDamage({ landed: 8, instances: [{ type: "slashing", total: 18 }], immune: ["fire"] }), 8);
+    check("…none of it fire, when it is immune to fire", [shieldDamage({ landed: 8, instances: [{ type: "fire", total: 18 }], immune: ["fire"] }), shieldDamage({ landed: 12, instances: [{ type: "fire", total: 15 }, { type: "slashing", total: 7 }], immune: ["fire"] })], [0, 7]);
+    check("a blow has a trait from its item or its roll options", [blowHas({ item: { system: { traits: { value: ["water"] } } } }, ["water"]), blowHas({ rollOptions: new Set(["origin:item:trait:water"]) }, ["water"]), blowHas({ rollOptions: new Set(["item:trait:fire"]) }, ["water"])], [true, true, false]);
+}
+
+{
+    const { splitDamage, splittable } = await import("../scripts/riders/share-damage.mjs");
+    check("shared damage: the target's altered part, the caster the remainder", [splitDamage(15, 7), splitDamage(15, 8), splitDamage(4, 9)], [{ own: 7, rest: 8 }, { own: 8, rest: 7 }, { own: 4, rest: 0 }]);
+    const roll = { total: 12, alter: () => null };
+    check("only a rolled blow is split — not a final number, healing, or one past IWR", [splittable({ damage: roll }), splittable({ damage: 12 }), splittable({ damage: { total: -5, alter: () => null } }), splittable({ damage: roll, final: true }), splittable({ damage: roll, skipIWR: true })], [true, false, false, false, false]);
+}
+
+{
+    const { interposed, isStrikeHit } = await import("../scripts/targeting/barrier.mjs");
+    check("a tree takes the blow first, up to its Hit Points; the rest goes on", [interposed(7, 10), interposed(15, 10), interposed(4, 0)], [{ taken: 7, left: 0 }, { taken: 10, left: 5 }, { taken: 0, left: 4 }]);
+    const strike = { isOfType: (...types) => types.includes("weapon") };
+    const roll = { total: 9, alter: () => null };
+    check("only a Strike that hit is caught", [isStrikeHit({ item: strike, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "failure", damage: roll }), isStrikeHit({ item: { isOfType: () => false }, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "criticalSuccess", damage: 9 })], [true, false, false, false]);
 }
 
 report("Automation tests");

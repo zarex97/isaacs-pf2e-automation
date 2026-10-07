@@ -31,6 +31,7 @@ import { RiderExtensions } from "./extensions.mjs";
 import { offerReaction } from "./reactions.mjs";
 import { gateByRound } from "./round-gate.mjs";
 import { selectRiders } from "./select.mjs";
+import { spellShieldSource } from "./spell-shield.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
 const DEGREES = ["criticalFailure", "failure", "success", "criticalSuccess"];
@@ -124,7 +125,7 @@ async function applyToTarget(target, candidates, context, payload) {
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
         item: castItemOf(context) ?? context.eventItem,
-        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context)],
+        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context), ...castChoiceOptions(context)],
     });
 
     // Most riders are chosen against the snapshot. A `live` rider is chosen against the world as this pass
@@ -1938,6 +1939,8 @@ async function applyEffect(rider, context) {
     }
     // *Shield*: the spell ends when its shield blocks (`shield-block.mjs`).
     if (rider.apply.endsOnBlock) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnBlock: rider.apply.endsOnBlock } });
+    // A shield the spell makes — *Fire Shield*: raised by an action, its own Hit Points (`spell-shield.mjs`).
+    if (rider.apply.shield) spellShieldSource(source, rider.apply.shield, riderSteps({ apply: { perStepInterval: rider.apply.perStepInterval } }, context));
     // What the form forbids its holder — *Vapor Form* (`forbids.mjs`).
     if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids } });
     const castRank = Number(castItemOf(context)?.rank);
@@ -3077,6 +3080,11 @@ function effectSource(label, rules, rider, context) {
         const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
     }
+    // *Share Life*: its holder's damage halved, the rest to its caster (`share-damage.mjs`).
+    if (rider.apply?.shareDamage && context.originActor) {
+        const { share = 0.5, range = null } = rider.apply.shareDamage;
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { shareDamage: { with: context.originActor.uuid, share, range } } });
+    }
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
@@ -3089,7 +3097,8 @@ function effectSource(label, rules, rider, context) {
 /**
  * Riders an effect takes with it, bound to the cast that gave it: each `"$cast:<flag>"` in a string becomes what was
  * chosen as the spell was cast, and each `maxLevel` grows by its `maxLevelPerStep` — *Seal Fate*'s "If the creature is
- * reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies … the maximum level … increases by 4".
+ * reduced to 0 Hit Points by the chosen damage and its level is 7 or less, it dies … the maximum level … increases by 4" —
+ * and each `formula` by its `perStep`: *Fire Shield*'s 2d6 to an attacker, "the fire damage increases by 1d6".
  */
 export function withCast(value, cast = {}, steps = 0) {
     if (typeof value === "string") return value.replace(/\$cast:(\w+)/g, (_m, flag) => cast[flag] ?? "none");
@@ -3100,7 +3109,16 @@ export function withCast(value, cast = {}, steps = 0) {
         out.maxLevel = Number(out.maxLevel) + (Number(out.maxLevelPerStep) || 0) * steps;
         delete out.maxLevelPerStep;
     }
+    if (typeof out.formula === "string" && out.perStep !== undefined) {
+        out.formula = growByStep(out.formula, out.perStep, steps);
+        delete out.perStep;
+    }
     return out;
+}
+
+/** The cast's choices as roll options, for a rider to be predicated on: `rider:cast:<flag>:<value>` — *Protection*'s extent. */
+export function castChoiceOptions(context) {
+    return Object.entries(castChoicesOf(context)).map(([flag, value]) => `rider:cast:${flag}:${value}`);
 }
 
 /** What the caster chose as this spell was cast (`castChoice`, `vanilla/requires.mjs`). */

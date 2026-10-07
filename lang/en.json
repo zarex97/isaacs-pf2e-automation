@@ -183,12 +183,13 @@
             "NoBolt": "no bolt"
         },
         "Barrier": {
-            "Lost": "{name} is lost: its wall would pass through {names}.",
+            "Lost": "{name} is lost: {names} stand where it would go.",
             "Section": "{name} (section)",
             "Rubble": "{name} is destroyed; its rubble is difficult terrain.",
             "Breached": "{name} is destroyed.",
             "RubbleName": "Rubble",
-            "Cover": "cover from {name}"
+            "Cover": "cover from {name}",
+            "Interposes": "{name} takes the blow for {actor}: {taken} damage to it, {left} to {actor}."
         },
         "Repels": {
             "Barred": "{name} can't move closer to {caster} within {area}."
@@ -285,6 +286,15 @@
         "FastHealing": {
             "Off": "{actor} took acid or fire damage: no regeneration this turn.",
             "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
+        },
+        "ShareDamage": {
+            "Took": "{actor} takes {damage} damage through the link with {target}.",
+            "Zero": "{name} ends: one of the linked creatures is at 0 Hit Points.",
+            "Apart": "{name} ends: the linked creatures are too far apart."
+        },
+        "SpellShield": {
+            "Took": "{name}: the shield takes {taken} damage ({hp}/{max} Hit Points left).",
+            "Destroyed": "{name}: the shield takes {taken} damage and is destroyed."
         },
         "ShieldBlock": {
             "Ended": "{actor} blocked with the shield: {name} ends, and it can't be cast again for 10 minutes."
@@ -558,6 +568,25 @@
             },
             "vision-of-death": {
                 "Real": "its vision becomes reality, and it dies."
+            },
+            "protector-tree": {
+                "Tree": "Protector Tree",
+                "Ground": "protector tree"
+            },
+            "share-life": {
+                "Link": "life linked"
+            },
+            "fire-shield": {
+                "Raise": "Raise the Fire Shield"
+            },
+            "protection": {
+                "Choose": "Ward only the target, or every ally within 10 feet of it as well?",
+                "Target": "The target",
+                "Emanation": "Allies within 10 feet too",
+                "Aura": "protection emanation"
+            },
+            "resist-energy": {
+                "Choose": "Resistance to which damage?"
             },
             "levitate": {
                 "Sustain": "Sustain Levitate",

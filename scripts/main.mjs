@@ -8,6 +8,8 @@ import { DamageBus } from "./lib/damage-bus.mjs";
 import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
+import { SpellShield } from "./riders/spell-shield.mjs";
+import { ShareDamage } from "./riders/share-damage.mjs";
 import { Deters } from "./riders/deters.mjs";
 import { Dismiss } from "./riders/dismiss.mjs";
 import { OriginAction } from "./riders/origin-action.mjs";
@@ -57,6 +59,8 @@ export const INIT = [
     ["feat and action frequency", () => FrequencyGuard.registerHooks()],
     ["damaged this encounter", () => EncounterDamage.registerHooks()],
     ["a shield that ends when it blocks", () => ShieldBlock.register()],
+    ["a shield a spell makes", () => SpellShield.register()],
+    ["damage shared with a caster", () => { ShareDamage.register(); ShareDamage.registerHooks(); }],
     ["fast healing and regeneration, applied", () => FastHealing.registerHooks()],
     // Not awaited: nothing reads the table before a cast, and a failed fetch leaves vanilla content as it was.
     ["the vanilla table", () => void Vanilla.load()],

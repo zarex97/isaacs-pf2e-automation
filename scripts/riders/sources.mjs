@@ -12,6 +12,7 @@ import {
 } from "./bypass.mjs";
 import { OUTCOMES, isAbilityUse, ridersOn } from "./data.mjs";
 import { Relay } from "./relay.mjs";
+import { BLOCK } from "./spell-shield.mjs";
 
 /**
  * Where the engine's own damage-bus stages fall. Published, so another module's stage can say where it
@@ -493,6 +494,7 @@ export const Sources = {
             types: damageTypesOf(params?.damage),
             total: landed,
             outcome: params?.outcome ?? null,
+            ...blowOf(item, origin, target, params),
         };
 
         // The attacker's half still asks that something actually landed: a rider that reads "for each
@@ -688,6 +690,21 @@ export const Sources = {
 
 function enabled() {
     return game.settings.get(LIB_ID, "riders");
+}
+
+/**
+ * How the blow was struck, for the defender's riders. *Fire Shield*: "If you Shield Block a melee attack that is either
+ * an unarmed attack or made by an adjacent attacker, the attacker takes 2d6 fire damage."
+ */
+export function blowOf(item, origin, target, params) {
+    const traits = item?.system?.traits?.value ?? [];
+    const attack = item?.isOfType?.("weapon", "melee") ?? false;
+    const melee = attack && !(item.isRanged ?? false);
+    const unarmed = attack && (item.category === "unarmed" || item.system?.category === "unarmed" || traits.includes("unarmed"));
+    const from = origin?.getActiveTokens?.(true, false)?.at(0) ?? null;
+    const to = target?.object ?? null;
+    const distance = from && to && typeof from.distanceTo === "function" ? from.distanceTo(to) : null;
+    return { blocked: Boolean(params?.[BLOCK]), melee, unarmed, adjacent: Number.isFinite(distance) && distance <= 5 };
 }
 
 /** Damage types present in a roll, for `rider:damage:type:cold` and friends. */
