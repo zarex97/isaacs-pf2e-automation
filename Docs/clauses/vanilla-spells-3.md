@@ -282,12 +282,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-56a | "The wire deals 1d4 slashing damage and 1d4 electricity damage, depending on your spell attack roll against the target's AC" | A spell attack decides the damage | | ☐ | |
-| VS-56b | "Critical Success The target takes double damage" | Both doubled, and persistent electricity | | ☐ | |
-| VS-56c | "Success The target takes full damage" | 1d4 slashing and 1d4 electricity | | ☐ | |
-| VS-56d | "Failure The target takes the electricity damage, but not the slashing damage" | A miss still deals 1d4 electricity | | ☐ | |
-| VS-56e | "Critical Failure The target is unaffected" | Nothing | | ☐ | |
-| VS-56f | "The slashing damage, initial electricity damage, and persistent electricity damage on a critical hit each increase by 1d4" | Heightened to rank 3: 2d4 and 2d4 | | ☐ | |
+| VS-56a | "The wire deals 1d4 slashing damage and 1d4 electricity damage, depending on your spell attack roll against the target's AC" | A spell attack decides the damage | `content/vanilla/live-wire.json`: `rays` (one target), the spell attack against AC | ✅ | Aries' *Arcane Spell Attack* against Capricorn's **AC 34**; the result chose the damage, as below |
+| VS-56b | "Critical Success The target takes double damage" | Both doubled, and persistent electricity | `rays` ×2 on a critical hit; nested `persistent-damage` (`1d4`, `perStep: "1d4"`, `perStepInterval: 2`) on `criticalSuccess` | ✅ | Critical hit (44), rank 10: **5d4 slashing + 5d4 electricity** = 26, Capricorn took **52**, and **5d4 persistent electricity** — pf2e's (ceil(rank / 2))d4 |
+| VS-56c | "Success The target takes full damage" | 1d4 slashing and 1d4 electricity | `rays`: the full roll on a hit | ✅ | Hit (39): 5d4 slashing + 5d4 electricity = 24, Capricorn took 24; no persistent damage |
+| VS-56d | "Failure The target takes the electricity damage, but not the slashing damage" | A miss still deals 1d4 electricity | `failure: ["electricity"]`; `keptInstances` test | ✅ | Miss (29): **5d4 electricity** alone = 14, Capricorn took 14 |
+| VS-56e | "Critical Failure The target is unaffected" | Nothing | `rays`: nothing on a critical miss | ✅ | Critical miss (natural 1, 25): no damage roll, Capricorn still at 200 |
+| VS-56f | "The slashing damage, initial electricity damage, and persistent electricity damage on a critical hit each increase by 1d4" | Heightened to rank 3: 2d4 and 2d4 | pf2e's own heightening (+1d4 every 2 ranks); `perStep` every 2 for the persistent damage | ✅ | A level-5 caster (rank 3): **2d4 slashing + 2d4 electricity** = 9, ×2 = 18 on the critical hit, and **2d4** persistent electricity |
 
 ### VS-57 · Disintegrate
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 224 |
-| ✅ | 95 |
+| ☐ not yet driven | 218 |
+| ✅ | 101 |
 | ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |

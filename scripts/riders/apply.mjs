@@ -2430,22 +2430,45 @@ async function applyRays(rider, context) {
     if (typeof spell?.rollAttack !== "function" || targets.length === 0) return;
     const chosen = context.originActor?.getFlag?.(LIB_ID, "attackNumber");
     const attackNumber = chosen?.item === (spell.original ?? spell).id ? Number(chosen.value) || 1 : 1;
+    // *Live Wire*: "Failure The target takes the electricity damage, but not the slashing damage" — `failure`, the
+    // damage types a miss still deals.
+    const onFailure = Array.isArray(rider.apply.failure) ? rider.apply.failure : [];
+    const nested = (rider.apply.riders ?? []).map((r, index) => ({ rider: r, item: context.item, index }));
     for (const token of targets) {
         const roll = await spell.rollAttack(new PointerEvent("click"), attackNumber, { target: token.actor, skipDialog: true });
         const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
-        if (outcome !== "success" && outcome !== "criticalSuccess") continue;
-        const damage = await spell.getDamage({ target: token, skipDialog: true });
-        // pf2e's own roll, unevaluated, as its damage button would evaluate it: its formula is display text.
-        const dealt = await damage?.template?.damage?.roll?.evaluate?.();
-        if (!dealt) continue;
-        await dealt.toMessage(
-            { speaker: ChatMessage.getSpeaker({ actor: context.originActor }), flavor: t("Rays.Flavor", { name: spell.name, actor: token.actor.name, outcome: outcomeLabel(outcome) }) },
-            { rollMode: game.settings.get("core", "rollMode") },
-        );
-        await token.actor.applyDamage({ damage: outcome === "criticalSuccess" ? dealt.alter(2, 0) : dealt, token });
+        if (!outcome) continue;
+        const hit = outcome === "success" || outcome === "criticalSuccess";
+        if (hit || (outcome === "failure" && onFailure.length > 0)) {
+            const damage = await spell.getDamage({ target: token, skipDialog: true });
+            // pf2e's own roll, unevaluated, as its damage button would evaluate it: its formula is display text.
+            const full = damage?.template?.damage?.roll;
+            const DamageRoll = full?.constructor;
+            const kept = hit ? full : keptInstances(full?.instances ?? [], onFailure);
+            const dealt = !kept ? null : hit ? await full.evaluate() : await new DamageRoll(kept).evaluate();
+            if (dealt) {
+                await dealt.toMessage(
+                    { speaker: ChatMessage.getSpeaker({ actor: context.originActor }), flavor: t("Rays.Flavor", { name: spell.name, actor: token.actor.name, outcome: outcomeLabel(outcome) }) },
+                    { rollMode: game.settings.get("core", "rollMode") },
+                );
+                await token.actor.applyDamage({ damage: outcome === "criticalSuccess" ? dealt.alter(2, 0) : dealt, token });
+            }
+        }
+        // What else each result does, on the creature the ray reached — *Live Wire*'s persistent electricity on a
+        // critical hit.
+        const options = riderOptions({ originActor: context.originActor, targetActor: token.actor, item: context.item });
+        for (const { rider: inner, index } of selectRiders(nested, { outcome, options })) {
+            await applyOne(inner, { ...context, actor: token.actor, target: token, outcome, riderIndex: [context.riderIndex, "riders", index].flat() });
+        }
     }
     // "These attacks each increase your multiple attack penalty" — pf2e keeps no count, so it is said.
     context.notes.push(t(targets.length === 1 ? "Rays.PenaltyOne" : "Rays.Penalty", { name: context.originActor?.name ?? "", count: targets.length }));
+}
+
+/** The parts of a damage roll of the named types, as one formula — null when none is left. */
+export function keptInstances(instances, types) {
+    const kept = instances.filter((instance) => types.includes(instance.type)).map((instance) => instance._formula);
+    return kept.length === 0 ? null : `{${kept.join(",")}}`;
 }
 
 /** One damage formula for several typed totals: pf2e reads a braced list as one roll of several instances. */

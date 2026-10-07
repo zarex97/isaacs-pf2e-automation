@@ -41,6 +41,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
+| Live Wire | 1 |  | rays (on you) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
