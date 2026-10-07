@@ -798,7 +798,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 /* -------------------------------------------------------------------------------------------- */
 
 {
-    const { stopShortOfWalls } = await import("../scripts/riders/apply.mjs");
+    const { stopShortOfWalls, compassVector } = await import("../scripts/riders/apply.mjs");
+    check("a chosen compass point is a direction on the grid, y downwards", [compassVector("n"), compassVector("se"), compassVector("up")], [{ x: 0, y: -1 }, { x: 1, y: 1 }, null]);
     const size = { w: 100, h: 100 };
     const wallAtX = (x) => (from, to) => (to.x > x && from.x < x ? { x, y: from.y } : null);
     check("a push with nothing in the way goes the whole distance", stopShortOfWalls({ x: 0, y: 0 }, { x: 600, y: 0 }, size, 100, () => null), { x: 600, y: 0 });

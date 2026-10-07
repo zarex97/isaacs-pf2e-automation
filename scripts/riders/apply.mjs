@@ -592,6 +592,28 @@ function areaLeftBy(originActor, item) {
     return region?.uuid ?? null;
 }
 
+/** A compass point as a direction on the grid (y grows downwards). */
+export function compassVector(point) {
+    return ({ n: { x: 0, y: -1 }, ne: { x: 1, y: -1 }, e: { x: 1, y: 0 }, se: { x: 1, y: 1 }, s: { x: 0, y: 1 }, sw: { x: -1, y: 1 }, w: { x: -1, y: 0 }, nw: { x: -1, y: -1 } })[point] ?? null;
+}
+
+const DIRECTION_LABELS = {
+    n: "Move.Direction.n", ne: "Move.Direction.ne", e: "Move.Direction.e", se: "Move.Direction.se", s: "Move.Direction.s",
+    sw: "Move.Direction.sw", w: "Move.Direction.w", nw: "Move.Direction.nw", away: "Move.Direction.away", toward: "Move.Direction.toward",
+};
+
+/** Ask which way a creature is moved: a compass point, away from the caster, or toward them. Null to leave it. */
+async function chooseDirection(name, feet) {
+    const points = ["nw", "n", "ne", "w", "away", "e", "sw", "s", "se", "toward"];
+    const chosen = await foundry.applications.api.DialogV2.wait({
+        window: { title: t("Move.ChooseTitle", { name, feet }) },
+        content: `<p>${t("Move.ChooseHint", { name, feet })}</p>`,
+        buttons: [...points.map((p) => ({ action: p, label: t(DIRECTION_LABELS[p]) })), { action: "stay", label: t("Move.Direction.stay") }],
+        rejectClose: false,
+    });
+    return chosen && chosen !== "stay" ? chosen : null;
+}
+
 /**
  * Where a pushed token stops: the destination, or a square short of the first wall that blocks movement
  * between its centre and the destination's. `collide(from, to)` is Foundry's movement collision test.
@@ -655,9 +677,21 @@ async function applyTeleport(rider, context) {
     const origin = at(from);
 
     // Direction: away from the caster by default, back towards them when a Technique pulls.
-    const sign = rider.apply.direction === "toward" ? -1 : 1;
+    let sign = rider.apply.direction === "toward" ? -1 : 1;
     let dx = (here.x - origin.x) * sign;
     let dy = (here.y - origin.y) * sign;
+    // "The claw moves it up to 10 feet in a direction of your choice" — *Acid Grip*. Asked, not assumed.
+    if (rider.apply.direction === "choose") {
+        const chosen = await chooseDirection(token.name, feet);
+        if (!chosen) return;
+        if (chosen === "toward" || chosen === "away") {
+            sign = chosen === "toward" ? -1 : 1;
+            dx = (here.x - origin.x) * sign;
+            dy = (here.y - origin.y) * sign;
+        } else {
+            ({ x: dx, y: dy } = compassVector(chosen));
+        }
+    }
     if (!dx && !dy) dx = 1; // Standing in the same square: pick an axis rather than divide by zero.
     const length = Math.hypot(dx, dy);
     const ux = dx / length;

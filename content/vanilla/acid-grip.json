@@ -1,0 +1,61 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "teleport",
+                "distance": 5,
+                "direction": "choose",
+                "stopsAtWalls": true
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "persistent-damage",
+                "formula": "1d6",
+                "perStep": "1d6",
+                "perStepInterval": 2,
+                "damageType": "acid"
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.6TGcfVyzzVHEo7ke",
+                "once": true
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "teleport",
+                "distance": 10,
+                "direction": "choose",
+                "stopsAtWalls": true
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "teleport",
+                "distance": 20,
+                "direction": "choose",
+                "stopsAtWalls": true
+            }
+        }
+    ]
+}
