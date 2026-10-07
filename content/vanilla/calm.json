@@ -1,0 +1,34 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.Qr5rgoZvI4KmFY0N"
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.calm.Failure"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.calm.CriticalFailure"
+            }
+        }
+    ]
+}

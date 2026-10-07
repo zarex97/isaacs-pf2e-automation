@@ -16,6 +16,10 @@ Automation for the [Pathfinder Second Edition](https://github.com/foundryvtt/pf2
   landed, damage applied, a turn ending. Conditions, effects, counteracts, forced movement, a choice
   whispered to the caster — on the right creature's own sheet, and taken back on a reroll. Authoring
   reference: [`Docs/riders.md`](Docs/riders.md). Needs a GM online.
+- **Vanilla spells.** pf2e's own spells are automated from a table — areas, target limits, riders by degree
+  of success, lingering ground — listed in [`Docs/vanilla.md`](Docs/vanilla.md). A spell PF2e Automations or
+  PF2e Assistant already automates keeps their riders, not ours; a mark on the sheet and chat card says
+  what is automated and from where.
 - **Areas left behind.** Ground that lingers after a cast, penalties for being caught by two placements at
   once, and difficult terrain that slows only the caster's enemies.
 

@@ -1,0 +1,32 @@
+{
+    "areaTargeting": {
+        "maxTargets": 1,
+        "heightening": {
+            "atRank": {
+                "5": {
+                    "maxTargets": 9
+                }
+            }
+        }
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.command.Failure"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.command.CriticalFailure"
+            }
+        }
+    ]
+}

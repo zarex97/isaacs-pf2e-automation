@@ -299,6 +299,19 @@
                 "Off": "Switched off on this item ({module})"
             },
             "SaveRider": "{statistic} save"
+        },
+        "Vanilla": {
+            "command": {
+                "Failure": "On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.",
+                "CriticalFailure": "On its next turn, the target must spend all its actions obeying the command."
+            },
+            "calm": {
+                "Failure": "The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.",
+                "CriticalFailure": "The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it."
+            },
+            "ice-storm": {
+                "Area": "Ice Storm"
+            }
         }
     }
 }

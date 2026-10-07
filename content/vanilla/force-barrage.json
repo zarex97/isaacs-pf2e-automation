@@ -1,0 +1,9 @@
+{
+    "areaTargeting": {
+        "maxTargets": 3,
+        "heightening": {
+            "interval": 2,
+            "maxTargets": 3
+        }
+    }
+}
