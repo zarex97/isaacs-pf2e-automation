@@ -69,6 +69,7 @@ and `npm test` fails if this table and that switch disagree.
 | `escape` | Offers an escape attempt against something holding the target. |
 | `expire` | Takes a named effect back off before its own timer would. |
 | `sustain` | The *Sustain* action an effect with `sustain` grants; not written by hand. |
+| `decoy` | On a `strike-received` rider carried by an effect with a counter badge (*Mirror Image*): a failure destroys an image; a hit rolls whether it lands on an image (1 on 1d4 / 1–2 on 1d6 / 1–3 on 1d6 for three / two / one) — a critical hit on an image becomes a hit on the holder. The effect ends with its last image. |
 | `climb` | Moves a valued condition by `by` (negative to lower it) within `[0, max]`; reaching `max` runs the riders in `onMax`, reaching 0 those in `onZero` — *Petrify*'s slowed that turns to stone. |
 | `shorten` | Takes `rounds` off the effect that carries this rider, or ends it with `rounds: "all"` — *Paralyze*'s save at the end of each turn. |
 | `strikes` | Rolls a volley, dealt round-robin across the confirmed targets. `mapIndex` picks the variant. Follows through to damage. |

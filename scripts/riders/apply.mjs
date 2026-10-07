@@ -434,6 +434,8 @@ async function applyOne(rider, context) {
             return applyShorten(rider, context);
         case "climb":
             return applyClimb(rider, context);
+        case "decoy":
+            return applyDecoy(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -1741,6 +1743,10 @@ async function applyEffect(rider, context) {
     if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome);
     // *Heroism*'s +1 / +2 / +3 reads `@item.level` — the effect's own level, which pf2e sets to the spell's rank
     // when the effect is taken from a cast. Taken from the compendium, it is whatever the effect was saved at.
+    // A pf2e effect that should take riders with it — *Mirror Image*'s images answer the attacks on their caster.
+    if (Array.isArray(rider.apply.carries)) {
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, RiderExtensions.resolveDC(undefined, context)) } });
+    }
     const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
@@ -2609,6 +2615,39 @@ async function applyClimb(rider, context) {
     for (const [index, inner] of (next ?? []).entries()) {
         await applyOne(inner, { ...context, riderIndex: [context.riderIndex, now >= max ? "onMax" : "onZero", index].flat() });
     }
+}
+
+/**
+ * Which way an attack on a creature with images goes. *Mirror Image*: a hit lands on you 1 time in 4 with
+ * three images (1 on 1d4), 1 in 3 with two (1–2 on 1d6), 1 in 2 with one (1–3 on 1d6); a failure that is
+ * not a critical failure always destroys one. Returns the dice to roll and the highest result that is you.
+ */
+export function decoyOdds(images) {
+    return ({ 3: { dice: "1d4", you: 1 }, 2: { dice: "1d6", you: 2 }, 1: { dice: "1d6", you: 3 } })[Math.min(3, Number(images) || 0)] ?? null;
+}
+
+/** An attack on a creature with images: it may strike one of them, which is then gone. */
+async function applyDecoy(rider, context) {
+    const effect = context.riderItem;
+    const holder = effect?.actor;
+    const images = Number(effect?.system?.badge?.value) || 0;
+    if (!holder || images <= 0) return;
+    const outcome = context.outcome;
+    let image = outcome === "failure";
+    if (outcome === "success" || outcome === "criticalSuccess") {
+        const odds = decoyOdds(images);
+        const roll = await new Roll(odds.dice).evaluate();
+        await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: holder }), flavor: t("Decoy.Roll", { name: effect.name, images }) });
+        image = roll.total > odds.you;
+    }
+    if (!image) {
+        context.notes.push(t("Decoy.You", { actor: holder.name }));
+        return;
+    }
+    const left = images - 1;
+    if (left <= 0) await effect.delete();
+    else await effect.update({ "system.badge.value": left });
+    context.notes.push(t(outcome === "criticalSuccess" ? "Decoy.ImageCrit" : outcome === "failure" ? "Decoy.ImageMiss" : "Decoy.Image", { actor: holder.name, left }));
 }
 
 /** A valued condition moved by `by`, held within [0, max]. */
