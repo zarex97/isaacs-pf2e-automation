@@ -745,7 +745,15 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const riders = carried([{ event: "turn-end", self: true, apply: { type: "save", statistic: "will", riders: [{ apply: { type: "shorten", rounds: 1 } }] } }], 34);
     check("a carried save takes the caster's DC with it", riders[0].apply.dc, 34);
     check("…and keeps a DC it already names", carried([{ apply: { type: "save", dc: 20 } }], 34)[0].apply.dc, 20);
-    const { climbed, endsWithGone, growByStep } = await import("../scripts/riders/apply.mjs");
+    const { climbed, endsWithGone, growByStep, isHostileUse, castItemOf } = await import("../scripts/riders/apply.mjs");
+    const actor = {}, sheet = { id: "inv", actor, rank: 2 }, cast = { id: "inv", actor, rank: 4 }, other = { id: "bolt", actor, rank: 3 };
+    check("a rider reads the spell as cast — the card's heightened copy — when the card names the same spell", [castItemOf({ item: sheet, messageItem: cast }).rank, castItemOf({ item: sheet, messageItem: other }).rank, castItemOf({ item: sheet }).rank, castItemOf({ messageItem: cast }).rank], [4, 2, 2, 4]);
+    const me = { id: "me" }, foe = { isEnemyOf: () => true }, friend = { isEnemyOf: () => false };
+    check("an attack, a damage roll, or an action aimed at an enemy is hostile; a heal for a friend, or a Stride, is not", [
+        isHostileUse({ type: "attack-roll", actor: me }), isHostileUse({ type: "damage-roll", actor: me }),
+        isHostileUse({ type: null, fromItem: true, targets: [foe], actor: me }), isHostileUse({ type: null, fromItem: true, targets: [friend], actor: me }),
+        isHostileUse({ type: null, fromItem: false, targets: [foe], actor: me }),
+    ], [true, true, true, false, false]);
     check("dice and a flat part both grow by the step", [growByStep("1d10+4", "1d10+4", 2), growByStep("1d10+4", "1d10+4", 0), growByStep("2d6", "1d6", 3), growByStep("1d8+1", "1d6+1", 2)], ["3d10+12", "1d10+4", "5d6", "1d8+1"]);
     const { durationSeconds, FOR_GOOD } = await import("../scripts/riders/banish.mjs");
     check("a banishment for good is a finite forever, which survives the JSON register", [durationSeconds({ unit: "unlimited" }), JSON.parse(JSON.stringify({ at: durationSeconds({ unit: "unlimited" }) })).at, durationSeconds({ value: 1, unit: "minutes" })], [FOR_GOOD, FOR_GOOD, 60]);

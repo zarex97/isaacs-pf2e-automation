@@ -1018,6 +1018,49 @@
                 }
             ]
         },
+        "invisibility": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "lt": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "invisible",
+                        "endsOnHostile": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "invisible"
+                    }
+                }
+            ]
+        },
         "laughing-fit": {
             "riders": [
                 {
