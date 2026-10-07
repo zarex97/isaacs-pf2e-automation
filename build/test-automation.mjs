@@ -591,6 +591,40 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The indicator: what is automated, from where, and what the GM may switch                     */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { rowsFor, isAutomated, describeRiders } = await import("../scripts/vanilla/describe.mjs");
+    const { RIDERS_OFF } = await import("../scripts/vanilla/coexistence.mjs");
+    Vanilla.setTable({ entries: { slow: { areaTargeting: { maxTargets: 1 }, riders: [{ outcomes: ["failure"], apply: { type: "condition", slug: "slowed", value: 1 } }] } } });
+    const spellItem = (slug, flags = {}) => ({ documentName: "Item", slug, flags, system: {} });
+    const byKey = (item) => Object.fromEntries(rowsFor(item).map((row) => [row.key, row]));
+
+    check("an item with nothing automated has no mark", isAutomated(spellItem("magic-weapon")), false);
+    const slow = byKey(spellItem("slow"));
+    check("a table spell shows its area and riders, each from the table", [Object.keys(slow), slow.riders.source], [["areaTargeting", "riders"], "ISAACS_AUTOMATION.Indicator.Source.Table"]);
+    check("…and the GM may switch both", [slow.areaTargeting.switchable, slow.riders.switchable], [true, true]);
+    check("a rider is described by what it does and when", describeRiders([{ outcomes: ["failure", "criticalFailure"], apply: { type: "condition", slug: "slowed", value: 1 } }]),
+        ['ISAACS_AUTOMATION.Indicator.RiderOn {"what":"slowed 1","on":"ISAACS_AUTOMATION.Outcome.failure / ISAACS_AUTOMATION.Outcome.criticalFailure"}']);
+
+    const off = byKey(spellItem("slow", { [LIB_ID]: { riders: false } }));
+    check("a key this module switched off shows as off, and can be switched back", [off.riders.applies, off.riders.switchable, off.riders.lines], [false, true, []]);
+    const authored = byKey(spellItem("slow", { "a-homebrew": { riders: [{ apply: { type: "prompt" } }] } }));
+    check("an item's own authored config is shown but never switchable", [authored.riders.source, authored.riders.switchable], ['ISAACS_AUTOMATION.Indicator.Source.Flags {"module":"a-homebrew"}', false]);
+    const theirsOff = byKey(spellItem("slow", { "a-homebrew": { riders: false } }));
+    check("…nor is another module's false", theirsOff.riders.switchable, false);
+
+    Vanilla.setRiderDeferral(() => "pf2e-automations");
+    const deferred = byKey(spellItem("slow"));
+    check("a deferred rider says to whom, and is the setting's to decide", [deferred.riders.source, deferred.riders.applies, deferred.riders.switchable], ['ISAACS_AUTOMATION.Indicator.Source.Deferred {"module":"pf2e-automations"}', false, false]);
+    Vanilla.setRiderDeferral(() => RIDERS_OFF);
+    check("riders off by the setting say so", byKey(spellItem("slow")).riders.source, "ISAACS_AUTOMATION.Indicator.Source.SettingOff");
+    Vanilla.setRiderDeferral(null);
+    Vanilla.setTable({ aliases: {}, entries: {} });
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The contract                                                                                 */
 /* -------------------------------------------------------------------------------------------- */
 
@@ -693,7 +727,7 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
         // Any quoted key, wherever it is chosen — a ternary picks between two, a map names three.
         for (const m of text.matchAll(groupKey)) used.add(`ISAACS_AUTOMATION.${m[1]}`);
         // A key spelled from a value: every key under that prefix is one the value can name.
-        for (const [spelled, prefix] of [["Frequency.Per.${per}", "Frequency.Per."], ["Outcome.${outcome}", "Outcome."]]) {
+        for (const [spelled, prefix] of [["Frequency.Per.${per}", "Frequency.Per."], ["Outcome.${outcome}", "Outcome."], ["Indicator.Key.${key}", "Indicator.Key."]]) {
             if (text.includes(spelled)) for (const k of defined) if (k.startsWith(`ISAACS_AUTOMATION.${prefix}`)) used.add(k);
         }
     }

@@ -20,6 +20,7 @@ import { AreaTargeting } from "./targeting/index.mjs";
 import { Lingering } from "./targeting/lingering.mjs";
 import { Overlap } from "./targeting/overlap.mjs";
 import { Coexistence } from "./vanilla/coexistence.mjs";
+import { Indicator } from "./vanilla/indicator.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
 
 /**
@@ -38,6 +39,7 @@ export const INIT = [
     // Not awaited: nothing reads the table before a cast, and a failed fetch leaves vanilla content as it was.
     ["the vanilla table", () => void Vanilla.load()],
     ["the vanilla riders setting", () => Coexistence.registerSettings()],
+    ["the automation indicator", () => Indicator.registerHooks()],
 ];
 
 /**

@@ -1,0 +1,37 @@
+/* The mark on what Isaac's PF2e Automation automates, and the panel it opens. */
+.isaacs-automation-indicator {
+    margin-left: 0.35em;
+    color: var(--color-text-secondary, #7a7971);
+    font-size: 0.85em;
+    cursor: pointer;
+}
+.isaacs-automation-indicator:hover {
+    color: var(--color-text-hyperlink, #ff6400);
+}
+.isaacs-automation-indicator-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.isaacs-automation-indicator-row + .isaacs-automation-indicator-row {
+    border-top: 1px solid var(--color-border-light-tertiary, rgba(128, 128, 128, 0.35));
+    padding-top: 0.5rem;
+}
+.isaacs-automation-indicator-row header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.isaacs-automation-indicator-row ul {
+    margin: 0.2rem 0;
+    padding-left: 1.2rem;
+}
+.isaacs-automation-indicator-row .hint {
+    margin: 0;
+    font-size: 0.85em;
+    opacity: 0.75;
+}
+.isaacs-automation-indicator-row.is-off ul,
+.isaacs-automation-indicator-row.is-off strong {
+    opacity: 0.55;
+}

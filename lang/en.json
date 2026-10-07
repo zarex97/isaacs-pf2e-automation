@@ -264,6 +264,41 @@
         },
         "Riders": {
             "StandDown": "Isaac's Homebrew is older than 1.1.0 and runs its own rider engine, so this module's is off. Update Isaac's Homebrew to use this one."
+        },
+        "Indicator": {
+            "Button": "Automated",
+            "Tooltip": "Automated by Isaac's PF2e Automation — click to see what happens",
+            "Title": "{name}: what is automated",
+            "Applies": "Applies",
+            "Save": "Save",
+            "Close": "Close",
+            "NotOwned": "Switches work on an item owned by an actor or in the world, not on a compendium's.",
+            "AnEffect": "an effect",
+            "RiderOn": "{what} on a {on}",
+            "Shape": "{size}-foot {shape}",
+            "Shapes": "Choose one of {count} shapes as you cast",
+            "Lingering": "Leaves an area behind",
+            "Overlap": "A penalty for being caught by more than one placement",
+            "Bypass": "Ignores resistances or immunities, as written",
+            "Thresholds": "Escalates as a counter grows",
+            "Key": {
+                "areaTargeting": "Area and targets",
+                "areaTargetingShapes": "Shape choice",
+                "riders": "Riders",
+                "lingering": "Lingering area",
+                "overlap": "Overlapping placements",
+                "bypass": "Bypass",
+                "counterThresholds": "Counter thresholds"
+            },
+            "Source": {
+                "Flags": "Written on this item ({module})",
+                "Registered": "Supplied by {module}",
+                "Table": "From Isaac's PF2e Automation's vanilla table",
+                "Deferred": "Left to {module}, which already automates this spell",
+                "SettingOff": "Off: the \"Riders for vanilla spells\" setting",
+                "Off": "Switched off on this item ({module})"
+            },
+            "SaveRider": "{statistic} save"
         }
     }
 }
