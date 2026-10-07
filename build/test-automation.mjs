@@ -745,6 +745,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const riders = carried([{ event: "turn-end", self: true, apply: { type: "save", statistic: "will", riders: [{ apply: { type: "shorten", rounds: 1 } }] } }], 34);
     check("a carried save takes the caster's DC with it", riders[0].apply.dc, 34);
     check("…and keeps a DC it already names", carried([{ apply: { type: "save", dc: 20 } }], 34)[0].apply.dc, 20);
+    const { climbed } = await import("../scripts/riders/apply.mjs");
+    check("a climbing condition moves by its step, never past its top or below nothing", [climbed(1, 1, 3), climbed(2, 2, 3), climbed(1, -1, 3), climbed(0, -1, 3)], [2, 3, 0, 0]);
     check("a success takes a round off; the last round, or a critical success, ends it", [shortened({ value: 4 }, 1), shortened({ value: 1 }, 1), shortened({ value: 4 }, "all")], [3, null, null]);
 }
 

@@ -432,6 +432,8 @@ async function applyOne(rider, context) {
             return Sustain.apply(rider, context);
         case "shorten":
             return applyShorten(rider, context);
+        case "climb":
+            return applyClimb(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2494,6 +2496,36 @@ async function applyShorten(rider, context) {
     }
     await effect.update({ "system.duration.value": left });
     context.notes.push(t("Shorten.Shortened", { name: label, actor: effect.actor.name, left }));
+}
+
+/**
+ * A valued condition that climbs and falls. *Petrify*: "the slowed condition increases by 1 (or 2 on a
+ * critical failure) … A successful save reduces the slowed condition by 1. When a creature becomes fully
+ * unable to act … petrified permanently … The spell also ends if the slowed condition is removed." `by` moves
+ * the value within [0, max]; reaching `max` runs `onMax`, reaching 0 runs `onZero`.
+ */
+async function applyClimb(rider, context) {
+    const { slug, by = 1, max = Infinity } = rider.apply;
+    const actor = context.actor;
+    if (!actor || !slug) return;
+    const held = actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
+    const was = held?.value ?? 0;
+    const now = climbed(was, by, max);
+    if (now !== was) {
+        if (now <= 0 && held) await actor.decreaseCondition(slug, { forceRemove: true });
+        else if (held) await game.pf2e.ConditionManager.updateConditionValue(held.id, actor, now);
+        else if (now > 0) await increaseRecorded(actor, slug, { value: now }, context);
+    }
+    context.notes.push(t(now > 0 ? "Climb.Now" : "Climb.Gone", { actor: actor.name, slug, value: now }));
+    const next = now >= max ? rider.apply.onMax : now <= 0 ? rider.apply.onZero : null;
+    for (const [index, inner] of (next ?? []).entries()) {
+        await applyOne(inner, { ...context, riderIndex: [context.riderIndex, now >= max ? "onMax" : "onZero", index].flat() });
+    }
+}
+
+/** A valued condition moved by `by`, held within [0, max]. */
+export function climbed(was, by, max = Infinity) {
+    return Math.max(0, Math.min(Number(max), (Number(was) || 0) + (Number(by) || 0)));
 }
 
 /** What is left of a duration once `rounds` are taken off it — null when nothing is. */

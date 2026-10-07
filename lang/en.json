@@ -163,6 +163,10 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "Climb": {
+            "Now": "{actor} is now {slug} {value}.",
+            "Gone": "{actor} is no longer {slug}."
+        },
         "Shorten": {
             "Shortened": "{name} on {actor}: {left} rounds left.",
             "Ended": "{name} on {actor} ends."
@@ -352,6 +356,10 @@
                 "Shroud": "Darkness",
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
+            },
+            "petrify": {
+                "Spell": "petrifying",
+                "Incapacitation": "Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step."
             },
             "blindness": {
                 "Immune": "temporarily immune to blindness",
