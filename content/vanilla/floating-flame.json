@@ -1,0 +1,21 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.floating-flame.Flame",
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "sustain": {
+            "move": 10,
+            "damage": {
+                "formula": "3d6",
+                "perStep": "1d6",
+                "type": "fire",
+                "save": "reflex"
+            }
+        }
+    }
+}

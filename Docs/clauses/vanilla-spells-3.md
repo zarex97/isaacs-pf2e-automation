@@ -100,12 +100,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-41a | "The flame deals 3d6 fire damage to each creature in the square in which it appears, with a basic Reflex save" | A 5-ft square is placed within 30 ft; each creature in it rolls a basic Reflex save against 3d6 fire | | ☐ | |
-| VS-41b | "When you Sustain this spell, you can levitate the flame up to 10 feet" | Sustaining moves the square up to 10 ft, and no farther | | ☐ | |
-| VS-41c | "It then deals damage to each creature whose space it shared at any point during its flight" | Every creature the square passed over saves, not only those where it stops | | ☐ | |
-| VS-41d | "you roll the damage once each time you Sustain" | One damage roll per Sustain, shared by everyone it hits | | ☐ | |
-| VS-41e | "A given creature can take damage from floating flame only once per round" | A creature already burned this round is passed over | | ☐ | |
-| VS-41f | "The damage increases by 1d6" | Rank 3 deals 4d6 | | ☐ | |
+| VS-41a | "The flame deals 3d6 fire damage to each creature in the square in which it appears, with a basic Reflex save" | A 5-ft square is placed within 30 ft; each creature in it rolls a basic Reflex save against 3d6 fire | `content/vanilla/floating-flame.json` (areaTargeting, a lingering area with `sustain.move`) | ✅ | Aries cast it at rank 2 in a combat with Capricorn, Leo and ZZ Victim in a row (3800/3900/4000, 1500). The placement was a 5-ft square; on Capricorn's square it targeted **Capricorn alone**, and pf2e's card rolled **3d6 fire** with its basic Reflex save. On an empty square: "Nothing in the area", and *No* cast it with nobody caught. The flame stayed as a Region, and Aries got *Sustain Drive: Floating Flame* |
+| VS-41b | "When you Sustain this spell, you can levitate the flame up to 10 feet" | Sustaining moves the square up to 10 ft, and no farther | `chooseFlight`, `COMPASS` in `scripts/targeting/lingering.mjs` | ✅ | Sustaining in round 2 asked "Move Floating Flame": eight directions and a distance of **5 or 10 ft** (10 preselected, nothing farther). East 10 → the square went 3800 → **4000**; a later 5 ft south moved the other flame **one square** |
+| VS-41c | "It then deals damage to each creature whose space it shared at any point during its flight" | Every creature the square passed over saves, not only those where it stops | `sweptPath`, `overlaps` tests | ✅ | East 10 ft from Capricorn's square: **Capricorn, Leo and ZZ Victim** (start, middle, end) each saved; Aries, off the path, was untouched (200 → 200). Back west 10 in round 3: the same three again. A 5-ft move over empty ground: "over 0 creature(s)" |
+| VS-41d | "you roll the damage once each time you Sustain" | One damage roll per Sustain, shared by everyone it hits | `burnAlong` | ✅ | One roll per Sustain — "Floating Flame — its flight" **3d6 = 14** — then each save took its share of it: Capricorn and Leo succeeded (**7** each), ZZ Victim critically failed (**28**). Round 3: one roll of 11 → 5, 5, 22 |
+| VS-41e | "A given creature can take damage from floating flame only once per round" | A creature already burned this round is passed over | `alreadyBurned` test; the area's `burned` record | ✅ | The flight records each creature it burned against the round (`burned` = round 2 for all three). A second Sustain in the same round was refused — "Floating Flame has already been Sustained this round" — with no dialog and no damage, so nobody could be burned twice; in round 3 the same three were burned again |
+| VS-41f | "The damage increases by 1d6" | Rank 3 deals 4d6 | `scaledSustain` (heightening on the area) | ✅ | Cast again at **rank 3**: the new flame's Sustain damage reads **4d6** (the rank-2 flame's reads 3d6) |
 
 ### VS-42 · Toxic Cloud
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 325 |
-| ✅ | 0 |
+| ☐ not yet driven | 319 |
+| ✅ | 6 |
 | ⚠️ | 0 |
 | ❌ | 0 |
 | 🔧 | 0 |

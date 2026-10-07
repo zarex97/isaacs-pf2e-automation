@@ -920,6 +920,11 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { darknessSource, firstForMovement, followed } = await import("../scripts/targeting/lingering.mjs");
     const emanation = { type: "emanation", radius: 200, base: { type: "token", x: 3700, y: 1500, width: 1, height: 1 } };
     check("an emanation follows its caster by its base square", followed(emanation, { x: 3550, y: 1550 }, { x: 3500, y: 1500 }).base, { ...emanation.base, x: 3500, y: 1500 });
+    const { sweptPath, overlaps, alreadyBurned } = await import("../scripts/targeting/lingering.mjs");
+    check("a flight visits every square on its way, both ends included", [sweptPath({ x: 0, y: 0 }, { x: 200, y: 0 }, 100), sweptPath({ x: 0, y: 0 }, { x: 100, y: 100 }, 100), sweptPath({ x: 5, y: 5 }, { x: 5, y: 5 }, 100)],
+        [[{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }], [{ x: 0, y: 0 }, { x: 100, y: 100 }], [{ x: 5, y: 5 }]]);
+    check("a creature shares the flame's space when their squares overlap, not when they touch", [overlaps({ x: 100, y: 0, w: 100, h: 100 }, { x: 100, y: 0 }, 100), overlaps({ x: 200, y: 0, w: 100, h: 100 }, { x: 100, y: 0 }, 100), overlaps({ x: 0, y: 0, w: 200, h: 200 }, { x: 100, y: 100 }, 100)], [true, false, true]);
+    check("once per round: burned this round is skipped; out of combat nobody is", [alreadyBurned({ a: 3 }, "a", 3), alreadyBurned({ a: 2 }, "a", 3), alreadyBurned({ a: 3 }, "a", null)], [true, false, false]);
     check("…a circle by its centre, and anything else stays put", [followed({ type: "circle", x: 0, y: 0, radius: 50 }, { x: 10, y: 20 }, { x: 0, y: 0 }), followed({ type: "rectangle", x: 0, y: 0, width: 1 }, { x: 10, y: 20 }, { x: 0, y: 0 })], [{ type: "circle", x: 10, y: 20, radius: 50 }, { type: "rectangle", x: 0, y: 0, width: 1 }]);
     const moved = (id, chain = []) => ({ data: { token: { id: "t" }, movement: { id, chain } } });
     check("one move action is one check, however many events it makes", [firstForMovement("R", moved("m1"), 0), firstForMovement("R", moved("m1"), 1), firstForMovement("R", moved("m2", ["m1"]), 2)], [true, false, false]);

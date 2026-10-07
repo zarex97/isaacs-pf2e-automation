@@ -162,7 +162,12 @@
             "Terrain": "Difficult terrain",
             "TerrainEnemies": "Difficult terrain (enemies)",
             "TypeLabel": "Lingering area",
-            "Flavor": "{name} — {actor}"
+            "Flavor": "{name} — {actor}",
+            "FlyTitle": "Move {name}",
+            "FlyHint": "Which way does {name} fly, and how far (up to {feet} feet)? Everyone whose space it passes over is hit.",
+            "Flew": "moved {feet} ft. {direction}, over {count} creature(s)",
+            "FlewFlavor": "{name} — its flight",
+            "Stayed": "left where it is"
         },
         "TempHp": {
             "Label": "temporary Hit Points",
@@ -427,6 +432,9 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "floating-flame": {
+                "Flame": "Floating Flame"
             },
             "spirit-link": {
                 "Link": "spirit link"
