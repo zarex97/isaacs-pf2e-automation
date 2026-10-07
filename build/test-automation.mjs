@@ -532,8 +532,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         saveRider: wrong("web", { lingering: { save: { statistic: "reflex", riders: [{ apply: { type: "condition", slug: "stuck" } }] } } }),
         inlineNoLabel: wrong("web", { riders: [{ apply: { type: "effect", rules: [{ key: "FlatModifier" }] } }] }),
         replaces: wrong("scatter-scree", { lingering: { replacesPrevious: "yes" } }),
+        follows: wrong("malediction", { lingering: { followsCaster: "yes" } }),
+        sustainNoRadius: wrong("malediction", { lingering: { sustain: { saveNewcomers: true } } }),
         inlineNoKey: wrong("web", { riders: [{ apply: { type: "effect", label: "ISAACS_AUTOMATION.Vanilla.web.Slowed", rules: [{ value: -10 }] } }] }),
-    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0, webSave: 0, saveStatistic: 1, saveNone: 1, saveRider: 1, inlineNoLabel: 1, replaces: 1, inlineNoKey: 1 });
+    }, { sound: 0, condition: 1, empty: 1, rules: 1, listed: 1, darkness: 1, darknessOk: 0, webSave: 0, saveStatistic: 1, saveNone: 1, saveRider: 1, inlineNoLabel: 1, replaces: 1, follows: 1, sustainNoRadius: 1, inlineNoKey: 1 });
     check("an alias to nothing, or over a live slug, is caught", V.aliasProblems({ "magic-missile": "force-barrage", fear: "calm" }, { calm: {} }, index).length, 2);
 
     // The words a table entry names by key are read back translated; an item's own text is left alone.
@@ -785,7 +787,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 /* -------------------------------------------------------------------------------------------- */
 
 {
-    const { darknessSource, firstForMovement } = await import("../scripts/targeting/lingering.mjs");
+    const { darknessSource, firstForMovement, followed } = await import("../scripts/targeting/lingering.mjs");
+    const emanation = { type: "emanation", radius: 200, base: { type: "token", x: 3700, y: 1500, width: 1, height: 1 } };
+    check("an emanation follows its caster by its base square", followed(emanation, { x: 3550, y: 1550 }, { x: 3500, y: 1500 }).base, { ...emanation.base, x: 3500, y: 1500 });
+    check("…a circle by its centre, and anything else stays put", [followed({ type: "circle", x: 0, y: 0, radius: 50 }, { x: 10, y: 20 }, { x: 0, y: 0 }), followed({ type: "rectangle", x: 0, y: 0, width: 1 }, { x: 10, y: 20 }, { x: 0, y: 0 })], [{ type: "circle", x: 10, y: 20, radius: 50 }, { type: "rectangle", x: 0, y: 0, width: 1 }]);
     const moved = (id, chain = []) => ({ data: { token: { id: "t" }, movement: { id, chain } } });
     check("one move action is one check, however many events it makes", [firstForMovement("R", moved("m1"), 0), firstForMovement("R", moved("m1"), 1), firstForMovement("R", moved("m2", ["m1"]), 2)], [true, false, false]);
     check("…a new move, another area, or a turn starting each count again", [firstForMovement("R", moved("m3"), 3), firstForMovement("R2", moved("m1"), 4), firstForMovement("R", { data: { token: { id: "t" } } }, 5)], [true, true, true]);
