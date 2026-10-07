@@ -12,6 +12,7 @@ import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
+import { applyPull } from "./pull.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -445,6 +446,8 @@ async function applyOne(rider, context) {
             return Dismiss.apply(rider, context);
         case "area-damage":
             return applyAreaDamage(rider, context);
+        case "pull":
+            return applyPull(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {

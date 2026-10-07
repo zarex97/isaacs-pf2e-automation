@@ -1,0 +1,21 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "markCentre": true
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "pull",
+                "save": "reflex",
+                "feet": {
+                    "criticalSuccess": 0,
+                    "success": 5,
+                    "failure": 15,
+                    "criticalFailure": 30
+                }
+            }
+        }
+    ]
+}

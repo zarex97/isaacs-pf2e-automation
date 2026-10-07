@@ -145,13 +145,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-45a | "All creatures and unsecured objects in the area move towards the center, depending on their Reflex saving throws" | Each creature in the 30-ft burst saves and moves toward the burst's centre | | ☐ | |
-| VS-45b | "This follows the rules for forced movement" | The move stops at walls and occupied spaces, and triggers no reactions | | ☐ | |
-| VS-45c | "creatures and objects nearer to the center move first" | Moves resolve from the centre outward, so the nearer creature takes the space | | ☐ | |
-| VS-45d | "Critical Success The creature is unaffected" | No move | | ☐ | |
-| VS-45e | "Success The creature moves 5 feet toward the center" | 5 ft | | ☐ | |
-| VS-45f | "Failure The creature moves 15 feet toward the center" | 15 ft | | ☐ | |
-| VS-45g | "Critical Failure The creature moves 30 feet toward the center" | 30 ft, stopping at the centre | | ☐ | |
+| VS-45a | "All creatures and unsecured objects in the area move towards the center, depending on their Reflex saving throws" | Each creature in the 30-ft burst saves and moves toward the burst's centre | `content/vanilla/gravity-well.json` (`areaTargeting.markCentre`; a `pull` rider); `scripts/riders/pull.mjs` | ⚠️ | Aries placed the 30-ft burst at (4100, 1500): Capricorn, Leo and ZZ Victim inside were targeted, the centre was stamped on the card, and each rolled one Reflex save against DC 34 and was moved toward the centre by its result. **Gap:** unsecured objects (loot tokens and the like) are not moved — they have no save to read a distance from, and the spell doesn't say what they roll |
+| VS-45b | "This follows the rules for forced movement" | The move stops at walls and occupied spaces, and triggers no reactions | `pullSteps` test; `blockedByWall`, `overlapsAny` | ✅ | The moves are written straight onto the tokens — forced movement, so no movement is spent and no reaction is offered. ZZ Victim's 30-ft pull **stopped beside Capricorn**, who had taken the square at the centre, rather than overlapping him. A wall between a creature and the centre keeps it out of the area in the first place (line of effect, which counts movement-blocking walls): with a wall across ZZ Victim's path it was **not targeted at all**, so nothing is ever pulled through a wall |
+| VS-45c | "creatures and objects nearer to the center move first" | Moves resolve from the centre outward, so the nearer creature takes the space | `resolvePull` (all saves first, then the moves sorted by distance) | ✅ | Every save was rolled before anyone moved; Capricorn and Leo (15 ft from the centre) moved before ZZ Victim (20 ft), so Capricorn reached the square at the centre first and ZZ Victim, a critical failure, stopped short of it: "ZZ Victim is pulled 15 ft toward the centre (of 30)" |
+| VS-45d | "Critical Success The creature is unaffected" | No move | `pullFeet` test (`feet.criticalSuccess: 0`) | ✅ | Leo, with a temporary +30 to Reflex, rolled a **critical success** (by +38): not moved — 3700 → 3700, and no line for him in the pull report |
+| VS-45e | "Success The creature moves 5 feet toward the center" | 5 ft | `pullFeet` | ✅ | Leo, success: 3700 → **3800** (5 ft), "pulled 5 ft toward the centre (of 5)"; in the second cast Capricorn, success: 4400 → 4300 |
+| VS-45f | "Failure The creature moves 15 feet toward the center" | 15 ft | `pullFeet` | ✅ | Capricorn, failure: 4400 → **4100** (15 ft), onto the square at the centre |
+| VS-45g | "Critical Failure The creature moves 30 feet toward the center" | 30 ft, stopping at the centre | `pullFeet`; `pullSteps` never passes the centre | ✅ | ZZ Victim, critical failure (Reflex +0): pulled from (4100, 1900) up to (4100, 1600) — 15 of its 30 ft, the rest blocked by Capricorn at the centre |
 
 ### VS-46 · Repulsion
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 300 |
-| ✅ | 25 |
-| ⚠️ | 0 |
+| ☐ not yet driven | 293 |
+| ✅ | 31 |
+| ⚠️ | 1 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

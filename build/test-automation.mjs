@@ -923,6 +923,11 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { sweptPath, overlaps, alreadyBurned, drifted } = await import("../scripts/targeting/lingering.mjs");
     const { tooClose } = await import("../scripts/targeting/index.mjs");
     const { withinOfAny } = await import("../scripts/targeting/zones.mjs");
+    const { pullSteps, pullFeet } = await import("../scripts/riders/pull.mjs");
+    const one = { w: 100, h: 100 };
+    check("a pull walks square by square at the centre and never past it", [pullSteps({ x: 0, y: 0 }, one, { x: 550, y: 50 }, 3, 100), pullSteps({ x: 0, y: 0 }, one, { x: 250, y: 50 }, 6, 100), pullSteps({ x: 0, y: 0 }, one, { x: 350, y: 350 }, 6, 100)],
+        [[{ x: 100, y: 0 }, { x: 200, y: 0 }, { x: 300, y: 0 }], [{ x: 100, y: 0 }, { x: 200, y: 0 }], [{ x: 100, y: 100 }, { x: 200, y: 200 }, { x: 300, y: 300 }]]);
+    check("how far each degree pulls", ["criticalSuccess", "success", "failure", "criticalFailure"].map((o) => pullFeet({ success: 5, failure: 15, criticalFailure: 30 }, o)), [0, 5, 15, 30]);
     const tok = (id, x, y) => ({ id, center: { x, y } });
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals } = await import("../scripts/riders/apply.mjs");

@@ -34,17 +34,17 @@ export const CastZones = {
             }
             const uuid = message.flags?.pf2e?.origin?.uuid;
             if (!uuid || uuid !== pending.uuid) return;
-            message.updateSource({ [`flags.${LIB_ID}.zones`]: pending.zones });
+            message.updateSource({ [`flags.${LIB_ID}.zones`]: pending.zones, [`flags.${LIB_ID}.centres`]: pending.centres });
             pending = null;
         });
     },
 
     aimed(config, regions) {
         const zones = Array.isArray(config.zones) ? config.zones : [];
-        if (zones.length === 0) return;
+        if (zones.length === 0 && !config.markCentre) return;
         const centres = [regions].flat().map((region) => region?.shapes?.[0]).filter((s) => Number.isFinite(s?.x) && Number.isFinite(s?.y));
         const targets = [...(game.user?.targets ?? [])];
         const named = Object.fromEntries(zones.map((zone) => [zone.id, withinOfAny(targets, centres, Number(zone.within) || 0, canvas.grid.size, canvas.scene.grid.distance)]));
-        pending = { uuid: config.item.uuid, zones: named, at: Date.now() };
+        pending = { uuid: config.item.uuid, zones: named, centres: centres.map(({ x, y }) => ({ x, y })), at: Date.now() };
     },
 };

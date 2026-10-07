@@ -44,6 +44,7 @@ export function docs(built, index, en) {
             : a.type === "persistent-damage" ? `${a.formula}${a.perStep ? ` (+${a.perStep} per ${a.perStepInterval > 1 ? `${a.perStepInterval} ranks` : "rank"})` : ""} persistent ${a.damageType ?? ""}${a.endsWith ? `, ends with ${a.endsWith.join("/")}` : ""}`
             : a.type === "heal" ? `heals ${a.formula ?? a.value}${a.perStep ? ` (+${a.perStep} per rank)` : ""}`
             : a.type === "banish" ? (r.duration?.unit === "unlimited" ? "banished for good" : "banished")
+            : a.type === "pull" ? `pulled toward the centre on a ${a.save ?? "reflex"} save: ${Object.entries(a.feet ?? {}).map(([o, f]) => `${o} ${f} ft`).join(", ")}`
             : a.type === "area-damage" ? `rolled once: ${(a.parts ?? []).map((p) => `${p.formula} ${p.typeFromSpell ? "(chosen energy)" : p.type}${p.zone ? ` (${p.zone} only)` : ""}`).join(" + ")}, one basic ${a.save ?? "reflex"} each`
             : a.type === "damage" ? `${typeof a.formula === "object" ? `${a.formula.base}${a.formula.perStep ? ` (+${a.formula.perStep} per rank)` : ""}` : a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;

@@ -176,6 +176,9 @@
             "Bolted": "a bolt falls on {name}",
             "NoBolt": "no bolt"
         },
+        "Pull": {
+            "Moved": "{name} is pulled {feet} ft toward the centre (of {wanted})."
+        },
         "AreaDamage": {
             "Flavor": "{item} — {type}, rolled once for everyone it reaches"
         },
