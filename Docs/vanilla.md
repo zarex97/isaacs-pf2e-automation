@@ -29,6 +29,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
 | Enlarge | 2 | up to 1, +9 at rank 6 | spell-effect-enlarge (below rank 4); spell-effect-enlarge (from rank 4) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
+| Evil Eye | 1 |  | failure: sickened 1; crit. failure: sickened 2; failure / crit. failure: evil eye (1 minutes, while Sustained) |  |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |

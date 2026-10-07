@@ -1370,4 +1370,11 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a granted action's save with no DC takes the spell's", bakeCast([{ apply: { type: "save", statistic: "will", dc: "spell" } }, { apply: { type: "save", dc: 30 } }], { dc: 25 }).map((r) => r.apply.dc), [25, 30]);
 }
 
+{
+    const { canSee, clamped } = await import("../scripts/riders/condition-floor.mjs");
+    const has = (...slugs) => ({ hasCondition: (s) => slugs.includes(s) });
+    check("a caster sees the creature unless blinded, or it is invisible, undetected or unnoticed", [canSee(has(), has()), canSee(has("blinded"), has()), canSee(has(), has("invisible")), canSee(null, has())], [true, false, false, false]);
+    check("a lowered condition is held at its floor", [clamped(0, 1), clamped(1, 1), clamped(2, 1)], [1, 1, 2]);
+}
+
 report("Automation tests");

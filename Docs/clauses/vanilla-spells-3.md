@@ -631,8 +631,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-88a | "The target becomes Sickened 1 if it fails a Will save (or sickened 2 on a critical failure)" | Sickened 1 or 2 | | ☐ | |
-| VS-88b | "This condition value can't be reduced below 1 while the spell is active and you can see the target" | Retching or anything else can't take it below 1 while the hex is Sustained | | ☐ | |
+| VS-88a | "The target becomes Sickened 1 if it fails a Will save (or sickened 2 on a critical failure)" | Sickened 1 or 2 | `content/vanilla/evil-eye.json`: failure sickened 1, critical failure sickened 2; either, a Sustained effect (1 minute) with `floor: { slug: sickened, value: 1 }` | ✅ | ZZ Victim's Will from the card's row, a natural 20 (a failure vs DC 34): **sickened 1** and the Sustained *evil eye*; a natural 1 on a new cast: **sickened 2** |
+| VS-88b | "This condition value can't be reduced below 1 while the spell is active and you can see the target" | Retching or anything else can't take it below 1 while the hex is Sustained | `floor` (`scripts/riders/condition-floor.mjs`): `preUpdateItem` clamps the value, `preDeleteItem` refuses the removal, while the caster can see the holder | ✅ | At 1: pf2e's decrease — **held at 1**; deleting the condition — **held**. Aries blinded: the decrease took it to **0**. From 2: down to 1, then **held at 1**. The effect gone (the spell over): the decrease took it to **0** |
 
 ## Batch 9 — Limits and summons
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 50 |
-| ✅ | 265 |
+| ☐ not yet driven | 48 |
+| ✅ | 267 |
 | ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |

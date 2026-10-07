@@ -287,6 +287,9 @@
             "Off": "{actor} took acid or fire damage: no regeneration this turn.",
             "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
         },
+        "Floor": {
+            "Held": "{actor}'s {name} can't go below {value} while {effect} lasts."
+        },
         "Nudge": {
             "Label": "{name}",
             "Spent": "{name}: {actor}'s roll was nudged, and the spell ends."
@@ -578,6 +581,9 @@
             },
             "nudge-fate": {
                 "Nudge": "nudge fate"
+            },
+            "evil-eye": {
+                "Eye": "evil eye"
             },
             "guidance": {
                 "AlreadyImmune": "The target is temporarily immune to Guidance: the spell does nothing."

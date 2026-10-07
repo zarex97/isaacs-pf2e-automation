@@ -3089,6 +3089,8 @@ function effectSource(label, rules, rider, context) {
         const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
     }
+    // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
+    if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
     // *Nudge Fate*: a degree raised after the die falls (`nudge.mjs`).
     if (rider.apply?.nudge) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { nudge: rider.apply.nudge === true ? {} : rider.apply.nudge } });
     // *Share Life*: its holder's damage halved, the rest to its caster (`share-damage.mjs`).
