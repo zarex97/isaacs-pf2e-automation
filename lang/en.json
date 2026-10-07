@@ -201,6 +201,7 @@
         },
         "Weapon": {
             "Choose": "Which weapon do you swing?",
+            "ChooseType": "Which of {weapon}'s damage types? Spirit instead, if that would be worse for the creature (the GM's call).",
             "CritSpec": "{name} is subject to {weapon}'s critical specialization effect: {text}"
         },
         "Requires": {
@@ -262,6 +263,7 @@
             "Already": "{name} has already been Sustained this round.",
             "Gone": "{name} has ended; there is nothing to Sustain.",
             "Kept": "{name}: Sustained this round.",
+            "Again": "{name}: Sustained — the attack again.",
             "KeepDescription": "Sustain {name}: it lasts while you do. Once per round, and not in the round it was cast; a turn that ends without it ends the spell.",
             "Lapsed": "{actor} did not Sustain {name}; it ends."
         },
@@ -474,6 +476,9 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "spiritual-armament": {
+                "Echo": "Spiritual Armament"
             },
             "weapon-storm": {
                 "Cone": "A 30-foot cone",

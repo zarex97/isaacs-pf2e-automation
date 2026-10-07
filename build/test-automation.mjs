@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -945,7 +945,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const tok = (id, x, y) => ({ id, center: { x, y } });
     check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
     const { areaParts, typedTotals } = await import("../scripts/riders/apply.mjs");
-    const { dieAsHeld, heldWeapons } = await import("../scripts/riders/weapon.mjs");
+    const { dieAsHeld, heldWeapons, weaponDamageTypes } = await import("../scripts/riders/weapon.mjs");
+    check("a versatile weapon deals its own type or the one its trait adds", [weaponDamageTypes({ system: { damage: { damageType: "slashing" }, traits: { value: ["versatile-p"] } } }), weaponDamageTypes({ system: { damage: { damageType: "bludgeoning" }, traits: { value: [] } } })], [["slashing", "piercing"], ["bludgeoning"]]);
     const sword = { system: { damage: { die: "d8" }, traits: { value: ["two-hand-d12"] }, equipped: { carryType: "held", handsHeld: 1 } } };
     check("a two-hand weapon uses its two-hand die only when held in both hands", [dieAsHeld(sword), dieAsHeld({ ...sword, system: { ...sword.system, equipped: { carryType: "held", handsHeld: 2 } } })], ["d8", "d12"]);
     check("only weapons in hand are held", heldWeapons({ itemTypes: { weapon: [sword, { system: { equipped: { carryType: "worn", handsHeld: 0 } } }] } }).length, 1);

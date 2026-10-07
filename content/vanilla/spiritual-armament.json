@@ -1,0 +1,27 @@
+{
+    "requires": "held-weapon",
+    "variantFromWeapon": {
+        "slashing": "OTj254xSoTgGQJlU",
+        "bludgeoning": "TqI3B4hFxajOSIm3",
+        "piercing": "WIvpqh0pSKKC4t0F",
+        "spirit": "NYYzPXYkV0V917XF"
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.spiritual-armament.Echo",
+                "rules": [],
+                "sustained": {
+                    "repeat": true
+                }
+            }
+        }
+    ]
+}

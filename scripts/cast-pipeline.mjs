@@ -12,6 +12,7 @@ import { AreaTargeting, VARIANT } from "./targeting/index.mjs";
  */
 export const CAST_PRIORITY = {
     requires: 5,
+    weaponVariant: 7,
     aim: 10,
     spellFrequency: 50,
 };
@@ -76,6 +77,8 @@ export const CastPipeline = {
     registerDefaults() {
         // What a spell needs in hand, before anything is asked or aimed.
         CastPipeline.before("what a spell needs", CAST_PRIORITY.requires, async (spell) => (await import("./vanilla/requires.mjs")).checkRequirements(spell));
+        // A spell whose damage type is a weapon's: the matching pf2e variant, chosen before anything is aimed.
+        CastPipeline.before("a variant from the weapon in hand", CAST_PRIORITY.weaponVariant, async (spell, options) => (await import("./vanilla/requires.mjs")).weaponVariant(spell, options));
         CastPipeline.before("area targeting", CAST_PRIORITY.aim, (spell, options) => AreaTargeting.run(spell, options));
         // pf2e never spends a *spell's* Frequency, so a spell that says "once per round" was limited by
         // nothing until this step existed.

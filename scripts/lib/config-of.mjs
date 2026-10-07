@@ -17,6 +17,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "counterThresholds",
     // What a spell needs before it is cast — *Weapon Storm*'s "a weapon you're holding" (`vanilla/requires.mjs`).
     "requires",
+    // A spell's damage type from the weapon in hand, as its own variants — *Spiritual Armament* (`vanilla/requires.mjs`).
+    "variantFromWeapon",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

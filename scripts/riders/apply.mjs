@@ -2702,7 +2702,11 @@ function effectSource(label, rules, rider, context) {
     };
     if (rider.apply?.sustained && context.originActor) {
         const spell = (item?.original ?? item)?.uuid;
-        if (spell) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sustainedBy: { origin: context.originActor.uuid, spell } } });
+        // `sustained: { repeat: true }`: Sustaining it casts it again at the same rank and variant — *Spiritual Armament*'s
+        // "Each time you Sustain the spell, you can repeat the attack".
+        const cast = castItemOf(context);
+        const repeat = rider.apply.sustained?.repeat ? { rank: cast?.rank ?? null, overlayIds: [...(cast?.appliedOverlays?.values?.() ?? [])] } : null;
+        if (spell) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sustainedBy: { origin: context.originActor.uuid, spell, repeat } } });
     }
     onTargetsTurn(source, rider, context);
     // "If the target uses a hostile action, the spell ends" — *Invisibility*. See `registerHostileEnd`.

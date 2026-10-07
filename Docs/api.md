@@ -31,7 +31,7 @@ stages by ascending `priority` (leave gaps), refuses a second stage with the sam
 | `actorPreparation` | character `prepareDerivedData` | `after(name, priority, fn)` | `(actor)`, synchronous, after the system's own preparation. Isolated |
 | `detectionModes` | `TokenDocument#_prepareDetectionModes` | `after(name, priority, fn)` | `(tokenDocument)`, synchronous; edit `detectionModes` in place. Isolated |
 
-The cast pipeline's own stages: **what a spell needs** at `5` *(1.4.0)*, **area targeting** at `10`, **spell frequency** at `50`
+The cast pipeline's own stages: **what a spell needs** at `5` *(1.4.0)*, **a variant from the weapon in hand** at `7` *(1.4.0)*, **area targeting** at `10`, **spell frequency** at `50`
 (`api.castPipeline` exports them as `CAST_PRIORITY` in the source; the numbers are the contract).
 
 Characters prepared before `setup` — every one in the world, at load — have not been through
@@ -160,7 +160,7 @@ Ordered registries run in ascending priority; a name is taken once and a second 
 
 Content nobody authored for this module, by slug: pf2e's own spells first. The config is the same an item's
 flags carry; where it comes from, for each **authored key** (`AUTHORED_KEYS`: `areaTargeting`,
-`areaTargetingShapes`, `riders`, `lingering`, `overlap`, `bypass`, `counterThresholds`, and since 1.4.0 `requires`), in order:
+`areaTargetingShapes`, `riders`, `lingering`, `overlap`, `bypass`, `counterThresholds`, and since 1.4.0 `requires` and `variantFromWeapon`), in order:
 
 1. the item's own flags, in any flag scope — `false` switches that key off, table and all;
 2. an entry another module registered for the item's slug;

@@ -249,13 +249,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-53a | "Attempt a spell attack roll against the target's AC, dealing 2d8 damage on a hit (or double damage on a critical hit)" | A spell attack; 2d8 on a hit, 4d8 on a critical hit | | ☐ | |
-| VS-53b | "The damage type is the same as the chosen weapon (or any of its types for a versatile weapon)" | The cast asks for a held weapon; its type (or a versatile one) is the damage's | | ☐ | |
-| VS-53c | "The attack deals spirit damage instead if that would be more detrimental to the creature (as determined by the GM)" | The GM may switch to spirit | | ☐ | |
-| VS-53d | "This attack uses and contributes to your multiple attack penalty" | The attack takes and raises the caster's MAP | | ☐ | |
-| VS-53e | "Each time you Sustain the spell, you can repeat the attack against any creature within 120 feet" | Sustain offers a new attack against any creature within 120 ft | | ☐ | |
+| VS-53a | "Attempt a spell attack roll against the target's AC, dealing 2d8 damage on a hit (or double damage on a critical hit)" | A spell attack; 2d8 on a hit, 4d8 on a critical hit | pf2e's own spell card (attack, then damage) | ✅ | Aries (a longsword in hand) cast it at Capricorn: the card offered pf2e's spell attack against his AC and **2d8 piercing** damage; a critical hit doubles it on pf2e's damage button, as for any attack spell |
+| VS-53b | "The damage type is the same as the chosen weapon (or any of its types for a versatile weapon)" | The cast asks for a held weapon; its type (or a versatile one) is the damage's | `content/vanilla/spiritual-armament.json` (`requires: "held-weapon"`, `variantFromWeapon`); a cast stage, `a variant from the weapon in hand`; `weaponDamageTypes` test | ✅ | The cast offered **Slashing, Piercing, Spirit** — the longsword's own type and the piercing its versatile trait adds. Piercing cast pf2e's *Spiritual Armament (Piercing)*: damage 2d8 **piercing**; at rank 4, Slashing: 3d8 **slashing** |
+| VS-53c | "The attack deals spirit damage instead if that would be more detrimental to the creature (as determined by the GM)" | The GM may switch to spirit | *Spirit* among the choices, the GM's call | ✅ | **Spirit** is always offered, with the note that it is the GM's call; choosing it casts pf2e's *Spiritual Armament (Spirit)* |
+| VS-53d | "This attack uses and contributes to your multiple attack penalty" | The attack takes and raises the caster's MAP | pf2e's card: the attack at each step of the multiple attack penalty | ⚠️ | The card's attack is offered at MAP 0, –5 and –10 (pf2e's three buttons); the roll records `map:increases:0`. **Gap:** pf2e keeps no count of the attacks a creature has made, so "contributes to your multiple attack penalty" is the player's to track — nothing here or in pf2e advances it |
+| VS-53e | "Each time you Sustain the spell, you can repeat the attack against any creature within 120 feet" | Sustain offers a new attack against any creature within 120 ft | `sustained: { repeat: true }` — the Sustain casts the spell again at its rank and variant | ✅ | Round 2, *Sustain Drive: Spiritual Armament*: "Sustained — the attack again." and a fresh *Spiritual Armament (Piercing)* card at rank 2 to attack any creature from. Round 3 left unsustained: "Aries did not Sustain Drive: Spiritual Armament; it ends." — the marker and the action gone |
 | VS-53f | "If you sanctify the spell, the attacks are sanctified as well" | — | | — | Nothing to automate: sanctification is the caster's own trait choice, carried by pf2e |
-| VS-53g | "The damage increases by 1d8" | Rank 4: 3d8 | | ☐ | |
+| VS-53g | "The damage increases by 1d8" | Rank 4: 3d8 | pf2e's own heightening (+1d8 every 2 ranks) | ✅ | Cast at **rank 4**: **3d8** |
 
 ### VS-54 · Telekinetic Maneuver
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 241 |
-| ✅ | 80 |
-| ⚠️ | 4 |
+| ☐ not yet driven | 235 |
+| ✅ | 85 |
+| ⚠️ | 5 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |
