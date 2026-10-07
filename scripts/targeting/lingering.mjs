@@ -1,7 +1,7 @@
 import { key, t } from "../i18n.mjs";
 import { flagOf } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
-import { testPredicate } from "../lib/roll-options.mjs";
+import { targetingOptions, testPredicate } from "../lib/roll-options.mjs";
 import { allianceOf, catches } from "./enemy-terrain.mjs";
 import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "../riders/apply.mjs";
 import { LIB_ID } from "../id.mjs";
@@ -44,7 +44,10 @@ export const Lingering = {
 
     registerHooks() {
         Hooks.on("updateWorldTime", () => Lingering.sweep());
-        Hooks.on("pf2e.startTurn", () => Lingering.sweep());
+        Hooks.on("pf2e.startTurn", (combatant) => {
+            Lingering.sweep();
+            Lingering.endAtTurnOf(combatant?.actor);
+        });
         Hooks.once("ready", () => Lingering.sweep());
         // An area deleted by hand — a Dismissed *Darkness* — takes its lights and walls with it. Only the
         // expiry sweep used to, so a dismissed darkness went on putting out every torch in the room.
@@ -183,6 +186,8 @@ export const Lingering = {
                             name: spec.name ?? config.item.name,
                             itemUuid: config.item.uuid ?? null,
                             slug: config.item.slug ?? null,
+                            until: spec.until ?? null,
+                            targetPredicate: spec.targetPredicate ?? null,
                             originUuid: config.item.actor?.uuid ?? null,
                             damage: spec.damage ? scaledDamage(spec.damage, config.steps ?? 0) : null,
                             save: spec.save ? scaledSave(spec.save, config.steps ?? 0) : null,
@@ -289,6 +294,21 @@ export const Lingering = {
                 return payload?.originUuid === originUuid && payload?.slug === slug;
             });
             if (previous.length > 0) await scene.deleteEmbeddedDocuments("Region", previous.map((region) => region.id));
+        }
+    },
+
+    /**
+     * "Until the start of your next turn": *Gust of Wind* blows for the rest of the round and stops when
+     * its caster's turn comes round again, which a clock in seconds cannot say. Active GM only.
+     */
+    async endAtTurnOf(actor) {
+        if (game.users?.activeGM?.id !== game.user?.id || !actor?.uuid) return;
+        for (const scene of game.scenes) {
+            const ending = scene.regions.filter((region) => {
+                const payload = flagOf(region, FLAG);
+                return payload?.until === "originTurnStart" && payload.originUuid === actor.uuid;
+            });
+            if (ending.length > 0) await scene.deleteEmbeddedDocuments("Region", ending.map((region) => region.id));
         }
     },
 
@@ -467,6 +487,8 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
         // catching the caster's own side. Declared-only, so a patch of ground that names no side keeps
         // catching everybody, which is what the three Techniques written that way mean.
         if (payload.affects === "enemies" && !catches(allianceOf(originActor), allianceOf(actor))) return;
+        // Who the ground can touch at all — *Gust of Wind* does nothing to a creature larger than Large.
+        if (payload.targetPredicate && !testPredicate(payload.targetPredicate, targetingOptions(originActor, actor, null))) return;
 
         // *Royal Demon Rose* is "any creature that starts its turn in the area must attempt a Fortitude
         // save" — a save with its own outcome ladder, not a flat tick, so it goes through the same

@@ -368,6 +368,158 @@
                 }
             }
         },
+        "gust-of-wind": {
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster",
+                "predicate": [
+                    {
+                        "lte": [
+                            "target:size",
+                            3
+                        ]
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.gust-of-wind.Success"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.gust-of-wind.Flying"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "teleport",
+                        "distance": 30,
+                        "stopsAtWalls": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "2d6",
+                        "damageType": "bludgeoning"
+                    }
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.gust-of-wind.Gust",
+                "duration": {
+                    "value": 1,
+                    "unit": "rounds"
+                },
+                "until": "originTurnStart",
+                "events": [
+                    "tokenMoveIn"
+                ],
+                "targetPredicate": [
+                    {
+                        "lte": [
+                            "target:size",
+                            3
+                        ]
+                    }
+                ],
+                "save": {
+                    "statistic": "fortitude",
+                    "riders": [
+                        {
+                            "outcomes": [
+                                "success"
+                            ],
+                            "apply": {
+                                "type": "prompt",
+                                "text": "ISAACS_AUTOMATION.Vanilla.gust-of-wind.Success"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "condition",
+                                "slug": "prone"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "failure"
+                            ],
+                            "apply": {
+                                "type": "prompt",
+                                "text": "ISAACS_AUTOMATION.Vanilla.gust-of-wind.Flying"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "teleport",
+                                "distance": 30,
+                                "stopsAtWalls": true
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "condition",
+                                "slug": "prone"
+                            }
+                        },
+                        {
+                            "outcomes": [
+                                "criticalFailure"
+                            ],
+                            "apply": {
+                                "type": "damage",
+                                "formula": "2d6",
+                                "damageType": "bludgeoning"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "heal": {
             "variants": {
                 "7vbvdrv2cl87sqta": {

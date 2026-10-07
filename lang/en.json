@@ -200,6 +200,8 @@
             "Throw": "{name} is thrown {feet} feet away.",
             "DragShort": "{name} is pulled {feet} feet closer — the {travel}-foot drag ran out of map.",
             "ThrowShort": "{name} is pulled {feet} feet away — the {travel}-foot throw ran out of map.",
+            "Push": "{name} is pushed {feet} feet.",
+            "PushShort": "{name} is pushed {feet} feet — something stopped the {travel}-foot push.",
             "Occupied": "that space is occupied by {names}",
             "Unseen": "you can't see that space"
         },
@@ -337,6 +339,11 @@
                 "Shroud": "Darkness",
                 "Seen": "Darkness (seen through)",
                 "Inside": "<p>You are within heightened darkness: even creatures with darkvision (but not greater darkvision) treat you as concealed, and you treat targets seen through the darkness as concealed.</p>"
+            },
+            "gust-of-wind": {
+                "Gust": "Gust of Wind",
+                "Success": "The creature can't move against the wind.",
+                "Flying": "If the creature was flying, it takes the effects of a critical failure instead (pushed 30 feet in the wind's direction, prone, 2d6 bludgeoning)."
             },
             "scatter-scree": {
                 "Scree": "Scatter Scree"
