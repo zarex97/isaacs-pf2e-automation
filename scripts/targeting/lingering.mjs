@@ -288,6 +288,24 @@ export const Lingering = {
     },
 };
 
+const seenMovements = new Map();
+const MOVEMENT_MEMORY_MS = 60_000;
+
+/**
+ * Is this the first event of its move action for this area and token? A movement continued from an earlier
+ * one carries the ids before it in `chain`, so the first of those names the whole move. Events with no
+ * movement — a turn starting — always count.
+ */
+export function firstForMovement(regionUuid, event, now = Date.now()) {
+    const movement = event?.data?.movement;
+    if (!movement?.id) return true;
+    for (const [key, at] of seenMovements) if (now - at > MOVEMENT_MEMORY_MS) seenMovements.delete(key);
+    const key = `${regionUuid}|${event.data.token?.id}|${movement.chain?.[0] ?? movement.id}`;
+    if (seenMovements.has(key)) return false;
+    seenMovements.set(key, now);
+    return true;
+}
+
 /** A darkness source filling the area, outranking light up to the cast rank. */
 export function darknessSource(bounds, rank, gridSize, gridDistance) {
     const radius = (Math.min(bounds.width, bounds.height) / 2 / gridSize) * gridDistance;
@@ -386,6 +404,9 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
                     CONST.REGION_EVENTS.TOKEN_TURN_END,
                     CONST.REGION_EVENTS.TOKEN_ROUND_END,
                     CONST.REGION_EVENTS.TOKEN_EXIT,
+                    // "Begins to use a move action in the web": a move that starts inside leaves it or stays.
+                    CONST.REGION_EVENTS.TOKEN_MOVE_OUT,
+                    CONST.REGION_EVENTS.TOKEN_MOVE_WITHIN,
                 ],
                 initial: [CONST.REGION_EVENTS.TOKEN_MOVE_IN, CONST.REGION_EVENTS.TOKEN_TURN_END],
             }),
@@ -401,10 +422,19 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         const region = this.parent?.region ?? this.parent?.parent;
         if (this.role === "inside") return Inside.handle(event, region);
+        // Out of the area, out of what it does while you are in it — *Web*'s penalty to Speeds.
+        if (event.name === CONST.REGION_EVENTS.TOKEN_EXIT) return Inside.leave(region, event.data?.token);
         const payload = flagOf(region, FLAG);
         const damage = payload?.damage;
         const actor = event.data?.token?.actor;
         if (!actor || (!damage?.formula && !payload?.save)) return;
+
+        // One move action is one check, however many times Foundry reports it: a long drag into *Web* comes
+        // as "moved in" and then "moved within", and both used to roll Athletics.
+        if (!firstForMovement(region?.uuid, event)) {
+            if (event.name === CONST.REGION_EVENTS.TOKEN_MOVE_OUT) await Inside.leave(region, event.data.token);
+            return;
+        }
 
         // `originUuid` is the caster's *actor* — see `createOne` — not a token, so no `.actor` step here.
         const originActor = payload.originUuid ? await fromUuid(payload.originUuid) : null;
@@ -429,6 +459,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
                 actor,
                 originActor,
                 originToken: originActor.getActiveTokens(true, true).at(0) ?? null,
+                region: region.uuid,
                 item,
                 target: event.data.token,
                 eventTarget: event.data.token,
@@ -443,6 +474,11 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
             // were handed in and never read back, so Grease's "fails to Balance" reached nobody.
             if (work.notes.length > 0) await postNotes(work);
             if (work.prompts.length > 0) await postPrompts(work);
+            // A move that started inside and ended outside was checked on its way out; whatever that check
+            // left for "while in the area" ends now that it is not. Asked of the token, not of the event:
+            // Foundry reports such a move as "within", then "exit", then "out", all at once, and the exit's
+            // own clean-up has already run by the time a check's roll comes back.
+            if (!event.data.token?.regions?.has?.(region)) await Inside.leave(region, event.data.token);
             return;
         }
 

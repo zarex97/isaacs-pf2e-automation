@@ -74,9 +74,10 @@ export const Inside = {
             if (!isActiveGM() || !Inside.has(region)) return;
             for (const token of region.tokens ?? []) Inside.enter(region, token);
         });
-        // A dismissed cloud, or one whose minute is up, lets go of everyone in it.
+        // A dismissed cloud, or one whose minute is up, lets go of everyone in it — and so does any lingering
+        // area that left an effect "while in it" (*Web*'s penalty), whichever role its behavior has.
         Hooks.on("deleteRegion", (region) => {
-            if (!isActiveGM() || !Inside.has(region)) return;
+            if (!isActiveGM() || !flagOf(region, LINGERING)) return;
             for (const token of region.parent?.tokens ?? []) Inside.leave(region, token);
         });
     },
