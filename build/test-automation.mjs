@@ -783,6 +783,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         canSustain({ castRound: 3, lastRound: 4 }, 4),
         canSustain({ castRound: 3, lastRound: 4 }, 5),
     ], [false, true, false, true]);
+    const { lapses } = await import("../scripts/riders/sustain.mjs");
+    check("a sustained spell ends at a turn's end it was not Sustained in — never in its casting round or out of combat", [
+        lapses({ castRound: 2, lastRound: null }, 2), lapses({ castRound: 2, lastRound: null }, 3), lapses({ castRound: 2, lastRound: 3 }, 3), lapses({ castRound: 2, lastRound: 3 }, 4), lapses({ castRound: null, lastRound: null }, null),
+    ], [false, true, false, true, false]);
     check("…and freely out of combat, or when cast out of it", [canSustain({ castRound: 3, lastRound: 3 }, null), canSustain({ castRound: null, lastRound: null }, 1)], [true, true]);
     const action = sustainActionSource({ item: { name: "Bless" }, effectId: "e1", step: 1, castRound: 2 });
     check("the granted action is one concentrate action that fires its own rider", [action.system.actions.value, action.system.traits.value, action.flags[LIB_ID].riders[0].apply.type, action.flags[LIB_ID].sustain.effectId], [1, ["concentrate"], "sustain", "e1"]);

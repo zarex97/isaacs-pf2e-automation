@@ -799,6 +799,68 @@
                 }
             }
         },
+        "laughing-fit": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.laughing-fit.NoReactions",
+                        "rules": [],
+                        "sustained": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1,
+                        "sustained": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.laughing-fit.Helpless",
+                        "rules": [],
+                        "sustained": true
+                    }
+                }
+            ]
+        },
         "lightning-bolt": {
             "areaTargeting": {
                 "affects": "all",
