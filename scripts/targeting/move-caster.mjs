@@ -74,6 +74,6 @@ export const MoveCaster = {
         if (!destination) return;
         pending.delete(key);
         const token = await fromUuid(destination.token);
-        await token?.update({ x: destination.x, y: destination.y }, { teleport: true, animate: false });
+        await token?.update({ x: destination.x, y: destination.y }, { teleport: true, animate: false, forcedMovement: true });
     },
 };

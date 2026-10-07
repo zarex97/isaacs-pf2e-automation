@@ -9,6 +9,10 @@ import { DetectionModes } from "./lib/detection-modes.mjs";
 import { EncounterDamage } from "./lib/encounter-damage.mjs";
 import { ShieldBlock } from "./riders/shield-block.mjs";
 import { Deters } from "./riders/deters.mjs";
+import { Dismiss } from "./riders/dismiss.mjs";
+import { CastZones } from "./targeting/zones.mjs";
+import { Repels } from "./targeting/repels.mjs";
+import { MovementCost } from "./lib/movement-cost.mjs";
 import { FastHealing } from "./lib/fast-healing.mjs";
 import { RerollPipeline } from "./lib/reroll-pipeline.mjs";
 import { Banish } from "./riders/banish.mjs";
@@ -52,6 +56,8 @@ export const INIT = [
     ["the vanilla riders setting", () => Coexistence.registerSettings()],
     ["the automation indicator", () => Indicator.registerHooks()],
     ["the shape a cast chose, on its card", () => CastShape.registerHooks()],
+    ["who stands where in the areas, on its card", () => CastZones.register()],
+    ["an aura that keeps creatures off its caster", () => { Repels.registerHooks(); Repels.register(); }],
     ["a spell that moves its caster", () => MoveCaster.register()],
 ];
 
@@ -71,6 +77,7 @@ export const RIDER_INIT = [
     ["what ends with a condition", () => registerEndsWith()],
     ["what a hostile action ends", () => registerHostileEnd()],
     ["a ward its attackers save against", () => Deters.register()],
+    ["dismissing an area", () => Dismiss.registerHooks()],
     ["overlapping areas' relay", () => Overlap.registerRelay()],
     ["armed Strikes", () => StrikeTechnique.registerHooks()],
     ["shared allowances", () => SharedAllowance.registerHooks()],
@@ -86,6 +93,7 @@ export const SETUP = [
     ["the cast pipeline", () => CastPipeline.install()],
     ["character preparation", () => ActorPreparation.install()],
     ["detection modes", () => DetectionModes.install()],
+    ["movement cost", () => MovementCost.install()],
     ["the reroll pipeline", () => RerollPipeline.install()],
 ];
 

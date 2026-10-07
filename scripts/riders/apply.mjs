@@ -11,6 +11,8 @@ import { Banish, durationSeconds } from "./banish.mjs";
 import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
+import { Dismiss } from "./dismiss.mjs";
+import { applyPull } from "./pull.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
 
 /** A degree of success, in words. */
@@ -440,6 +442,12 @@ async function applyOne(rider, context) {
             return applyTransfer(rider, context);
         case "temp-hp":
             return applyTempHp(rider, context);
+        case "dismiss":
+            return Dismiss.apply(rider, context);
+        case "area-damage":
+            return applyAreaDamage(rider, context);
+        case "pull":
+            return applyPull(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -2310,6 +2318,62 @@ function scaleFormula(formula, count) {
 }
 
 /** `base + perStep * steps`, for a number or for two dice formulas sharing the same die size. */
+/** The parts of an area's damage that reach a creature: those with no zone, and those whose zone names it. */
+export function areaParts(parts, zones, tokenId) {
+    return parts.filter((part) => !part.zone || (zones?.[part.zone] ?? []).includes(tokenId));
+}
+
+/** One damage formula for several typed totals: pf2e reads a braced list as one roll of several instances. */
+export function typedTotals(parts) {
+    const each = parts.map((part) => `${part.total}[${part.type}]`);
+    return each.length === 1 ? each[0] : `{${each.join(",")}}`;
+}
+
+/** One set of rolls per cast, however many creatures it reached — keyed by the card, held as a promise. */
+const areaRolls = new Map();
+
+/**
+ * Damage rolled once for the whole cast, saved against once per creature. *Falling Stars*: "A creature in any of the
+ * areas attempts one basic Reflex save against the spell no matter how many overlapping explosions it's caught in
+ * and can take each type of damage only once." Each part is rolled once for the cast; a part with a `zone` reaches
+ * only the creatures the placement named for it (`zones.mjs`); each creature saves once, and what reaches it lands
+ * as one roll of several types, so its resistances meet each type once.
+ */
+async function applyAreaDamage(rider, context) {
+    const actor = context.actor;
+    const token = context.target;
+    if (!actor || !token) return;
+    const item = castItemOf(context);
+    const key = context.message?.id ?? item?.uuid ?? "cast";
+    if (!areaRolls.has(key)) {
+        if (areaRolls.size > 20) areaRolls.delete(areaRolls.keys().next().value);
+        areaRolls.set(key, (async () => {
+            const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
+            const steps = riderSteps(rider, context);
+            const rolled = [];
+            for (const part of rider.apply.parts ?? []) {
+                const type = (part.typeFromSpell && item?.system?.damage?.[part.typeFromSpell]?.type) || part.type || "untyped";
+                const formula = part.perStep ? growByStep(part.formula, part.perStep, steps) : part.formula;
+                const roll = await new DamageRoll(`(${formula})[${type}]`).evaluate();
+                await roll.toMessage({ flavor: t("AreaDamage.Flavor", { item: item?.name ?? t("Rider.Name"), type }), speaker: ChatMessage.getSpeaker({ actor: context.originActor }) });
+                rolled.push({ total: roll.total, type, zone: part.zone ?? null });
+            }
+            return rolled;
+        })());
+    }
+    const rolled = await areaRolls.get(key);
+    const reaching = areaParts(rolled, context.message?.flags?.[LIB_ID]?.zones, token.id);
+    if (reaching.length === 0) return;
+    const dc = RiderExtensions.resolveDC("spell", context);
+    const statistic = actor.getStatistic?.(rider.apply.save ?? "reflex");
+    const save = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item, extraRollOptions: ["damaging-effect"] }) : null;
+    const multiplier = [2, 1, 0.5, 0][save?.degreeOfSuccess ?? 1];
+    if (!multiplier) return;
+    const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
+    const roll = await new DamageRoll(typedTotals(reaching)).evaluate();
+    await actor.applyDamage({ damage: multiplier === 1 ? roll : roll.alter(multiplier, 0), token, item });
+}
+
 export function growByStep(base, perStep, steps) {
     if (typeof base === "number" && typeof perStep === "number") return base + perStep * steps;
     const baseDice = /^(\d*)d(\d+)$/.exec(String(base).trim());
@@ -2349,7 +2413,7 @@ async function undo(actor, receipt) {
     // failure into a success has to walk the creature back to where it was standing.
     for (const move of receipt.moves ?? []) {
         const token = await fromUuid(move.tokenUuid).catch(() => null);
-        if (token?.documentName === "Token") await token.update({ x: move.x, y: move.y }, { animate: false });
+        if (token?.documentName === "Token") await token.update({ x: move.x, y: move.y }, { animate: false, forcedMovement: true });
     }
 }
 

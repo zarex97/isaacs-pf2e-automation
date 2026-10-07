@@ -584,6 +584,45 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The third tracker: every clause is pf2e's own words                                         */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { plainText, trackedSlugs } = await import("./lib/spell-text.mjs");
+    check("a link reads as its label, a template as its size, a roll as its formula",
+        plainText("<p>is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} in a @Template[burst|distance:10] for [[/r 1d4 #rounds]]{1d4 rounds}, @Damage[2d6[fire]]</p>"),
+        "is Dazzled in a 10-foot burst for 1d4 rounds, 2d6[fire]");
+    check("a tracker's spells are read off its spell table", trackedSlugs("| VS-41 | `floating-flame` | 2 |\n| VS-41a | \"x\" |"), ["floating-flame"]);
+
+    const file = path.join(ROOT, "Docs", "clauses", "vanilla-spells-3.md");
+    const text = fs.readFileSync(file, "utf8");
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
+    const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-spell-text.json"), "utf8")).spells;
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const spells = Object.fromEntries([...text.matchAll(/^\| (VS-\d+) \| `([a-z0-9-]+)` \|/gm)].map((m) => [m[1], m[2]]));
+    const clauses = text.split(/\r?\n/).filter((line) => /^\| VS-\d+[a-z] /.test(line)).map((line) => {
+        const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+        const [, spell, letter] = /^(VS-\d+)([a-z])$/.exec(cells[0]);
+        return { id: cells[0], spell, letter, clause: cells[1].replace(/^"|"$/g, ""), mark: cells[4] };
+    });
+    check("the third tracker lists sixty spells, each once", [Object.keys(spells).length, new Set(Object.values(spells)).size], [60, 60]);
+    check("…none of them already tracked in the second", Object.values(spells).filter((slug) => fs.readFileSync(path.join(ROOT, "Docs", "clauses", "vanilla-spells.md"), "utf8").includes(`\`${slug}\``)), []);
+    check("…all real pf2e spells", Object.values(spells).filter((slug) => !index.spells[slug]), []);
+    check("every clause belongs to a listed spell, and every spell has clauses",
+        [clauses.filter((c) => !spells[c.spell]).map((c) => c.id), Object.keys(spells).filter((id) => !clauses.some((c) => c.spell === id))], [[], []]);
+    check("clause IDs are numbered once each", clauses.length - new Set(clauses.map((c) => c.id)).size, 0);
+    check("every clause carries one of the six marks", clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => `${c.id} ${c.mark}`), []);
+    // The point of clausifying: a paraphrase here, or pf2e rewording a spell, fails the build.
+    check("every clause is a verbatim fragment of pf2e's own text",
+        clauses.filter((c) => !(words[spells[c.spell]] ?? "").includes(c.clause)).map((c) => c.id), []);
+    check("a spell with a ✅ clause has a table entry",
+        [...new Set(clauses.filter((c) => c.mark === "✅").map((c) => spells[c.spell]))].filter((slug) => !fs.existsSync(path.join(ROOT, "content", "vanilla", `${slug}.json`))), []);
+    const counted = Object.fromEntries(MARKS.map((mark) => [mark, clauses.filter((c) => c.mark === mark).length]));
+    const table = Object.fromEntries(MARKS.map((mark) => [mark, Number(new RegExp(`^\\| ${mark}[^|]*\\| (\\d+) \\|`, "m").exec(text)?.[1])]));
+    check("the third tracker's counts are its clauses counted", [table, Number(/\*\*Total\*\* \| \*\*(\d+)\*\*/.exec(text)?.[1])], [counted, clauses.length]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Coexistence: a table rider steps aside for a spell another module already automates           */
 /* -------------------------------------------------------------------------------------------- */
 
@@ -881,6 +920,33 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const { darknessSource, firstForMovement, followed } = await import("../scripts/targeting/lingering.mjs");
     const emanation = { type: "emanation", radius: 200, base: { type: "token", x: 3700, y: 1500, width: 1, height: 1 } };
     check("an emanation follows its caster by its base square", followed(emanation, { x: 3550, y: 1550 }, { x: 3500, y: 1500 }).base, { ...emanation.base, x: 3500, y: 1500 });
+    const { sweptPath, overlaps, alreadyBurned, drifted } = await import("../scripts/targeting/lingering.mjs");
+    const { tooClose } = await import("../scripts/targeting/index.mjs");
+    const { withinOfAny } = await import("../scripts/targeting/zones.mjs");
+    const { pullSteps, pullFeet } = await import("../scripts/riders/pull.mjs");
+    const { movesCloser, barsApproach, centreAt } = await import("../scripts/targeting/repels.mjs");
+    check("closing in is a move that ends nearer the caster; sideways and away are not", [movesCloser({ x: 500, y: 0 }, { x: 400, y: 0 }, { x: 0, y: 0 }), movesCloser({ x: 500, y: 0 }, { x: 500, y: 100 }, { x: 0, y: 0 }), movesCloser({ x: 400, y: 0 }, { x: 500, y: 0 }, { x: 0, y: 0 })], [true, false, false]);
+    check("a failure or worse bars it; a success or better does not", ["criticalFailure", "failure", "success", "criticalSuccess", undefined].map(barsApproach), [true, true, false, false, false]);
+    check("a token's centre at a position", centreAt({ x: 100, y: 200 }, { width: 2, height: 1 }, 100), { x: 200, y: 250 });
+    const one = { w: 100, h: 100 };
+    check("a pull walks square by square at the centre and never past it", [pullSteps({ x: 0, y: 0 }, one, { x: 550, y: 50 }, 3, 100), pullSteps({ x: 0, y: 0 }, one, { x: 250, y: 50 }, 6, 100), pullSteps({ x: 0, y: 0 }, one, { x: 350, y: 350 }, 6, 100)],
+        [[{ x: 100, y: 0 }, { x: 200, y: 0 }, { x: 300, y: 0 }], [{ x: 100, y: 0 }, { x: 200, y: 0 }], [{ x: 100, y: 100 }, { x: 200, y: 200 }, { x: 300, y: 300 }]]);
+    check("how far each degree pulls", ["criticalSuccess", "success", "failure", "criticalFailure"].map((o) => pullFeet({ success: 5, failure: 15, criticalFailure: 30 }, o)), [0, 5, 15, 30]);
+    const tok = (id, x, y) => ({ id, center: { x, y } });
+    check("the centre zone: creatures within 10 ft of any star's centre", withinOfAny([tok("a", 100, 0), tok("b", 250, 0), tok("c", 1000, 1050)], [{ x: 0, y: 0 }, { x: 1000, y: 1000 }], 10, 100, 5), ["a", "c"]);
+    const { areaParts, typedTotals } = await import("../scripts/riders/apply.mjs");
+    const parts = [{ total: 30, type: "bludgeoning", zone: "centre" }, { total: 48, type: "fire", zone: null }];
+    check("a part with a zone reaches only that zone; a part without reaches everyone", [areaParts(parts, { centre: ["a"] }, "a").length, areaParts(parts, { centre: ["a"] }, "b").map((p) => p.type), areaParts(parts, undefined, "a").map((p) => p.type)], [2, ["fire"], ["fire"]]);
+    check("several typed totals are one roll of several instances", [typedTotals(parts), typedTotals([parts[1]])], ["{30[bludgeoning],48[fire]}", "48[fire]"]);
+    check("areas kept apart: two 20-ft clouds 40 ft apart pass, 35 ft apart don't", [tooClose([{ x: 0, y: 0 }, { x: 800, y: 0 }], 40, 100, 5), tooClose([{ x: 0, y: 0 }, { x: 700, y: 0 }], 40, 100, 5), tooClose([{ x: 0, y: 0 }], 40, 100, 5)], [false, true, false]);
+    const { lapses: lapsesTurn } = await import("../scripts/riders/sustain.mjs");
+    check("a sustained area lapses on a later turn left unsustained, not in its casting round", [lapsesTurn({ castRound: 1, lastRound: null }, 1), lapsesTurn({ castRound: 1, lastRound: null }, 2), lapsesTurn({ castRound: 1, lastRound: 2 }, 2)], [false, true, false]);
+    check("a drifting cloud moves its step away from its caster, onto a grid intersection", [drifted({ x: 1000, y: 500 }, { x: 500, y: 500 }, 200, 100), drifted({ x: 1000, y: 1000 }, { x: 500, y: 500 }, 200, 100), drifted({ x: 500, y: 500 }, { x: 500, y: 500 }, 200, 100)],
+        [{ x: 1200, y: 500 }, { x: 1100, y: 1100 }, { x: 500, y: 500 }]);
+    check("a flight visits every square on its way, both ends included", [sweptPath({ x: 0, y: 0 }, { x: 200, y: 0 }, 100), sweptPath({ x: 0, y: 0 }, { x: 100, y: 100 }, 100), sweptPath({ x: 5, y: 5 }, { x: 5, y: 5 }, 100)],
+        [[{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }], [{ x: 0, y: 0 }, { x: 100, y: 100 }], [{ x: 5, y: 5 }]]);
+    check("a creature shares the flame's space when their squares overlap, not when they touch", [overlaps({ x: 100, y: 0, w: 100, h: 100 }, { x: 100, y: 0 }, 100), overlaps({ x: 200, y: 0, w: 100, h: 100 }, { x: 100, y: 0 }, 100), overlaps({ x: 0, y: 0, w: 200, h: 200 }, { x: 100, y: 100 }, 100)], [true, false, true]);
+    check("once per round: burned this round is skipped; out of combat nobody is", [alreadyBurned({ a: 3 }, "a", 3), alreadyBurned({ a: 2 }, "a", 3), alreadyBurned({ a: 3 }, "a", null)], [true, false, false]);
     check("…a circle by its centre, and anything else stays put", [followed({ type: "circle", x: 0, y: 0, radius: 50 }, { x: 10, y: 20 }, { x: 0, y: 0 }), followed({ type: "rectangle", x: 0, y: 0, width: 1 }, { x: 10, y: 20 }, { x: 0, y: 0 })], [{ type: "circle", x: 10, y: 20, radius: 50 }, { type: "rectangle", x: 0, y: 0, width: 1 }]);
     const moved = (id, chain = []) => ({ data: { token: { id: "t" }, movement: { id, chain } } });
     check("one move action is one check, however many events it makes", [firstForMovement("R", moved("m1"), 0), firstForMovement("R", moved("m1"), 1), firstForMovement("R", moved("m2", ["m1"]), 2)], [true, false, false]);
@@ -1068,6 +1134,7 @@ const sources = mjsUnder(SCRIPTS).map((file) => ({ file, rel: path.relative(ROOT
         "CONFIG.PF2E.Item.documentClasses.action.prototype.toMessage",
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.cast",
         "CONFIG.Token.documentClass.prototype._prepareDetectionModes",
+        "CONFIG.Token.objectClass.prototype._getMovementCostFunction",
         "game.pf2e.Check.rerollFromMessage",
         "game.pf2e.Check.roll",
     ]);

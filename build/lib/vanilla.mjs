@@ -44,7 +44,9 @@ export function docs(built, index, en) {
             : a.type === "persistent-damage" ? `${a.formula}${a.perStep ? ` (+${a.perStep} per ${a.perStepInterval > 1 ? `${a.perStepInterval} ranks` : "rank"})` : ""} persistent ${a.damageType ?? ""}${a.endsWith ? `, ends with ${a.endsWith.join("/")}` : ""}`
             : a.type === "heal" ? `heals ${a.formula ?? a.value}${a.perStep ? ` (+${a.perStep} per rank)` : ""}`
             : a.type === "banish" ? (r.duration?.unit === "unlimited" ? "banished for good" : "banished")
-            : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
+            : a.type === "pull" ? `pulled toward the centre on a ${a.save ?? "reflex"} save: ${Object.entries(a.feet ?? {}).map(([o, f]) => `${o} ${f} ft`).join(", ")}`
+            : a.type === "area-damage" ? `rolled once: ${(a.parts ?? []).map((p) => `${p.formula} ${p.typeFromSpell ? "(chosen energy)" : p.type}${p.zone ? ` (${p.zone} only)` : ""}`).join(" + ")}, one basic ${a.save ?? "reflex"} each`
+            : a.type === "damage" ? `${typeof a.formula === "object" ? `${a.formula.base}${a.formula.perStep ? ` (+${a.formula.perStep} per rank)` : ""}` : a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
         const lasting = [r.duration ? (r.duration.of === "target" ? "until its next turn" : r.duration.unit === "unlimited" ? "until it ends" : `${r.duration.value} ${r.duration.unit}`) : (a.type === "condition" && !a.value ? "no end" : null), a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustained ? "while Sustained" : null, a.endsOnHostile ? "ends on a hostile action" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, a.carries?.length ? `carries ${a.carries.map((c) => `${c.event ?? ""} ${c.apply?.type === "save" ? `${c.apply.statistic} save` : c.apply?.type}`.trim()).join(", ")}` : null, a.withoutGrants?.length ? `without ${a.withoutGrants.join(", ")}` : null, ...rankFromRider(r.predicate), r.self ? "on you" : null].filter(Boolean);
@@ -78,7 +80,12 @@ export function docs(built, index, en) {
             l.replacesPrevious ? "ends your previous one" : null,
             l.until === "originTurnStart" ? "until your next turn" : null,
             l.followsCaster ? "moves with you" : null,
-            l.sustain ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
+            l.repels ? `repels: a ${l.repels.statistic ?? "will"} save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in` : null,
+            l.drifts ? `drifts ${l.drifts.feet} ft away from you each round` : null,
+            l.dismiss ? "Dismiss" : null,
+            l.sustain?.bolt ? `bolt: ${l.sustain.bolt.formula} ${l.sustain.bolt.type ?? ""} on a creature in the storm (basic ${l.sustain.bolt.save ?? "reflex"}), at the cast and on each Sustain`.replace(/\s+/g, " ") : null,
+            l.sustain?.lapses ? "ends if not Sustained" : null,
+            l.sustain?.move ? `Sustain: moves ${l.sustain.move} ft, ${l.sustain.damage?.formula ?? ""} ${l.sustain.damage?.type ?? ""} to those it passes (basic ${l.sustain.damage?.save ?? "reflex"}), once a round`.replace(/\s+/g, " ") : l.sustain?.radius ? `Sustain: +${l.sustain.radius} ft${l.sustain.saveNewcomers ? ", newcomers save" : ""}` : null,
             l.darkness ? "darkness, outshining light up to its rank" : null,
             l.inside ? `while inside: ${[...(l.inside.conditions ?? []), ...(l.inside.rules?.length ? ["its rules"] : [])].join(", ")}` : null,
             l.save ? `${[l.save.statistic ?? l.save.statistics].flat().join(" or ")} on ${eventsOf(l) || (l.sustain?.saveNewcomers ? "a Sustain" : "—")} — ${(l.save.riders ?? []).map(rider).join("; ")}` : null,
@@ -95,7 +102,7 @@ export function docs(built, index, en) {
             }).join("; ");
         // An entry that aims the spell's own area names it, so the row says what is placed.
         const own = entry.areaTargeting && !entry.areaTargeting.area && spell?.area ? `${spell.area.value}-ft ${spell.area.type} (pf2e's)` : "";
-        const shapes = (entry.areaTargetingShapes ?? []).map((c) => (c.type === "none" ? "no area" : `${c.value}-ft ${c.type}`)).join(" or ");
+        const shapes = (entry.areaTargetingShapes ?? []).map((c) => (c.type === "none" ? "no area" : `${c.areas > 1 ? `${c.areas} × ` : ""}${c.value}-ft ${c.type}`)).join(" or ");
         const areaCell = [[shapes ? `choose: ${shapes}` : own, area(entry.areaTargeting)].filter(Boolean).join(", "), variants && `variant — ${variants}`].filter(Boolean).join("; ");
         return `| ${spell?.name ?? slug} | ${spell?.rank ?? ""} | ${areaCell} | ${(entry.riders ?? []).map(rider).join("; ")} | ${linger(entry.lingering)} |`;
     });
@@ -167,7 +174,11 @@ export function problemsWith(slug, entry, ctx) {
             if (spec?.replacesPrevious !== undefined && spec.replacesPrevious !== true) at(`${where} lingering.replacesPrevious`.trim(), "true or absent");
             if (spec?.until !== undefined && spec.until !== "originTurnStart") at(`${where} lingering.until`.trim(), "originTurnStart or absent");
             if (spec?.followsCaster !== undefined && spec.followsCaster !== true) at(`${where} lingering.followsCaster`.trim(), "true or absent");
-            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0)) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by: { radius, saveNewcomers? }");
+            if (spec?.drifts !== undefined && !(Number(spec.drifts?.feet) > 0)) at(`${where} lingering.drifts`.trim(), "{ feet } it moves each round");
+            if (spec?.repels !== undefined && (typeof spec.repels !== "object" || !spec.repels)) at(`${where} lingering.repels`.trim(), "{ statistic }");
+            if (spec?.dismiss !== undefined && spec.dismiss !== true) at(`${where} lingering.dismiss`.trim(), "true or absent");
+            if (spec?.sustain !== undefined && !(Number(spec.sustain?.radius) > 0) && !(Number(spec.sustain?.move) > 0) && !spec.sustain?.bolt?.formula) at(`${where} lingering.sustain`.trim(), "a sustain names the feet it widens by, { radius, saveNewcomers? }, or moves by, { move, damage? }");
+            if (spec?.sustain?.move && spec.sustain.damage && !spec.sustain.damage.formula) at(`${where} lingering.sustain.damage`.trim(), "a formula");
             if (spec?.targetPredicate !== undefined && !Array.isArray(spec.targetPredicate)) at(`${where} lingering.targetPredicate`.trim(), "a predicate list");
             if (spec?.save) {
                 const asked = [spec.save.statistic ?? spec.save.statistics ?? []].flat();

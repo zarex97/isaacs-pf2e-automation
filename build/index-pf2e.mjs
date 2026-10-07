@@ -16,11 +16,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import url from "node:url";
+import { plainText, trackedSlugs } from "./lib/spell-text.mjs";
 
 const ROOT = path.resolve(url.fileURLToPath(new URL(".", import.meta.url)), "..");
 const DATA = process.env.FOUNDRY_DATA ?? path.join(process.env.LOCALAPPDATA ?? os.homedir(), "FoundryVTT", "Data");
 const SYSTEM = path.join(DATA, "systems", "pf2e");
 const OUT = path.join(ROOT, "build", "data", "pf2e-index.json");
+const TEXT_OUT = path.join(ROOT, "build", "data", "pf2e-spell-text.json");
+const CLAUSES = path.join(ROOT, "Docs", "clauses");
 
 const system = JSON.parse(fs.readFileSync(path.join(SYSTEM, "system.json"), "utf8"));
 const packOf = (name) => system.packs.find((p) => p.name === name) ?? (() => { throw new Error(`pf2e has no pack "${name}"`); })();
@@ -50,12 +53,14 @@ const uuid = (pack, id) => `Compendium.pf2e.${pack.name}.Item.${id}`;
 const slugOf = (doc) => doc.system?.slug ?? null;
 
 const spells = {};
+const descriptions = {};
 {
     const { pack, items } = await itemsOf("spells-srd");
     for (const doc of items) {
         const slug = slugOf(doc);
         if (!slug) continue;
         const s = doc.system;
+        descriptions[slug] = s.description?.value ?? "";
         const overlays = Object.fromEntries(
             Object.entries(s.overlays ?? {}).map(([id, o]) => [id, { name: o.name ?? null, type: o.overlayType, area: o.system?.area ?? null }]),
         );
@@ -89,4 +94,10 @@ const index = {
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, `${JSON.stringify(index, null, 1)}\n`);
+
+// The words of every spell a clause tracker lists, for its clauses to be held to offline.
+const tracked = new Set(fs.readdirSync(CLAUSES).filter((f) => f.endsWith(".md")).flatMap((f) => trackedSlugs(fs.readFileSync(path.join(CLAUSES, f), "utf8"))));
+const text = { pf2e: system.version, spells: Object.fromEntries([...tracked].sort().filter((slug) => slug in descriptions).map((slug) => [slug, plainText(descriptions[slug])])) };
+fs.writeFileSync(TEXT_OUT, `${JSON.stringify(text, null, 1)}\n`);
+console.log(`${Object.keys(text.spells).length} tracked spells' text → ${path.relative(ROOT, TEXT_OUT)}`);
 console.log(`pf2e ${index.pf2e}: ${Object.keys(index.spells).length} spells, ${Object.keys(index.effects).length} spell effects, ${Object.keys(index.conditions).length} conditions → ${path.relative(ROOT, OUT)}`);

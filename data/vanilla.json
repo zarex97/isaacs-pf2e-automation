@@ -558,6 +558,71 @@
                 }
             }
         },
+        "falling-stars": {
+            "areaTargeting": {
+                "affects": "all",
+                "apart": 20,
+                "zones": [
+                    {
+                        "id": "centre",
+                        "within": 10
+                    }
+                ]
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "burst",
+                    "value": 40,
+                    "areas": 4,
+                    "overlay": "UizWQQABRIkwrOZj",
+                    "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Asteroids"
+                },
+                {
+                    "type": "burst",
+                    "value": 40,
+                    "areas": 4,
+                    "overlay": "8dtcJWTSeGlvDAUL",
+                    "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Airbursts"
+                },
+                {
+                    "type": "burst",
+                    "value": 40,
+                    "areas": 4,
+                    "overlay": "TPSUk7tUquDQhIu3",
+                    "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Comets"
+                },
+                {
+                    "type": "burst",
+                    "value": 40,
+                    "areas": 4,
+                    "overlay": "3Ifk4ND7o6QBAYMp",
+                    "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Plasma"
+                }
+            ],
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "area-damage",
+                        "save": "reflex",
+                        "parts": [
+                            {
+                                "formula": "6d10",
+                                "perStep": "1d10",
+                                "type": "bludgeoning",
+                                "zone": "centre"
+                            },
+                            {
+                                "formula": "14d6",
+                                "perStep": "2d6",
+                                "type": "fire",
+                                "typeFromSpell": "RrsNfz6nzSiUPvoY"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "fear": {
             "areaTargeting": {
                 "maxTargets": 1,
@@ -616,6 +681,28 @@
                 }
             ]
         },
+        "floating-flame": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.floating-flame.Flame",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "sustain": {
+                    "lapses": true,
+                    "move": 10,
+                    "damage": {
+                        "formula": "3d6",
+                        "perStep": "1d6",
+                        "type": "fire",
+                        "save": "reflex"
+                    }
+                }
+            }
+        },
         "force-barrage": {
             "areaTargeting": {
                 "maxTargets": 3,
@@ -640,6 +727,27 @@
                                 "value": "origin.item.rank"
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "gravity-well": {
+            "areaTargeting": {
+                "affects": "all",
+                "markCentre": true
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "pull",
+                        "save": "reflex",
+                        "feet": {
+                            "criticalSuccess": 0,
+                            "success": 5,
+                            "failure": 15,
+                            "criticalFailure": 30
+                        }
                     }
                 }
             ]
@@ -1143,6 +1251,43 @@
                 "anchor": "caster"
             }
         },
+        "lightning-storm": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true,
+                "apart": 40
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "burst",
+                    "value": 20,
+                    "label": "ISAACS_AUTOMATION.Vanilla.lightning-storm.One"
+                },
+                {
+                    "type": "burst",
+                    "value": 20,
+                    "areas": 2,
+                    "label": "ISAACS_AUTOMATION.Vanilla.lightning-storm.Two"
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.lightning-storm.Storm",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "sustain": {
+                    "lapses": true,
+                    "bolt": {
+                        "formula": "4d12",
+                        "perStep": "1d12",
+                        "perStepInterval": 2,
+                        "type": "electricity",
+                        "save": "reflex"
+                    }
+                }
+            }
+        },
         "malediction": {
             "areaTargeting": {
                 "affects": "enemies"
@@ -1572,6 +1717,57 @@
                     }
                 }
             ]
+        },
+        "repulsion": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "emanation",
+                    "value": 5
+                },
+                {
+                    "type": "emanation",
+                    "value": 10
+                },
+                {
+                    "type": "emanation",
+                    "value": 15
+                },
+                {
+                    "type": "emanation",
+                    "value": 20
+                },
+                {
+                    "type": "emanation",
+                    "value": 25
+                },
+                {
+                    "type": "emanation",
+                    "value": 30
+                },
+                {
+                    "type": "emanation",
+                    "value": 35
+                },
+                {
+                    "type": "emanation",
+                    "value": 40
+                }
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.repulsion.Aura",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "followsCaster": true,
+                "repels": {
+                    "statistic": "will"
+                }
+            }
         },
         "sanctuary": {
             "riders": [
@@ -2111,6 +2307,67 @@
                     }
                 }
             ]
+        },
+        "toxic-cloud": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.toxic-cloud.Cloud",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "drifts": {
+                    "feet": 10
+                },
+                "dismiss": true,
+                "events": [
+                    "tokenTurnStart"
+                ],
+                "targetPredicate": [
+                    {
+                        "not": "target:trait:undead"
+                    },
+                    {
+                        "not": "target:trait:construct"
+                    }
+                ],
+                "inside": {
+                    "conditions": [
+                        "concealed"
+                    ],
+                    "rules": [
+                        {
+                            "key": "EphemeralEffect",
+                            "affects": "target",
+                            "selectors": [
+                                "attack-roll",
+                                "spell-attack-roll"
+                            ],
+                            "uuid": "Compendium.pf2e.conditionitems.Item.DmAIPqOBomZ7H95W"
+                        }
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.toxic-cloud.Inside"
+                },
+                "save": {
+                    "statistic": "fortitude",
+                    "basic": true,
+                    "riders": [
+                        {
+                            "apply": {
+                                "type": "damage",
+                                "formula": {
+                                    "base": "6d8",
+                                    "perStep": "1d8"
+                                },
+                                "damageType": "poison"
+                            }
+                        }
+                    ]
+                }
+            }
         },
         "translocate": {
             "areaTargeting": {

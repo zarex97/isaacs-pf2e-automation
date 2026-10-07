@@ -1,0 +1,65 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "apart": 20,
+        "zones": [
+            {
+                "id": "centre",
+                "within": 10
+            }
+        ]
+    },
+    "areaTargetingShapes": [
+        {
+            "type": "burst",
+            "value": 40,
+            "areas": 4,
+            "overlay": "UizWQQABRIkwrOZj",
+            "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Asteroids"
+        },
+        {
+            "type": "burst",
+            "value": 40,
+            "areas": 4,
+            "overlay": "8dtcJWTSeGlvDAUL",
+            "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Airbursts"
+        },
+        {
+            "type": "burst",
+            "value": 40,
+            "areas": 4,
+            "overlay": "TPSUk7tUquDQhIu3",
+            "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Comets"
+        },
+        {
+            "type": "burst",
+            "value": 40,
+            "areas": 4,
+            "overlay": "3Ifk4ND7o6QBAYMp",
+            "label": "ISAACS_AUTOMATION.Vanilla.falling-stars.Plasma"
+        }
+    ],
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "area-damage",
+                "save": "reflex",
+                "parts": [
+                    {
+                        "formula": "6d10",
+                        "perStep": "1d10",
+                        "type": "bludgeoning",
+                        "zone": "centre"
+                    },
+                    {
+                        "formula": "14d6",
+                        "perStep": "2d6",
+                        "type": "fire",
+                        "typeFromSpell": "RrsNfz6nzSiUPvoY"
+                    }
+                ]
+            }
+        }
+    ]
+}

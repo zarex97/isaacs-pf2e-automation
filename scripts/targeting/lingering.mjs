@@ -7,6 +7,11 @@ import { growByStep, inflictPersistent, postNotes, postPrompts, runSave } from "
 import { LIB_ID } from "../id.mjs";
 import { Inside, insidePayload } from "./inside.mjs";
 import { Sustain } from "../riders/sustain.mjs";
+import { Dismiss } from "../riders/dismiss.mjs";
+import { RiderExtensions } from "../riders/extensions.mjs";
+import { combatOf } from "../lib/combat.mjs";
+import { Relay } from "../riders/relay.mjs";
+import { Repels } from "./repels.mjs";
 
 export const FLAG = "lingering";
 
@@ -41,7 +46,14 @@ export const Lingering = {
         CONFIG.RegionBehavior.dataModels[BEHAVIOR_TYPE] = LingeringRegionBehaviorType;
         CONFIG.RegionBehavior.typeLabels[BEHAVIOR_TYPE] = key("Lingering.TypeLabel");
         CONFIG.RegionBehavior.typeIcons[BEHAVIOR_TYPE] = "fa-solid fa-fire";
-        Sustain.onRegion = (region) => Lingering.grow(region);
+        Sustain.onRegion = (region) => {
+            const sustain = flagOf(region, FLAG)?.sustain;
+            if (sustain?.move) return Lingering.fly(region);
+            if (sustain?.bolt) return Lingering.bolt(region);
+            return Lingering.grow(region);
+        };
+        Relay.register("lingeringBolt", (payload) => Lingering.strike(payload));
+        Relay.register("lingeringCreate", (payload) => Lingering.createFor(payload));
     },
 
     registerHooks() {
@@ -56,6 +68,7 @@ export const Lingering = {
         Hooks.on("pf2e.startTurn", (combatant) => {
             Lingering.sweep();
             Lingering.endAtTurnOf(combatant?.actor);
+            Lingering.drift(combatant?.actor);
         });
         Hooks.once("ready", () => Lingering.sweep());
         // An area deleted by hand — a Dismissed *Darkness* — takes its lights and walls with it. Only the
@@ -87,19 +100,40 @@ export const Lingering = {
         const placed = [regions].flat().filter((region) => region);
         if (specs.length === 0 || placed.length === 0 || !canvas?.scene) return null;
 
+        // Only a GM may create a Region that has behaviors. A player's cast hands the placement to the GM, who
+        // builds the area from the same spell, rank and shapes (#58).
+        if (!game.user?.isGM) {
+            await Relay.request({
+                action: "lingeringCreate",
+                sceneId: canvas.scene.id,
+                itemUuid: (config.item.original ?? config.item).uuid,
+                rank: config.item.rank ?? null,
+                steps: config.steps ?? 0,
+                areaType: config.area?.type ?? "burst",
+                areas: placed.map((region) => ({ shapes: region.toObject().shapes, color: region.color?.toString?.() ?? null })),
+                originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
+                affected: [...(game.user?.targets ?? [])].map((t) => t.id),
+            });
+            return null;
+        }
+
         // Every placement leaves its own patch behind, not just the first. Gemini and Cancer place one area
         // each, so this was a single region for two Cloths; *Lightning Crown* erupts three pillars and gains
         // more per heightening step, and each of them stands on its own square for its own round.
         // "If you cast this spell again, any previous scatter scree you've cast ends."
         if (specs.some((spec) => spec.replacesPrevious)) await Lingering.endPrevious(config.item);
 
+        // The areas of one cast know each other: *Lightning Storm*'s two clouds are one storm, with one Sustain.
+        const castId = foundry.utils.randomID();
         const created = [];
-        for (const region of placed) {
+        for (const [index, region] of placed.entries()) {
             for (const spec of specs) {
-                const one = await Lingering.createOne(spec, config, region, originToken);
+                const one = await Lingering.createOne(spec, config, region, originToken, { castId, first: index === 0 });
                 if (one) created.push(one);
             }
         }
+        // "Call down one lightning bolt within the spell's area" — the first bolt is part of the cast.
+        if (created[0] && specs.some((spec) => spec.sustain?.bolt)) await Lingering.bolt(created[0]);
         return created.length > 0 ? created[0] : null;
     },
 
@@ -125,7 +159,21 @@ export const Lingering = {
         return [declared].flat().filter((spec) => spec && testPredicate(spec.predicate, options));
     },
 
-    async createOne(spec, config, region, originToken) {
+    /**
+     * GM: a player's placement, built as their own cast would have built it. The spell is read back by uuid at the rank
+     * it was cast at; the placed areas arrive as their shapes.
+     */
+    async createFor({ sceneId, itemUuid, rank, steps, areaType, areas, originTokenUuid, affected }) {
+        if (canvas?.scene?.id !== sceneId) return null;
+        const owned = itemUuid ? await fromUuid(itemUuid) : null;
+        if (!owned || !Array.isArray(areas) || areas.length === 0) return null;
+        const item = rank && rank !== owned.rank ? owned.clone({ "system.location.heightenedLevel": rank }, { keepId: true }) : owned;
+        const originToken = originTokenUuid ? await fromUuid(originTokenUuid) : null;
+        const regions = areas.map(({ shapes, color }) => ({ shapes, color, toObject: () => ({ shapes }) }));
+        return Lingering.create({ item, steps, area: { type: areaType }, affected }, regions, originToken);
+    },
+
+    async createOne(spec, config, region, originToken, { castId = null, first = true } = {}) {
         const seconds = (Number(spec.duration?.value) || 1) * (UNIT_SECONDS[spec.duration?.unit ?? "minutes"] ?? 60);
         const behaviors = [];
 
@@ -174,12 +222,17 @@ export const Lingering = {
                 system: { role: "inside", events: ["tokenEnter", "tokenExit"] },
             });
         }
+        // *Repulsion*: a Will save on entering, once; what the result does to moving closer is `repels.mjs`'s.
+        if (spec.repels) {
+            behaviors.push({ type: BEHAVIOR_TYPE, name: spec.name ?? config.item.name, system: { events: ["tokenEnter"] } });
+        }
         // A patch of ground that only glows still needs somewhere to record when it stops. *Lightning
         // Crown*'s pillars carry no behavior at all — they shed light and block sight, which are a light
         // source and a set of walls rather than anything a Region does — so the Region here is the thing
         // that remembers to take them away again.
         const scenery = await Lingering.scenery(spec, region, config);
-        if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0) return null;
+        // An area that does nothing on its own but move when Sustained — *Floating Flame* — is still kept.
+        if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0 && !spec.sustain && !spec.drifts) return null;
 
         const [created] = await canvas.scene.createEmbeddedDocuments("Region", [
             {
@@ -197,10 +250,14 @@ export const Lingering = {
                             slug: config.item.slug ?? null,
                             until: spec.until ?? null,
                             followsCaster: spec.followsCaster === true,
+                            drifts: spec.drifts ?? null,
+                            castId,
+                            repels: spec.repels ?? null,
+                            repelled: {},
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
-                            sustain: spec.sustain ?? null,
+                            sustain: spec.sustain ? scaledSustain(spec.sustain, config.steps ?? 0) : null,
                             // Who the cast itself already reached: a Sustain's "not yet affected" leaves them be.
-                            affected: [...(game.user?.targets ?? [])].map((t) => t.id),
+                            affected: config.affected ?? [...(game.user?.targets ?? [])].map((t) => t.id),
                             targetPredicate: spec.targetPredicate ?? null,
                             originUuid: config.item.actor?.uuid ?? null,
                             damage: spec.damage ? scaledDamage(spec.damage, config.steps ?? 0) : null,
@@ -220,7 +277,14 @@ export const Lingering = {
                 },
             },
         ]);
-        if (created && spec.sustain) await Sustain.grantForRegion(config.item?.actor, config.item, created, spec.sustain);
+        if (created && spec.sustain && first) await Sustain.grantForRegion(config.item?.actor, config.item, created, spec.sustain);
+        if (created && spec.dismiss && first) await Dismiss.grantForRegion(config.item?.actor, config.item, created);
+        // "Within the area when you Cast the Spell": everyone already inside saves now. Foundry works out who is
+        // inside once the Region is saved.
+        if (created && spec.repels) {
+            await new Promise((resolve) => setTimeout(resolve, 250));
+            for (const token of created.tokens ?? []) await Repels.save(created, token);
+        }
         return created ?? null;
     },
 
@@ -327,6 +391,26 @@ export const Lingering = {
         }
     },
 
+    /**
+     * *Toxic Cloud*: "the area moves 10 feet away from you each round." At the start of each of its caster's turns, a
+     * drifting area moves its `drifts.feet` along the line from the caster through its centre. Active GM only.
+     */
+    async drift(actor) {
+        if (game.users?.activeGM?.id !== game.user?.id || !actor?.uuid) return;
+        for (const scene of game.scenes) {
+            const caster = actor.getActiveTokens?.(true, true).find((token) => token.parent === scene);
+            for (const region of scene.regions) {
+                const payload = flagOf(region, FLAG);
+                if (!payload?.drifts || payload.originUuid !== actor.uuid || !caster) continue;
+                const shape = region.toObject().shapes[0];
+                if (!shape || !Number.isFinite(shape.x)) continue;
+                const step = ((Number(payload.drifts.feet) || 10) / (scene.grid.distance || 5)) * scene.grid.size;
+                const to = drifted({ x: shape.x, y: shape.y }, tokenCentre(caster, scene), step, scene.grid.size);
+                if (to.x !== shape.x || to.y !== shape.y) await region.update({ shapes: [{ ...shape, x: to.x, y: to.y }] });
+            }
+        }
+    },
+
     /** Move the areas that follow this token so they stay centred on it. */
     async follow(token) {
         const scene = token?.parent;
@@ -379,6 +463,82 @@ export const Lingering = {
         return `${feet} ft.`;
     },
 
+    /**
+     * Sustained: the area moves, and whoever it passes over is hit. *Floating Flame*: "When you Sustain this spell,
+     * you can levitate the flame up to 10 feet. It then deals damage to each creature whose space it shared at
+     * any point during its flight. This uses the same damage and save, and you roll the damage once each time
+     * you Sustain. A given creature can take damage from floating flame only once per round."
+     *
+     * The move is a compass direction and a distance in whole squares, so the path is the squares it visits.
+     */
+    async fly(region) {
+        const payload = flagOf(region, FLAG);
+        const scene = region.parent;
+        const move = payload?.sustain;
+        if (!move?.move || !scene) return null;
+        const shape = region.toObject().shapes[0];
+        if (!shape || !Number.isFinite(shape.x)) return null;
+        const chosen = await chooseFlight(payload.name ?? region.name, Number(move.move) || 10, scene.grid.distance || 5);
+        if (!chosen) return t("Lingering.Stayed");
+
+        const size = scene.grid.size;
+        const squares = chosen.feet / (scene.grid.distance || 5);
+        const [dx, dy] = COMPASS[chosen.direction];
+        const from = { x: shape.x, y: shape.y };
+        const to = { x: shape.x + dx * squares * size, y: shape.y + dy * squares * size };
+        const path = sweptPath(from, to, size);
+        await region.update({ shapes: [{ ...shape, x: to.x, y: to.y }] });
+
+        const originActor = payload.originUuid ? await fromUuid(payload.originUuid) : null;
+        const round = combatOf(originActor)?.round ?? null;
+        const burned = { ...(payload.burned ?? {}) };
+        const side = Number(shape.width) || size;
+        const caught = scene.tokens.filter((token) => token.actor
+            && path.some((at) => overlaps(footprint(token, size), at, side))
+            && !alreadyBurned(burned, token.id, round));
+        if (caught.length > 0 && move.damage?.formula) {
+            const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
+            await burnAlong(caught, move.damage, item, originActor, payload.name ?? region.name);
+            for (const token of caught) burned[token.id] = round;
+        }
+        await region.setFlag(LIB_ID, `${FLAG}.burned`, burned);
+        return t("Lingering.Flew", { feet: chosen.feet, direction: t(`Move.Direction.${chosen.direction}`), count: caught.length });
+    },
+
+    /**
+     * A bolt within the storm. *Lightning Storm*: "call down one lightning bolt within the spell's area. The bolt is a
+     * vertical line from the top of the storm cloud to the ground below, dealing 4d12 electricity damage to
+     * creatures in the line (basic Reflex save)." A vertical line on a flat map is one square, so the caster picks
+     * the creature it falls on — any creature inside any cloud of the cast — or no one. Whoever picks, the GM
+     * rolls it (`strike`): damage to another creature is not a player's to write.
+     */
+    async bolt(region) {
+        const payload = flagOf(region, FLAG);
+        const scene = region.parent;
+        if (!payload?.sustain?.bolt || !scene) return null;
+        const clouds = scene.regions.filter((r) => flagOf(r, FLAG)?.castId && flagOf(r, FLAG).castId === payload.castId);
+        const inside = [...new Map([region, ...clouds].flatMap((r) => [...(r.tokens ?? [])]).filter((token) => token.actor).map((token) => [token.id, token])).values()];
+        const tokenId = await chooseBoltTarget(payload.name ?? region.name, inside);
+        if (!tokenId) return t("Lingering.NoBolt");
+        const token = scene.tokens.get(tokenId);
+        await Relay.request({ action: "lingeringBolt", regionUuid: region.uuid, tokenUuid: token?.uuid ?? null });
+        return t("Lingering.Bolted", { name: token?.name ?? "" });
+    },
+
+    /** GM: the bolt falls on a creature that is inside a cloud of this storm. */
+    async strike({ regionUuid, tokenUuid }) {
+        const region = await fromUuid(regionUuid);
+        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+        const payload = flagOf(region, FLAG);
+        const bolt = payload?.sustain?.bolt;
+        if (!bolt || !token?.actor) return;
+        const clouds = region.parent.regions.filter((r) => r === region || (payload.castId && flagOf(r, FLAG)?.castId === payload.castId));
+        if (!clouds.some((r) => r.tokens?.has?.(token))) return;
+        const originActor = payload.originUuid ? await fromUuid(payload.originUuid) : null;
+        const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
+        await burnAlong([token], bolt, item, originActor, payload.name ?? region.name, "Lingering.BoltFlavor");
+    },
+
     /** Areas whose minute is up. Active GM only: this deletes documents. */
     async sweep() {
         if (game.users?.activeGM?.id !== game.user?.id) return;
@@ -425,6 +585,105 @@ export function followed(shape, centre, at) {
     if (Number.isFinite(shape.x) && Number.isFinite(shape.y) && Number.isFinite(shape.radius)) return { ...shape, x: centre.x, y: centre.y };
     return shape;
 }
+
+/**
+ * Where a drifting area's centre goes: `step` pixels further from `from` along the line through it, snapped to
+ * the nearest grid intersection, as a burst's centre is. An area right on top of its caster has no "away" and stays.
+ */
+export function drifted(centre, from, step, gridSize) {
+    const dx = centre.x - from.x;
+    const dy = centre.y - from.y;
+    const length = Math.hypot(dx, dy);
+    if (!length) return { ...centre };
+    const snap = (v) => Math.round(v / gridSize) * gridSize;
+    return { x: snap(centre.x + (dx / length) * step), y: snap(centre.y + (dy / length) * step) };
+}
+
+/** A compass point as a step in squares (y grows downward). */
+export const COMPASS = { n: [0, -1], ne: [1, -1], e: [1, 0], se: [1, 1], s: [0, 1], sw: [-1, 1], w: [-1, 0], nw: [-1, -1] };
+
+/** Every position a square passes through moving straight from `from` to `to`, one grid step at a time, both ends included. */
+export function sweptPath(from, to, gridSize) {
+    const steps = Math.round(Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y)) / gridSize);
+    if (!steps) return [{ ...from }];
+    return Array.from({ length: steps + 1 }, (_, i) => ({
+        x: from.x + ((to.x - from.x) * i) / steps,
+        y: from.y + ((to.y - from.y) * i) / steps,
+    }));
+}
+
+/** Does a footprint `{ x, y, w, h }` share any space with a square of side `side` whose corner is `at`? Touching edges don't count. */
+export function overlaps(rect, at, side) {
+    return rect.x < at.x + side && at.x < rect.x + rect.w && rect.y < at.y + side && at.y < rect.y + rect.h;
+}
+
+/** Has this creature already been hit by the area this round? Out of combat, every Sustain is a new round. */
+export function alreadyBurned(burned, tokenId, round) {
+    if (round === null || round === undefined) return false;
+    return burned?.[tokenId] === round;
+}
+
+/** A Sustain's damage grows with the cast's heightening, as the ground's does. */
+function scaledSustain(sustain, steps) {
+    return {
+        ...sustain,
+        ...(sustain.damage ? { damage: scaledDamage(sustain.damage, steps) } : {}),
+        ...(sustain.bolt ? { bolt: scaledDamage(sustain.bolt, steps) } : {}),
+    };
+}
+
+function footprint(token, gridSize) {
+    return { x: token._source?.x ?? token.x, y: token._source?.y ?? token.y, w: token.width * gridSize, h: token.height * gridSize };
+}
+
+/** Which way, and how far in whole squares, an area moves when Sustained. */
+async function chooseFlight(name, maxFeet, step) {
+    const options = Array.from({ length: Math.floor(maxFeet / step) }, (_, i) => (i + 1) * step);
+    const select = `<select name="feet">${options.map((f) => `<option value="${f}" ${f === maxFeet ? "selected" : ""}>${f} ft.</option>`).join("")}</select>`;
+    const points = ["nw", "n", "ne", "w", "e", "sw", "s", "se"];
+    const result = await foundry.applications.api.DialogV2.wait({
+        window: { title: t("Lingering.FlyTitle", { name }) },
+        content: `<p>${t("Lingering.FlyHint", { name, feet: maxFeet })}</p><p>${select}</p>`,
+        buttons: [
+            ...points.map((p) => ({ action: p, label: t(`Move.Direction.${p}`), callback: (_event, button) => ({ direction: p, feet: Number(button.form?.elements?.feet?.value) || maxFeet }) })),
+            { action: "stay", label: t("Move.Direction.stay"), callback: () => null },
+        ],
+        rejectClose: false,
+    });
+    return result?.direction ? result : null;
+}
+
+/** One damage roll for everyone the area passed over, each with its basic save against the spell's DC. */
+async function burnAlong(tokens, damage, item, originActor, name, flavor = "Lingering.FlewFlavor") {
+    const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
+    if (!DamageRoll) return;
+    const roll = await new DamageRoll(`(${damage.formula})[${damage.type ?? "fire"}]`).evaluate();
+    await roll.toMessage({ flavor: t(flavor, { name }), speaker: ChatMessage.getSpeaker({ actor: originActor }) });
+    const dc = item?.spellcasting?.statistic?.dc?.value ?? RiderExtensions.statistic(originActor, "spellcasting")?.dc?.value ?? null;
+    for (const token of tokens) {
+        const statistic = token.actor.getStatistic?.(damage.save ?? "reflex");
+        const save = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item, extraRollOptions: ["damaging-effect"] }) : null;
+        const multiplier = BASIC_MULTIPLIER[save?.degreeOfSuccess ?? 1];
+        if (multiplier > 0) await token.actor.applyDamage({ damage: multiplier === 1 ? roll : roll.alter(multiplier, 0), token, item });
+    }
+}
+
+/** Which creature inside the storm a bolt falls on, or none. */
+async function chooseBoltTarget(name, tokens) {
+    const choice = await foundry.applications.api.DialogV2.wait({
+        window: { title: t("Lingering.BoltTitle", { name }) },
+        content: `<p>${t("Lingering.BoltHint", { name })}</p>`,
+        buttons: [
+            ...tokens.map((token) => ({ action: token.id, label: token.name })),
+            { action: "none", label: t("Lingering.BoltNone") },
+        ],
+        rejectClose: false,
+    });
+    return choice && choice !== "none" ? choice : null;
+}
+
+/** A basic save's share of the damage, by degree of success (critical failure first). */
+const BASIC_MULTIPLIER = [2, 1, 0.5, 0];
 
 /** Where a token's centre is, from its stored position rather than its animation. */
 function tokenCentre(token, scene) {
@@ -566,6 +825,10 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         const region = this.parent?.region ?? this.parent?.parent;
         if (this.role === "inside") return Inside.handle(event, region);
+        if (flagOf(region, FLAG)?.repels) {
+            if (event.name === CONST.REGION_EVENTS.TOKEN_ENTER) await Repels.save(region, event.data?.token);
+            return;
+        }
         // Out of the area, out of what it does while you are in it — *Web*'s penalty to Speeds.
         if (event.name === CONST.REGION_EVENTS.TOKEN_EXIT) return Inside.leave(region, event.data?.token);
         const payload = flagOf(region, FLAG);
