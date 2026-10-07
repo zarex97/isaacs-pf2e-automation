@@ -11,6 +11,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
+| Blister | 5 |  | success: Blisters (1 minutes); failure: Blisters (1 minutes); crit. failure: Blisters (1 minutes) |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |

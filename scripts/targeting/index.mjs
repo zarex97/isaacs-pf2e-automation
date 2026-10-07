@@ -227,6 +227,9 @@ function collect(regions, config, originToken) {
         for (const entry of found.caught) caught.set(entry.token.id, entry);
         for (const entry of found.rejected) rejected.set(entry.token.id, entry);
     }
+    // "The target and each creature in a cone originating from the target" — *Blister*: the creature the area is aimed
+    // from is caught with it, though the cone starts at its edge.
+    if (config.includesOrigin && originToken && originToken.actor !== config.item?.actor) caught.set(originToken.id, { token: originToken, checked: true, note: "" });
     for (const id of caught.keys()) rejected.delete(id);
     return { caught: [...caught.values()], rejected: [...rejected.values()] };
 }

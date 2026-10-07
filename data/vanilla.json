@@ -239,6 +239,136 @@
                 }
             ]
         },
+        "blister": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blister.Blisters",
+                        "rules": [],
+                        "badge": 1,
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.blister.Pop",
+                            "areaTargeting": {
+                                "area": {
+                                    "type": "cone",
+                                    "value": 15
+                                },
+                                "anchor": "caster",
+                                "includesOrigin": true
+                            },
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "apply": {
+                                        "type": "area-damage",
+                                        "save": "fortitude",
+                                        "parts": [
+                                            {
+                                                "formula": "7d6",
+                                                "perStep": "1d6",
+                                                "type": "acid"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blister.Blisters",
+                        "rules": [],
+                        "badge": 2,
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.blister.Pop",
+                            "areaTargeting": {
+                                "area": {
+                                    "type": "cone",
+                                    "value": 15
+                                },
+                                "anchor": "caster",
+                                "includesOrigin": true
+                            },
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "apply": {
+                                        "type": "area-damage",
+                                        "save": "fortitude",
+                                        "parts": [
+                                            {
+                                                "formula": "7d6",
+                                                "perStep": "1d6",
+                                                "type": "acid"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blister.Blisters",
+                        "rules": [],
+                        "badge": 4,
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.blister.Pop",
+                            "areaTargeting": {
+                                "area": {
+                                    "type": "cone",
+                                    "value": 15
+                                },
+                                "anchor": "caster",
+                                "includesOrigin": true
+                            },
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "apply": {
+                                        "type": "area-damage",
+                                        "save": "fortitude",
+                                        "parts": [
+                                            {
+                                                "formula": "7d6",
+                                                "perStep": "1d6",
+                                                "type": "acid"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
         "calm": {
             "areaTargeting": {
                 "affects": "all"

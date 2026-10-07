@@ -12,6 +12,7 @@ import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
+import { OriginAction } from "./origin-action.mjs";
 import { applyPull } from "./pull.mjs";
 import { CRITICAL_SPECIALIZATIONS, chooseHeldWeapon, criticalSpecializationText, dieAsHeld, heldWeapons } from "./weapon.mjs";
 import { combatOf, combatantOf } from "../lib/combat.mjs";
@@ -456,6 +457,8 @@ async function applyOne(rider, context) {
             return applyTempHp(rider, context);
         case "dismiss":
             return Dismiss.apply(rider, context);
+        case "spend-charge":
+            return OriginAction.spend(rider, context);
         case "area-damage":
             return applyAreaDamage(rider, context);
         case "pull":
@@ -1779,8 +1782,18 @@ async function applyEffect(rider, context) {
             const area = context.region ?? areaOfCast(context);
             if (area) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { withArea: area } });
         }
+        // A count the effect carries — *Blister*'s one, two or four blisters.
+        if (Number(rider.apply.badge) > 0) source.system.badge = { type: "counter", value: Number(rider.apply.badge) };
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
+        // …and the action its caster spends it with (`origin-action.mjs`), at the cast's DC and rank.
+        if (created && rider.apply.originAction) {
+            await OriginAction.grant(created, rider.apply.originAction, context, {
+                item: castItemOf(context) ?? context.item,
+                steps: riderSteps({ apply: {} }, context),
+                dc: RiderExtensions.resolveDC("spell", context),
+            });
+        }
         await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });
         return;
     }
@@ -2580,7 +2593,8 @@ async function applyAreaDamage(rider, context) {
     const rolled = await areaRolls.get(key);
     const reaching = areaParts(rolled, context.message?.flags?.[LIB_ID]?.zones, token.id);
     if (reaching.length === 0) return;
-    const dc = RiderExtensions.resolveDC("spell", context);
+    // A DC fixed when the rider was granted — an action spent from a spell's effect has no spellcasting of its own.
+    const dc = Number(rider.apply.dc) || RiderExtensions.resolveDC("spell", context);
     const statistic = actor.getStatistic?.(rider.apply.save ?? "reflex");
     const save = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item, extraRollOptions: ["damaging-effect"] }) : null;
     const multiplier = [2, 1, 0.5, 0][save?.degreeOfSuccess ?? 1];

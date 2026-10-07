@@ -217,6 +217,11 @@
             "MapThird": "The third attack's penalty",
             "TooManyTargets": "{name} reaches at most {max} creatures; {targets} are targeted."
         },
+        "OriginAction": {
+            "Description": "{name}: from {target}, the creature {spell} marked. Each use spends one.",
+            "Left": "{name}: {left} left.",
+            "Last": "{name}: the last one — the spell ends."
+        },
         "Rays": {
             "Flavor": "{name} — {actor} ({outcome})",
             "Penalty": "{name}'s multiple attack penalty now counts {count} more attacks.",
@@ -506,6 +511,10 @@
             },
             "sanctuary": {
                 "Ward": "sanctuary"
+            },
+            "blister": {
+                "Blisters": "Blisters",
+                "Pop": "Pop a Blister"
             },
             "disintegrate": {
                 "Powder": "it is blasted to fine powder; its gear remains."

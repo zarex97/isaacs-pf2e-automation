@@ -305,15 +305,15 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-58a | "Success The target grows one blister" | One blister on the target | | ☐ | |
-| VS-58b | "Failure As success, but the target grows two blisters" | Two | | ☐ | |
-| VS-58c | "Critical Failure As success, but the target grows four blisters" | Four | | ☐ | |
-| VS-58d | "Critical Success The target is unaffected" | None | | ☐ | |
-| VS-58e | "You can spend a single action, which has the concentrate trait, to pop a blister" | The caster has a one-action *Pop a Blister* while blisters remain | | ☐ | |
-| VS-58f | "originating from the target takes 7d6 acid damage (basic Fortitude save)" | The target and everyone in a 15-ft cone from it save against 7d6 acid | | ☐ | |
-| VS-58g | "You choose the direction of the cone, which can't include the target" | The caster aims the cone from the target's edge | | ☐ | |
-| VS-58h | "When no blisters are left, the spell ends" | The last pop ends the spell and takes the action away | | ☐ | |
-| VS-58i | "The damage of a popped blister increases by 1d6" | Rank 6: 8d6 | | ☐ | |
+| VS-58a | "Success The target grows one blister" | One blister on the target | `content/vanilla/blister.json`: a `success` rider, an effect with `badge: 1` | ✅ | ZZ Victim (Fortitude +30 for the test) saved with a success (34 against DC 34): *Drive: Blister: Blisters* with a counter of **1** |
+| VS-58b | "Failure As success, but the target grows two blisters" | Two | `failure`: `badge: 2` | ✅ | A failure (20 against DC 34): Blisters **×2** |
+| VS-58c | "Critical Failure As success, but the target grows four blisters" | Four | `criticalFailure`: `badge: 4` | ✅ | A critical failure (2): Blisters **×4**, at rank 5 and at rank 6 |
+| VS-58d | "Critical Success The target is unaffected" | None | no rider on `criticalSuccess` | ✅ | A critical success (44): no effect on ZZ Victim, no action for Aries |
+| VS-58e | "You can spend a single action, which has the concentrate trait, to pop a blister" | The caster has a one-action *Pop a Blister* while blisters remain | `originAction` on the effect (`scripts/riders/origin-action.mjs`): a one-action, concentrate *Pop a Blister* on the caster | ✅ | With the blisters came **Pop a Blister** on Aries' sheet — 1 action, *concentrate*: "from ZZ Victim, the creature Drive: Blister marked. Each use spends one." Using it: "Blisters: 1 left." |
+| VS-58f | "originating from the target takes 7d6 acid damage (basic Fortitude save)" | The target and everyone in a 15-ft cone from it save against 7d6 acid | the action's `area-damage` (`save: "fortitude"`, basic; the DC and rank set at the grant, `bakeCast` test); `includesOrigin` | ✅ | One pop: **7d6 acid** = 19, rolled once; ZZ Victim saved against **DC 34** (a critical failure, took 38), and so did the four creatures in the cone (two critical successes, a failure for 19, a critical failure) |
+| VS-58g | "You choose the direction of the cone, which can't include the target" | The caster aims the cone from the target's edge | `anchor: "caster"` with an origin resolver: the cone starts on the blistered creature's edge, aimed by the caster | ✅ | Aimed south, the cone opened from ZZ Victim's edge and caught the tokens 15 feet south of it; Aries, 35 feet east, was not in it. Aimed north, it caught no one else — ZZ Victim still took its 7d6 |
+| VS-58h | "When no blisters are left, the spell ends" | The last pop ends the spell and takes the action away | `spend-charge`: the last charge deletes the effect; the effect's deletion takes the action | ✅ | The second pop of two: "Blisters: the last one — the spell ends." — the effect gone at once, *Pop a Blister* gone from Aries' sheet within 10 seconds (it outlasts the effect so that pop's own damage still resolves) |
+| VS-58i | "The damage of a popped blister increases by 1d6" | Rank 6: 8d6 | `perStep: "1d6"`, grown into the granted action at the cast's rank | ✅ | Cast at **rank 6**: the action's damage is **8d6** acid; a pop rolled 8d6 = 30, "3 left" |
 
 ## Batch 4 — Saves with lasting consequences
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 211 |
-| ✅ | 108 |
+| ☐ not yet driven | 202 |
+| ✅ | 117 |
 | ⚠️ | 6 |
 | ❌ | 0 |
 | 🔧 | 0 |
