@@ -54,20 +54,21 @@ and `npm test` fails if this table and that switch disagree.
 | `type` | What it does |
 | :-- | :-- |
 | `condition` | Applies a pf2e condition. With a `duration` it becomes a generated effect that expires on its own; without one it is a plain condition for the table to clear. `max` caps a cumulative one. `escapeDc` grants the captive an Escape action against that DC, and `escapeStatistic` names the one skill it is rolled with instead of the better of Acrobatics and Athletics. |
-| `effect` | Applies an effect item by UUID. `stack: true` walks a counter badge up instead of adding a second icon. |
+| `effect` | Applies an effect item by UUID — or one written out, with `label` and `rules` and no `uuid`. `stack: true` walks a counter badge up instead of adding a second icon. `endsOnLeaving` ends it when the creature leaves the lingering area whose check gave it. `escapeDc` grants an Escape, and `escapeAll` makes that Escape release everything the ability left. `sustain: { step }` gives the holder a *Sustain* action that adds `step` to the badge, once per round and not in the round it was cast. |
 | `damage` | Rolls real damage, so immunities and resistances apply, and posts it to chat. |
 | `persistent-damage` | Applies a bleed or a burn. `perCounter` scales it by a counter the target already carries. |
 | `heal` | Heals. Lands on the origin when the rider is `self`. |
-| `save` | The target rolls a save and the rider carries its own riders, chosen by the result. |
+| `save` | The target rolls a save and the rider carries its own riders, chosen by the result. A lingering area's check may name `statistics` instead of `statistic`; the creature rolls the better. `dc: "spell"` is the spell's own DC. |
 | `flat-check` | Rolls a flat check and branches on it. |
 | `counteract` | Rolls a counteract check against an effect. |
 | `pool` | Spends focus points (`spend`), or refunds them (`gain`), with an optional `oncePerEncounter`. |
 | `death` | Applies dying, or kills outright — whom it may kill is the **Automate death effects** setting. |
 | `banish` | Removes a creature from the scene, and brings it back. |
-| `teleport` | Moves along the caster→target line, grid-snapped and clamped to the scene. `measure: "from-origin"` makes it a destination rather than a delta. |
+| `teleport` | Moves along the caster→target line, grid-snapped and clamped to the scene. `measure: "from-origin"` makes it a destination rather than a delta. `stopsAtWalls` makes it a push: it stops short of the first wall that blocks movement. |
 | `encasement` | Traps a creature in a hazard with its own escape DC. |
 | `escape` | Offers an escape attempt against something holding the target. |
 | `expire` | Takes a named effect back off before its own timer would. |
+| `sustain` | The *Sustain* action an effect with `sustain` grants; not written by hand. |
 | `strikes` | Rolls a volley, dealt round-robin across the confirmed targets. `mapIndex` picks the variant. Follows through to damage. |
 | `toggle` | Flips a roll option on the **target**, unless the rider is `self`. |
 | `reaction` | Offers the actor a reaction, as buttons on a card. |

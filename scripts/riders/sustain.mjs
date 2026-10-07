@@ -1,0 +1,105 @@
+import { t } from "../i18n.mjs";
+import { LIB_ID } from "../id.mjs";
+
+/**
+ * Sustaining a spell that grows.
+ *
+ * *Bless*: "Once per round on subsequent turns, you can Sustain the spell to increase the emanation's radius
+ * by 10 feet." pf2e's own effect carries the aura and reads its radius off its badge — 15 ft at 1, 25 at 2 —
+ * so a Sustain is one more on the badge. What pf2e lacks is the link: its Sustain action is a bare
+ * "Sustain" in chat that names no spell, and a caster holding two sustainable effects could mean either.
+ *
+ * So the effect brings its own action, the way a grip brings its Escape: "Sustain Bless" on the caster's
+ * sheet, spent like any action, and gone when the effect is.
+ */
+
+const FLAG = "sustain";
+
+/** May it be Sustained now? Once per round, and not in the round it was cast. Out of combat, always. */
+export function canSustain({ castRound = null, lastRound = null } = {}, round = null) {
+    if (round === null || round === undefined) return true;
+    if (castRound !== null && round <= castRound) return false;
+    return lastRound !== round;
+}
+
+/**
+ * The round of the encounter this actor is fighting in, or null out of combat. Not `game.combat`: that is
+ * whichever encounter the GM is looking at, and a scene can hold two — the round a Sustain is judged by is
+ * the caster's own.
+ */
+export function roundFor(actor, combats = game.combats) {
+    const fighting = combats?.find?.((c) => c.started && c.combatants.some((cb) => cb.actor === actor || cb.actorId === actor?.id));
+    return fighting ? fighting.round : null;
+}
+
+/** The granted action, as a plain source object. */
+export function sustainActionSource({ item, effectId, step = 1, castRound = null }) {
+    const name = item?.name ?? t("Rider.Name");
+    return {
+        type: "action",
+        name: t("Sustain.Name", { name }),
+        img: item?.img ?? "icons/svg/clockwork.svg",
+        system: {
+            actionType: { value: "action" },
+            actions: { value: 1 },
+            description: { value: `<p>${t("Sustain.Description", { name })}</p>` },
+            traits: { value: ["concentrate"], rarity: "common" },
+        },
+        flags: {
+            [LIB_ID]: {
+                [FLAG]: { effectId, step, castRound, lastRound: null },
+                riders: [{ apply: { type: "sustain" }, event: "action-used", self: true }],
+            },
+        },
+    };
+}
+
+export const Sustain = {
+    /** Give the caster the action that Sustains `effect`. */
+    async grant(rider, context, effect) {
+        const actor = context.actor;
+        if (!actor || !effect) return null;
+        const item = context.item ?? context.riderItem ?? null;
+        const step = Number(rider.apply.sustain?.step) || 1;
+        const [created] = await actor.createEmbeddedDocuments("Item", [
+            sustainActionSource({ item, effectId: effect.id, step, castRound: roundFor(actor) }),
+        ]);
+        return created ?? null;
+    },
+
+    /** The action was used: one step more on the effect's badge, if the rules allow it now. */
+    async apply(rider, context) {
+        const action = context.item;
+        const spec = action?.flags?.[LIB_ID]?.[FLAG];
+        const actor = context.actor;
+        if (!spec || !actor) return;
+        const effect = actor.items.get(spec.effectId);
+        const say = (key, data) => ChatMessage.create({
+            speaker: ChatMessage.getSpeaker({ actor }),
+            content: `<p>${t(key, { name: effect?.name ?? action.name, ...data })}</p>`,
+        });
+        if (!effect) return say("Sustain.Gone");
+        const round = roundFor(actor);
+        if (!canSustain(spec, round)) return say(spec.castRound !== null && round <= spec.castRound ? "Sustain.NotYet" : "Sustain.Already");
+
+        const badge = effect.system?.badge;
+        if (badge?.type === "counter") {
+            const max = badge.max ?? badge.labels?.length ?? Infinity;
+            await effect.update({ "system.badge.value": Math.min((badge.value ?? 0) + spec.step, max) });
+        }
+        await action.setFlag(LIB_ID, FLAG, { ...spec, lastRound: round });
+        const label = effect.system?.badge?.labels?.[(effect.system.badge.value ?? 1) - 1];
+        return say("Sustain.Done", { now: label ?? effect.system?.badge?.value ?? "" });
+    },
+
+    /** An effect gone takes its Sustain action with it. Active GM only. */
+    registerHooks() {
+        Hooks.on("deleteItem", async (item) => {
+            if (game.users.activeGM?.id !== game.user.id) return;
+            const actor = item?.parent;
+            if (!actor?.items || item.type === "action") return;
+            const orphans = actor.items.filter((i) => i.type === "action" && i.flags?.[LIB_ID]?.[FLAG]?.effectId === item.id).map((i) => i.id);
+            if (orphans.length > 0) await actor.deleteEmbeddedDocuments("Item", orphans);
+        });
+    },
+};

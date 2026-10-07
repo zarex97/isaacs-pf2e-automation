@@ -10,6 +10,7 @@ import { LIB_ID } from "../id.mjs";
 import { Banish, durationSeconds } from "./banish.mjs";
 import { collectRiders, itemFor, riderAt } from "./data.mjs";
 import { t } from "../i18n.mjs";
+import { Sustain } from "./sustain.mjs";
 
 /** A degree of success, in words. */
 const outcomeLabel = (outcome) => t(`Outcome.${outcome}`);
@@ -426,6 +427,8 @@ async function applyOne(rider, context) {
             return Encasement.apply(rider, context);
         case "escape":
             return applyEscape(rider, context);
+        case "sustain":
+            return Sustain.apply(rider, context);
         case "expire":
             return applyExpire(rider, context);
         default: {
@@ -1672,6 +1675,8 @@ async function applyEffect(rider, context) {
     }
     if (rider.apply.trackedTarget) await reportTrackedHp(created, context);
     await grantEscape(rider, context, { conditions: [], effectId: created?.id ?? null });
+    // "You can Sustain the spell to increase the emanation's radius": the effect brings its Sustain action.
+    if (rider.apply.sustain) record(context, await Sustain.grant(rider, context, created));
 }
 
 /**

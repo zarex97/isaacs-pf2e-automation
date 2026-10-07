@@ -43,7 +43,7 @@ export function docs(built, index, en) {
             : a.type === "damage" ? `${a.formula} ${a.damageType ?? ""}`.trim()
             : a.type;
         const when = (r.outcomes ?? []).map((o) => outcome[o]).join(" / ");
-        const lasting = [r.duration ? `${r.duration.value} ${r.duration.unit}` : null, a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null].filter(Boolean);
+        const lasting = [r.duration ? `${r.duration.value} ${r.duration.unit}` : null, a.escapeDc ? "Escape" : null, a.endsOnLeaving ? "ends on leaving" : null, a.sustain ? `Sustain: +${a.sustain.step ?? 1}` : null, r.self ? "on you" : null].filter(Boolean);
         const lastingText = lasting.length ? ` (${lasting.join(", ")})` : "";
         return `${when ? `${when}: ` : ""}${what}${lastingText}`;
     };

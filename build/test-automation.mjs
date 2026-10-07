@@ -735,6 +735,27 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  Sustaining a spell that grows (VS-13)                                                        */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { canSustain, sustainActionSource, roundFor } = await import("../scripts/riders/sustain.mjs");
+    const caster = { id: "aries" };
+    const other = { started: true, round: 27, combatants: [{ actorId: "ghoul" }] };
+    const own = { started: true, round: 2, combatants: [{ actorId: "aries" }] };
+    check("a Sustain is judged by the caster's own encounter, not whichever the GM is viewing", [roundFor(caster, [other, own]), roundFor(caster, [other]), roundFor(caster, [{ ...own, started: false }])], [2, null, null]);
+    check("Sustained once per round, not in the round it was cast", [
+        canSustain({ castRound: 3, lastRound: null }, 3),
+        canSustain({ castRound: 3, lastRound: null }, 4),
+        canSustain({ castRound: 3, lastRound: 4 }, 4),
+        canSustain({ castRound: 3, lastRound: 4 }, 5),
+    ], [false, true, false, true]);
+    check("…and freely out of combat, or when cast out of it", [canSustain({ castRound: 3, lastRound: 3 }, null), canSustain({ castRound: null, lastRound: null }, 1)], [true, true]);
+    const action = sustainActionSource({ item: { name: "Bless" }, effectId: "e1", step: 1, castRound: 2 });
+    check("the granted action is one concentrate action that fires its own rider", [action.system.actions.value, action.system.traits.value, action.flags[LIB_ID].riders[0].apply.type, action.flags[LIB_ID].sustain.effectId], [1, ["concentrate"], "sustain", "e1"]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  A push that walls stop (VS-12)                                                               */
 /* -------------------------------------------------------------------------------------------- */
 

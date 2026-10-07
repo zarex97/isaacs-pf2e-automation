@@ -163,6 +163,14 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "Sustain": {
+            "Name": "Sustain {name}",
+            "Description": "Sustain {name}: its effect grows one step. Once per round, and not in the round it was cast.",
+            "Done": "{name} is Sustained — now {now}",
+            "NotYet": "{name} can't be Sustained in the round it was cast.",
+            "Already": "{name} has already been Sustained this round.",
+            "Gone": "{name} has ended; there is nothing to Sustain."
+        },
         "Relay": {
             "ThisAbility": "This ability",
             "NoGM": "{name}: no GM is online, so its riders were not applied. Apply them by hand."
