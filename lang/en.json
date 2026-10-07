@@ -164,6 +164,13 @@
             "TypeLabel": "Lingering area",
             "Flavor": "{name} — {actor}"
         },
+        "Decoy": {
+            "Roll": "{name}: which is struck? ({images} images)",
+            "You": "The attack finds {actor} — not an image.",
+            "Image": "The attack strikes an image of {actor} instead: no effect on them. {left} left.",
+            "ImageCrit": "An image of {actor} is destroyed, and the critical hit becomes a hit on them. {left} left.",
+            "ImageMiss": "The attack misses {actor} but destroys an image, with no other effect. {left} left."
+        },
         "Hostile": {
             "Ended": "{actor} acted with hostility: {what} ends."
         },
