@@ -9,6 +9,10 @@ import { CheckPipeline } from "../lib/check-pipeline.mjs";
  * effect may carry `forbids` — any of `cast`, `attack`, `manipulate` — and while it lasts: a spell its holder casts is
  * refused (a cast stage), a Strike or other attack roll is refused (a check gate), and an action with the manipulate
  * (or attack) trait posted from its sheet is refused (`actionForbidden`, in the cast pipeline's action wrap).
+ *
+ * *Moon Frenzy*: "The targets can't use concentrate actions unless those actions also have the rage trait, with the
+ * exception of Seek." `concentrate` refuses actions and spells with that trait; `forbidsExcept: { traits, slugs }`
+ * lets through those with one of the traits, or of those slugs.
  */
 
 const FLAG = "forbids";
@@ -18,12 +22,22 @@ export function forbiddenBy(actor, what) {
     return (actor?.itemTypes?.effect ?? []).find((e) => (e.flags?.[LIB_ID]?.[FLAG] ?? []).includes(what)) ?? null;
 }
 
+/** Does the effect's `forbidsExcept` let this item through — a trait it names, or its slug? */
+export function excepted(effect, item) {
+    const except = effect?.flags?.[LIB_ID]?.forbidsExcept;
+    if (!except) return false;
+    const traits = item?.system?.traits?.value ?? [];
+    const slug = item?.slug ?? item?.system?.slug ?? null;
+    return (except.traits ?? []).some((trait) => traits.includes(trait)) || (!!slug && (except.slugs ?? []).includes(slug));
+}
+
 /** May this action be used? A warning, and no, when its traits are ones its holder's form forbids. */
 export function actionForbidden(action) {
     const traits = action?.system?.traits?.value ?? [];
-    for (const what of ["manipulate", "attack"]) {
+    for (const what of ["manipulate", "attack", "concentrate"]) {
         if (!traits.includes(what)) continue;
         const effect = forbiddenBy(action.actor, what);
+        if (effect && excepted(effect, action)) continue;
         if (effect) {
             ui.notifications?.warn(t("Forbids.Refused", { actor: action.actor.name, name: action.name, effect: effect.name }));
             return true;
@@ -35,7 +49,9 @@ export function actionForbidden(action) {
 export const Forbids = {
     /** A cast refused. The cast pipeline's stage. */
     castAllowed(spell) {
-        const effect = forbiddenBy(spell?.actor, "cast");
+        // A spell with the concentrate trait, under a form that forbids concentrate actions.
+        const concentrate = (spell?.system?.traits?.value ?? []).includes("concentrate") ? forbiddenBy(spell?.actor, "concentrate") : null;
+        const effect = forbiddenBy(spell?.actor, "cast") ?? (concentrate && !excepted(concentrate, spell) ? concentrate : null);
         if (!effect) return true;
         ui.notifications?.warn(t("Forbids.Refused", { actor: spell.actor.name, name: spell.name, effect: effect.name }));
         return false;

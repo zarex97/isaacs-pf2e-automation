@@ -1,0 +1,63 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.zRKw95WMezr6TgiT",
+                "atCastRank": true,
+                "addRules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "all-speeds",
+                        "type": "status",
+                        "value": 10
+                    }
+                ],
+                "forbids": [
+                    "concentrate"
+                ],
+                "forbidsExcept": {
+                    "traits": [
+                        "rage"
+                    ],
+                    "slugs": [
+                        "seek"
+                    ]
+                },
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.moon-frenzy.Shake",
+                    "holder": true,
+                    "actions": 1,
+                    "traits": [
+                        "rage"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "save",
+                                "statistic": "will",
+                                "dc": "spell",
+                                "riders": [
+                                    {
+                                        "outcomes": [
+                                            "success",
+                                            "criticalSuccess"
+                                        ],
+                                        "apply": {
+                                            "type": "expire",
+                                            "effect": "Spell Effect: Moon Frenzy"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

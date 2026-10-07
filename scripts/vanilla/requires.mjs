@@ -69,6 +69,17 @@ export async function weaponVariant(spell, options) {
  */
 export async function actionVariant(spell, options) {
     const variants = configOf(spell, "actionVariants");
+    // No variants, one creature per action — *Infuse Vitality*: "The number of targets is equal to the number of actions
+    // you spent casting this spell." The targets say how many were spent; more than the spell's most is refused.
+    if (!variants && configOf(spell, "targetsPerAction") === true && !options?.[VARIANT]) {
+        const max = mostActions(spell);
+        const targets = [...(game.user?.targets ?? [])].filter((token) => token.actor).length;
+        if (max && targets > max) {
+            ui.notifications.warn(t("Actions.TooManyTargets", { name: spell.name, max, targets }));
+            return false;
+        }
+        return true;
+    }
     if (!variants || typeof spell?.loadVariant !== "function" || options?.[VARIANT]) return true;
     const perAction = configOf(spell, "targetsPerAction") === true;
     const targets = [...(game.user?.targets ?? [])].filter((token) => token.actor && token.actor !== spell.actor).length;
@@ -96,6 +107,13 @@ export async function actionVariant(spell, options) {
     const variant = spell.loadVariant({ overlayIds: [variants[String(chosen.count)]], castRank: spell.rank });
     if (variant && options) options[VARIANT] = variant;
     return true;
+}
+
+/** The most actions a spell can be cast with: "1 to 3" is 3. */
+export function mostActions(spell) {
+    const value = String(spell?.system?.time?.value ?? "");
+    const numbers = value.match(/\d+/g)?.map(Number) ?? [];
+    return numbers.length ? Math.max(...numbers) : null;
 }
 
 /** The flag on the caster that keeps what was chosen as a spell was cast, by spell: `{ [spellId]: { [flag]: value } }`. */

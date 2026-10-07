@@ -654,14 +654,16 @@ function areaLeftBy(originActor, item) {
  * An effect's ChoiceSets answered before it lands, so no dialog stops the rider. `preselect` maps a ChoiceSet's
  * `flag` to its answer; `""` is the save's degree as pf2e spells it (`critical-failure`).
  */
-export function preselected(rules, preselect, outcome, cast = {}) {
+export function preselected(rules, preselect, outcome, cast = {}, { held = null } = {}) {
     const degree = { criticalSuccess: "critical-success", success: "success", failure: "failure", criticalFailure: "critical-failure" }[outcome] ?? null;
     return (rules ?? []).map((rule) => {
         // Named by its `flag`, or — pf2e's *Tangle Vine* has none — by its `rollOption`.
         const key = [rule?.flag, rule?.rollOption].find((k) => k && k in preselect);
         if (rule?.key !== "ChoiceSet" || !key) return rule;
         // `"$cast"`: what the caster chose as the spell was cast — *Seal Fate*'s damage type.
-        const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key];
+        // `"$held"`: the creature's one held weapon — *Runic Weapon*'s "1 weapon … wielded by a willing creature"; with
+        // two or none, pf2e asks.
+        const answer = preselect[key] === "$outcome" ? degree : preselect[key] === "$cast" ? (cast[key] ?? null) : preselect[key] === "$held" ? held : preselect[key];
         return answer === null ? rule : { ...rule, selection: choiceValue(rule, answer) };
     });
 }
@@ -1865,6 +1867,8 @@ async function applyEffect(rider, context) {
         }
         // A count the effect carries — *Blister*'s one, two or four blisters.
         if (Number(rider.apply.badge) > 0) source.system.badge = { type: "counter", value: Number(rider.apply.badge) };
+        // "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends."
+        if (rider.apply.endsPrevious && rider.apply.slug) await endPreviousEffects(rider.apply.slug, context.originActor);
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
         // …and the action its caster spends it with (`origin-action.mjs`), at the cast's DC and rank.
@@ -1929,7 +1933,10 @@ async function applyEffect(rider, context) {
     applySubstitutions(source, rider.apply.substitutions, context);
     // A pf2e effect that asks — *Ill Omen*'s "failure or critical failure?" — is told instead, from the outcome.
     const cast = castChoicesOf(context);
-    if (rider.apply.preselect) source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome, cast);
+    if (rider.apply.preselect) {
+        const held = heldWeapons(context.actor);
+        source.system.rules = preselected(source.system?.rules, rider.apply.preselect, context.outcome, cast, { held: held.length === 1 ? held[0].id : null });
+    }
     // *Heroism*'s +1 / +2 / +3 reads `@item.level` — the effect's own level, which pf2e sets to the spell's rank
     // when the effect is taken from a cast. Taken from the compendium, it is whatever the effect was saved at.
     // A pf2e effect that should take riders with it — *Mirror Image*'s images answer the attacks on their caster.
@@ -1942,7 +1949,9 @@ async function applyEffect(rider, context) {
     // A shield the spell makes — *Fire Shield*: raised by an action, its own Hit Points (`spell-shield.mjs`).
     if (rider.apply.shield) spellShieldSource(source, rider.apply.shield, riderSteps({ apply: { perStepInterval: rider.apply.perStepInterval } }, context));
     // What the form forbids its holder — *Vapor Form* (`forbids.mjs`).
-    if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids } });
+    if (Array.isArray(rider.apply.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids, ...(rider.apply.forbidsExcept ? { forbidsExcept: rider.apply.forbidsExcept } : {}) } });
+    // Rules added to a pf2e effect — *Moon Frenzy*'s "+10-foot status bonus to their Speeds", where pf2e's has only the land Speed.
+    if (Array.isArray(rider.apply.addRules)) source.system.rules = [...(source.system?.rules ?? []), ...rider.apply.addRules];
     const castRank = Number(castItemOf(context)?.rank);
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
     source._stats = foundry.utils.mergeObject(source._stats ?? {}, { compendiumSource: uuid });
@@ -3080,6 +3089,10 @@ function effectSource(label, rules, rider, context) {
         const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
     }
+    // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
+    if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
+    // *Nudge Fate*: a degree raised after the die falls (`nudge.mjs`).
+    if (rider.apply?.nudge) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { nudge: rider.apply.nudge === true ? {} : rider.apply.nudge } });
     // *Share Life*: its holder's damage halved, the rest to its caster (`share-damage.mjs`).
     if (rider.apply?.shareDamage && context.originActor) {
         const { share = 0.5, range = null } = rider.apply.shareDamage;
@@ -3088,6 +3101,15 @@ function effectSource(label, rules, rider, context) {
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
+}
+
+/** End the effects with this slug that this caster left on any creature in the scene — a previous casting. */
+async function endPreviousEffects(slug, caster) {
+    if (!caster || !canvas?.tokens) return;
+    for (const token of canvas.tokens.placeables) {
+        const stale = (token.actor?.itemTypes?.effect ?? []).filter((e) => e.slug === slug && e.system?.context?.origin?.actor === caster.uuid);
+        if (stale.length > 0) await token.actor.deleteEmbeddedDocuments("Item", stale.map((e) => e.id));
+    }
 }
 
 /**

@@ -899,6 +899,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         withCast([{ predicate: ["rider:damage:type:$cast:damageType"], apply: { type: "death", maxLevel: 7, maxLevelPerStep: 4 } }], { damageType: "cold" }, 1),
         [{ predicate: ["rider:damage:type:cold"], apply: { type: "death", maxLevel: 11 } }]);
     check("…and a formula that grows by its perStep — Fire Shield's 2d6, 3d6 at rank 6", withCast([{ apply: { type: "damage", formula: "2d6", perStep: "1d6" } }], {}, 1), [{ apply: { type: "damage", formula: "3d6" } }]);
+    check("a weapon ChoiceSet answered with the one held weapon — and left to pf2e without one", [preselected([{ key: "ChoiceSet", flag: "weapon" }], { weapon: "$held" }, null, {}, { held: "abc" })[0].selection, preselected([{ key: "ChoiceSet", flag: "weapon" }], { weapon: "$held" }, null, {})[0].selection], ["abc", undefined]);
     check("…or one named only by its roll option", preselected([{ key: "ChoiceSet", rollOption: "tangle-vine" }], { "tangle-vine": "$outcome" }, "success")[0].selection, "success");
     check("a pf2e ChoiceSet is answered from the save, leaving other rules alone", [preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[0].selection, preselected(omen, { illOmen: "$outcome" }, "criticalFailure")[1], preselected(omen, { other: "x" }, "failure")[0].selection], ["critical-failure", omen[1], undefined]);
     check("a chosen compass point is a direction on the grid, y downwards", [compassVector("n"), compassVector("se"), compassVector("up")], [{ x: 0, y: -1 }, { x: 1, y: 1 }, null]);
@@ -1348,6 +1349,32 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     const strike = { isOfType: (...types) => types.includes("weapon") };
     const roll = { total: 9, alter: () => null };
     check("only a Strike that hit is caught", [isStrikeHit({ item: strike, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "failure", damage: roll }), isStrikeHit({ item: { isOfType: () => false }, outcome: "success", damage: roll }), isStrikeHit({ item: strike, outcome: "criticalSuccess", damage: 9 })], [true, false, false, false]);
+}
+
+{
+    const { statusBonusCounts, NUDGE_PREDICATE } = await import("../scripts/riders/nudge.mjs");
+    check("a retroactive +1 status bonus counts unless an enabled status bonus is already there", [statusBonusCounts([{ type: "item", modifier: 2, enabled: true }]), statusBonusCounts([{ type: "status", modifier: 1, enabled: true }]), statusBonusCounts([{ type: "status", modifier: 1, enabled: false }]), statusBonusCounts([{ type: "status", modifier: -1, enabled: true }])], [true, false, true, true]);
+    check("a nudge applies one point short of success, or of failure — not where a natural 20 or 1 undoes it", NUDGE_PREDICATE, [{ or: [{ and: ["check:total:delta:-1", { not: "check:total:natural:20" }] }, { and: ["check:total:delta:-10", { not: "check:total:natural:1" }] }] }]);
+}
+
+{
+    const { mostActions } = await import("../scripts/vanilla/requires.mjs");
+    check("a spell's most actions, from its casting time", [mostActions({ system: { time: { value: "1 to 3" } } }), mostActions({ system: { time: { value: "2" } } }), mostActions({ system: { time: { value: "reaction" } } })], [3, 2, null]);
+}
+
+{
+    const { excepted } = await import("../scripts/riders/forbids.mjs");
+    const frenzy = { flags: { "isaacs-pf2e-automation": { forbids: ["concentrate"], forbidsExcept: { traits: ["rage"], slugs: ["seek"] } } } };
+    check("a form's exceptions: a rage action, Seek — not another concentrate action", [excepted(frenzy, { system: { traits: { value: ["concentrate", "rage"] } } }), excepted(frenzy, { slug: "seek", system: { traits: { value: ["concentrate"] } } }), excepted(frenzy, { slug: "recall-knowledge", system: { traits: { value: ["concentrate"] } } })], [true, true, false]);
+    const { bakeCast } = await import("../scripts/riders/origin-action.mjs");
+    check("a granted action's save with no DC takes the spell's", bakeCast([{ apply: { type: "save", statistic: "will", dc: "spell" } }, { apply: { type: "save", dc: 30 } }], { dc: 25 }).map((r) => r.apply.dc), [25, 30]);
+}
+
+{
+    const { canSee, clamped } = await import("../scripts/riders/condition-floor.mjs");
+    const has = (...slugs) => ({ hasCondition: (s) => slugs.includes(s) });
+    check("a caster sees the creature unless blinded, or it is invisible, undetected or unnoticed", [canSee(has(), has()), canSee(has("blinded"), has()), canSee(has(), has("invisible")), canSee(null, has())], [true, false, false, false]);
+    check("a lowered condition is held at its floor", [clamped(0, 1), clamped(1, 1), clamped(2, 1)], [1, 1, 2]);
 }
 
 report("Automation tests");

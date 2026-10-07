@@ -29,6 +29,8 @@ export function bakeCast(value, { steps = 0, dc = null } = {}) {
         delete out.perStep;
     }
     if (out.type === "area-damage" && out.dc === undefined && dc) out.dc = dc;
+    // "To attempt a Will save against your spell DC" — *Moon Frenzy*'s way out.
+    if (out.type === "save" && (out.dc === undefined || out.dc === "spell") && dc) out.dc = dc;
     return out;
 }
 
@@ -57,9 +59,9 @@ export function originActionSource({ spec, item, effect, token, steps, dc }) {
 }
 
 export const OriginAction = {
-    /** Give the effect's caster its action. `steps` and `dc` are the cast's. */
+    /** Give the effect's caster its action — or, with `holder: true`, the creature that carries it. `steps` and `dc` are the cast's. */
     async grant(effect, spec, context, { item = null, steps = 0, dc = null } = {}) {
-        const origin = context.originActor;
+        const origin = spec?.holder ? effect?.actor : context.originActor;
         if (!origin || !effect || !spec) return null;
         const token = context.target?.document ?? context.target ?? null;
         const [created] = await origin.createEmbeddedDocuments("Item", [originActionSource({ spec, item, effect, token, steps, dc })]);

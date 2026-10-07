@@ -1,0 +1,44 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "sickened",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "sickened",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.evil-eye.Eye",
+                "rules": [],
+                "sustained": true,
+                "floor": {
+                    "slug": "sickened",
+                    "value": 1
+                }
+            }
+        }
+    ]
+}

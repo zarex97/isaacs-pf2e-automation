@@ -29,6 +29,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
 | Enlarge | 2 | up to 1, +9 at rank 6 | spell-effect-enlarge (below rank 4); spell-effect-enlarge (from rank 4) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
+| Evil Eye | 1 |  | failure: sickened 1; crit. failure: sickened 2; failure / crit. failure: evil eye (1 minutes, while Sustained) |  |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |
@@ -38,6 +39,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
+| Guidance | 1 |  | spell-effect-guidance; effect-guidance-immunity; GM note: “The target is temporarily immune to Guidance: the spell does nothing.” |  |
 | Gust of Wind | 1 | 60-ft line (pf2e's), from you, all, filtered | success: GM note: “The creature can't move against the wind.”; failure: prone (no end); failure: GM note: “If the creature was flying, it takes the effects of a critical failure instead (pushed 30 feet in the wind's direction, prone, 2d6 bludgeoning).”; crit. failure: pushed 30 ft away; crit. failure: prone (no end); crit. failure: 2d6 bludgeoning | until your next turn, fortitude on entering — success: GM note: “The creature can't move against the wind.”; failure: prone (no end); failure: GM note: “If the creature was flying, it takes the effects of a critical failure instead (pushed 30 feet in the wind's direction, prone, 2d6 bludgeoning).”; crit. failure: pushed 30 ft away; crit. failure: prone (no end); crit. failure: 2d6 bludgeoning, 1 rounds |
 | Haste | 3 | up to 1, +5 at rank 7 | spell-effect-haste |  |
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
@@ -47,6 +49,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
 | Ignition | 1 | variant — Ignition (Melee): crit. success: 1d6 (+1d6 per rank) persistent fire | crit. success: 1d4 (+1d4 per rank) persistent fire |  |
 | Ill Omen | 1 |  | failure / crit. failure: spell-effect-ill-omen |  |
+| Infuse Vitality | 1 |  | spell-effect-infuse-vitality |  |
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Levitate | 3 |  | elevation; spell-effect-levitate (carries turn-end toggle) |  |
@@ -57,7 +60,9 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
+| Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
 | Mountain Resilience | 4 |  | spell-effect-mountain-resilience (carries damage-received shorten) |  |
+| Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantasmal Calamity | 6 |  | crit. failure: save |  |
@@ -67,6 +72,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
+| Runic Weapon | 1 |  | spell-effect-runic-weapon |  |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |

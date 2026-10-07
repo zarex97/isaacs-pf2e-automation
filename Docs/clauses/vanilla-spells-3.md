@@ -583,56 +583,56 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-83a | "granting the target a +1 status bonus to one attack roll, Perception check, saving throw, or skill check the target attempts before the duration ends" | +1 to one such roll before the caster's next turn | | ☐ | |
-| VS-83b | "The target chooses which roll to use the bonus on before rolling" | The bonus is a choice on the roll, not automatic | | ☐ | |
-| VS-83c | "If the target uses the bonus, the spell ends" | Used once, it's gone | | ☐ | |
-| VS-83d | "Either way, the target is then temporarily immune for 1 hour" | A second *Guidance* within the hour does nothing | | ☐ | |
+| VS-83a | "granting the target a +1 status bonus to one attack roll, Perception check, saving throw, or skill check the target attempts before the duration ends" | +1 to one such roll before the caster's next turn | pf2e's *Spell Effect: Guidance*: `FlatModifier` status +1 to attack, Perception, saves and skills, predicated on `guidance` | ✅ | Leo, Fortitude with the bonus chosen: **Guidance +1** among the modifiers (+24 → +25) |
+| VS-83b | "The target chooses which roll to use the bonus on before rolling" | The bonus is a choice on the roll, not automatic | The modifier is a toggle in pf2e's check dialog (its predicate is the choice) | ✅ | A Fortitude save with it not chosen: +24, and the effect **stayed** |
+| VS-83c | "If the target uses the bonus, the spell ends" | Used once, it's gone | pf2e's `removeAfterRoll: "if-enabled"` | ✅ | The save it was chosen for: *Spell Effect: Guidance* **gone** afterwards |
+| VS-83d | "Either way, the target is then temporarily immune for 1 hour" | A second *Guidance* within the hour does nothing | `content/vanilla/guidance.json`: pf2e's *Effect: Guidance Immunity* (1 hour) with the spell; every rider predicated on `rider:target:effect:effect-guidance-immunity`, a note when it holds | ✅ | Cast again on Leo within the hour: "The target is temporarily immune to Guidance: the spell does nothing" — no second effect. (The first content read `target:effect:…`, which a cast card's riders don't see; the second cast landed until it read `rider:target:effect:…`.) The immunity is given at the cast, as pf2e's own spell does, so its hour runs from the cast |
 
 ### VS-84 · Nudge Fate
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-84a | "a +1 status bonus would turn a critical failure into a failure, or failure into a success" | Only when one more would change the degree | | ☐ | |
-| VS-84b | "you grant the target a +1 status bonus to the check retroactively, changing the outcome appropriately" | The roll's outcome is raised after it falls | | ☐ | |
-| VS-84c | "The spell then ends" | Once used, gone | | ☐ | |
-| VS-84d | "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends" | Casting it again ends the old one | | ☐ | |
+| VS-84a | "a +1 status bonus would turn a critical failure into a failure, or failure into a success" | Only when one more would change the degree | `nudge` (`scripts/riders/nudge.mjs`): a check stage adds a pf2e degree adjustment, +1 step, predicated on `check:total:delta:-1` (not a natural 20) or `-10` (not a natural 1); none when an enabled status bonus is already on the check | ✅ | ZZ Victim (Fortitude +0, DC 15): a 10 — failure, **untouched**, the effect stayed. With a +1 status bonus already on, a 14 total — failure, **untouched** |
+| VS-84b | "you grant the target a +1 status bonus to the check retroactively, changing the outcome appropriately" | The roll's outcome is raised after it falls | pf2e's own `DegreeOfSuccess` applies the adjustment, so the card shows the raised outcome | ✅ | A 14: **failure → success**. A 5: **critical failure → failure** |
+| VS-84c | "The spell then ends" | Once used, gone | A `createChatMessage` hook ends the effect when the posted check's outcome was raised by it | ✅ | After each raise: "ZZ Victim's roll was nudged, and the spell ends" — effect gone; the untouched failure left it in place |
+| VS-84d | "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends" | Casting it again ends the old one | `endsPrevious` with `slug: nudge-fate`: the caster's earlier effect of that slug, on anyone, ends as the new one is made | ✅ | Cast on ZZ, then on Leo: **ZZ 0, Leo 1** |
 
 ### VS-85 · Runic Weapon
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-85a | "The target becomes a +1 striking weapon , gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | The chosen weapon's Strikes: +1 to hit, two dice | | ☐ | |
-| VS-85b | "Heightened (6th) The weapon is +2 greater striking" | Rank 6: +2, three dice | | ☐ | |
-| VS-85c | "Heightened (9th) The weapon is +3 major striking" | Rank 9: +3, four dice | | ☐ | |
+| VS-85a | "The target becomes a +1 striking weapon , gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | The chosen weapon's Strikes: +1 to hit, two dice | pf2e's *Spell Effect: Runic Weapon* (`ItemAlteration` potency and striking), `atCastRank`; its weapon ChoiceSet answered `preselect: { weapon: "$held" }` — the target's one held weapon; with two, pf2e asks | ✅ | Leo holding a longsword: no prompt; its Strike **+0 → +1**, **1d8 → 2d8** (runes +1/striking). Holding a longsword and a dagger: pf2e's "Select a weapon" with both |
+| VS-85b | "Heightened (6th) The weapon is +2 greater striking" | Rank 6: +2, three dice | pf2e's alteration at level 6 | ✅ | Rank 6: **+2**, **3d8** |
+| VS-85c | "Heightened (9th) The weapon is +3 major striking" | Rank 9: +3, four dice | pf2e's alteration at level 9 | ✅ | Rank 9: **+3**, **4d8** |
 
 ### VS-86 · Infuse Vitality
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-86a | "The number of targets is equal to the number of actions you spent casting this spell" | One, two or three targets by the actions spent | | ☐ | |
-| VS-86b | "Each target's unarmed and weapon Strikes deal an extra 1d4 vitality damage" | +1d4 vitality on their Strikes | | ☐ | |
-| VS-86c | "If you have the holy trait, you can add that trait to this spell and to the Strikes affected by the spell" | A holy caster may make the Strikes holy | | ☐ | |
-| VS-86d | "Heightened (3rd) The damage increases to 2d4 damage" | Rank 3: 2d4 | | ☐ | |
+| VS-86a | "The number of targets is equal to the number of actions you spent casting this spell" | One, two or three targets by the actions spent | `targetsPerAction` with no `actionVariants` (`actionVariant`, cast stage 8): the targets are the actions spent; more than the spell's most (`mostActions`, "1 to 3" → 3) is refused | ✅ | Two targeted (Leo, Aries): cast, **both** got the effect. Four targeted: refused — **nothing posted** (the cast stage returned false). One: Leo only |
+| VS-86b | "Each target's unarmed and weapon Strikes deal an extra 1d4 vitality damage" | +1d4 vitality on their Strikes | pf2e's *Spell Effect: Infuse Vitality* (`DamageDice` on `strike-damage`), `atCastRank` | ✅ | Leo's longsword: **1d8 slashing → 1d8 slashing + 1d4 vitality** |
+| VS-86c | "If you have the holy trait, you can add that trait to this spell and to the Strikes affected by the spell" | A holy caster may make the Strikes holy | pf2e's `AdjustStrike` adds holy, predicated on `parent:origin:trait:holy` — read from the caster as the effect carries no stored origin options | ✅ | Aries without holy: Strike traits *attack*; with holy (a roll option): **attack, holy**. The holy caster's Strikes take it whenever cast — pf2e makes the "can" automatic |
+| VS-86d | "Heightened (3rd) The damage increases to 2d4 damage" | Rank 3: 2d4 | pf2e's dice by `@item.level` | ✅ | Rank 3: **2d4** vitality; rank 5: **3d4** |
 
 ### VS-87 · Moon Frenzy
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-87a | "Targets gain 5 temporary Hit Points, a +10-foot status bonus to their Speeds, and weakness 5 to silver" | All three | | ☐ | |
-| VS-87b | "The fangs deal 2d8 piercing damage; the claws deal 2d6 slashing damage and have the agile and finesse traits" | Two new Strikes | | ☐ | |
-| VS-87c | "The targets use their highest weapon or unarmed attack proficiency with these attacks" | Their best proficiency | | ☐ | |
-| VS-87d | "On a critical hit with one of these unarmed attacks, the creature struck takes 1d4 persistent bleed damage" | Bleed on a critical hit | | ☐ | |
-| VS-87e | "The targets can't use concentrate actions unless those actions also have the rage trait, with the exception of Seek" | Their concentrate actions are refused, Seek and rage excepted | | ☐ | |
-| VS-87f | "A creature can attempt to end the spell's effect on itself by using a single action, which has the rage trait, to attempt a Will save against your spell DC" | An action to save its way out | | ☐ | |
+| VS-87a | "Targets gain 5 temporary Hit Points, a +10-foot status bonus to their Speeds, and weakness 5 to silver" | All three | pf2e's *Spell Effect: Moon Frenzy* (`TempHP`, land `FlatModifier`, `Weakness` silver), `atCastRank`; `addRules`: a status +10 to `all-speeds` | ✅ | Leo: **temp HP 5**, land 25 → **35**, fly 20 → **30**, **weakness silver 5** |
+| VS-87b | "The fangs deal 2d8 piercing damage; the claws deal 2d6 slashing damage and have the agile and finesse traits" | Two new Strikes | pf2e's two `Strike` rules | ✅ | Leo: **Fangs 2d8 piercing**, **Claw 2d6 slashing** with agile, finesse, unarmed |
+| VS-87c | "The targets use their highest weapon or unarmed attack proficiency with these attacks" | Their best proficiency | pf2e's `Strike` rules are unarmed, so they use the unarmed proficiency | ⚠️ | Leo's unarmed is his best proficiency (master; weapons untrained), so his Strikes are right. **Gap:** a creature better with weapons than unarmed attacks rolls these at its unarmed proficiency |
+| VS-87d | "On a critical hit with one of these unarmed attacks, the creature struck takes 1d4 persistent bleed damage" | Bleed on a critical hit | pf2e's `DamageDice` bleed, `critical: true`, on the two Strikes | ✅ | Fangs critical: **(2 × (2d8 + 2)) piercing + 1d4 bleed** |
+| VS-87e | "The targets can't use concentrate actions unless those actions also have the rage trait, with the exception of Seek" | Their concentrate actions are refused, Seek and rage excepted | `forbids: [concentrate]`, `forbidsExcept: { traits: [rage], slugs: [seek] }` (`forbids.mjs`): a cast stage and the action wrap | ✅ | In the frenzy, Aries casting *Guidance* (concentrate): **refused**; an action with concentrate: **refused**; one with concentrate and rage: **posted**; pf2e's *Seek* (concentrate, secret): **posted** |
+| VS-87f | "A creature can attempt to end the spell's effect on itself by using a single action, which has the rage trait, to attempt a Will save against your spell DC" | An action to save its way out | `originAction` with `holder: true`, traits `[rage]`, `spends: false`: a Will `save` at the spell's DC (baked); success or better `expire`s the effect | ✅ | Each target got **Shake Off the Moon Frenzy**. Leo used it: Will vs **DC 34**, a critical failure — still frenzied; again, a critical success — **Leo's effect gone**, Aries's untouched |
 | VS-87g | "If a target is in the light of a full moon, it also grows by one size if it were Medium or smaller" | — | | — | Nothing to automate: the moon is the GM's |
-| VS-87h | "Heightened (6th) The temporary Hit Points increase to 10, the silver weakness to 10, and the damage dealt by the attacks to three dice" | Rank 6's numbers | | ☐ | |
+| VS-87h | "Heightened (6th) The temporary Hit Points increase to 10, the silver weakness to 10, and the damage dealt by the attacks to three dice" | Rank 6's numbers | pf2e's values by `@item.level` | ✅ | Rank 6: **temp HP 10**, **silver 10**, Fangs **3d8**, Claw **3d6** |
 
 ### VS-88 · Evil Eye
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-88a | "The target becomes Sickened 1 if it fails a Will save (or sickened 2 on a critical failure)" | Sickened 1 or 2 | | ☐ | |
-| VS-88b | "This condition value can't be reduced below 1 while the spell is active and you can see the target" | Retching or anything else can't take it below 1 while the hex is Sustained | | ☐ | |
+| VS-88a | "The target becomes Sickened 1 if it fails a Will save (or sickened 2 on a critical failure)" | Sickened 1 or 2 | `content/vanilla/evil-eye.json`: failure sickened 1, critical failure sickened 2; either, a Sustained effect (1 minute) with `floor: { slug: sickened, value: 1 }` | ✅ | ZZ Victim's Will from the card's row, a natural 20 (a failure vs DC 34): **sickened 1** and the Sustained *evil eye*; a natural 1 on a new cast: **sickened 2** |
+| VS-88b | "This condition value can't be reduced below 1 while the spell is active and you can see the target" | Retching or anything else can't take it below 1 while the hex is Sustained | `floor` (`scripts/riders/condition-floor.mjs`): `preUpdateItem` clamps the value, `preDeleteItem` refuses the removal, while the caster can see the holder | ✅ | At 1: pf2e's decrease — **held at 1**; deleting the condition — **held**. Aries blinded: the decrease took it to **0**. From 2: down to 1, then **held at 1**. The effect gone (the spell over): the decrease took it to **0** |
 
 ## Batch 9 — Limits and summons
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 72 |
-| ✅ | 244 |
-| ⚠️ | 9 |
+| ☐ not yet driven | 48 |
+| ✅ | 267 |
+| ⚠️ | 10 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |
