@@ -3,6 +3,7 @@ import { flagOf } from "../lib/flags.mjs";
 import { LIB_ID } from "../id.mjs";
 import { bindReactionButtons } from "./reactions.mjs";
 import { Relay } from "./relay.mjs";
+import { RerollCarry } from "./reroll-carry.mjs";
 import { Sources } from "./sources.mjs";
 
 /**
@@ -52,6 +53,7 @@ export const Riders = {
     registerHooks() {
         Relay.listen();
         Sources.register();
+        RerollCarry.registerHooks();
         Hooks.on("renderChatMessageHTML", (message, html) => bindCards(message, html));
         // Foundry <13 and any client still emitting the jQuery flavour of the hook.
         Hooks.on("renderChatMessage", (message, html) => bindCards(message, html?.[0] ?? html));
