@@ -63,15 +63,25 @@ export function trackerRows(markdown, source = "") {
     return rows;
 }
 
-/** Every row of every tracker under `dir`, each file's rows marked with its path relative to `root`. */
-export function readTrackers(dir = TRACKERS, root = ROOT) {
+/**
+ * Every row of every tracker under `dir`, each file's rows marked with its path relative to `root` — and,
+ * for another repo's trackers, with that repo's name, which is how the vocabulary cites its clauses
+ * (`isaacsHBPF2e:SC-24`).
+ */
+export function readTrackers(dir = TRACKERS, root = ROOT, repo = null) {
     if (!fs.existsSync(dir)) return [];
     return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) return readTrackers(full, root);
+        if (entry.isDirectory()) return readTrackers(full, root, repo);
         if (!entry.name.endsWith(".md")) return [];
-        return trackerRows(fs.readFileSync(full, "utf8"), path.relative(root, full).replace(/\\/g, "/")).map((row) => ({ ...row, root }));
+        return trackerRows(fs.readFileSync(full, "utf8"), path.relative(root, full).replace(/\\/g, "/")).map((row) => ({ ...row, root, repo }));
     });
+}
+
+/** A precedent or a module as the vocabulary writes it: `VS-45e`, or `isaacsHBPF2e:SC-24` for another repo's. */
+export function citation(text) {
+    const m = /^([A-Za-z][\w-]*):(.+)$/.exec(text);
+    return m ? { repo: m[1], ref: m[2] } : { repo: null, ref: text };
 }
 
 /** The mark a row stands at: its Status column (both trackers' name for it). */
@@ -79,12 +89,18 @@ export const markOf = (row) => row.cells.Status ?? "";
 
 /**
  * What is wrong with the tags and the vocabulary, as sentences. `rows` are every clause row that may be a
- * precedent; `requireTags` makes an empty cell a problem; `root` resolves the modules a pattern names.
+ * precedent; `requireTags` makes an empty cell a problem; `root` resolves the modules a pattern names, and
+ * `repos` another repo's (`{ isaacsHBPF2e: "../isaacsHBPF2e" }`).
+ *
+ * A precedent in a repo whose rows were not given, or a module in a repo whose root was not, is not checked
+ * here: the homebrew's own check, which reads both repos, answers for it (Docs/adr/0004).
  */
-export function problems(vocabulary, rows, { requireTags = vocabulary.requireTags, root = ROOT } = {}) {
+export function problems(vocabulary, rows, { requireTags = vocabulary.requireTags, root = ROOT, repos = {} } = {}) {
     const found = [];
     const tags = allowedTags(vocabulary);
-    const byId = new Map(rows.map((r) => [r.id, r]));
+    const key = (repo, id) => (repo ? `${repo}:${id}` : id);
+    const byId = new Map(rows.map((r) => [key(r.repo, r.id), r]));
+    const known = new Set(rows.map((r) => r.repo ?? null));
 
     for (const [facet, { values }] of Object.entries(vocabulary.facets)) {
         for (const [value, entry] of Object.entries(values)) {
@@ -94,10 +110,14 @@ export function problems(vocabulary, rows, { requireTags = vocabulary.requireTag
     for (const [tag, { entry }] of tags) {
         if (!entry.meaning) found.push(`${tag} says nothing about what it means`);
         for (const module of entry.modules ?? []) {
-            if (!fs.existsSync(path.join(root, module))) found.push(`${tag} names ${module}, which does not exist`);
+            const { repo, ref } = citation(module);
+            const base = repo ? repos[repo] : root;
+            if (base && !fs.existsSync(path.join(base, ref))) found.push(`${tag} names ${module}, which does not exist`);
         }
         if (!entry.precedent) continue;
-        const row = byId.get(entry.precedent);
+        const { repo, ref } = citation(entry.precedent);
+        if (!known.has(repo)) continue;
+        const row = byId.get(key(repo, ref));
         if (!row) found.push(`${tag}'s precedent ${entry.precedent} is not a clause row`);
         else if (!row.tags.includes(tag)) found.push(`${tag}'s precedent ${entry.precedent} does not carry it`);
         else if (markOf(row) !== "✅") found.push(`${tag}'s precedent ${entry.precedent} is ${markOf(row) || "unmarked"}, not ✅`);
@@ -136,7 +156,7 @@ export function patternsDoc(vocabulary) {
         "clauses, from a closed list: `Docs/adr/0004-patterns-are-tagged-on-clauses-from-a-closed-list.md`.",
         "",
         "A tag is `facet:value`, or `facet:value/variant` where two variants are done by different code. A new value",
-        "needs a precedent clause that is ✅.",
+        "needs a precedent clause that is ✅ — here, or in the homebrew, cited `isaacsHBPF2e:<ID>` (as its modules are).",
         "",
     ];
     for (const [facet, { question, values }] of Object.entries(vocabulary.facets)) {

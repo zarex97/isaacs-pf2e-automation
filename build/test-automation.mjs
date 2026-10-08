@@ -700,6 +700,17 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         P.problems({ ...vocab, facets: { when: { question: "?", values: { cast: { meaning: "m", precedent: "X-1a", modules: ["scripts/nowhere.mjs"] } } } } }, [row("X-1a", ["when:cast"])]),
         ["when:cast names scripts/nowhere.mjs, which does not exist"]);
 
+    // A pattern the homebrew's clauses brought cites its precedent there, and only a check that reads both
+    // repos can verify it.
+    const borrowed = { requireTags: false, facets: { economy: { question: "?", values: { frequency: { meaning: "m", precedent: "hb:SF-01", modules: ["hb:scripts/x.mjs"] } } } } };
+    const hbRow = (tags, mark = "✅") => ({ ...row("SF-01", tags, mark), repo: "hb" });
+    check("another repo's precedent is left to that repo when its rows are absent", P.problems(borrowed, [row("X-1a", [])]), []);
+    check("…and checked when they are given", P.problems(borrowed, [hbRow(["economy:frequency"], "☐")]), ["economy:frequency's precedent hb:SF-01 is ☐, not ✅"]);
+    check("…an id shared with this repo's rows is not confused with it", P.problems(borrowed, [row("SF-01", ["economy:frequency"]), hbRow([])]), ["economy:frequency's precedent hb:SF-01 does not carry it"]);
+    check("another repo's module is checked against that repo's root",
+        P.problems(borrowed, [hbRow(["economy:frequency"])], { repos: { hb: ROOT } }), ["economy:frequency names hb:scripts/x.mjs, which does not exist"]);
+    check("a citation splits into repo and reference", [P.citation("hb:SF-01"), P.citation("VS-45e")], [{ repo: "hb", ref: "SF-01" }, { repo: null, ref: "VS-45e" }]);
+
     // The lookup: a rare pattern says more than a common one, a sibling variant half as much.
     const pool = [
         row("A", ["when:cast", "effect:move/push"]),
