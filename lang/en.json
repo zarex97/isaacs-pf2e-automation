@@ -37,6 +37,10 @@
                 "Off": "Off — areas only",
                 "Uncovered": "Only spells no other active module automates",
                 "All": "Every spell this module covers"
+            },
+            "Conditions": {
+                "Name": "Automate conditions",
+                "Hint": "Make pf2e's conditions do what their text says where pf2e leaves it to the table: frightened drops at the end of each turn, stunned counts down, dying rolls its recovery check, worsens when hurt and kills at its maximum, healing wakes, the wounded condition follows, and the flat checks and refused actions some conditions ask for. Off leaves conditions to pf2e alone."
             }
         },
         "Aim": {
@@ -437,8 +441,17 @@
             "ChooseTitle": "Move {name} up to {feet} feet",
             "ChooseHint": "Which way does {name} go?",
             "Direction": {
-                "n": "North", "ne": "North-east", "e": "East", "se": "South-east", "s": "South", "sw": "South-west", "w": "West", "nw": "North-west",
-                "away": "Away from you", "toward": "Toward you", "stay": "Leave it"
+                "n": "North",
+                "ne": "North-east",
+                "e": "East",
+                "se": "South-east",
+                "s": "South",
+                "sw": "South-west",
+                "w": "West",
+                "nw": "North-west",
+                "away": "Away from you",
+                "toward": "Toward you",
+                "stay": "Leave it"
             },
             "PushShort": "{name} is pushed {feet} feet — something stopped the {travel}-foot push.",
             "Occupied": "that space is occupied by {names}",
@@ -815,6 +828,30 @@
                 "Cloud": "Mist",
                 "Inside": "<p>You are within the mist: you are concealed, and creatures outside the mist are concealed to you.</p>"
             }
+        },
+        "Conditions": {
+            "Actions": "{actor} regains {regained} of {offered} actions ({stunned} lost to stunned, {slowed} to slowed).",
+            "StunnedAll": "{actor} is stunned for its duration and loses all its actions this turn.",
+            "KnockedOut": "{actor} is knocked out: dying {dying}.",
+            "DyingWorse": "{actor} is hurt while dying: dying {dying}.",
+            "Revived": "{actor} has Hit Points again and is no longer dying.",
+            "Woken": "{actor} is healed and wakes.",
+            "Dies": "{actor} reaches dying {dying} and dies.",
+            "WouldDie": "{actor} reaches dying {dying}, the most it can survive: it dies.",
+            "ConfusedRecovered": "{actor} shakes off the confusion (DC 11 flat check).",
+            "ConfusedStays": "{actor} is still confused (DC 11 flat check).",
+            "Dropped": "{actor} falls unconscious and drops {items}.",
+            "Refused": "{actor} can't use {name} while {condition}.",
+            "Move": "moving",
+            "Attack": "an attack",
+            "FlatPassed": "{actor} succeeds at the DC {dc} flat check {condition} asks before {name}.",
+            "FlatFailed": "{actor} fails the DC {dc} flat check {condition} asks: {name} is lost.",
+            "UnseenPassed": "{attacker} finds {target} (DC {dc} flat check).",
+            "UnseenFailed": "{attacker} fails to find {target} (DC {dc} flat check): the attack is lost.",
+            "OffGuardToUnseen": "{name} can't see the attacker",
+            "FascinationBroken": "{attacker}'s hostile action breaks {actor}'s fascination.",
+            "WoundsTreated": "{actor}'s wounds are treated: no longer wounded.",
+            "Refocused": "{actor} Refocuses: no longer cursebound."
         }
     }
 }

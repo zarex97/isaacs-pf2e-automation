@@ -1,3 +1,4 @@
+import { conditionsAutomated } from "../conditions/index.mjs";
 import { flagOf, mergedFlag } from "../lib/flags.mjs";
 import { configOf } from "../lib/config-of.mjs";
 import { RerollCarry } from "./reroll-carry.mjs";
@@ -2705,7 +2706,8 @@ function triggerSide(context) {
 export async function loseDying(actor, context) {
     if (!actor?.hasCondition?.("dying")) return;
     await actor.decreaseCondition("dying", { forceRemove: true });
-    await increaseRecorded(actor, "wounded", {}, context);
+    // With conditions automated, losing dying gives wounded however it is lost (`conditions/index.mjs`).
+    if (!conditionsAutomated()) await increaseRecorded(actor, "wounded", {}, context);
 }
 
 /** Back from the brink: no longer dying, dead or defeated; awake if it has Hit Points again. */

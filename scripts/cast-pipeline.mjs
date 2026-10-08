@@ -126,6 +126,9 @@ export const CastPipeline = {
             async function (wrapped, event, options = {}) {
                 // An action its holder's form forbids — *Vapor Form*'s manipulate and attack actions.
                 if ((await import("./riders/forbids.mjs")).actionForbidden(this)) return undefined;
+                // An action its holder's condition refuses, or the flat check a condition asks first.
+                const conditions = await import("./conditions/index.mjs");
+                if (conditions.actionRefused(this) || !(await conditions.flatCheckPassed(this))) return undefined;
                 if (configFor(this) && !(await AreaTargeting.run(this, {}))) return undefined;
                 return wrapped(event, options);
             },
