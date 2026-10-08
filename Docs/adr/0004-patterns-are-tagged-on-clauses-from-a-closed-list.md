@@ -17,6 +17,11 @@ next spell, feat or condition starts from the code that already does the same th
   needs one clause to point at, and a variant exists only where two variants are done by different code.
 - **Owned here.** The homebrew's CI already checks out this library at its pinned tag; its tracker check
   reads the same list, so both repos speak one vocabulary and a homebrew word never enters it.
+- **A precedent may be the homebrew's.** Vanilla spells never show a frequency per day, a class DC or a
+  proficiency granted at a level, yet those are pf2e moves, not homebrew ones. A pattern the homebrew's
+  clauses brought cites its ✅ clause there, written `isaacsHBPF2e:SF-01`, and may name a homebrew module
+  the same way. This library's tests cannot see those rows, so they leave the citation alone; the
+  homebrew's check reads both repos and holds it to the same rule. The name and meaning stay generic.
 
 ## Consequences
 

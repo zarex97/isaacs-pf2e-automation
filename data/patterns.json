@@ -233,6 +233,82 @@
                         "retroactively",
                         "attack roll, Perception check, saving throw, or skill check"
                     ]
+                },
+                "self-moves": {
+                    "meaning": "Depends on the holder's own movement this turn: the first Stride or Step, a distance moved before the Strike, or not having moved at all.",
+                    "precedent": "isaacsHBPF2e:CA-2a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/assimilator/mutations.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/feats.mjs"
+                    ],
+                    "authored": [
+                        "roll option `self:moved-10-feet-this-turn` in a predicate",
+                        "a toggle roll option such as `jumping-stone:moved-20`"
+                    ],
+                    "phrases": [
+                        "If you moved at least 10 feet this turn",
+                        "Stridden at least 10 feet this turn",
+                        "If you did not move on your last turn",
+                        "The first time each round you Stride, Step",
+                        "moved at least 20 feet before the Strike"
+                    ]
+                },
+                "kill": {
+                    "meaning": "When the holder's damage, or this effect's, reduces a creature to 0 Hit Points.",
+                    "precedent": "VS-61b",
+                    "modules": [
+                        "scripts/lib/roll-options.mjs",
+                        "scripts/riders/apply.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/damage.mjs"
+                    ],
+                    "authored": [
+                        "`riders[].event: damage-applied` with predicate `rider:target:hp-zero`",
+                        "`riders[].apply: { type: death, hpFraction: 0 }`"
+                    ],
+                    "phrases": [
+                        "when you reduce a creature to 0 Hit Points",
+                        "When it kills a creature",
+                        "reduced to 0 Hit Points by this",
+                        "A creature you kill"
+                    ]
+                },
+                "preparations": {
+                    "meaning": "At the holder's daily preparations (Rest for the Night): a choice is made or remade, a roll recorded, or something granted or refilled for the day.",
+                    "precedent": "isaacsHBPF2e:SG-48a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/vigil.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/engine.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/mutations.mjs"
+                    ],
+                    "authored": [
+                        "pf2e.restForTheNight hook, keyed on the feature's slug",
+                        "pf2e Actor#recharge (frequency per day)"
+                    ],
+                    "phrases": [
+                        "At daily preparations",
+                        "during your daily preparations",
+                        "Night Vigil",
+                        "Rest for the Night",
+                        "re-chosen at each daily preparations"
+                    ]
+                },
+                "encounter-start": {
+                    "meaning": "When an encounter begins, before any turn: a resource granted, a state entered, or a choice reopened.",
+                    "precedent": "isaacsHBPF2e:HE-2a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/assimilator/mutations.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/engine.mjs",
+                        "isaacsHBPF2e:scripts/soulbound/release.mjs"
+                    ],
+                    "authored": [
+                        "Foundry combatStart hook, keyed on the feature's slug"
+                    ],
+                    "phrases": [
+                        "at the start of each encounter",
+                        "When you roll initiative",
+                        "you begin every encounter",
+                        "starts each encounter at"
+                    ]
                 }
             }
         },
@@ -513,6 +589,23 @@
                     "phrases": [
                         "the attacker takes",
                         "the attacker"
+                    ]
+                },
+                "unseen": {
+                    "meaning": "The target need not be seen, only its location known: a sight or line-of-sight requirement lifted.",
+                    "precedent": "isaacsHBPF2e:SF-13b",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/threads.mjs"
+                    ],
+                    "authored": [
+                        "the feat's slug, read by the sight check (sightBlock / refusal with sight: false)"
+                    ],
+                    "phrases": [
+                        "no longer requires you to see the creature",
+                        "only knowledge of its location",
+                        "do not require line of sight",
+                        "without line of sight",
+                        "may not be able to see"
                     ]
                 }
             }
@@ -984,6 +1077,162 @@
                     "phrases": [
                         "uses the same result",
                         "for that casting"
+                    ]
+                },
+                "random-table": {
+                    "meaning": "An outcome drawn at random from a table of entries, even or weighted, perhaps rolled ahead into a queue, drawn again, or pinned by the GM instead.",
+                    "precedent": "isaacsHBPF2e:SK-04",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/sky/tracker.mjs",
+                        "isaacsHBPF2e:scripts/sky/signs.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/engine.mjs"
+                    ],
+                    "authored": [
+                        "ASPECTS weights",
+                        "SkyTracker.scheduleAspect / scheduleZenith",
+                        "Engine.rollAberrations"
+                    ],
+                    "phrases": [
+                        "equally likely",
+                        "rolled in advance",
+                        "pre-rolled",
+                        "randomly determined",
+                        "re-roll all your"
+                    ]
+                },
+                "reroll": {
+                    "meaning": "A check already rolled is rerolled after its result is seen, and the new result is used — pf2e's own reroll, not roll-twice — perhaps with a bonus on the new roll.",
+                    "precedent": "isaacsHBPF2e:BT-01b",
+                    "modules": [
+                        "scripts/lib/reroll-pipeline.mjs",
+                        "scripts/riders/reroll-carry.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/paths.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/citrine.mjs"
+                    ],
+                    "authored": [
+                        "game.pf2e.Check.rerollFromMessage with keep: new",
+                        "pf2e.preReroll for a bonus on the new roll"
+                    ],
+                    "phrases": [
+                        "reroll one failed check",
+                        "Reroll it",
+                        "have it reroll and use the new result",
+                        "take the second result",
+                        "The reroll gains"
+                    ]
+                },
+                "skill-swap": {
+                    "meaning": "An action or check rolled with a different skill or statistic than its own, outside combat maneuvers — Demoralize or Recall Knowledge with a Lore or the key attribute.",
+                    "precedent": "isaacsHBPF2e:HR-02a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/paths.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/feats.mjs"
+                    ],
+                    "authored": [
+                        "game.pf2e.actions.get(slug).use({ statistic })",
+                        "a toggleable RollOption with a FlatModifier predicated on it"
+                    ],
+                    "phrases": [
+                        "Demoralize using",
+                        "instead of Intimidation",
+                        "in place of any other Knowledge skill",
+                        "using your key ability instead of",
+                        "as a Recall Knowledge action"
+                    ]
+                },
+                "secret": {
+                    "meaning": "The roll is secret: whispered to the GM with pf2e's secret trait, and its result told by the module rather than read off the card.",
+                    "precedent": "isaacsHBPF2e:SF-04b",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/feats.mjs"
+                    ],
+                    "authored": [
+                        "traits: [\"secret\"] with rollMode: blindroll on the statistic's roll"
+                    ],
+                    "phrases": [
+                        "rolls a secret",
+                        "secret check",
+                        "the GM rolls",
+                        "read secretly"
+                    ]
+                },
+                "class-dc": {
+                    "meaning": "The DC, check or attack is built from the holder's class DC — its proficiency and key attribute — rather than a spellcasting entry's, or another creature's class DC is borrowed when it is higher.",
+                    "precedent": "isaacsHBPF2e:Q-16",
+                    "modules": [
+                        "scripts/riders/extensions.mjs",
+                        "isaacsHBPF2e:scripts/lib/class-dc.mjs"
+                    ],
+                    "authored": [
+                        "rider `dc` left unnamed (the origin's class DC) or a word answered by `api.registerDcResolver`",
+                        "`registerStatisticResolver` / `registerDefaultStatistic`",
+                        "a focus spellcasting entry with `proficiency.slug: <class>`"
+                    ],
+                    "phrases": [
+                        "against your class DC",
+                        "use the class DC",
+                        "Escape vs. your class DC",
+                        "your class DC's proficiency and key attribute",
+                        "if higher than their own"
+                    ]
+                },
+                "die-replaced": {
+                    "meaning": "The d20's own result is set or rewritten — a fixed or recorded number instead of a roll, a natural 1 or 20 read as 10, a rolled die moved by a set amount — and the check resolves from that die.",
+                    "precedent": "isaacsHBPF2e:SG-35e",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/armed.mjs",
+                        "isaacsHBPF2e:scripts/sky/terrain-rolls.mjs",
+                        "isaacsHBPF2e:scripts/roll-rewrites/balance.mjs"
+                    ],
+                    "authored": [
+                        "pf2e SubstituteRoll",
+                        "a preCreateChatMessage die rewrite (natural value read, then replaced)"
+                    ],
+                    "phrases": [
+                        "treated as a 10 on the die",
+                        "counts as a 10",
+                        "treat one d20 roll you make as a natural 20",
+                        "The creature does not roll",
+                        "change one d20 roll"
+                    ]
+                },
+                "skill": {
+                    "meaning": "The ability rolls a skill check (often a Lore, often secret) against a DC — a level-based one, or one set by the ability — and says what each degree gives.",
+                    "precedent": "isaacsHBPF2e:SF-06a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/feats.mjs"
+                    ],
+                    "authored": [
+                        "the action's slug, read by its module, which calls statistic.roll({ dc, traits: ['secret'] })",
+                        "pf2e @Check inline roll"
+                    ],
+                    "phrases": [
+                        "attempt a Deception check",
+                        "Astronomy Lore check",
+                        "level-based Hard DC",
+                        "as a Recall Knowledge action",
+                        "On a success you learn"
+                    ]
+                },
+                "fortune": {
+                    "meaning": "The fortune and misfortune traits' own rules: a roll one already touched refuses another, a creature cannot benefit from fortune, the two cancel — or an ability that works in spite of them.",
+                    "precedent": "isaacsHBPF2e:HR-03c",
+                    "modules": [
+                        "scripts/lib/reroll-pipeline.mjs",
+                        "scripts/lib/check-pipeline.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/paths.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/armed.mjs"
+                    ],
+                    "authored": [
+                        "the fortune or misfortune trait on the item",
+                        "a CheckPipeline or reroll-pipeline stage that refuses it"
+                    ],
+                    "phrases": [
+                        "This is a fortune effect",
+                        "This is a misfortune effect",
+                        "cannot benefit from fortune effects",
+                        "already altered by a fortune or misfortune effect",
+                        "cancel each other out"
                     ]
                 }
             }
@@ -1926,6 +2175,406 @@
                         "Disarm",
                         "something they carry"
                     ]
+                },
+                "class-profile": {
+                    "meaning": "The class's own chassis, written on the class item and its class features: key attribute, Hit Points per level, the proficiency ranks it starts with and the levels they rise at, the class DC, feat-slot levels, and weapon specialization given or withheld.",
+                    "precedent": "isaacsHBPF2e:SG-01",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/lib/class-dc.mjs"
+                    ],
+                    "authored": [
+                        "pf2e class item: keyAbility, hp, perception, savingThrows, attacks, defenses, trainedSkills, classDC, *FeatLevels",
+                        "pf2e ActiveEffectLike on a proficiency rank in a class feature",
+                        "pf2e CriticalSpecialization / weapon specialization FlatModifier",
+                        "the class trait registered in module.json (CONFIG.PF2E.classTraits)"
+                    ],
+                    "phrases": [
+                        "Initial proficiencies",
+                        "HP 10 + Con per level",
+                        "Key attribute",
+                        "class DC",
+                        "Weapon Specialization"
+                    ]
+                },
+                "proficiency": {
+                    "meaning": "A proficiency rank granted, raised or borrowed outside the class chassis: a skill or Lore from a feature, a weapon category or item counted as one you are trained in, another creature's rank lent for a weapon, or a non-proficiency penalty removed.",
+                    "precedent": "isaacsHBPF2e:BR-1a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/star-chart.mjs"
+                    ],
+                    "authored": [
+                        "pf2e MartialProficiency (definition, sameAs)",
+                        "pf2e ActiveEffectLike on a skill or Lore rank",
+                        "origin.proficiency.<slug> in a lent rule's value"
+                    ],
+                    "phrases": [
+                        "You are trained in",
+                        "Granted skill",
+                        "counts as one you're proficient with",
+                        "uses your weapon proficiency",
+                        "Trained in"
+                    ]
+                },
+                "die-step": {
+                    "meaning": "A damage die stepped up one or more sizes (d6 to d8 …), set to a size, or held from stepping while a form or effect lasts — including the steps past pf2e's single latched upgrade and on spells, where its rule element does not reach.",
+                    "precedent": "isaacsHBPF2e:S-65a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/soulbound/die-steps.mjs"
+                    ],
+                    "authored": [
+                        "pf2e ItemAlteration damage-dice-faces (upgrade, override)",
+                        "extraDieSteps",
+                        "techniqueDieSteps"
+                    ],
+                    "phrases": [
+                        "damage die increases by one step",
+                        "by two steps",
+                        "increases one step",
+                        "damage die increases to",
+                        "increases by one die size"
+                    ]
+                },
+                "weapon-profile": {
+                    "meaning": "A weapon's own statistics set or swapped while a form lasts, or for good: die, damage type, hands, traits, category, range increment or ammunition — the profile replaced wholesale or a field of it changed.",
+                    "precedent": "isaacsHBPF2e:S-48a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/soulbound/weapon.mjs"
+                    ],
+                    "authored": [
+                        "GrantItem of the form's weapon on the form's effect",
+                        "pf2e ItemAlteration (range-increment, category)",
+                        "system.ammo.builtIn"
+                    ],
+                    "phrases": [
+                        "weapon becomes",
+                        "range increment increases to",
+                        "needs no ammunition",
+                        "two-handed",
+                        "is a martial weapon"
+                    ]
+                },
+                "self-move": {
+                    "meaning": "The holder moves itself as part of the effect — a Stride, Step or Fly of a set distance, perhaps through a barrier or without triggering reactions — offered at the moment it can be taken.",
+                    "precedent": "isaacsHBPF2e:S-13",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/round-gate.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: prompt",
+                        "riders[].oncePerRound"
+                    ],
+                    "phrases": [
+                        "Stride up to your Speed",
+                        "Step as a free action",
+                        "Stride up to half your Speed",
+                        "doesn't trigger reactions",
+                        "Fly up to"
+                    ]
+                },
+                "item-granted": {
+                    "meaning": "An item the class or a feature grants and keeps: its statistics, the runes it accepts, its Hit Points, Hardness and Broken Threshold, its cost, and refusing to be stowed, dropped or disarmed.",
+                    "precedent": "isaacsHBPF2e:A-23",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/assimilator/carapace.mjs",
+                        "isaacsHBPF2e:scripts/libra.mjs"
+                    ],
+                    "authored": [
+                        "pf2e GrantItem of the armour or weapon",
+                        "pf2e ItemAlteration hp-max",
+                        "a preUpdateItem refusal"
+                    ],
+                    "phrases": [
+                        "cannot be removed",
+                        "It accepts armour potency",
+                        "Broken Threshold",
+                        "can never be disarmed",
+                        "functions as"
+                    ]
+                },
+                "severity-step": {
+                    "meaning": "An effect a creature carries is swapped for a milder (or a good) step of its own ladder, for chosen creatures or those near a source, the good steps left untouched.",
+                    "precedent": "isaacsHBPF2e:SG-30b",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/sky/tracker.mjs"
+                    ],
+                    "authored": [
+                        "SkyTracker.aspectFor",
+                        "an Aura on the softening effect"
+                    ],
+                    "phrases": [
+                        "reduce the day's negative aspect by one step",
+                        "one step milder",
+                        "treat a negative aspect as",
+                        "are unchanged"
+                    ]
+                },
+                "ignore-resistance": {
+                    "meaning": "Damage gets past what would reduce it on the creature it lands on: resistances or immunities ignored (all, or one type's), only the first N points ignored or a resistance treated as lower, Hardness ignored, or the target's resistances lowered against everyone.",
+                    "precedent": "isaacsHBPF2e:R-12b",
+                    "modules": [
+                        "scripts/riders/bypass.mjs",
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/share-damage.mjs"
+                    ],
+                    "authored": [
+                        "`bypass[]`: `resistance: { types, max }`, `immunity: { mode: ignore, types }`, `hardness: ignore`, each with a predicate",
+                        "`api.bypass.shadowTarget({ reduction, hardness, immunities, types })`",
+                        "rider damage applied with `skipIWR` / `final` (`apply.fractionOfCurrentHp`)"
+                    ],
+                    "phrases": [
+                        "ignores all resistances and immunities",
+                        "ignore resistance to",
+                        "ignore the first 5 points of resistance",
+                        "treats fire resistance as 5 lower",
+                        "ignore Hardness"
+                    ]
+                },
+                "strikes-made": {
+                    "meaning": "The action or reaction itself makes one or more weapon or unarmed Strikes — one, several against one creature, or one against each enemy in reach — rather than adding something to a Strike made separately.",
+                    "precedent": "isaacsHBPF2e:S-60b",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/extensions.mjs"
+                    ],
+                    "authored": [
+                        "`riders[].apply.type: strikes`",
+                        "`riders[].event: action-used`",
+                        "`apply.strike` naming a weapon or a selector (`registerStrikeSelector`)"
+                    ],
+                    "phrases": [
+                        "Make a Strike",
+                        "Make two Strikes against",
+                        "Make one Strike against each enemy in your reach",
+                        "Strike the attacker",
+                        "then Strike"
+                    ]
+                },
+                "rewind": {
+                    "meaning": "Time put back to a snapshot — the start of a creature's last turn, or the moment initiative was rolled: every combatant's actor, the token positions, the combat turn and the clock restored, and documents created since deleted.",
+                    "precedent": "isaacsHBPF2e:SG-41e",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/rewind.mjs"
+                    ],
+                    "authored": [
+                        "feat slugs read by `scripts/stargazer/rewind.mjs` (`unmake-the-moment`, `rewrite-the-ending`, `the-long-way-round`, `the-sky-answers`)",
+                        "chat card flag `rewindCard`"
+                    ],
+                    "phrases": [
+                        "Time rewinds to the start of your last turn",
+                        "Time unwinds to the moment initiative was rolled",
+                        "Everything done since then by every creature is undone",
+                        "restores the previous snapshot",
+                        "return to the Hit Points they had"
+                    ]
+                },
+                "hardness": {
+                    "meaning": "A Hardness the holder soaks blows with — its own, its plate's or its shield's — raised, lowered, halved, doubled, kept, or made to stack.",
+                    "precedent": "VS-80e",
+                    "modules": [
+                        "scripts/riders/spell-shield.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/carapace.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/engine.mjs"
+                    ],
+                    "authored": [
+                        "`shield.halvedAgainst`",
+                        "pf2e `ItemAlteration` `property: hardness`"
+                    ],
+                    "phrases": [
+                        "Hardness increases by",
+                        "Hardness +5",
+                        "Hardness doubles",
+                        "Hardness is reduced by 2",
+                        "Hardness bonuses stack"
+                    ]
+                },
+                "cover-reduced": {
+                    "meaning": "The target's cover counts for less against the holder's attacks or area — ignored outright, ignored up to lesser cover, or treated as one step less.",
+                    "precedent": "isaacsHBPF2e:S-01d",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/soulbound/scattered.mjs"
+                    ],
+                    "authored": [
+                        "`flags.isaacs-hb-pf2e.ignoresCover: lesser | all` on the item",
+                        "pf2e `EphemeralEffect` granting `Effect: Cover Pierced` (`AdjustModifier` on cover)"
+                    ],
+                    "phrases": [
+                        "Ignores lesser cover",
+                        "treat the target's cover as one step less",
+                        "not affected by cover",
+                        "cannot benefit from cover",
+                        "ignore the target's cover"
+                    ]
+                },
+                "heal-blocked": {
+                    "meaning": "A creature can't regain Hit Points, or regains only part, while the effect lasts; its regeneration and fast healing are switched off with it.",
+                    "precedent": "isaacsHBPF2e:S-27b",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/soulbound/wound.mjs",
+                        "isaacsHBPF2e:scripts/libra.mjs"
+                    ],
+                    "authored": [
+                        "an effect whose slug is in `REFUSES_HEALING` (`effect-wound-that-will-not-close`)",
+                        "an effect whose slug is in `HALVES_HEALING` (`bleeding-from-the-crossing`)"
+                    ],
+                    "phrases": [
+                        "can't regain Hit Points",
+                        "regeneration and fast healing are suppressed",
+                        "receives only half the Hit Points from any healing"
+                    ]
+                },
+                "condition-removed": {
+                    "meaning": "A condition the holder or an ally already has is ended, or its value lowered, rather than one applied.",
+                    "precedent": "isaacsHBPF2e:K-19",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/instincts.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/feats.mjs"
+                    ],
+                    "authored": [
+                        "`riders[].apply: { type: condition, slug, remove: true }`"
+                    ],
+                    "phrases": [
+                        "end one condition",
+                        "remove one of clumsy, enfeebled, or stupefied",
+                        "reduce one condition's value by 1",
+                        "end one condition of value 1"
+                    ]
+                },
+                "range": {
+                    "meaning": "The range of an action, reaction or attack lengthened or set anew — by a feature, a tier, or each heightening step.",
+                    "precedent": "isaacsHBPF2e:SF-13a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/threads.mjs",
+                        "scripts/targeting/heightening.mjs"
+                    ],
+                    "authored": [
+                        "feat slugs read by the Thread's and the Chart's range (`widen-the-sky`, `long-thread`, `widened-chart`)",
+                        "`areaTargeting.heightening.range` (feet per step)"
+                    ],
+                    "phrases": [
+                        "range increases to 60 feet",
+                        "range increases by 30 feet",
+                        "has a range of 120 feet",
+                        "range +10 feet",
+                        "ignoring the normal 30-foot range"
+                    ]
+                },
+                "disguised": {
+                    "meaning": "An effect blanked for players as it is applied: a generic name, an empty description and a shared icon, its rules intact and its real identity kept in a flag.",
+                    "precedent": "isaacsHBPF2e:SK-29c",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/sky/tracker.mjs"
+                    ],
+                    "authored": [
+                        "`flags.isaacs-hb-pf2e.skyBlank`, set by the module, with the real name in `skyName`"
+                    ],
+                    "phrases": [
+                        "an empty description and a generic icon",
+                        "Players see that something is on them",
+                        "They do not see what",
+                        "renamed, emptied and given one shared icon"
+                    ]
+                },
+                "feature-granted": {
+                    "meaning": "A feat, class feature, action or spell put on the holder's sheet — at a level, by a build-time choice, or for the day — or swapped for another later.",
+                    "precedent": "isaacsHBPF2e:SF-09",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/star-chart.mjs",
+                        "isaacsHBPF2e:scripts/cosmo.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/vigil.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/feats.mjs"
+                    ],
+                    "authored": [
+                        "pf2e GrantItem",
+                        "pf2e ChoiceSet (answered when the item is taken)",
+                        "a granted spell filed into the class's spellcasting entry"
+                    ],
+                    "phrases": [
+                        "You learn one additional",
+                        "You gain the",
+                        "to your repertoire",
+                        "You know exactly",
+                        "may swap it during daily preparations"
+                    ]
+                },
+                "resource-regained": {
+                    "meaning": "Points given back to a spendable pool — Focus Points or a class's own counter — on an event or a rest, never above the pool's maximum and often capped per round or per encounter.",
+                    "precedent": "isaacsHBPF2e:C-21",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "isaacsHBPF2e:scripts/soulbound/rising-pressure.mjs",
+                        "isaacsHBPF2e:scripts/soulbound/charges.mjs",
+                        "isaacsHBPF2e:scripts/stargazer/feats.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: pool with gain",
+                        "chargeRefresh",
+                        "pf2e Refocus, restored by the module"
+                    ],
+                    "phrases": [
+                        "you regain 1",
+                        "regain 2 Focus Points instead of 1",
+                        "You can't exceed your maximum pool",
+                        "Refocus",
+                        "restores one spent"
+                    ]
+                },
+                "calendar": {
+                    "meaning": "A world-wide state of the day, rolled ahead in a queue and kept in a history, that every creature reads and the GM advances, sets, clouds or schedules — and that some features read ahead of time or trade between days.",
+                    "precedent": "isaacsHBPF2e:SK-02a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/sky/tracker.mjs",
+                        "isaacsHBPF2e:scripts/sky/tracker-app.mjs"
+                    ],
+                    "authored": [
+                        "world setting isaacs-hb-pf2e.sky (today, the queue, the history)",
+                        "roll option sky:sign:<id>",
+                        "SkyTracker.advanceDay / swapAspects / scheduleZenith"
+                    ],
+                    "phrases": [
+                        "Each dawn the GM advances the day",
+                        "the next three days",
+                        "today's sign",
+                        "the GM may declare the day's",
+                        "clouded night"
+                    ]
+                },
+                "damage-reduced": {
+                    "meaning": "One blow's damage is cut by a set amount as it lands — a reaction or a one-off reduction, not a standing resistance.",
+                    "precedent": "isaacsHBPF2e:S-72c",
+                    "modules": [
+                        "scripts/lib/damage-bus.mjs",
+                        "isaacsHBPF2e:scripts/assimilator/carapace.mjs"
+                    ],
+                    "authored": [
+                        "a reaction granting an effect with a pf2e Resistance rule (all-damage) for that blow",
+                        "flags.isaacs-hb-pf2e.assimilator.reduction",
+                        "a DamageBus.before stage"
+                    ],
+                    "phrases": [
+                        "Reduce the damage by",
+                        "reduce that damage by",
+                        "damage reduction increases to",
+                        "you take the damage reduced by",
+                        "reduce the damage by your level"
+                    ]
+                },
+                "persistent-dc": {
+                    "meaning": "Persistent damage whose flat check to end it has a DC other than 15, or none that can succeed while another condition holds.",
+                    "precedent": "isaacsHBPF2e:R-23b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: persistent-damage with dc"
+                    ],
+                    "phrases": [
+                        "the flat check to end it is DC 20",
+                        "rather than DC 15",
+                        "allows no flat check to end"
+                    ]
                 }
             }
         },
@@ -2212,6 +2861,24 @@
                         "attempt to end the spell's effect on itself",
                         "by using a single action"
                     ]
+                },
+                "encounter": {
+                    "meaning": "Lasts until the encounter ends, and is removed or reset then.",
+                    "precedent": "isaacsHBPF2e:MO-3a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/assimilator/mutations.mjs"
+                    ],
+                    "authored": [
+                        "pf2e effect `system.duration.unit: encounter`",
+                        "`flags.isaacs-hb-pf2e.assimilator.untilEncounterEnds`, swept on `deleteCombat`"
+                    ],
+                    "phrases": [
+                        "until the encounter ends",
+                        "for the rest of the encounter",
+                        "when the encounter ends",
+                        "until the end of the encounter",
+                        "lost when the encounter ends"
+                    ]
                 }
             }
         },
@@ -2315,6 +2982,50 @@
                     "phrases": [
                         "maximum level of creature",
                         "up to 19th level"
+                    ]
+                },
+                "from-level": {
+                    "meaning": "Keyed to the holder's character level rather than a spell rank: something is added or steps up at a named level (a proficiency, a pool, a count, a range, a tier), or a number is the level itself, a multiple or fraction of it, or a rank of half the level rounded up.",
+                    "precedent": "isaacsHBPF2e:C-19",
+                    "modules": [
+                        "scripts/targeting/heightening.mjs",
+                        "scripts/riders/apply.mjs",
+                        "isaacsHBPF2e:scripts/soulbound/reiatsu.mjs",
+                        "isaacsHBPF2e:scripts/soulbound/release.mjs"
+                    ],
+                    "authored": [
+                        "pf2e `@actor.level` in a rule's value",
+                        "pf2e predicate `{gte: [self:level, N]}` / `bracketValue` on level",
+                        "`areaTargeting.heightening.at` (named-level thresholds)",
+                        "rider value `{ base, at }` (`valueAtLevel`)"
+                    ],
+                    "phrases": [
+                        "equal to your level",
+                        "half your level",
+                        "half your level rounded up",
+                        "at 11th level",
+                        "increasing to 2 at 5th level"
+                    ]
+                },
+                "counts-higher": {
+                    "meaning": "One of the holder's own tiered things counts as a higher rank, level, tier or step than was paid for — for one Strike, a turn, a minute or the day — usually capped.",
+                    "precedent": "isaacsHBPF2e:I-2a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/assimilator/engine.mjs",
+                        "scripts/targeting/heightening.mjs",
+                        "isaacsHBPF2e:scripts/sky/steps.mjs"
+                    ],
+                    "authored": [
+                        "`api.registerStepProvider(name, options => steps)` (heighten as though N levels higher)",
+                        "an effect `effect-depth-4-for-this-strike` carrying `flags.isaacs-hb-pf2e.assimilator.depthFour`",
+                        "pf2e `ItemAlteration` on `runes-potency` / `runes-striking`"
+                    ],
+                    "phrases": [
+                        "counts as one Depth higher",
+                        "heighten as though you were 4 levels higher",
+                        "counts as one tier higher",
+                        "regardless of the Mass you actually paid",
+                        "treat the result as though you had spent"
                     ]
                 }
             }
@@ -2427,6 +3138,84 @@
                     "phrases": [
                         "only once to a given",
                         "once per creature"
+                    ]
+                },
+                "frequency": {
+                    "meaning": "A use limited to so many per minute, 10 minutes, hour, encounter, day or week, or more than once a round: counted, refused at zero, refilled on its own clock, or its limit raised, lifted or left unspent.",
+                    "precedent": "isaacsHBPF2e:EP-04a",
+                    "modules": [
+                        "scripts/economy/frequency-guard.mjs",
+                        "scripts/economy/recharge.mjs",
+                        "scripts/economy/spell-frequency.mjs"
+                    ],
+                    "authored": [
+                        "system.frequency (max, per)",
+                        "pf2e ItemAlteration on frequency-max",
+                        "FrequencyGuard.exempt"
+                    ],
+                    "phrases": [
+                        "once per day",
+                        "once per encounter",
+                        "once per hour",
+                        "once per 10 minutes",
+                        "twice per day"
+                    ]
+                },
+                "cost-waived": {
+                    "meaning": "A use's price — a resource point, or a use of a limited allowance — waived or reduced by an allowance or while a state holds: the first use free, free once a round, free while a form lasts, refunded on a critical success.",
+                    "precedent": "isaacsHBPF2e:S-65e",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/economy/free-cast.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "freeCast on the granting item, its own frequency the allowance",
+                        "riders[].apply.type: pool with oncePerEncounter",
+                        "pf2e ItemAlteration on frequency-max"
+                    ],
+                    "phrases": [
+                        "without spending a Focus Point",
+                        "costs no",
+                        "is free",
+                        "without spending its frequency",
+                        "for 1 fewer"
+                    ]
+                },
+                "action-cost": {
+                    "meaning": "An existing action or activity costs fewer actions or less time than it says — one action instead of two, a free action, 1 minute instead of 10 — or none at all.",
+                    "precedent": "isaacsHBPF2e:F-39",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/soulbound/action-cost.mjs"
+                    ],
+                    "authored": [
+                        "flags.isaacs-hb-pf2e.actionCost: [{ slug, value }] on the granting item",
+                        "the feat's slug, read by the module that runs the activity"
+                    ],
+                    "phrases": [
+                        "takes 1 action instead of 2",
+                        "as a free action",
+                        "instead of 10",
+                        "is free and requires no action",
+                        "becomes 1 action"
+                    ]
+                },
+                "extra-action": {
+                    "meaning": "An extra action or reaction each round (quickened, or a second reaction), often usable only for named actions.",
+                    "precedent": "isaacsHBPF2e:SF-25a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/threads.mjs"
+                    ],
+                    "authored": [
+                        "pf2e quickened condition (GrantItem)",
+                        "pf2e ItemAlteration frequency-max on the reaction",
+                        "the feat's slug, read by the reaction count"
+                    ],
+                    "phrases": [
+                        "second reaction",
+                        "one additional reaction each round",
+                        "usable only for",
+                        "quickened 1",
+                        "extra action each turn"
                     ]
                 }
             }
