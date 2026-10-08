@@ -566,10 +566,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const text = fs.readFileSync(file, "utf8");
     const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
     const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
-    const rows = text.split(/\r?\n/).filter((line) => /^\| VS-\d+ /.test(line)).map((line) => {
-        const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
-        return { id: cells[0], slug: cells[1].replace(/`/g, ""), staticCheck: cells[6], mark: cells[7] };
-    });
+    const { trackerRows } = await import("./lib/patterns.mjs");
+    const rows = trackerRows(text).filter((r) => /^VS-\d+$/.test(r.id))
+        .map((r) => ({ id: r.id, slug: r.cells.Spell.replace(/`/g, ""), staticCheck: r.cells["Static check"], mark: r.cells.Status }));
     check("the tracker has forty rows, numbered once each", [rows.length, new Set(rows.map((r) => r.id)).size], [40, 40]);
     check("every tracked spell is a real pf2e spell", rows.filter((r) => !index.spells[r.slug]).map((r) => r.slug), []);
     check("no spell is tracked twice", rows.length - new Set(rows.map((r) => r.slug)).size, 0);
@@ -601,10 +600,10 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-spell-text.json"), "utf8")).spells;
     const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
     const spells = Object.fromEntries([...text.matchAll(/^\| (VS-\d+) \| `([a-z0-9-]+)` \|/gm)].map((m) => [m[1], m[2]]));
-    const clauses = text.split(/\r?\n/).filter((line) => /^\| VS-\d+[a-z] /.test(line)).map((line) => {
-        const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
-        const [, spell, letter] = /^(VS-\d+)([a-z])$/.exec(cells[0]);
-        return { id: cells[0], spell, letter, clause: cells[1].replace(/^"|"$/g, ""), mark: cells[4] };
+    const { trackerRows } = await import("./lib/patterns.mjs");
+    const clauses = trackerRows(text).filter((r) => /^VS-\d+[a-z]$/.test(r.id)).map((r) => {
+        const [, spell, letter] = /^(VS-\d+)([a-z])$/.exec(r.id);
+        return { id: r.id, spell, letter, clause: r.cells.Clause.replace(/^"|"$/g, ""), mark: r.cells.Status };
     });
     check("the third tracker lists sixty spells, each once", [Object.keys(spells).length, new Set(Object.values(spells)).size], [60, 60]);
     check("…none of them already tracked in the second", Object.values(spells).filter((slug) => fs.readFileSync(path.join(ROOT, "Docs", "clauses", "vanilla-spells.md"), "utf8").includes(`\`${slug}\``)), []);
@@ -621,6 +620,87 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const counted = Object.fromEntries(MARKS.map((mark) => [mark, clauses.filter((c) => c.mark === mark).length]));
     const table = Object.fromEntries(MARKS.map((mark) => [mark, Number(new RegExp(`^\\| ${mark}[^|]*\\| (\\d+) \\|`, "m").exec(text)?.[1])]));
     check("the third tracker's counts are its clauses counted", [table, Number(/\*\*Total\*\* \| \*\*(\d+)\*\*/.exec(text)?.[1])], [counted, clauses.length]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  Patterns: every tag is from the closed list, and every pattern has a precedent that works    */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const P = await import("./lib/patterns.mjs");
+    const vocabulary = P.readVocabulary();
+    const rows = P.readTrackers();
+
+    check("the trackers' tags and the vocabulary have no problems", P.problems(vocabulary, rows), []);
+    check("Docs/patterns.md is the vocabulary as built (npm run build:patterns)", fs.readFileSync(P.DOC, "utf8").replace(/\r/g, "") === P.patternsDoc(vocabulary), true);
+    check("every clause table in a tracker has a Patterns column",
+        rows.filter((r) => "Clause" in r.cells && !r.tagged).map((r) => `${r.source} ${r.id}`), []);
+    check("every facet answers a question and has values",
+        Object.entries(vocabulary.facets).filter(([, f]) => !f.question || Object.keys(f.values ?? {}).length === 0).map(([k]) => k), []);
+    check("no pattern goes without a precedent once tags are required",
+        vocabulary.requireTags ? [...P.allowedTags(vocabulary)].filter(([, { entry }]) => !entry.precedent).map(([tag]) => tag) : [], []);
+
+    // The parser reads a table by its header, so a column added or moved does not shift the others.
+    const parsed = P.trackerRows([
+        "| ID | Clause | Patterns | Status |", "| :-- | :-- | :-- | :-- |",
+        "| X-1a | \"one\" | when:cast · effect:damage | ✅ |", "| X-1b | \"two\" |  | ☐ |", "",
+        "| ID | Spell | Gist |", "| :-- | :-- | :-- |", "| X-1 | `x` | a thing |",
+    ].join("\n"), "t.md");
+    check("rows are read by header", parsed.map((r) => [r.id, r.tagged, r.tags, P.markOf(r)]),
+        [["X-1a", true, ["when:cast", "effect:damage"], "✅"], ["X-1b", true, [], "☐"], ["X-1", false, [], ""]]);
+
+    const vocab = {
+        requireTags: false,
+        facets: {
+            when: { question: "?", values: { cast: { meaning: "m", precedent: "X-1a" } } },
+            effect: { question: "?", values: {
+                damage: { meaning: "m", precedent: "X-1a" },
+                move: { meaning: "m", variants: { push: { meaning: "m", precedent: "X-1c" }, pull: { meaning: "m", precedent: "X-1d" } } },
+            } },
+        },
+    };
+    const row = (id, tags, mark = "✅") => ({ id, source: "t.md", cells: { Status: mark }, tagged: true, tags });
+    const base = [row("X-1a", ["when:cast", "effect:damage"]), row("X-1c", ["effect:move/push"]), row("X-1d", ["effect:move/pull"])];
+    check("a well-tagged set has no problems", P.problems(vocab, base), []);
+    check("an unknown tag is refused", P.problems(vocab, [...base, row("X-2", ["effect:heal"])]), ["X-2: effect:heal — \"heal\" is not a value of effect"]);
+    check("…and so is an unknown facet", P.problems(vocab, [...base, row("X-2", ["cost:frequency"])]), ["X-2: cost:frequency — there is no facet \"cost\""]);
+    check("a value with variants needs one", P.problems(vocab, [...base, row("X-2", ["effect:move"])]), ["X-2: effect:move needs one of its variants (push, pull)"]);
+    check("a variant on a value that has none is refused", P.problems(vocab, [...base, row("X-2", ["effect:damage/fire"])]), ["X-2: effect:damage/fire — effect:damage has no variants"]);
+    check("an unknown variant is refused", P.problems(vocab, [...base, row("X-2", ["effect:move/drag"])]), ["X-2: effect:move/drag — \"drag\" is not a variant of effect:move"]);
+    check("a precedent must carry its pattern", P.problems(vocab, [row("X-1a", ["when:cast"]), ...base.slice(1)]), ["effect:damage's precedent X-1a does not carry it"]);
+    check("…must exist", P.problems(vocab, base.slice(0, 2)), ["effect:move/pull's precedent X-1d is not a clause row"]);
+    check("…and must work", P.problems(vocab, [...base.slice(0, 2), row("X-1d", ["effect:move/pull"], "⚠️")]), ["effect:move/pull's precedent X-1d is ⚠️, not ✅"]);
+    check("an empty cell passes until tags are required", P.problems(vocab, [...base, row("X-2", [])]), []);
+    check("…and fails once they are", P.problems({ ...vocab, requireTags: true }, [...base, row("X-2", [])]), ["X-2 (t.md) carries no patterns"]);
+    check("a tag written twice is caught", P.problems(vocab, [...base, row("X-2", ["when:cast", "when:cast"])]), ["X-2 carries a pattern twice"]);
+    check("a pattern naming a missing module is caught",
+        P.problems({ ...vocab, facets: { when: { question: "?", values: { cast: { meaning: "m", precedent: "X-1a", modules: ["scripts/nowhere.mjs"] } } } } }, [row("X-1a", ["when:cast"])]),
+        ["when:cast names scripts/nowhere.mjs, which does not exist"]);
+
+    // The lookup: a rare pattern says more than a common one, a sibling variant half as much.
+    const pool = [
+        row("A", ["when:cast", "effect:move/push"]),
+        row("B", ["when:cast", "effect:damage"]),
+        row("C", ["when:cast", "effect:damage"], "⚠️"),
+        row("D", ["when:cast", "effect:move/pull"]),
+        row("E", []),
+    ];
+    const w = P.weights(pool);
+    check("a pattern's weight is ln(tagged / carrying)", [w.total, w.of("when:cast"), Math.round(w.of("effect:move/push") * 1000) / 1000], [4, 0, Math.round(Math.log(4) * 1000) / 1000]);
+    const ranked = P.rank(pool, ["effect:move/push", "effect:damage", "effect:heal"]);
+    check("the rarer shared pattern ranks first, and a sibling scores half",
+        ranked.hits.map((h) => [h.row.id, h.score]), [["A", 1.39], ["B", 0.69], ["D", 0.69], ["C", 0.69]]);
+    check("a tie goes to the clause that works, then to more shared", ranked.hits.slice(1).map((h) => h.row.id), ["B", "D", "C"]);
+    check("a sibling is named as one", ranked.hits.find((h) => h.row.id === "D").siblings, ["effect:move/pull"]);
+    check("an untagged clause is never a hit", ranked.hits.some((h) => h.row.id === "E"), false);
+    check("a pattern nothing carries is no precedent", ranked.unmatched, ["effect:heal"]);
+    check("the clause asked about is left out", P.rank(pool, ["effect:move/push"], { exclude: "A" }).hits.map((h) => h.row.id), ["D"]);
+    check("key phrases suggest patterns, ignoring case",
+        P.suggest({ facets: { effect: { question: "?", values: { damage: { meaning: "m", phrases: ["Fire Damage"] }, heal: { meaning: "m", phrases: ["regains"] } } } } }, "takes 2d6 fire damage"),
+        [{ tag: "effect:damage", phrases: ["Fire Damage"] }]);
+    check("a clause names its spell's entry when its own cell names none",
+        P.entriesOf({ id: "VS-45e", source: "s", cells: { "Static check": "`pullFeet`" } }, [{ id: "VS-45", source: "s", cells: { Spell: "`gravity-well`" } }]),
+        ["content/vanilla/gravity-well.json"]);
 }
 
 /* -------------------------------------------------------------------------------------------- */
