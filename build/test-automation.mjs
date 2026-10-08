@@ -1413,4 +1413,11 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("…its fire damage and trait made cold", [out.system.damage[0].type, out.system.traits.value], ["cold", ["concentrate", "cold", "manipulate"]]);
 }
 
+{
+    const { endingWith } = await import("../scripts/riders/preparations.mjs");
+    const L = "isaacs-pf2e-automation";
+    const fx = [{ id: 1, flags: { [L]: { untilPreparations: "Actor.a" } } }, { id: 2, flags: { [L]: { untilPreparations: "Actor.b" } } }, { id: 3, flags: {} }];
+    check("a caster's rest ends only that caster's until-preparations effects", endingWith(fx, "Actor.a").map((e) => e.id), [1]);
+}
+
 report("Automation tests");

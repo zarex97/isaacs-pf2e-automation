@@ -778,6 +778,66 @@
                 }
             ]
         },
+        "darkvision": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "lt": [
+                                "item:rank",
+                                3
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.IXS15IQXYCZ8vsmX"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lt": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.IXS15IQXYCZ8vsmX"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.IXS15IQXYCZ8vsmX",
+                        "untilPreparations": true
+                    }
+                }
+            ]
+        },
         "daze": {
             "riders": [
                 {

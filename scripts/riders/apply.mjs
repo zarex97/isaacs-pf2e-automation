@@ -1961,6 +1961,8 @@ async function applyEffect(rider, context) {
     // Rules added to a pf2e effect — *Moon Frenzy*'s "+10-foot status bonus to their Speeds", where pf2e's has only the land Speed.
     if (Array.isArray(rider.apply.addRules)) source.system.rules = [...(source.system?.rules ?? []), ...rider.apply.addRules];
     const castRank = Number(castItemOf(context)?.rank);
+    // "Until your next daily preparations" — *Darkvision* at 5th: ends when its caster rests (`preparations.mjs`).
+    if (rider.apply.untilPreparations && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { untilPreparations: context.originActor.uuid } });
     // *Unfettered Movement*: its holder's Escapes succeed (`unfettered.mjs`), up to the spell's rank.
     if (rider.apply.unfettered) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { unfettered: { rank: castRank > 0 ? castRank : 1 } } });
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
@@ -3101,6 +3103,8 @@ function effectSource(label, rules, rider, context) {
     }
     // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
     if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
+    // "Until your next daily preparations" — *Light*, *Vital Beacon* (`preparations.mjs`).
+    if (rider.apply?.untilPreparations && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { untilPreparations: context.originActor.uuid } });
     // *Planar Tether*: the caster and rank that counteract a teleport or a banishment (`tether.mjs`).
     if (rider.apply?.tether && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { tether: { casterUuid: context.originActor.uuid, rank: Number(castItemOf(context)?.rank) || 1, statistic: rider.apply.tether?.statistic ?? "spellcasting" } } });
     // *Nudge Fate*: a degree raised after the die falls (`nudge.mjs`).

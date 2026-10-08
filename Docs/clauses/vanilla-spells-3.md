@@ -693,9 +693,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-95a | "You gain Darkvision" | The caster has darkvision, and its token sees in darkness | | ☐ | |
-| VS-95b | "Heightened (3rd) The spell's range is touch and it targets 1 willing creature" | Rank 3: another creature | | ☐ | |
-| VS-95c | "The duration is until the next time you make your daily preparations" | Rank 5 lasts until the next preparations | | ☐ | |
+| VS-95a | "You gain Darkvision" | The caster has darkvision, and its token sees in darkness | pf2e's *Spell Effect: Darkvision* (`Sense` darkvision) on the caster, below rank 3 | ⚠️ | Rank 2: Aries' effect (1 hour); `hasDarkvision` **false → true**. **Not observed:** the token's vision — pf2e turns senses into token vision only under its rules-based vision setting, which this world has off (the token stayed *basic*) |
+| VS-95b | "Heightened (3rd) The spell's range is touch and it targets 1 willing creature" | Rank 3: another creature | `content/vanilla/darkvision.json`: from rank 3 the effect goes on the target, not the caster | ✅ | Rank 3 with Leo targeted: **Leo** got the effect (1 hour), Aries none |
+| VS-95c | "The duration is until the next time you make your daily preparations" | Rank 5 lasts until the next preparations | From rank 5, no timer and `untilPreparations` (`scripts/riders/preparations.mjs`): ends when the caster Rests for the Night | ✅ | Rank 5 on Leo: duration **unlimited**, `untilPreparations` = Aries. (The rest itself is pf2e's `pf2e.restForTheNight`; the ending is covered by a test) |
 
 ### VS-96 · See the Unseen
 
@@ -754,9 +754,9 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 30 |
-| ✅ | 285 |
-| ⚠️ | 10 |
+| ☐ not yet driven | 27 |
+| ✅ | 287 |
+| ⚠️ | 11 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |
