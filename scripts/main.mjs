@@ -21,6 +21,7 @@ import { Unobserved } from "./riders/unobserved.mjs";
 import { SetAside } from "./riders/set-aside.mjs";
 import { Fall } from "./riders/fall.mjs";
 import { Forbids } from "./riders/forbids.mjs";
+import { Conditions } from "./conditions/index.mjs";
 import { CastZones } from "./targeting/zones.mjs";
 import { Repels } from "./targeting/repels.mjs";
 import { Barrier } from "./targeting/barrier.mjs";
@@ -87,6 +88,7 @@ export const INIT = [
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],
+    ["pf2e's conditions, made to do what they say", () => { Conditions.registerSettings(); Conditions.registerHooks(); Conditions.register(); }],
 ];
 
 /**
@@ -129,6 +131,7 @@ export const SETUP = [
     ["detection modes", () => DetectionModes.install()],
     ["movement cost", () => MovementCost.install()],
     ["the reroll pipeline", () => RerollPipeline.install()],
+    ["what sickened refuses", () => Conditions.install()],
 ];
 
 export const RIDER_SETUP = [

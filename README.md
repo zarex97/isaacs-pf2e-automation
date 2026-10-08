@@ -44,7 +44,16 @@ Foundry VTT 14, pf2e 8.3 or later.
 - **Riders for vanilla spells** — the conditions this module applies for pf2e's own spells: off, only for
   spells PF2e Automations and PF2e Assistant do not already automate (default), or all of them.
 - **Automate death effects** — whom a rider may kill outright: creatures without a player owner (default),
-  anyone, or nobody (a whisper to the GM instead).
+  anyone, or nobody (a whisper to the GM instead). It also decides who dying at its maximum kills.
+- **Automate conditions** — on by default: pf2e's conditions do what their text says where pf2e leaves it to
+  the table. Frightened drops at the end of each turn; stunned counts down and the turn's actions are
+  announced; dying rolls its recovery check, worsens when hurt, ends on healing (with wounded) and kills at its
+  maximum; a character knocked to 0 Hit Points gains dying; healing wakes the unconscious, who drop what they
+  hold; Speed penalties stop at 5 feet; a blinded creature's every square is difficult terrain; paralyzed,
+  stunned, unconscious, petrified, immobilized, restrained, prone, fleeing and confused refuse what they
+  forbid; deafened, grabbed and stupefied ask their flat checks; attacks on hidden, undetected and invisible
+  creatures ask DC 11 and a dazzled attacker DC 5; persistent damage is taken and its recovery rolled; Treat
+  Wounds ends wounded. What each clause does, and what is still open, is `Docs/clauses/pf2e-conditions.md`.
 
 Hold **Ctrl** while casting to skip aiming and use the targets you picked by hand.
 

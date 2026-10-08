@@ -644,6 +644,43 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  Conditions made to do what they say: the arithmetic (scripts/conditions/rules.mjs)           */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const R = await import("../scripts/conditions/rules.mjs");
+    check("a turn with nothing regains three actions", R.actionsAtTurnStart({}).regained, 3);
+    check("quickened regains four", R.actionsAtTurnStart({ quickened: true }).regained, 4);
+    check("slowed 1 regains two", R.actionsAtTurnStart({ slowed: 1 }).regained, 2);
+    check("stunned 2 loses two and is spent", [R.actionsAtTurnStart({ stunned: 2 }).regained, R.actionsAtTurnStart({ stunned: 2 }).stunnedLeft], [1, 0]);
+    check("stunned 5 loses all three and keeps 2 for the next turn", [R.actionsAtTurnStart({ stunned: 5 }).regained, R.actionsAtTurnStart({ stunned: 5 }).stunnedLeft], [0, 2]);
+    check("stunned overrides slowed: slowed takes nothing while stunned", R.actionsAtTurnStart({ stunned: 1, slowed: 2 }).lostToSlowed, 0);
+    check("a Speed penalised below 5 stays at 5", R.flooredSpeed({ base: 10, value: 0, penalized: true }), 5);
+    check("…but not one set to 0 by no penalty", R.flooredSpeed({ base: 0, value: 0, penalized: false }), 0);
+    check("…and not a Speed already above 5", R.flooredSpeed({ base: 25, value: 15, penalized: true }), 15);
+    check("knocked out: dying 1, plus wounded", R.dyingAfterDamage({ wounded: 2, knockedOut: true }), 3);
+    check("knocked out by a critical: dying 2", R.dyingAfterDamage({ critical: true, knockedOut: true }), 2);
+    check("hurt while dying: one more, two on a critical", [R.dyingAfterDamage({ dying: 1 }), R.dyingAfterDamage({ dying: 1, critical: true })], [2, 3]);
+    check("damage at 0 that was not a knock-out adds no dying", R.dyingAfterDamage({}), 0);
+    check("dying 4 kills, dying 3 does not; doomed lowers the line", [R.diesAt({ dying: 4 }), R.diesAt({ dying: 3 }), R.diesAt({ dying: 2, max: 2 })], [true, false, true]);
+    check("deafened asks a DC 5 flat check of an auditory action only",
+        [R.flatCheckOwed({ conditions: { deafened: true }, traits: ["auditory"] })?.dc, R.flatCheckOwed({ conditions: { deafened: true }, traits: ["manipulate"] })], [5, null]);
+    check("stupefied 2 asks DC 7 before a spell, and the harder check wins",
+        R.flatCheckOwed({ conditions: { grabbed: true, stupefied: 2 }, traits: ["manipulate"], spell: true }), { slug: "stupefied", dc: 7 });
+    check("paralyzed refuses an action but lets Recall Knowledge through",
+        [R.refusedBy({ held: ["paralyzed"], what: ["action"], slug: "stride" }), R.refusedBy({ held: ["paralyzed"], what: ["action"], slug: "recall-knowledge" })], ["paralyzed", null]);
+    check("restrained refuses attacks and manipulate, not Escape",
+        [R.refusedBy({ held: ["restrained"], what: ["attack"] }), R.refusedBy({ held: ["restrained"], what: ["action", "manipulate"], slug: "escape" })], ["restrained", null]);
+    check("immobilized refuses a move action only", [R.refusedBy({ held: ["immobilized"], what: ["action", "move"] }), R.refusedBy({ held: ["immobilized"], what: ["action", "manipulate"] })], ["immobilized", null]);
+    check("prone refuses Stride, not Crawl or Stand", ["stride", "crawl", "stand"].map((slug) => R.refusedBy({ held: ["prone"], what: ["action", "move"], slug })), ["prone", null, null]);
+    check("confused and fleeing refuse Ready, not Stride", [R.refusedBy({ held: ["fleeing"], what: ["action"], slug: "ready" }), R.refusedBy({ held: ["confused"], what: ["action", "move"], slug: "stride" })], ["fleeing", null]);
+    check("a hidden target asks DC 11, a dazzled attacker DC 5, a concealed target is the other gate's",
+        [R.attackFlatCheck({ target: { hidden: true } }), R.attackFlatCheck({ attacker: { dazzled: true } }), R.attackFlatCheck({ target: { hidden: true }, concealedAlready: true })], [11, 5, 0]);
+    check("a recovery check moves dying by its degree", [0, 1, 2, 3].map(R.recoveryStep), [2, 1, -1, -2]);
+    check("a blinded creature pays double on a normal square, not on one already difficult", [R.blindedStepCost(5, 5), R.blindedStepCost(10, 5)], [10, 10]);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The condition tracker: every pf2e condition, clausified in its own words                     */
 /* -------------------------------------------------------------------------------------------- */
 
@@ -1343,6 +1380,7 @@ const sources = mjsUnder(SCRIPTS).map((file) => ({ file, rel: path.relative(ROOT
         "CONFIG.PF2E.Actor.documentClasses.character.prototype.applyDamage",
         "CONFIG.PF2E.Actor.documentClasses.character.prototype.prepareDerivedData",
         "CONFIG.PF2E.Item.documentClasses.action.prototype.toMessage",
+        "CONFIG.PF2E.Item.documentClasses.consumable.prototype.consume",
         "CONFIG.PF2E.Item.documentClasses.spellcastingEntry.prototype.cast",
         "CONFIG.Token.documentClass.prototype._prepareDetectionModes",
         "CONFIG.Token.objectClass.prototype._getMovementCostFunction",
