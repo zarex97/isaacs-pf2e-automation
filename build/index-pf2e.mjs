@@ -23,6 +23,7 @@ const DATA = process.env.FOUNDRY_DATA ?? path.join(process.env.LOCALAPPDATA ?? o
 const SYSTEM = path.join(DATA, "systems", "pf2e");
 const OUT = path.join(ROOT, "build", "data", "pf2e-index.json");
 const TEXT_OUT = path.join(ROOT, "build", "data", "pf2e-spell-text.json");
+const CONDITION_TEXT_OUT = path.join(ROOT, "build", "data", "pf2e-condition-text.json");
 const CLAUSES = path.join(ROOT, "Docs", "clauses");
 
 const system = JSON.parse(fs.readFileSync(path.join(SYSTEM, "system.json"), "utf8"));
@@ -101,3 +102,15 @@ const text = { pf2e: system.version, spells: Object.fromEntries([...tracked].sor
 fs.writeFileSync(TEXT_OUT, `${JSON.stringify(text, null, 1)}\n`);
 console.log(`${Object.keys(text.spells).length} tracked spells' text → ${path.relative(ROOT, TEXT_OUT)}`);
 console.log(`pf2e ${index.pf2e}: ${Object.keys(index.spells).length} spells, ${Object.keys(index.effects).length} spell effects, ${Object.keys(index.conditions).length} conditions → ${path.relative(ROOT, OUT)}`);
+
+// The words of every condition, for the condition tracker's clauses to be held to offline. A few keep their
+// text in pf2e's language file, pulled in by `@Localize[…]` — Sickened's whole description.
+{
+    const lang = JSON.parse(fs.readFileSync(path.join(SYSTEM, "lang", "en.json"), "utf8"));
+    const lookup = (key) => key.split(".").reduce((node, part) => node?.[part], lang);
+    const localized = (html) => html.replace(/@Localize\[([\w.]+)\]/g, (whole, key) => (typeof lookup(key) === "string" ? lookup(key) : whole));
+    const { items } = await itemsOf("conditionitems");
+    const words = { pf2e: system.version, conditions: Object.fromEntries(items.filter(slugOf).map((doc) => [slugOf(doc), plainText(localized(doc.system?.description?.value ?? ""))]).sort(([a], [b]) => a.localeCompare(b))) };
+    fs.writeFileSync(CONDITION_TEXT_OUT, `${JSON.stringify(words, null, 1)}\n`);
+    console.log(`${Object.keys(words.conditions).length} conditions' text → ${path.relative(ROOT, CONDITION_TEXT_OUT)}`);
+}
