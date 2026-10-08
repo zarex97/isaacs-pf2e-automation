@@ -676,6 +676,31 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("a pattern naming a missing module is caught",
         P.problems({ ...vocab, facets: { when: { question: "?", values: { cast: { meaning: "m", precedent: "X-1a", modules: ["scripts/nowhere.mjs"] } } } } }, [row("X-1a", ["when:cast"])]),
         ["when:cast names scripts/nowhere.mjs, which does not exist"]);
+
+    // The lookup: a rare pattern says more than a common one, a sibling variant half as much.
+    const pool = [
+        row("A", ["when:cast", "effect:move/push"]),
+        row("B", ["when:cast", "effect:damage"]),
+        row("C", ["when:cast", "effect:damage"], "⚠️"),
+        row("D", ["when:cast", "effect:move/pull"]),
+        row("E", []),
+    ];
+    const w = P.weights(pool);
+    check("a pattern's weight is ln(tagged / carrying)", [w.total, w.of("when:cast"), Math.round(w.of("effect:move/push") * 1000) / 1000], [4, 0, Math.round(Math.log(4) * 1000) / 1000]);
+    const ranked = P.rank(pool, ["effect:move/push", "effect:damage", "effect:heal"]);
+    check("the rarer shared pattern ranks first, and a sibling scores half",
+        ranked.hits.map((h) => [h.row.id, h.score]), [["A", 1.39], ["B", 0.69], ["D", 0.69], ["C", 0.69]]);
+    check("a tie goes to the clause that works, then to more shared", ranked.hits.slice(1).map((h) => h.row.id), ["B", "D", "C"]);
+    check("a sibling is named as one", ranked.hits.find((h) => h.row.id === "D").siblings, ["effect:move/pull"]);
+    check("an untagged clause is never a hit", ranked.hits.some((h) => h.row.id === "E"), false);
+    check("a pattern nothing carries is no precedent", ranked.unmatched, ["effect:heal"]);
+    check("the clause asked about is left out", P.rank(pool, ["effect:move/push"], { exclude: "A" }).hits.map((h) => h.row.id), ["D"]);
+    check("key phrases suggest patterns, ignoring case",
+        P.suggest({ facets: { effect: { question: "?", values: { damage: { meaning: "m", phrases: ["Fire Damage"] }, heal: { meaning: "m", phrases: ["regains"] } } } } }, "takes 2d6 fire damage"),
+        [{ tag: "effect:damage", phrases: ["Fire Damage"] }]);
+    check("a clause names its spell's entry when its own cell names none",
+        P.entriesOf({ id: "VS-45e", source: "s", cells: { "Static check": "`pullFeet`" } }, [{ id: "VS-45", source: "s", cells: { Spell: "`gravity-well`" } }]),
+        ["content/vanilla/gravity-well.json"]);
 }
 
 /* -------------------------------------------------------------------------------------------- */

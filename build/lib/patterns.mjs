@@ -44,7 +44,9 @@ export const tagsOf = (cell) => (cell ?? "").split(SEPARATOR).map((t) => t.trim(
 export function trackerRows(markdown, source = "") {
     const rows = [];
     let header = null;
+    let heading = "";
     for (const line of markdown.split(/\r?\n/)) {
+        if (line.startsWith("#")) heading = line.replace(/^#+\s*/, "").trim();
         if (!line.startsWith("|")) {
             header = null;
             continue;
@@ -56,7 +58,7 @@ export function trackerRows(markdown, source = "") {
         }
         if (!header || /^:?-+/.test(cells[0])) continue;
         const row = Object.fromEntries(header.map((name, i) => [name, cells[i] ?? ""]));
-        rows.push({ id: cells[0], source, cells: row, tagged: "Patterns" in row, tags: tagsOf(row.Patterns) });
+        rows.push({ id: cells[0], source, heading, cells: row, tagged: "Patterns" in row, tags: tagsOf(row.Patterns) });
     }
     return rows;
 }
@@ -68,7 +70,7 @@ export function readTrackers(dir = TRACKERS, root = ROOT) {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) return readTrackers(full, root);
         if (!entry.name.endsWith(".md")) return [];
-        return trackerRows(fs.readFileSync(full, "utf8"), path.relative(root, full).replace(/\\/g, "/"));
+        return trackerRows(fs.readFileSync(full, "utf8"), path.relative(root, full).replace(/\\/g, "/")).map((row) => ({ ...row, root }));
     });
 }
 
@@ -149,4 +151,100 @@ export function patternsDoc(vocabulary) {
         lines.push("");
     }
     return `${lines.join("\n").trimEnd()}\n`;
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/*  The lookup: rank the clauses already tagged by the patterns they share with a new one        */
+/* -------------------------------------------------------------------------------------------- */
+
+/** The order ties are broken in: a clause that works first, one that does nothing last. */
+const MARK_ORDER = ["✅", "⚠️", "🔧", "☐", "❌", "—"];
+
+/**
+ * The patterns a piece of rule text suggests, by the key phrases each pattern lists: `[{ tag, phrases }]`,
+ * matched without regard to case. A suggestion, never the answer — the `precedent` skill confirms it.
+ */
+export function suggest(vocabulary, text) {
+    const haystack = text.toLowerCase();
+    const found = [];
+    for (const [tag, { entry }] of allowedTags(vocabulary)) {
+        const phrases = (entry.phrases ?? []).filter((p) => haystack.includes(p.toLowerCase()));
+        if (phrases.length > 0) found.push({ tag, phrases });
+    }
+    return found;
+}
+
+/** How much sharing a pattern says: `ln(N / n)` over the `N` tagged clauses, `n` of which carry it. */
+export function weights(rows) {
+    const tagged = rows.filter((r) => r.tags.length > 0);
+    const counts = new Map();
+    for (const row of tagged) for (const tag of new Set(row.tags)) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    return { total: tagged.length, counts, of: (tag) => (counts.get(tag) ? Math.log(tagged.length / counts.get(tag)) : 0) };
+}
+
+const siblingOf = (tag) => (tag.includes("/") ? tag.slice(0, tag.indexOf("/") + 1) : null);
+
+/**
+ * Every tagged clause that shares a pattern with `tags`, best first. A shared pattern scores its weight; a
+ * sibling variant (`effect:forced-move/push` for `/pull`) half the weight of the one the clause carries.
+ * Ties go to the mark (✅ first), then to more patterns shared. `exclude` leaves out the clause asked about.
+ */
+export function rank(rows, tags, { exclude = null, top = 10 } = {}) {
+    const w = weights(rows);
+    const wanted = [...new Set(tags)];
+    const scored = [];
+    for (const row of rows) {
+        if (row.tags.length === 0 || row.id === exclude) continue;
+        const shares = wanted.filter((t) => row.tags.includes(t));
+        const siblings = wanted.filter((t) => !row.tags.includes(t) && siblingOf(t)).flatMap((t) => row.tags.filter((r) => r !== t && siblingOf(r) === siblingOf(t)));
+        const score = shares.reduce((s, t) => s + w.of(t), 0) + [...new Set(siblings)].reduce((s, t) => s + w.of(t) / 2, 0);
+        if (shares.length === 0 && siblings.length === 0) continue;
+        scored.push({ row, shares, siblings: [...new Set(siblings)], score: Math.round(score * 100) / 100 });
+    }
+    const markRank = (row) => {
+        const i = MARK_ORDER.indexOf(markOf(row));
+        return i === -1 ? MARK_ORDER.length : i;
+    };
+    scored.sort((a, b) => b.score - a.score || markRank(a.row) - markRank(b.row) || b.shares.length - a.shares.length);
+    return { hits: scored.slice(0, top), unmatched: wanted.filter((t) => !w.counts.has(t)) };
+}
+
+/**
+ * The content entries and modules a row's **Static check** names, as paths — or, for a clause whose cell
+ * names none, the `content/vanilla/` entry of the spell it belongs to (`VS-58f` → the `VS-58` row's slug).
+ */
+export function entriesOf(row, rows = [], root = ROOT) {
+    const text = row.cells["Static check"] ?? "";
+    const named = [...new Set([...text.matchAll(/`([^`\s]+\/[^`\s]+\.(?:json|mjs))`/g)].map((m) => m[1]))];
+    if (named.length > 0) return named;
+    const parent = /^(.*\d)[a-z]$/.exec(row.id)?.[1];
+    const slug = rows.find((r) => r.id === parent && r.source === row.source)?.cells.Spell?.replace(/`/g, "");
+    const entry = slug && `content/vanilla/${slug}.json`;
+    return entry && fs.existsSync(path.join(row.root ?? root, entry)) ? [entry] : [];
+}
+
+/** The lookup's report, as plain text. */
+export function report(vocabulary, { hits, unmatched }, { suggested = null, rows = [], root = ROOT } = {}) {
+    const tags = allowedTags(vocabulary);
+    const lines = [];
+    if (suggested) {
+        lines.push("Suggested patterns (from key phrases — confirm them against Docs/patterns.md):");
+        for (const { tag, phrases } of suggested) lines.push(`  ${tag.padEnd(32)} ← ${phrases.map((p) => `“${p}”`).join(", ")}`);
+        lines.push("");
+    }
+    if (hits.length === 0) lines.push("No clause shares any of these patterns.");
+    hits.forEach(({ row, shares, siblings, score }, i) => {
+        const name = row.cells.Spell ? row.cells.Spell.replace(/`/g, "") : row.heading;
+        lines.push(`${String(i + 1).padStart(2)}. ${row.id} ${markOf(row)} ${name}  ${row.cells.Clause ?? ""}`);
+        lines.push(`    shares:  ${[...shares, ...siblings.map((s) => `${s} (sibling)`)].join(", ")}    score ${score.toFixed(1)}`);
+        const entries = entriesOf(row, rows, root);
+        if (entries.length > 0) lines.push(`    entry:   ${entries.join(", ")}`);
+        const modules = [...new Set([...shares, ...siblings].flatMap((t) => tags.get(t)?.entry.modules ?? []))];
+        if (modules.length > 0) lines.push(`    modules: ${modules.join(", ")}`);
+        if (["⚠️", "❌", "🔧"].includes(markOf(row))) lines.push(`    gap:     ${(row.cells.Evidence ?? "").slice(0, 240)}`);
+        lines.push(`    in:      ${row.source}`);
+    });
+    lines.push("", `No precedent: ${unmatched.length > 0 ? unmatched.join(", ") : "(none)"}`);
+    if (unmatched.length > 0) lines.push("  New ground — nothing tagged yet does these. Say so before writing the code.");
+    return lines.join("\n");
 }

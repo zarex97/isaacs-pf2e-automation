@@ -61,6 +61,7 @@ npm run link:foundry   # link this folder into Foundry's Data/modules
 npm run index:pf2e     # re-index the installed pf2e compendium (build/data/pf2e-index.json)
 npm run build:vanilla  # bundle content/vanilla/*.json into data/vanilla.json
 npm run build:patterns # write Docs/patterns.md from data/patterns.json
+npm run precedent -- --text "<rule text>"   # which clauses already do what this one does
 npm run coverage:assistant  # refresh which spells PF2e Assistant automates (data/coverage/)
 ```
 

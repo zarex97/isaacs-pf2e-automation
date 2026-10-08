@@ -1051,9 +1051,9 @@
                         "riders[].apply.type: climb"
                     ],
                     "phrases": [
-                        "increases by 1",
-                        "condition increases",
-                        "decreases by"
+                        "condition increases by",
+                        "the slowed condition increases",
+                        "(or 2 on a critical failure)"
                     ]
                 },
                 "condition-floor": {
