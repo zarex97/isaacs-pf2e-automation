@@ -632,7 +632,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     const rows = P.readTrackers();
 
     check("the trackers' tags and the vocabulary have no problems", P.problems(vocabulary, rows), []);
-    check("Docs/patterns.md is the vocabulary as built", fs.readFileSync(P.DOC, "utf8") === P.patternsDoc(vocabulary), true);
+    check("Docs/patterns.md is the vocabulary as built (npm run build:patterns)", fs.readFileSync(P.DOC, "utf8").replace(/\r/g, "") === P.patternsDoc(vocabulary), true);
     check("every clause table in a tracker has a Patterns column",
         rows.filter((r) => "Clause" in r.cells && !r.tagged).map((r) => `${r.source} ${r.id}`), []);
     check("every facet answers a question and has values",
