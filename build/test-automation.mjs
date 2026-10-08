@@ -644,6 +644,40 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  pf2e's conditions and effects: the inventory, its parts, and each part's clauses               */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const E = await import("./lib/effects.mjs");
+    const { trackerRows } = await import("./lib/patterns.mjs");
+    const inventory = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-effects.json"), "utf8"));
+    const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-effect-text.json"), "utf8")).effects;
+    const keys = new Set(inventory.items.map((i) => i.key));
+    check("the inventory keys every item once, each in one of twelve parts",
+        [keys.size === inventory.items.length, [...new Set(inventory.items.map((i) => i.part))].sort((a, b) => a - b)], [true, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]);
+    check("Docs/pf2e-effects.md is the inventory as built (npm run index:pf2e)",
+        fs.readFileSync(path.join(ROOT, "Docs", "pf2e-effects.md"), "utf8").replace(/\r/g, "") === E.inventoryDoc(inventory), true);
+    check("a group is cut into runs of near-equal length, in order",
+        E.assignParts([..."abcde"].map((k) => ({ key: k, pack: "feat-effects" }))).map((i) => i.part), [4, 4, 5, 5, 6]);
+    check("a tracker's items are read off its item table", E.trackedEffects("| CND-07 | `conditionitems/frightened` | Frightened |\n| CND-07a | \"x\" |"), ["conditionitems/frightened"]);
+
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const dir = path.join(ROOT, "Docs", "clauses", "pf2e-effects");
+    for (const file of fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".md")) : []) {
+        const rows = trackerRows(fs.readFileSync(path.join(dir, file), "utf8"));
+        const items = Object.fromEntries(rows.filter((r) => r.cells.Item).map((r) => [r.id, r.cells.Item.replace(/`/g, "")]));
+        const clauses = rows.filter((r) => /^[A-Z]{2,4}-\d+[a-z]$/.test(r.id)).map((r) => ({ id: r.id, item: /^([A-Z]+-\d+)/.exec(r.id)[1], clause: r.cells.Clause.replace(/^"|"$/g, ""), mark: r.cells.Status }));
+        const part = Number(/part-(\d+)/.exec(file)?.[1]);
+        check(`${file}: lists exactly its part's items`, Object.values(items).sort(), inventory.items.filter((i) => i.part === part).map((i) => i.key).sort());
+        check(`${file}: every item has clauses, and every clause an item`,
+            [Object.keys(items).filter((id) => !clauses.some((c) => c.item === id)), clauses.filter((c) => !items[c.item]).map((c) => c.id)], [[], []]);
+        check(`${file}: clause IDs are numbered once each`, clauses.length - new Set(clauses.map((c) => c.id)).size, 0);
+        check(`${file}: every clause carries one of the six marks`, clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => c.id), []);
+        check(`${file}: every clause is the item's own words`, clauses.filter((c) => !(words[items[c.item]] ?? "").includes(c.clause)).map((c) => c.id), []);
+    }
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Patterns: every tag is from the closed list, and every pattern has a precedent that works    */
 /* -------------------------------------------------------------------------------------------- */
 

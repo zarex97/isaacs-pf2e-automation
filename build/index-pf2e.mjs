@@ -16,6 +16,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import url from "node:url";
+import { EFFECT_PACKS, assignParts, inventoryDoc, trackedEffects } from "./lib/effects.mjs";
 import { plainText, trackedSlugs } from "./lib/spell-text.mjs";
 
 const ROOT = path.resolve(url.fileURLToPath(new URL(".", import.meta.url)), "..");
@@ -24,6 +25,9 @@ const SYSTEM = path.join(DATA, "systems", "pf2e");
 const OUT = path.join(ROOT, "build", "data", "pf2e-index.json");
 const TEXT_OUT = path.join(ROOT, "build", "data", "pf2e-spell-text.json");
 const CLAUSES = path.join(ROOT, "Docs", "clauses");
+const EFFECTS_OUT = path.join(ROOT, "build", "data", "pf2e-effects.json");
+const EFFECT_TEXT_OUT = path.join(ROOT, "build", "data", "pf2e-effect-text.json");
+const EFFECTS_DOC = path.join(ROOT, "Docs", "pf2e-effects.md");
 
 const system = JSON.parse(fs.readFileSync(path.join(SYSTEM, "system.json"), "utf8"));
 const packOf = (name) => system.packs.find((p) => p.name === name) ?? (() => { throw new Error(`pf2e has no pack "${name}"`); })();
@@ -101,3 +105,33 @@ const text = { pf2e: system.version, spells: Object.fromEntries([...tracked].sor
 fs.writeFileSync(TEXT_OUT, `${JSON.stringify(text, null, 1)}\n`);
 console.log(`${Object.keys(text.spells).length} tracked spells' text → ${path.relative(ROOT, TEXT_OUT)}`);
 console.log(`pf2e ${index.pf2e}: ${Object.keys(index.spells).length} spells, ${Object.keys(index.effects).length} spell effects, ${Object.keys(index.conditions).length} conditions → ${path.relative(ROOT, OUT)}`);
+
+// Every condition and effect pf2e ships, cut into parts; and the words of the ones an effect tracker lists.
+{
+    const words = {};
+    const listed = [];
+    // A few items keep their text in pf2e's language file, pulled in by `@Localize[…]` (Sickened's whole description).
+    const lang = JSON.parse(fs.readFileSync(path.join(SYSTEM, "lang", "en.json"), "utf8"));
+    const lookup = (key) => key.split(".").reduce((node, part) => node?.[part], lang);
+    const localized = (text) => text.replace(/@Localize\[([\w.]+)\]/g, (whole, key) => (typeof lookup(key) === "string" ? lookup(key) : whole));
+    for (const name of EFFECT_PACKS) {
+        const { pack, items } = await itemsOf(name);
+        const seen = new Set();
+        for (const doc of items.filter((d) => d.type === "effect" || d.type === "condition").sort((a, b) => a.name.localeCompare(b.name) || a._id.localeCompare(b._id))) {
+            // A slug two items share is no key; the second goes by its id.
+            const slug = slugOf(doc) && !seen.has(slugOf(doc)) ? slugOf(doc) : doc._id;
+            seen.add(slug);
+            const key = `${name}/${slug}`;
+            words[key] = localized(doc.system?.description?.value ?? "");
+            listed.push({ key, pack: name, name: doc.name, type: doc.type, uuid: uuid(pack, doc._id), level: doc.system?.level?.value ?? null, rules: [...new Set((doc.system?.rules ?? []).map((r) => r.key))].sort() });
+        }
+    }
+    const inventory = { pf2e: system.version, items: assignParts(listed) };
+    fs.writeFileSync(EFFECTS_OUT, `${JSON.stringify(inventory, null, 1)}\n`);
+    fs.writeFileSync(EFFECTS_DOC, inventoryDoc(inventory));
+    const trackers = path.join(CLAUSES, "pf2e-effects");
+    const trackedKeys = fs.existsSync(trackers) ? fs.readdirSync(trackers).filter((f) => f.endsWith(".md")).flatMap((f) => trackedEffects(fs.readFileSync(path.join(trackers, f), "utf8"))) : [];
+    const effectText = { pf2e: system.version, effects: Object.fromEntries([...new Set(trackedKeys)].sort().filter((k) => k in words).map((k) => [k, plainText(words[k])])) };
+    fs.writeFileSync(EFFECT_TEXT_OUT, `${JSON.stringify(effectText, null, 1)}\n`);
+    console.log(`${inventory.items.length} conditions and effects in ${Math.max(...inventory.items.map((i) => i.part))} parts → ${path.relative(ROOT, EFFECTS_OUT)}, ${path.relative(ROOT, EFFECTS_DOC)}; ${Object.keys(effectText.effects).length} tracked → ${path.relative(ROOT, EFFECT_TEXT_OUT)}`);
+}
