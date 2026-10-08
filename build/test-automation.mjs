@@ -740,6 +740,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("a square on another creature is occupied", names(occupants({ x: 300, y: 300, width: 100, height: 100 }, [self, other, large], self)), ["other"]);
     check("…including a Large creature's far corner", names(occupants({ x: 600, y: 100, width: 100, height: 100 }, [self, other, large], self)), ["large"]);
     check("the caster's own space never counts", names(occupants({ x: 0, y: 0, width: 100, height: 100 }, [self], self)), []);
+    const undrawn = { n: "undrawn", x: 0, y: 0, w: 100, h: 100, document: { x: 300, y: 300, width: 1, height: 1, parent: { grid: { size: 100 } } } };
+    check("…a token not yet drawn is where its document says", names(occupants({ x: 300, y: 300, width: 100, height: 100 }, [undrawn], null)), ["undrawn"]);
     check("sight is needed below the waiving rank, not from it", [needsSight({ seeBelowRank: 5 }, 4), needsSight({ seeBelowRank: 5 }, 5), needsSight({}, 9)], [true, false, true]);
 }
 
@@ -1427,6 +1429,12 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("the revealed mode sees a revealed creature, and an invisible one through undetected — not one hidden by other means", [revealedSees(actor([])), revealedSees(actor(["invisible", "undetected"])), revealedSees(actor(["undetected"])), revealedSees(actor([], false))], [true, true, false, false]);
     const c = (o) => concealment({ revealed: false, invisible: false, concealed: false, seesInvisibility: false, ...o });
     check("concealment: concealed; invisible to one who sees invisibility; revealed — only its invisibility", [c({ concealed: true }), c({ invisible: true }), c({ invisible: true, seesInvisibility: true }), c({ revealed: true, concealed: true }), c({ revealed: true, invisible: true })], [true, false, true, false, true]);
+}
+
+{
+    const { orbRadii } = await import("../scripts/targeting/light-orb.mjs");
+    const spec = { bright: 20, dim: 40, atRank: { 4: { bright: 60, dim: 120 } } };
+    check("an orb's light by rank: 20/40, and 60/120 from 4th", [orbRadii(spec, 1), orbRadii(spec, 3), orbRadii(spec, 4), orbRadii(spec, 9)], [{ bright: 20, dim: 40 }, { bright: 20, dim: 40 }, { bright: 60, dim: 120 }, { bright: 60, dim: 120 }]);
 }
 
 report("Automation tests");

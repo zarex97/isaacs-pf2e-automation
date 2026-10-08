@@ -48,6 +48,7 @@ import { Summon } from "./targeting/summon.mjs";
 import { Sacrifice } from "./vanilla/sacrifice.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
+import { LightOrb } from "./targeting/light-orb.mjs";
 import { Coexistence } from "./vanilla/coexistence.mjs";
 import { Indicator } from "./vanilla/indicator.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
@@ -85,6 +86,7 @@ export const INIT = [
     ["a minion sacrificed", () => Sacrifice.register()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
+    ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],
 ];
 
 /**

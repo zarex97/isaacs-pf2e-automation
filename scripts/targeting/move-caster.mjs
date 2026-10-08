@@ -23,7 +23,10 @@ const pending = new Map();
 export function occupants(rect, tokens, self) {
     return tokens.filter((token) => {
         if (token === self) return false;
-        const { x, y, w, h } = token;
+        // The document's position: a placeable that hasn't been drawn reports 0, 0.
+        const doc = token.document;
+        const grid = doc ? (doc.parent?.grid?.size ?? globalThis.canvas?.grid?.size ?? 100) : 0;
+        const { x, y, w, h } = doc ? { x: doc.x, y: doc.y, w: doc.width * grid, h: doc.height * grid } : token;
         return x < rect.x + rect.width && x + w > rect.x && y < rect.y + rect.height && y + h > rect.y;
     });
 }

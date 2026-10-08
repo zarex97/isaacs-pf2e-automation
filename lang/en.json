@@ -287,6 +287,20 @@
             "Off": "{actor} took acid or fire damage: no regeneration this turn.",
             "Withheld": "{actor} gains no benefit from regeneration or fast healing while {name} lasts."
         },
+        "LightOrb": {
+            "Colour": "The light's colour:",
+            "Ok": "Light",
+            "Fifth": "You already have {max} lights: which one ends?",
+            "Effect": "{spell}: an orb",
+            "Move": "Move the Light ({name})",
+            "MoveHelp": "Sustain the spell: aim a square up to {feet} feet from the light — on a creature to attach it, an empty square to set it down.",
+            "TooFar": "That is {feet} feet from the light; it moves {max} at most.",
+            "Placed": "{caster} sets an orb of light down.",
+            "Attached": "{caster} hangs an orb of light on {name}.",
+            "On": "The light on {name}",
+            "At": "The light at ({x}, {y})",
+            "Gone": "A light no longer on the board"
+        },
         "Reveal": {
             "Mode": "Revealed"
         },

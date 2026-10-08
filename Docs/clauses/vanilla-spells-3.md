@@ -721,13 +721,13 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-98a | "You create an orb of light that sheds bright light in a 20-foot radius (and dim light for the next 20 feet)" | A light placed within 120 ft: bright 20 ft, dim 40 ft | | ☐ | |
-| VS-98b | "in a color you choose" | The cast asks for a colour | | ☐ | |
-| VS-98c | "If you create the light in the same space as a willing creature, you can attach the light to the creature, causing it to float near that creature as it moves" | Placed on a creature, it follows its token | | ☐ | |
-| VS-98d | "You can Sustain the spell to move the light up to 60 feet; you can attach or detach it from a creature as part of this movement" | Sustain moves it up to 60 ft, onto or off a creature | | ☐ | |
-| VS-98e | "You can Dismiss the spell" | Dismissing it puts the light out | | ☐ | |
-| VS-98f | "If you Cast the Spell while you already have four light spells active, you must choose one of the existing spells to end" | A fifth asks which of the four to end | | ☐ | |
-| VS-98g | "Heightened (4th) The orb sheds light in a 60-foot radius (and dim light for the next 60 feet)" | Rank 4: 60 and 120 ft | | ☐ | |
+| VS-98a | "You create an orb of light that sheds bright light in a 20-foot radius (and dim light for the next 20 feet)" | A light placed within 120 ft: bright 20 ft, dim 40 ft | `areaTargeting.lightOrb` (`scripts/targeting/light-orb.mjs`): a square within 120 ft; on an empty one, an ambient light bright 20 / dim 40 | ✅ | A level-1 NPC caster (rank 1): an ambient light **bright 20, dim 40** on the square |
+| VS-98b | "in a color you choose" | The cast asks for a colour | After the cast, a colour picker | ✅ | Asked each cast; the light took **#ff8800**, #0000ff, #ff00ff … as chosen |
+| VS-98c | "If you create the light in the same space as a willing creature, you can attach the light to the creature, causing it to float near that creature as it moves" | Placed on a creature, it follows its token | On a creature's square — the targeted one where several share it — pf2e's `TokenLight` on an effect on it, so it moves with the token | ✅ | Placed on Leo's square (thirteen tokens share it), Leo targeted: "Aries hangs an orb of light on Leo" — Leo's token **bright 60, dim 120, #ff0000**. (A token not yet drawn reported 0, 0 to the occupancy test; it now reads the document's position — Translocate and Summon Animal use the same test) |
+| VS-98d | "You can Sustain the spell to move the light up to 60 feet; you can attach or detach it from a creature as part of this movement" | Sustain moves it up to 60 ft, onto or off a creature | *Move the Light* (an action the caster gets, aimed again): within 60 ft of where the light is; onto a creature attaches, onto an empty square sets it down | ✅ | An orb on Aries: aimed 70 ft away — **refused**, still attached; to an empty square — an **ambient light** there, Aries unlit; back onto Aries' square — **attached again** |
+| VS-98e | "You can Dismiss the spell" | Dismissing it puts the light out | A *Dismiss* for the caster's effect; its deletion clears the light and the actions | ✅ | Dismissed: the orb's effect, its light, *Move the Light* and *Dismiss* **all gone** |
+| VS-98f | "If you Cast the Spell while you already have four light spells active, you must choose one of the existing spells to end" | A fifth asks which of the four to end | `max: 4`: a fifth asks which to end, each named by where it is | ✅ | With four up, the fifth asked "You already have 4 lights: which one ends?" — *The light at (3450, 2750)*, *(3350, 2250)* …; the one chosen **went out**, its actions with it, and the new one was set down |
+| VS-98g | "Heightened (4th) The orb sheds light in a 60-foot radius (and dim light for the next 60 feet)" | Rank 4: 60 and 120 ft | `atRank: { 4: { bright: 60, dim: 120 } }` | ✅ | Aries (level 20: the cantrip at rank 10): **bright 60, dim 120**; the rank-1 NPC: 20/40 |
 
 ### VS-99 · Detect Magic
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 18 |
-| ✅ | 296 |
+| ☐ not yet driven | 11 |
+| ✅ | 303 |
 | ⚠️ | 11 |
 | ❌ | 0 |
 | 🔧 | 0 |
