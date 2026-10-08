@@ -626,7 +626,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 /*  The match tests: ten spells the precedent lookup matched poorly, ten it matched partly        */
 /* -------------------------------------------------------------------------------------------- */
 
-for (const name of ["vanilla-spells-low.md", "vanilla-spells-mid.md"]) {
+for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid.md", 10], ["vanilla-spells-lowest-100.md", 100]]) {
     const file = path.join(ROOT, "Docs", "clauses", name);
     if (!fs.existsSync(file)) continue;
     const text = fs.readFileSync(file, "utf8");
@@ -639,15 +639,17 @@ for (const name of ["vanilla-spells-low.md", "vanilla-spells-mid.md"]) {
         const [, spell] = /^(VS-\d+)([a-z])$/.exec(r.id);
         return { id: r.id, spell, clause: r.cells.Clause.replace(/^"|"$/g, ""), mark: r.cells.Status };
     });
-    check(`${name} lists ten real pf2e spells, each once`,
-        [Object.keys(spells).length, new Set(Object.values(spells)).size, Object.values(spells).filter((slug) => !index.spells[slug])], [10, 10, []]);
+    check(`${name} lists ${count} real pf2e spells, each once`,
+        [Object.keys(spells).length, new Set(Object.values(spells)).size, Object.values(spells).filter((slug) => !index.spells[slug])], [count, count, []]);
     check("…every clause belongs to a listed spell, and every spell has clauses",
         [clauses.filter((c) => !spells[c.spell]).map((c) => c.id), Object.keys(spells).filter((id) => !clauses.some((c) => c.spell === id))], [[], []]);
     check("…every clause carries one of the six marks", clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => `${c.id} ${c.mark}`), []);
     check("…every clause is a verbatim fragment of pf2e's own text",
         clauses.filter((c) => !(words[spells[c.spell]] ?? "").includes(c.clause)).map((c) => c.id), []);
-    check("…every spell has a table entry",
-        Object.values(spells).filter((slug) => !fs.existsSync(path.join(ROOT, "content", "vanilla", `${slug}.json`))), []);
+    // A spell is owed its entry once a clause of it has been driven: a clausified spell waits for one.
+    const driven = new Set(clauses.filter((c) => !["☐", "—"].includes(c.mark)).map((c) => c.spell));
+    check("…every driven spell has a table entry",
+        Object.entries(spells).filter(([id, slug]) => driven.has(id) && !fs.existsSync(path.join(ROOT, "content", "vanilla", `${slug}.json`))).map(([, slug]) => slug), []);
 }
 
 /* -------------------------------------------------------------------------------------------- */
