@@ -29,6 +29,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "sacrifice",
     // A circumstance bonus to AC an attack counts for less — *Phase Bolt* (`vanilla/phase.mjs`).
     "circumstanceAcLess",
+    // A modifier to the save for some of those who roll it — *Wilding Word* (`vanilla/save-modifier.mjs`).
+    "saveModifier",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

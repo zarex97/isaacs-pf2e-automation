@@ -265,6 +265,9 @@ export const Lingering = {
                             name: spec.name ?? config.item.name,
                             itemUuid: config.item.uuid ?? null,
                             slug: config.item.slug ?? null,
+                            // What a counteract reads off the area — *Holy Light* against a *Darkness* (`counteract-area`).
+                            rank: Number(config.item.rank) || null,
+                            darkness: spec.darkness === true,
                             until: spec.until ?? null,
                             followsCaster: spec.followsCaster === true,
                             drifts: spec.drifts ?? null,

@@ -987,6 +987,22 @@ for (const name of ["vanilla-spells-low.md", "vanilla-spells-mid.md"]) {
 
 {
     const { carried, shortened } = await import("../scripts/riders/apply.mjs");
+    const { pointsAlong } = await import("../scripts/riders/apply.mjs");
+    check("a line's points, both ends included", pointsAlong({ x: 0, y: 0 }, { x: 100, y: 0 }, 50), [{ x: 0, y: 0 }, { x: 50, y: 0 }, { x: 100, y: 0 }]);
+    check("…and one step when the ends meet", pointsAlong({ x: 5, y: 5 }, { x: 5, y: 5 }, 25).length, 2);
+    const { drawnBy } = await import("../scripts/riders/draws.mjs");
+    const near = { feet: 15, targetFeet: 10, attackerFeet: 30 };
+    check("Magnetize: what an attack falls under", [
+        drawnBy({ ...near, ranged: true }),
+        drawnBy({ ...near, ranged: true, targetFeet: 20 }),
+        drawnBy({ ...near, ranged: true, targetIsHolder: true }),
+        drawnBy({ ...near, melee: true, attackerFeet: 5 }),
+        drawnBy({ ...near, melee: true }),
+        drawnBy({ ...near, melee: true, attackerFeet: 5, attackerIsHolder: true }),
+    ], ["redirect", null, null, "penalty", null, null]);
+    const { saveModifiersFor } = await import("../scripts/vanilla/save-modifier.mjs");
+    const kinds = { value: -1, type: "circumstance", predicate: [{ or: ["self:trait:animal", "self:trait:plant"] }] };
+    check("Wilding Word: the −1 for an animal or a plant, and no other", [saveModifiersFor(kinds, ["self:trait:animal"]).length, saveModifiersFor(kinds, new Set(["self:trait:plant"])).length, saveModifiersFor(kinds, ["self:trait:humanoid"]).length, saveModifiersFor(undefined, []).length], [1, 1, 0, 0]);
     const riders = carried([{ event: "turn-end", self: true, apply: { type: "save", statistic: "will", riders: [{ apply: { type: "shorten", rounds: 1 } }] } }], 34);
     check("a carried save takes the caster's DC with it", riders[0].apply.dc, 34);
     check("…and keeps a DC it already names", carried([{ apply: { type: "save", dc: 20 } }], 34)[0].apply.dc, 20);

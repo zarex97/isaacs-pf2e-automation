@@ -37,7 +37,7 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | VS-130 | `puff-of-poison` | 1 | Poison damage and persistent poison by degree |
 | VS-131 | `holy-light` | 3 | A fire ray, extra spirit against the unholy |
 
-**Where it stands:** 39 clauses — 37 ✅, 2 ⚠️. The ⚠️ are table notes: concealment from inside the smoke out, and Holy Light's counteract.
+**Where it stands:** 39 clauses — 39 ✅.
 
 ### VS-122 · Noxious Vapors
 
@@ -45,8 +45,8 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-122a | "Each creature except you in the area when you Cast the Spell takes 1d6 poison damage (basic Fortitude save)" | when:cast · reach:area/emanation · check:basic-save · effect:damage | A 10-ft emanation catches everyone but the caster; basic Fortitude against 1d6 poison | `noxious-vapors.json` | ✅ | The emanation caught the patient and the Target; the caster's own token was left out. A second token of the caster's actor on the same square was caught — a fixture quirk. The card rolled `1d6 poison`, basic Fortitude |
 | VS-122b | "A creature that critically fails the saving throw also becomes Sickened 1" | check:save · effect:condition | Sickened 1 on a critical failure | `noxious-vapors.json` | ✅ | Critical failure: sickened 1. Control: a failure left none |
-| VS-122c | "All creatures in the area become Concealed" | reach:area/emanation · effect:concealment · ending:duration | Everyone in the smoke, the caster too, concealed for the round | `noxious-vapors.json` | ✅ | The patient and the caster both concealed, 1 round. Control: neither before the cast |
-| VS-122d | "all creatures outside the smoke become concealed to creatures within it" | effect:concealment · effect:gm-note | A note: concealment from inside out is the table's | `noxious-vapors.json` | ⚠️ | A note on the card, "Left to the table": concealment from inside out is not applied |
+| VS-122c | "All creatures in the area become Concealed" | reach:area/emanation · area:lingering · effect:concealment · ending:duration | Everyone in the smoke, the caster too, concealed while inside, until the caster's next turn | `noxious-vapors.json` | ✅ | The smoke stayed as an area: the patient, the Target and the caster held `Noxious Vapors` and concealed. D2, outside, nothing. A round later the area and both were gone |
+| VS-122d | "all creatures outside the smoke become concealed to creatures within it" | area:lingering · effect:concealment | From inside, creatures outside count as concealed | `noxious-vapors.json` | ✅ | The patient's Strike from inside at D2 outside read `target:condition:concealed`. Control: D2's Strike at D1, both outside, none. The patient's again after the smoke ended, none |
 | VS-122e | "Heightened (+1) The damage increases by 1d6" | scaling:dice-per-rank · effect:damage | Rank 2 deals 2d6 | `noxious-vapors.json` | ✅ | Rank 2 rolled `2d6 poison`. Control: rank 1, `1d6` |
 
 ### VS-123 · Mind Games
@@ -125,5 +125,5 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-131a | "Make a ranged spell attack. The ray deals 5d6 fire damage" | when:cast · reach:single · check:attack · effect:damage | 5d6 fire on a hit | `holy-light.json` | ✅ | A hit rolled `5d6 fire` |
 | VS-131b | "If the target has the unholy trait, you deal an extra 5d6 spirit damage" | reach:filtered · effect:damage | An unholy target takes 5d6 spirit too | `holy-light.json` | ✅ | An unholy patient: 25 spirit on a hit, 60 on a critical. Control: the same hit on a patient not unholy, none |
-| VS-131c | "holy light attempts to counteract the darkness" | check:counteract · effect:gm-note | A note: the counteract is the table's | `holy-light.json` | ⚠️ | A note on the card, "Left to the table": the counteract is not attempted |
+| VS-131c | "holy light attempts to counteract the darkness" | check:counteract · effect:darkness | A counteract against darkness the ray crosses, or the target stands in | `holy-light.json` | ✅ | A rank 2 Darkness around D2: Holy Light at D2 rolled 13 against DC 13, a success, and the darkness and its light were gone. A natural 1 left it holding. The ray to D1 through a darkness D1 stood outside: counteracted. Control: the ray to the patient, away from it, rolled nothing |
 | VS-131d | "Heightened (+1) The fire damage increases by 2d6, and the spirit damage against unholy creatures increases by 2d6" | scaling:dice-per-rank · effect:damage | Rank 4: 7d6 and 7d6 | `holy-light.json` | ✅ | Rank 4: `7d6 fire`, and the spirit `5d6 + 2d6`. Control: rank 3, `5d6` |

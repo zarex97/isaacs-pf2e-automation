@@ -37,7 +37,7 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | VS-120 | `magnetize` | 4 | Metal attacks drawn to a creature |
 | VS-121 | `song-of-strength` | 1 | Allies around the caster, better at Athletics |
 
-**Where it stands:** 35 clauses — 31 ✅, 3 ⚠️, 1 ❌. The ⚠️ are table notes: a save penalty by creature kind, and Magnetize's redirection. The ❌ is a save no roll option can name.
+**Where it stands:** 35 clauses — 32 ✅, 3 ⚠️. The ⚠️ are table notes: Take Root's saves for a held item, and whether a weapon Magnetize draws is metal. The card marks each attack it could touch.
 
 ### VS-112 · Cone of Cold
 
@@ -92,7 +92,7 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-117a | "The target must attempt a Will save; if the creature is an animal, fungus, or plant, it takes a –1 circumstance penalty to its save" | when:cast · reach:single · check:save · effect:penalty | The save; −1 for an animal, fungus or plant | `wilding-word.json` | ⚠️ | The save rolls from the card. The −1 for an animal, fungus or plant is a note, "Left to the table": nothing applies it before the save |
+| VS-117a | "The target must attempt a Will save; if the creature is an animal, fungus, or plant, it takes a –1 circumstance penalty to its save" | when:cast · reach:single · reach:filtered · check:save · effect:penalty | The save; −1 for an animal, fungus or plant | `wilding-word.json` | ✅ | An animal Target's Will save: die 10, `Wilding Word −1`, 9 against DC 13. A fungus: the same −1. Control: with neither trait, 10 and no modifier |
 | VS-117b | "Critical Success The target is unaffected" | check:save | Nothing | `wilding-word.json` | ✅ | Critical success: no effect on either side. Control: success gave both |
 | VS-117c | "Success When the target attempts an attack roll or skill check that would harm you, it takes a -2 status penalty to its roll" | check:save · effect:penalty · ending:duration | −2 status to its attacks on the caster for the minute | `wilding-word.json` | ✅ | The target's Club at the caster carried `wilding word -2`. Control: the same Club at the Target carried none |
 | VS-117d | "Failure As success, but the target also becomes Sickened 1 each time it damages you" | when:damage-dealt · effect:condition | Each time it damages the caster, sickened 1 | `wilding-word.json` | ✅ | Damaging the caster gave sickened 1. Control: damaging the Target first left 0; on a success damaging the caster left 0 |
@@ -103,7 +103,7 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-118a | "The targeted creature gains a +1 circumstance bonus to their Fortitude DC against attempts to Shove them and a +1 circumstance bonus to their Reflex DC against attempts to Disarm or Trip them" | when:cast · reach:single · effect:bonus | Fortitude DC +1 against Shove, Reflex DC +1 against Disarm and Trip | `take-root.json` | ✅ | Shove, Trip and Disarm DCs against the patient 10 → 11. Control: its plain Fortitude and Reflex DCs stayed 10 |
-| VS-118b | "This bonus also applies to saving throws against spells or effects that would attempt to remove a held item from their grasp" | effect:bonus | The bonus on such saves | `take-root.json` | ❌ | pf2e's effect predicates on the three actions only. No save says it would take a held item, so nothing can see one |
+| VS-118b | "This bonus also applies to saving throws against spells or effects that would attempt to remove a held item from their grasp" | effect:bonus · effect:gm-note | A note: the bonus on such saves is the table's | `take-root.json` | ⚠️ | A note on the card, "Left to the table". No save says it would take a held item, so nothing can apply the +1 by itself |
 
 ### VS-119 · Ant Haul
 
@@ -115,8 +115,8 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-120a | "Whenever a creature makes a ranged attack with a metal weapon or projectile against a creature within 15 feet of the magnetized target, the magnetized target becomes the target of the attack instead" | when:strike-made · reach:filtered · effect:gm-note | The attack goes to the magnetized creature | `magnetize.json` | ⚠️ | The patient is `magnetized` for 1 minute; the redirection is a note, "Left to the table" |
-| VS-120b | "Whenever a creature within 15 feet Strikes a creature other than the magnetized target with a metal melee weapon, the attacker takes a –2 circumstance penalty to the attack roll" | when:strike-made · reach:filtered · effect:penalty | −2 circumstance to such a Strike | `magnetize.json` | ⚠️ | The same note; no −2 reaches a metal melee Strike |
+| VS-120a | "Whenever a creature makes a ranged attack with a metal weapon or projectile against a creature within 15 feet of the magnetized target, the magnetized target becomes the target of the attack instead" | when:strike-made · reach:filtered · effect:gm-note | A ranged attack near the magnetized creature is marked on its card | `magnetize.json` | ⚠️ | A javelin thrown at the patient, 5 ft from the magnetized Target, carried "If this weapon or projectile is metal, the attack goes to ZZ Conditions Target instead". Control: at D2, 135 ft away, and at the Target itself, no note. Whether it is metal is the table's: pf2e records a material on 43 of its 1,013 weapons |
+| VS-120b | "Whenever a creature within 15 feet Strikes a creature other than the magnetized target with a metal melee weapon, the attacker takes a –2 circumstance penalty to the attack roll" | when:strike-made · reach:filtered · effect:penalty · effect:gm-note | A melee Strike from near it, at anyone else, is marked on its card | `magnetize.json` | ⚠️ | The patient's Club at the caster, from 5 ft of the Target, carried the −2 note. Control: the same Club at the Target, D2's fist from 135 ft, and the Club after the effect ended, none. The table applies the −2, knowing the weapon |
 
 ### VS-121 · Song of Strength
 

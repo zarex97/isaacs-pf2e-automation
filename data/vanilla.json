@@ -2352,8 +2352,9 @@
                     "event": "action-used",
                     "self": true,
                     "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.holy-light.Darkness"
+                        "type": "counteract-area",
+                        "areas": "darkness",
+                        "statistic": "spellcasting"
                     }
                 }
             ]
@@ -2860,15 +2861,10 @@
                     "apply": {
                         "type": "effect",
                         "label": "ISAACS_AUTOMATION.Vanilla.magnetize.Field",
-                        "rules": []
-                    }
-                },
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.magnetize.Note"
+                        "rules": [],
+                        "draws": {
+                            "feet": 15
+                        }
                     }
                 }
             ]
@@ -3590,46 +3586,33 @@
                         "slug": "sickened",
                         "value": 1
                     }
-                },
-                {
-                    "outcomes": [
-                        "criticalSuccess",
-                        "success",
-                        "failure",
-                        "criticalFailure"
-                    ],
-                    "duration": {
-                        "value": 1,
-                        "unit": "rounds",
-                        "expiry": "turn-start"
-                    },
-                    "apply": {
-                        "type": "condition",
-                        "slug": "concealed"
-                    }
-                },
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "duration": {
-                        "value": 1,
-                        "unit": "rounds",
-                        "expiry": "turn-start"
-                    },
-                    "apply": {
-                        "type": "condition",
-                        "slug": "concealed"
-                    }
-                },
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Outside"
-                    }
                 }
-            ]
+            ],
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Smoke",
+                "duration": {
+                    "value": 1,
+                    "unit": "rounds"
+                },
+                "until": "originTurnStart",
+                "inside": {
+                    "conditions": [
+                        "concealed"
+                    ],
+                    "rules": [
+                        {
+                            "key": "EphemeralEffect",
+                            "affects": "target",
+                            "selectors": [
+                                "attack-roll",
+                                "spell-attack-roll"
+                            ],
+                            "uuid": "Compendium.pf2e.conditionitems.Item.DmAIPqOBomZ7H95W"
+                        }
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Inside"
+                }
+            }
         },
         "nudge-fate": {
             "riders": [
@@ -5530,6 +5513,14 @@
                         "type": "effect",
                         "uuid": "Compendium.pf2e.spell-effects.Item.ZGzhNFB3SM8owk85"
                     }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.take-root.Grasp"
+                    }
                 }
             ]
         },
@@ -6588,14 +6579,20 @@
             }
         },
         "wilding-word": {
-            "riders": [
-                {
-                    "event": "action-used",
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.wilding-word.Kinds"
+            "saveModifier": {
+                "value": -1,
+                "type": "circumstance",
+                "predicate": [
+                    {
+                        "or": [
+                            "self:trait:animal",
+                            "self:trait:fungus",
+                            "self:trait:plant"
+                        ]
                     }
-                },
+                ]
+            },
+            "riders": [
                 {
                     "outcomes": [
                         "success",

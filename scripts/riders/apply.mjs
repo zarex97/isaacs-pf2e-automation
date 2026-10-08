@@ -445,6 +445,8 @@ async function applyOne(rider, context) {
             return applyToggle(rider, context);
         case "counteract":
             return applyCounteract(rider, context);
+        case "counteract-area":
+            return applyCounteractArea(rider, context);
         case "reaction":
             return offerReaction(rider, context);
         case "flat-check":
@@ -1371,6 +1373,75 @@ async function applyCounteract(rider, context) {
             },
         },
     });
+}
+
+/** Points every `step` along the segment from `a` to `b`, both ends included. */
+export function pointsAlong(a, b, step) {
+    const length = Math.hypot(b.x - a.x, b.y - a.y);
+    const count = Math.max(1, Math.ceil(length / Math.max(1, Number(step) || 1)));
+    return Array.from({ length: count + 1 }, (_, i) => ({ x: a.x + ((b.x - a.x) * i) / count, y: a.y + ((b.y - a.y) * i) / count }));
+}
+
+/**
+ * Counteracting an area rather than an effect.
+ *
+ * *Holy Light*: "If the light passes through an area of magical darkness or targets a creature affected by magical
+ * darkness, holy light attempts to counteract the darkness." `{ type: "counteract-area", areas: "darkness" }` finds
+ * every lingering area of that kind the line from the caster to a target crosses, the target's own square included,
+ * and rolls against each: its rank, and its caster's spell DC. A counteracted area is deleted, and its light with it.
+ */
+async function applyCounteractArea(rider, context) {
+    const scene = canvas?.scene;
+    const from = context.originToken?.object?.center ?? context.originToken?.center;
+    if (!scene || !from) return;
+    const kind = rider.apply.areas ?? "darkness";
+    const step = (canvas.grid?.size ?? 100) / 4;
+    const ends = (context.targets ?? []).map((token) => token?.object?.center ?? token?.center).filter(Boolean);
+    const crossed = scene.regions.filter((region) => flagOf(region, "lingering")?.[kind] === true
+        && ends.some((to) => pointsAlong(from, to, step).some((point) => region.polygonTree?.testPoint(point))));
+    for (const region of crossed) await counteractArea(region, rider, context);
+}
+
+/** One area's counteract check, rolled and settled. */
+async function counteractArea(region, rider, context) {
+    const actor = context.originActor;
+    const payload = flagOf(region, "lingering");
+    const name = payload?.name ?? region.name;
+    const statistic = RiderExtensions.statistic(actor, rider.apply.statistic ?? "spellcasting");
+    if (!actor || !statistic) {
+        if (actor) ui.notifications.warn(t("Counteract.NoStatistic", { actor: actor.name, slug: rider.apply.statistic ?? "spellcasting" }));
+        return;
+    }
+    const cast = castItemOf(context);
+    const targetRank = Math.max(1, Number(payload?.rank) || 1);
+    const roll = await statistic.roll({
+        dc: { value: (await areaDcOf(payload)) ?? dcByLevel(targetRank * 2 - 1) },
+        skipDialog: true,
+        label: t("Counteract.Against", { effect: name }),
+        extraRollOptions: [`${LIB_ID}:counteract`],
+    });
+    const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
+    const ourRank = counteractRank(actor, cast, cast?.rank);
+    const reach = { criticalSuccess: 3, success: 1, failure: -1, criticalFailure: -Infinity }[outcome] ?? -Infinity;
+    const counteracted = targetRank <= ourRank + reach;
+    if (counteracted) await region.delete();
+    await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        flavor: context.item?.name ?? t("Counteract.Title"),
+        content: counteracted
+            ? `<p>${t("Counteract.Gone", { effect: name })}</p>`
+            : `<p>${t("Counteract.Holds", { effect: name, rank: targetRank, ours: ourRank, outcome: outcome ? outcomeLabel(outcome) : t("Counteract.FailedCheck") })}</p>`,
+    });
+}
+
+/** An area's counteract DC: its spell's own spell DC, else its caster's best, else null. */
+async function areaDcOf(payload) {
+    const spell = payload?.itemUuid ? await fromUuid(payload.itemUuid).catch(() => null) : null;
+    const own = spell?.spellcasting?.statistic?.dc?.value;
+    if (Number.isFinite(own)) return own;
+    const caster = payload?.originUuid ? await fromUuid(payload.originUuid).catch(() => null) : null;
+    const best = RiderExtensions.statistic(caster, "spellcasting")?.dc?.value;
+    return Number.isFinite(best) ? best : null;
 }
 
 /** The item an effect came from, if it says and it can still be found. */
@@ -3143,6 +3214,8 @@ function effectSource(label, rules, rider, context) {
             burst: g.burst ? { formula: `${dice}${g.burst.die ?? "d8"}`, type: g.burst.type ?? "untyped", save: g.burst.save ?? "reflex", range: g.burst.range ?? 10 } : null,
         } } });
     }
+    // *Magnetize*: metal attacks drawn to its holder, marked on their cards (`draws.mjs`).
+    if (rider.apply?.draws) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { draws: rider.apply.draws === true ? { feet: 15 } : rider.apply.draws } });
     // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
     if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
     // *Revealing Light*: its holder is seen through invisibility, and no longer concealed otherwise (`reveal.mjs`).

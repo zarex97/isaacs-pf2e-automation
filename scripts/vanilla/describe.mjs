@@ -64,6 +64,7 @@ const SUMMARIES = {
     castChoice: (spec) => [t("Indicator.CastChoice", { count: spec?.choices?.length ?? 0 })],
     sacrifice: () => [t("Indicator.Sacrifice")],
     circumstanceAcLess: (by) => [t("Indicator.CircumstanceAcLess", { by })],
+    saveModifier: (spec) => [spec].flat().filter(Boolean).map((s) => t("Indicator.SaveModifier", { value: s.value, type: s.type ?? "untyped" })),
 };
 
 /** Where a key's config came from, in words. */
