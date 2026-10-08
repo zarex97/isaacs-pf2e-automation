@@ -710,12 +710,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-97a | "A creature affected by revealing light is Dazzled" | Dazzled | | ☐ | |
-| VS-97b | "If the creature was Invisible, it becomes Concealed instead" | An invisible creature becomes concealed and can be seen | | ☐ | |
-| VS-97c | "If the creature was already concealed for any other reason, it is no longer concealed" | Its concealment (*Blur*, *Mist*) no longer counts | | ☐ | |
-| VS-97d | "Success The light affects the creature for 2 rounds" | Two rounds | | ☐ | |
-| VS-97e | "Failure The light affects the creature for 1 minute" | A minute | | ☐ | |
-| VS-97f | "Critical Failure The light affects the creature for 10 minutes" | Ten minutes | | ☐ | |
+| VS-97a | "A creature affected by revealing light is Dazzled" | Dazzled | `content/vanilla/revealing-light.json`: a written-out effect granting pf2e's *Dazzled* (`GrantItem`), `reveals` | ✅ | ZZ, Leo and Libra in the 10-ft burst: each **dazzled**; the effects removed, the dazzled with them |
+| VS-97b | "If the creature was Invisible, it becomes Concealed instead" | An invisible creature becomes concealed and can be seen | `reveals` (`scripts/riders/reveal.mjs`): the *revealed* detection mode on every seeing token sees a revealed creature, through hidden/undetected/unnoticed when it is invisible; the concealed gate counts it concealed | ✅ | ZZ invisible and undetected: Aries' basic sight **no**, revealed mode **no**. Revealed: basic sight still no, revealed mode **yes**. Aries' Strike at it: "concealed: the DC 5 flat check fails" — not rolled |
+| VS-97c | "If the creature was already concealed for any other reason, it is no longer concealed" | Its concealment (*Blur*, *Mist*) no longer counts | `concealment`: a revealed creature counts as concealed only for its invisibility | ✅ | Leo concealed (Blur) and revealed: Aries' Strike **rolled, no check**. The light gone: the DC 5 check again |
+| VS-97d | "Success The light affects the creature for 2 rounds" | Two rounds | success: 2 rounds | ✅ | Leo, 12 — success: **2 rounds** |
+| VS-97e | "Failure The light affects the creature for 1 minute" | A minute | failure: 1 minute | ✅ | Libra, 8 — failure: **1 minute** |
+| VS-97f | "Critical Failure The light affects the creature for 10 minutes" | Ten minutes | critical failure: 10 minutes | ✅ | ZZ, a natural 1: **10 minutes** |
 
 ### VS-98 · Light
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 24 |
-| ✅ | 290 |
+| ☐ not yet driven | 18 |
+| ✅ | 296 |
 | ⚠️ | 11 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -622,6 +622,9 @@
             "guidance": {
                 "AlreadyImmune": "The target is temporarily immune to Guidance: the spell does nothing."
             },
+            "revealing-light": {
+                "Light": "revealed"
+            },
             "protector-tree": {
                 "Tree": "Protector Tree",
                 "Ground": "protector tree"

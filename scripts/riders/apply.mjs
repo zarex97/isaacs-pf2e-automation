@@ -3103,6 +3103,8 @@ function effectSource(label, rules, rider, context) {
     }
     // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
     if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
+    // *Revealing Light*: its holder is seen through invisibility, and no longer concealed otherwise (`reveal.mjs`).
+    if (rider.apply?.reveals) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { reveals: true } });
     // "Until your next daily preparations" — *Light*, *Vital Beacon* (`preparations.mjs`).
     if (rider.apply?.untilPreparations && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { untilPreparations: context.originActor.uuid } });
     // *Planar Tether*: the caster and rank that counteract a teleport or a banishment (`tether.mjs`).
