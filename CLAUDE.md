@@ -46,6 +46,11 @@ Run `node .gitnexus/run.cjs analyze --index-only` at the start of a session, bef
 `query`, and again whenever a tool reports the index stale. Then `impact` before editing and
 `detect_changes` before committing.
 
+### Automating a rule
+
+Start from its precedents: the `precedent` skill tags each clause from `Docs/patterns.md` and names the
+clauses and modules that already do the same thing, before any code is read.
+
 ### Verifying a clause
 
 Driven live in world `pf`, through the Claude-in-Chrome extension, as the homebrew is:
