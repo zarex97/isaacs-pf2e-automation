@@ -1,0 +1,23 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "anchor": "caster"
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-end",
+                "of": "target"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "dazzled"
+            }
+        }
+    ]
+}

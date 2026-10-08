@@ -1,0 +1,28 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "persistent-damage",
+                "formula": "1d4",
+                "perStep": "1d4",
+                "perStepInterval": 2,
+                "damageType": "poison"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "persistent-damage",
+                "formula": "2d4",
+                "perStep": "2d4",
+                "perStepInterval": 2,
+                "damageType": "poison"
+            }
+        }
+    ]
+}

@@ -1,0 +1,75 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success",
+                "failure",
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "expire",
+                "effect": "ISAACS_AUTOMATION.Vanilla.mind-games.Locked"
+            }
+        },
+        {
+            "outcomes": [
+                "success",
+                "failure",
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.mind-games.Locked",
+                "slug": "mind-games",
+                "rules": [],
+                "sustained": {
+                    "repeat": true
+                }
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "stunned",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "stunned",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "criticalSuccess"
+            ],
+            "toOrigin": true,
+            "apply": {
+                "type": "condition",
+                "slug": "stunned",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "criticalSuccess"
+            ],
+            "apply": {
+                "type": "expire",
+                "effect": "ISAACS_AUTOMATION.Vanilla.mind-games.Locked"
+            }
+        }
+    ]
+}

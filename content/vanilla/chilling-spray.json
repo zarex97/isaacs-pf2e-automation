@@ -1,0 +1,52 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "anchor": "caster"
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 2,
+                "unit": "rounds"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "all-speeds",
+                        "type": "status",
+                        "value": -5,
+                        "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost"
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 2,
+                "unit": "rounds"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "all-speeds",
+                        "type": "status",
+                        "value": -10,
+                        "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost"
+                    }
+                ]
+            }
+        }
+    ]
+}

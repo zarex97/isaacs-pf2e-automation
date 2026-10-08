@@ -63,6 +63,7 @@ const SUMMARIES = {
     sameAttackPenalty: () => [t("Indicator.SameAttackPenalty")],
     castChoice: (spec) => [t("Indicator.CastChoice", { count: spec?.choices?.length ?? 0 })],
     sacrifice: () => [t("Indicator.Sacrifice")],
+    circumstanceAcLess: (by) => [t("Indicator.CircumstanceAcLess", { by })],
 };
 
 /** Where a key's config came from, in words. */

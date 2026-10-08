@@ -1,0 +1,66 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 10,
+                "unit": "rounds"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.nettleskin.Thorns",
+                "rules": [],
+                "carries": [
+                    {
+                        "event": "damage-received",
+                        "predicate": [
+                            "rider:damage:adjacent",
+                            {
+                                "or": [
+                                    "rider:damage:melee",
+                                    "rider:damage:unarmed"
+                                ]
+                            },
+                            {
+                                "or": [
+                                    "rider:damage:outcome:success",
+                                    "rider:damage:outcome:criticalSuccess"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "damage",
+                            "formula": "1d4",
+                            "perStep": "1d4",
+                            "damageType": "piercing"
+                        }
+                    },
+                    {
+                        "event": "damage-received",
+                        "self": true,
+                        "predicate": [
+                            "rider:damage:adjacent",
+                            {
+                                "or": [
+                                    "rider:damage:melee",
+                                    "rider:damage:unarmed"
+                                ]
+                            },
+                            {
+                                "or": [
+                                    "rider:damage:outcome:success",
+                                    "rider:damage:outcome:criticalSuccess"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "shorten",
+                            "rounds": 1
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

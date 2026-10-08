@@ -697,6 +697,58 @@
                 }
             }
         },
+        "chilling-spray": {
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 2,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost",
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": "all-speeds",
+                                "type": "status",
+                                "value": -5,
+                                "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 2,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost",
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": "all-speeds",
+                                "type": "status",
+                                "value": -10,
+                                "label": "ISAACS_AUTOMATION.Vanilla.chilling-spray.Frost"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "cleanse-affliction": {
             "riders": [
                 {
@@ -1258,6 +1310,18 @@
                 "maxTargets": 2
             }
         },
+        "endure": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.AAypmg9Jz6Ysf02a",
+                        "atCastRank": true
+                    }
+                }
+            ]
+        },
         "enfeeble": {
             "riders": [
                 {
@@ -1533,6 +1597,19 @@
                                 "typeFromSpell": "RrsNfz6nzSiUPvoY"
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "false-vitality": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.PANUWN5xXC20WBg2",
+                        "atCastRank": true
                     }
                 }
             ]
@@ -2235,6 +2312,48 @@
                         "uuid": "Compendium.pf2e.spell-effects.Item.l9HRQggofFGIxEse",
                         "replace": true,
                         "atCastRank": true
+                    }
+                }
+            ]
+        },
+        "holy-light": {
+            "riders": [
+                {
+                    "event": "strike-resolved",
+                    "outcomes": [
+                        "success"
+                    ],
+                    "predicate": [
+                        "target:trait:unholy"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "5d6",
+                        "perStep": "2d6",
+                        "damageType": "spirit"
+                    }
+                },
+                {
+                    "event": "strike-resolved",
+                    "outcomes": [
+                        "criticalSuccess"
+                    ],
+                    "predicate": [
+                        "target:trait:unholy"
+                    ],
+                    "apply": {
+                        "type": "damage",
+                        "formula": "10d6",
+                        "perStep": "4d6",
+                        "damageType": "spirit"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.holy-light.Darkness"
                     }
                 }
             ]
@@ -3158,6 +3277,81 @@
                 }
             ]
         },
+        "mind-games": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "expire",
+                        "effect": "ISAACS_AUTOMATION.Vanilla.mind-games.Locked"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.mind-games.Locked",
+                        "slug": "mind-games",
+                        "rules": [],
+                        "sustained": {
+                            "repeat": true
+                        }
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stunned",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stunned",
+                        "value": 2
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalSuccess"
+                    ],
+                    "toOrigin": true,
+                    "apply": {
+                        "type": "condition",
+                        "slug": "stunned",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalSuccess"
+                    ],
+                    "apply": {
+                        "type": "expire",
+                        "effect": "ISAACS_AUTOMATION.Vanilla.mind-games.Locked"
+                    }
+                }
+            ]
+        },
         "mirror-image": {
             "areaTargeting": false,
             "riders": [
@@ -3312,6 +3506,127 @@
                                 }
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "nettleskin": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 10,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.nettleskin.Thorns",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "damage-received",
+                                "predicate": [
+                                    "rider:damage:adjacent",
+                                    {
+                                        "or": [
+                                            "rider:damage:melee",
+                                            "rider:damage:unarmed"
+                                        ]
+                                    },
+                                    {
+                                        "or": [
+                                            "rider:damage:outcome:success",
+                                            "rider:damage:outcome:criticalSuccess"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "1d4",
+                                    "perStep": "1d4",
+                                    "damageType": "piercing"
+                                }
+                            },
+                            {
+                                "event": "damage-received",
+                                "self": true,
+                                "predicate": [
+                                    "rider:damage:adjacent",
+                                    {
+                                        "or": [
+                                            "rider:damage:melee",
+                                            "rider:damage:unarmed"
+                                        ]
+                                    },
+                                    {
+                                        "or": [
+                                            "rider:damage:outcome:success",
+                                            "rider:damage:outcome:criticalSuccess"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "shorten",
+                                    "rounds": 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "noxious-vapors": {
+            "areaTargeting": {
+                "affects": "all"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "sickened",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalSuccess",
+                        "success",
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "concealed"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "concealed"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "prompt",
+                        "text": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Outside"
                     }
                 }
             ]
@@ -3695,6 +4010,9 @@
                 }
             ]
         },
+        "phase-bolt": {
+            "circumstanceAcLess": 2
+        },
         "planar-tether": {
             "riders": [
                 {
@@ -3829,6 +4147,34 @@
                     "name": "ISAACS_AUTOMATION.Vanilla.protector-tree.Tree"
                 }
             }
+        },
+        "puff-of-poison": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "1d4",
+                        "perStep": "1d4",
+                        "perStepInterval": 2,
+                        "damageType": "poison"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "persistent-damage",
+                        "formula": "2d4",
+                        "perStep": "2d4",
+                        "perStepInterval": 2,
+                        "damageType": "poison"
+                    }
+                }
+            ]
         },
         "regenerate": {
             "riders": [
@@ -5521,6 +5867,29 @@
                                 }
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "timber": {
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster"
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-end",
+                        "of": "target"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "dazzled"
                     }
                 }
             ]

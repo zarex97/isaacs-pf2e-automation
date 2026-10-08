@@ -27,6 +27,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "castChoice",
     // A minion spent — *Final Sacrifice* (`vanilla/sacrifice.mjs`).
     "sacrifice",
+    // A circumstance bonus to AC an attack counts for less — *Phase Bolt* (`vanilla/phase.mjs`).
+    "circumstanceAcLess",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */
