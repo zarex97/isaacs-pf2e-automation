@@ -9,6 +9,9 @@ import { LIB_ID } from "../id.mjs";
  * `floor: { slug, value }` keeps its holder's condition of that slug from going below `value`: a lowering is clamped
  * and a removal refused — while its caster can see the holder (not blinded, the holder not invisible, undetected or
  * unnoticed). The effect itself is the spell, Sustained by its caster.
+ *
+ * *Ghoulish Cravings*: "can't reduce this condition below sickened 1 until it first consumes some raw meat" — no sight
+ * in it. `sight: false` holds the floor whoever can see whom.
  */
 
 const FLAG = "floor";
@@ -18,7 +21,7 @@ const UNSEEN = ["invisible", "undetected", "unnoticed"];
 export function floorFor(actor, slug) {
     for (const effect of actor?.itemTypes?.effect ?? []) {
         const spec = effect.flags?.[LIB_ID]?.[FLAG];
-        if (spec?.slug === slug) return { effect, value: Number(spec.value) || 1, casterUuid: spec.casterUuid ?? null };
+        if (spec?.slug === slug) return { effect, value: Number(spec.value) || 1, casterUuid: spec.casterUuid ?? null, sight: spec.sight !== false };
     }
     return null;
 }
@@ -39,6 +42,7 @@ function holding(item) {
     if (item?.type !== "condition" || !item.actor) return null;
     const floor = floorFor(item.actor, item.slug);
     if (!floor) return null;
+    if (!floor.sight) return floor;
     const caster = floor.casterUuid ? fromUuidSync(floor.casterUuid) : null;
     return canSee(caster, item.actor) ? floor : null;
 }

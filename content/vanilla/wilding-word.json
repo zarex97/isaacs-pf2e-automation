@@ -1,0 +1,148 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.wilding-word.Kinds"
+            }
+        },
+        {
+            "outcomes": [
+                "success",
+                "failure",
+                "criticalFailure"
+            ],
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Source",
+                "slug": "wilding-word-source",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "self:wilding-word"
+                    }
+                ],
+                "carries": [
+                    {
+                        "event": "damage-received",
+                        "predicate": [
+                            "rider:damage:dealt",
+                            "rider:target:effect:wilding-word-1"
+                        ],
+                        "apply": {
+                            "type": "condition",
+                            "slug": "sickened",
+                            "value": 1
+                        }
+                    },
+                    {
+                        "event": "damage-received",
+                        "predicate": [
+                            "rider:damage:dealt",
+                            "rider:target:effect:wilding-word-2"
+                        ],
+                        "apply": {
+                            "type": "condition",
+                            "slug": "sickened",
+                            "value": 2
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Word",
+                "slug": "wilding-word-0",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": [
+                            "attack-roll",
+                            "skill-check"
+                        ],
+                        "type": "status",
+                        "value": -2,
+                        "predicate": [
+                            "target:wilding-word"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Word"
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Word",
+                "slug": "wilding-word-1",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": [
+                            "attack-roll",
+                            "skill-check"
+                        ],
+                        "type": "status",
+                        "value": -2,
+                        "predicate": [
+                            "target:wilding-word"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Word"
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Word",
+                "slug": "wilding-word-2",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": [
+                            "attack-roll",
+                            "skill-check"
+                        ],
+                        "type": "status",
+                        "value": -2,
+                        "predicate": [
+                            "target:wilding-word"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.wilding-word.Word"
+                    }
+                ]
+            }
+        }
+    ]
+}

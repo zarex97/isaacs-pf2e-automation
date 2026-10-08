@@ -1,0 +1,29 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.shattering-gem.Gem",
+                "rules": [],
+                "guardian": {
+                    "hp": 5,
+                    "hpPerStep": 5,
+                    "flatDc": 11,
+                    "burst": {
+                        "dice": 1,
+                        "die": "d8",
+                        "perStep": 1,
+                        "type": "slashing",
+                        "save": "reflex",
+                        "range": 10
+                    }
+                }
+            }
+        }
+    ]
+}

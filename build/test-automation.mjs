@@ -623,6 +623,34 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The match tests: ten spells the precedent lookup matched poorly, ten it matched partly        */
+/* -------------------------------------------------------------------------------------------- */
+
+for (const name of ["vanilla-spells-low.md", "vanilla-spells-mid.md"]) {
+    const file = path.join(ROOT, "Docs", "clauses", name);
+    if (!fs.existsSync(file)) continue;
+    const text = fs.readFileSync(file, "utf8");
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
+    const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-spell-text.json"), "utf8")).spells;
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const spells = Object.fromEntries([...text.matchAll(/^\| (VS-\d+) \| `([a-z0-9-]+)` \|/gm)].map((m) => [m[1], m[2]]));
+    const { trackerRows } = await import("./lib/patterns.mjs");
+    const clauses = trackerRows(text).filter((r) => /^VS-\d+[a-z]$/.test(r.id)).map((r) => {
+        const [, spell] = /^(VS-\d+)([a-z])$/.exec(r.id);
+        return { id: r.id, spell, clause: r.cells.Clause.replace(/^"|"$/g, ""), mark: r.cells.Status };
+    });
+    check(`${name} lists ten real pf2e spells, each once`,
+        [Object.keys(spells).length, new Set(Object.values(spells)).size, Object.values(spells).filter((slug) => !index.spells[slug])], [10, 10, []]);
+    check("…every clause belongs to a listed spell, and every spell has clauses",
+        [clauses.filter((c) => !spells[c.spell]).map((c) => c.id), Object.keys(spells).filter((id) => !clauses.some((c) => c.spell === id))], [[], []]);
+    check("…every clause carries one of the six marks", clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => `${c.id} ${c.mark}`), []);
+    check("…every clause is a verbatim fragment of pf2e's own text",
+        clauses.filter((c) => !(words[spells[c.spell]] ?? "").includes(c.clause)).map((c) => c.id), []);
+    check("…every spell has a table entry",
+        Object.values(spells).filter((slug) => !fs.existsSync(path.join(ROOT, "content", "vanilla", `${slug}.json`))), []);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  The pilot's tracker: the eleven spells of 1.2.0, clausified after the fact                   */
 /* -------------------------------------------------------------------------------------------- */
 

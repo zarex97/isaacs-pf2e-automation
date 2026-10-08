@@ -827,6 +827,26 @@
             "mist": {
                 "Cloud": "Mist",
                 "Inside": "<p>You are within the mist: you are concealed, and creatures outside the mist are concealed to you.</p>"
+            },
+            "ghoulish-cravings": {
+                "Hunger": "ghoulish hunger",
+                "Eat": "Eat raw meat"
+            },
+            "shattering-gem": {
+                "Gem": "shattering gem"
+            },
+            "coral-scourge": {
+                "Coral": "coral scourge",
+                "Scrape": "Scrape off the coral"
+            },
+            "wilding-word": {
+                "Word": "wilding word",
+                "Source": "wilding word's speaker",
+                "Kinds": "An animal, fungus or plant takes a –1 circumstance penalty to its save against wilding word — apply it before it rolls."
+            },
+            "magnetize": {
+                "Field": "magnetized",
+                "Note": "Magnetize: a ranged attack with a metal weapon or projectile at a creature within 15 feet of the magnetized creature hits the magnetized one instead; a metal melee Strike within 15 feet at anyone else takes a –2 circumstance penalty."
             }
         },
         "Conditions": {
@@ -852,6 +872,13 @@
             "FascinationBroken": "{attacker}'s hostile action breaks {actor}'s fascination.",
             "WoundsTreated": "{actor}'s wounds are treated: no longer wounded.",
             "Refocused": "{actor} Refocuses: no longer cursebound."
+        },
+        "Guardian": {
+            "Blocks": "{actor}'s {name} blocks the Strike (DC {dc} flat check).",
+            "Misses": "{actor}'s {name} doesn't block the Strike (DC {dc} flat check).",
+            "Takes": "{name} takes {taken} damage; {left} Hit Points left.",
+            "Shatters": "{name} takes {taken} damage and shatters.",
+            "Burst": "The shards strike {target}."
         }
     }
 }
