@@ -644,6 +644,27 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The condition tracker: every pf2e condition, clausified in its own words                     */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { trackerRows } = await import("./lib/patterns.mjs");
+    const text = fs.readFileSync(path.join(ROOT, "Docs", "clauses", "pf2e-conditions.md"), "utf8");
+    const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-condition-text.json"), "utf8")).conditions;
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-index.json"), "utf8"));
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const rows = trackerRows(text);
+    const conditions = Object.fromEntries(rows.filter((r) => r.cells.Condition).map((r) => [r.id, r.cells.Condition.replace(/`/g, "")]));
+    const clauses = rows.filter((r) => /^CND-\d+[a-z]$/.test(r.id)).map((r) => ({ id: r.id, condition: r.id.slice(0, -1), clause: r.cells.Clause.replace(/^"|"$/g, ""), mark: r.cells.Status }));
+    check("the condition tracker lists every pf2e condition, once", Object.values(conditions).sort(), Object.keys(index.conditions).sort());
+    check("…each with clauses, and each clause of a listed condition",
+        [Object.keys(conditions).filter((id) => !clauses.some((c) => c.condition === id)), clauses.filter((c) => !conditions[c.condition]).map((c) => c.id)], [[], []]);
+    check("…numbered once each", clauses.length - new Set(clauses.map((c) => c.id)).size, 0);
+    check("…carrying one of the six marks", clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => `${c.id} ${c.mark}`), []);
+    check("…in pf2e's own words", clauses.filter((c) => !(words[conditions[c.condition]] ?? "").includes(c.clause)).map((c) => c.id), []);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Patterns: every tag is from the closed list, and every pattern has a precedent that works    */
 /* -------------------------------------------------------------------------------------------- */
 
