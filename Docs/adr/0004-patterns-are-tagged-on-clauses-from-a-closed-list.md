@@ -29,3 +29,6 @@ next spell, feat or condition starts from the code that already does the same th
   had no tracker.
 - `npm test` fails on a tag outside the list, and — once backfill is done — on a row with no tags.
 - The vanilla trackers' old prose **Shape** column is renamed **Gist**; "shape" means an Area's shape only.
+- A clause that states a fact and makes no move — traits on an item, "you keep your feats", "nothing
+  happens" — has `—` in its **Patterns** cell. Its mark still says whether it was proven; marking the row `—`
+  would claim there was nothing to check, and forcing a tag on it would make a false precedent.

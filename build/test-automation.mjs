@@ -695,6 +695,9 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("an empty cell passes until tags are required", P.problems(vocab, [...base, row("X-2", [])]), []);
     check("…and fails once they are", P.problems({ ...vocab, requireTags: true }, [...base, row("X-2", [])]), ["X-2 (t.md) carries no patterns"]);
     check("…except on a — row, which automates nothing", P.problems({ ...vocab, requireTags: true }, [...base, row("X-2", [], "—")]), []);
+    const noMove = P.trackerRows(["| ID | Clause | Patterns | Status |", "| :-- | :-- | :-- | :-- |", "| X-3 | \"nothing happens\" | — | ✅ |"].join("\n"))[0];
+    check("a Patterns cell of — is a clause with no move: no tags, and answered", [noMove.noMove, noMove.tags, P.problems({ ...vocab, requireTags: true }, [...base, noMove])], [true, [], []]);
+    check("…and never a precedent", P.rank([...base, noMove], ["when:cast"]).hits.some((h) => h.row.id === "X-3"), false);
     check("a tag written twice is caught", P.problems(vocab, [...base, row("X-2", ["when:cast", "when:cast"])]), ["X-2 carries a pattern twice"]);
     check("a pattern naming a missing module is caught",
         P.problems({ ...vocab, facets: { when: { question: "?", values: { cast: { meaning: "m", precedent: "X-1a", modules: ["scripts/nowhere.mjs"] } } } } }, [row("X-1a", ["when:cast"])]),

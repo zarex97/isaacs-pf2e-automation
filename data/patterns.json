@@ -2575,6 +2575,51 @@
                         "rather than DC 15",
                         "allows no flat check to end"
                     ]
+                },
+                "strike-property": {
+                    "meaning": "The holder's Strikes gain a property that is not a trait: a material, or a weapon group's critical specialization.",
+                    "precedent": "isaacsHBPF2e:AG-1a",
+                    "modules": [
+                        "isaacsHBPF2e:content/assimilator-substrates/gray/silver.json"
+                    ],
+                    "authored": [
+                        "pf2e ItemAlteration on material-type",
+                        "pf2e CriticalSpecialization"
+                    ],
+                    "phrases": [
+                        "Strikes count as",
+                        "critical specialization effect of the"
+                    ]
+                },
+                "companion": {
+                    "meaning": "A familiar or companion is made for the holder, with its abilities.",
+                    "precedent": "isaacsHBPF2e:SF-03a",
+                    "modules": [
+                        "isaacsHBPF2e:scripts/stargazer/feats.mjs"
+                    ],
+                    "authored": [
+                        "a familiar actor created when the feat lands"
+                    ],
+                    "phrases": [
+                        "You gain a familiar",
+                        "familiar ability",
+                        "animal companion"
+                    ]
+                },
+                "resource-max": {
+                    "meaning": "A pool's maximum is raised — Focus Points to the game's cap, or a resource's own ceiling.",
+                    "precedent": "isaacsHBPF2e:SF-19",
+                    "modules": [
+                        "scripts/lib/actor-preparation.mjs"
+                    ],
+                    "authored": [
+                        "ActiveEffectLike on system.resources.focus.cap"
+                    ],
+                    "phrases": [
+                        "Your focus pool increases",
+                        "maximum",
+                        "Focus Points, the game's maximum"
+                    ]
                 }
             }
         },
@@ -3008,7 +3053,7 @@
                     ]
                 },
                 "counts-higher": {
-                    "meaning": "One of the holder's own tiered things counts as a higher rank, level, tier or step than was paid for — for one Strike, a turn, a minute or the day — usually capped.",
+                    "meaning": "One of the holder's own tiered things counts as a higher rank, level, tier or step than was paid for — or as another kind (a colour, a Bond's part) for whatever counts that kind — usually capped.",
                     "precedent": "isaacsHBPF2e:I-2a",
                     "modules": [
                         "isaacsHBPF2e:scripts/assimilator/engine.mjs",
@@ -3025,7 +3070,9 @@
                         "heighten as though you were 4 levels higher",
                         "counts as one tier higher",
                         "regardless of the Mass you actually paid",
-                        "treat the result as though you had spent"
+                        "treat the result as though you had spent",
+                        "counts as a",
+                        "may stand in for"
                     ]
                 }
             }
