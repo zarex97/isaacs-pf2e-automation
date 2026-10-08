@@ -1,0 +1,78 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Prompt",
+        "fields": [
+            {
+                "key": "message",
+                "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Message",
+                "type": "text"
+            },
+            {
+                "key": "days",
+                "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Days",
+                "type": "number"
+            },
+            {
+                "key": "hours",
+                "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Hours",
+                "type": "number"
+            },
+            {
+                "key": "minutes",
+                "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Minutes",
+                "type": "number"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 365,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Reminder",
+                "slug": "timely-reminder",
+                "rules": [],
+                "reminder": true,
+                "dismissable": true,
+                "endsPrevious": true
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 365,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Reminder",
+                "slug": "timely-reminder",
+                "rules": [],
+                "reminder": true,
+                "dismissable": true,
+                "endsPrevious": true
+            }
+        }
+    ]
+}

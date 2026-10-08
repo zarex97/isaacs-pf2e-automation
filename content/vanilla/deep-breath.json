@@ -1,0 +1,130 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        1
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.deep-breath.Breath",
+                "slug": "deep-breath",
+                "rules": [],
+                "carries": [
+                    {
+                        "event": "holder-acts",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "rider:used:spell",
+                                    "rider:used:trait:auditory",
+                                    "rider:used:trait:linguistic"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "shorten",
+                            "rounds": "all"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        2
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        3
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 60,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.deep-breath.Breath",
+                "slug": "deep-breath",
+                "rules": [],
+                "carries": [
+                    {
+                        "event": "holder-acts",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "rider:used:spell",
+                                    "rider:used:trait:auditory",
+                                    "rider:used:trait:linguistic"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "shorten",
+                            "rounds": 10
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 480,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.deep-breath.Breath",
+                "slug": "deep-breath",
+                "rules": [],
+                "carries": [
+                    {
+                        "event": "holder-acts",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "rider:used:spell",
+                                    "rider:used:trait:auditory",
+                                    "rider:used:trait:linguistic"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "shorten",
+                            "rounds": 10
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

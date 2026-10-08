@@ -1,0 +1,12 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.creation.Note"
+            }
+        }
+    ]
+}

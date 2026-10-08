@@ -160,7 +160,7 @@ Ordered registries run in ascending priority; a name is taken once and a second 
 
 Content nobody authored for this module, by slug: pf2e's own spells first. The config is the same an item's
 flags carry; where it comes from, for each **authored key** (`AUTHORED_KEYS`: `areaTargeting`,
-`areaTargetingShapes`, `riders`, `lingering`, `overlap`, `bypass`, `counterThresholds`, and since 1.4.0 `requires`, `variantFromWeapon`, `actionVariants`, `targetsPerAction`, `sameAttackPenalty` and `castChoice`), in order:
+`areaTargetingShapes`, `riders`, `lingering`, `overlap`, `bypass`, `counterThresholds`, and since 1.4.0 `requires`, `variantFromWeapon`, `actionVariants`, `targetsPerAction`, `sameAttackPenalty`, `castChoice` — whose `fields` ask for words or numbers — `sacrifice`, `circumstanceAcLess` and `saveModifier`), in order:
 
 1. the item's own flags, in any flag scope — `false` switches that key off, table and all;
 2. an entry another module registered for the item's slug;

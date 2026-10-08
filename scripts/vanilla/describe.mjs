@@ -61,7 +61,7 @@ const SUMMARIES = {
     actionVariants: (variants) => [t("Indicator.ActionVariants", { counts: Object.keys(variants ?? {}).join(", ") })],
     targetsPerAction: () => [t("Indicator.TargetsPerAction")],
     sameAttackPenalty: () => [t("Indicator.SameAttackPenalty")],
-    castChoice: (spec) => [t("Indicator.CastChoice", { count: spec?.choices?.length ?? 0 })],
+    castChoice: (spec) => [t("Indicator.CastChoice", { count: spec?.choices?.length ?? spec?.fields?.length ?? 0 })],
     sacrifice: () => [t("Indicator.Sacrifice")],
     circumstanceAcLess: (by) => [t("Indicator.CircumstanceAcLess", { by })],
     saveModifier: (spec) => [spec].flat().filter(Boolean).map((s) => t("Indicator.SaveModifier", { value: s.value, type: s.type ?? "untyped" })),

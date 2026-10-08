@@ -1,0 +1,75 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": [
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "endsOnCrossing": true,
+            "dismiss": true,
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "endsOnCrossing": true,
+            "dismiss": true,
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
+            "duration": {
+                "value": 24,
+                "unit": "hours"
+            },
+            "endsOnCrossing": true,
+            "dismiss": true,
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                }
+            ]
+        }
+    ],
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Note"
+            }
+        }
+    ]
+}

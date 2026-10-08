@@ -990,6 +990,23 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
 {
     const { carried, shortened } = await import("../scripts/riders/apply.mjs");
     const { pointsAlong } = await import("../scripts/riders/apply.mjs");
+    const { counteracts, slugOfName } = await import("../scripts/riders/apply.mjs");
+    check("a counteract reaches by its degree", [counteracts("criticalSuccess", 4, 7), counteracts("criticalSuccess", 4, 8), counteracts("success", 4, 5), counteracts("failure", 4, 3), counteracts("failure", 4, 4), counteracts("criticalFailure", 4, 1)], [true, false, true, true, false, false]);
+    check("a typed spell name is its slug", [slugOfName("Frozen Lungs"), slugOfName(" Familiar's Call "), slugOfName("")], ["frozen-lungs", "familiars-call", ""]);
+    const { usedOptions } = await import("../scripts/riders/data.mjs");
+    check("what a holder used, for its riders", usedOptions({ type: "spell", traits: ["concentrate", "auditory"] }), ["rider:used:spell", "rider:used:trait:concentrate", "rider:used:trait:auditory"]);
+    const { letsGo } = await import("../scripts/riders/held-fast.mjs");
+    check("Metal Merged: what lets go of a weapon", [letsGo({ system: { equipped: { carryType: "dropped" } } }), letsGo({ "system.equipped.carryType": "worn" }), letsGo({ system: { equipped: { handsHeld: 0 } } }), letsGo({ system: { equipped: { carryType: "held", handsHeld: 2 } } }), letsGo({ name: "x" })], [true, true, true, false, false]);
+    const { flanks } = await import("../scripts/riders/flanks-with.mjs");
+    const both = { attackerFeet: 5, partnerFeet: 5, partnerIsTarget: false, offGuard: false };
+    check("Pack Attack: both adjacent, and not off-guard already", [flanks(both), flanks({ ...both, partnerFeet: 10 }), flanks({ ...both, offGuard: true }), flanks({ ...both, partnerIsTarget: true })], [true, false, false, false]);
+    const { swappedDc } = await import("../scripts/riders/dc-swap.mjs");
+    const swap = { actions: ["shove", "reposition"], dc: 13 };
+    check("Bracing Tendrils: the higher DC, for the actions it answers", [swappedDc(10, swap, new Set(["action:shove"])), swappedDc(15, swap, new Set(["action:shove"])), swappedDc(10, swap, new Set(["action:trip"]))], [13, null, null]);
+    const { due, delaySeconds } = await import("../scripts/riders/reminder.mjs");
+    const reminderAt = (at) => ({ flags: { [LIB_ID]: { reminder: { at } } } });
+    check("Timely Reminder: due once the clock reaches it", due([reminderAt(100), reminderAt(200), {}], 150).length, 1);
+    check("…a delay of at least a minute and at most a year", [delaySeconds({ minutes: 10 }), delaySeconds({}), delaySeconds({ days: 400 })], [600, 60, 365 * 24 * 3600]);
     check("a line's points, both ends included", pointsAlong({ x: 0, y: 0 }, { x: 100, y: 0 }, 50), [{ x: 0, y: 0 }, { x: 50, y: 0 }, { x: 100, y: 0 }]);
     check("…and one step when the ends meet", pointsAlong({ x: 5, y: 5 }, { x: 5, y: 5 }, 25).length, 2);
     const { drawnBy } = await import("../scripts/riders/draws.mjs");

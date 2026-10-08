@@ -10,7 +10,7 @@ import {
     selectEntries,
     shadowTarget,
 } from "./bypass.mjs";
-import { OUTCOMES, isAbilityUse, ridersOn } from "./data.mjs";
+import { OUTCOMES, isAbilityUse, ridersOn, usedBy } from "./data.mjs";
 import { Relay } from "./relay.mjs";
 import { BLOCK } from "./spell-shield.mjs";
 
@@ -71,6 +71,9 @@ function liveActorFor(actor, params) {
     const passed = params?.token?.document ?? params?.token ?? null;
     return passed?.actor ?? actor.token?.actor ?? (actor.id ? game.actors?.get(actor.id) : null) ?? actor;
 }
+
+/** Is this roll an action's own check — *Demoralize* — rather than a save or a damage roll? pf2e 8 names it in the options. */
+const isAction = (context) => !!context?.action || (context?.options ?? []).some((option) => String(option).startsWith("action:"));
 
 export const Sources = {
     register() {
@@ -292,6 +295,7 @@ export const Sources = {
         const context = message?.flags?.pf2e?.context;
         if (context?.type === "saving-throw") return Sources.onSaveMessage(message, context);
         if (context?.type !== "attack-roll" || !OUTCOMES.includes(context.outcome)) {
+            await Sources.onHolderActs(message);
             return Sources.onActionUsed(message);
         }
 
@@ -386,6 +390,30 @@ export const Sources = {
         for (const target of game.user.targets) {
             await request(target.document.uuid, false);
         }
+    },
+
+    /**
+     * Its holder using an action or Casting a Spell, for what the holder carries.
+     *
+     * *Frozen Lungs*: "the target takes 1 cold damage whenever it performs an auditory action or Casts a Spell". *Deep
+     * Breath*: "you do lose all the air you inhaled if you speak (including to Cast a Spell)". A rider with `event:
+     * "holder-acts"` on anything the user carries hears every use of theirs, and its predicate reads what was used:
+     * `rider:used:spell`, `rider:used:action`, `rider:used:trait:auditory`. Sent before the use's own riders, so a
+     * spell never hears the cast that gave it. An action that is a check — *Demoralize* — is heard by its roll, whose
+     * context carries the action's traits.
+     */
+    async onHolderActs(message) {
+        const actor = message?.actor;
+        if (!actor || !actor.items.some((owned) => ridersOn(owned).some((rider) => rider.event === "holder-acts"))) return;
+        const context = message.flags?.pf2e?.context;
+        const traits = (context?.traits ?? []).map((trait) => trait?.name ?? trait).filter((trait) => typeof trait === "string");
+        const used = isAbilityUse(message) && message.item
+            ? usedBy(message.item)
+            : isAction(context) && traits.length > 0 && !context.isReroll ? { type: "action", traits } : null;
+        if (!used) return;
+        const own = message.token ?? actor.getActiveTokens(true, true).at(0);
+        if (!own?.uuid) return;
+        await Relay.request({ action: "applyRiders", event: "holder-acts", messageId: message.id, originUuid: actor.uuid, targetUuid: own.uuid, used });
     },
 
     /**

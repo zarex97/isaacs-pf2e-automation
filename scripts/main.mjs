@@ -51,6 +51,11 @@ import { Sacrifice } from "./vanilla/sacrifice.mjs";
 import { Phase } from "./vanilla/phase.mjs";
 import { SaveModifier } from "./vanilla/save-modifier.mjs";
 import { Draws } from "./riders/draws.mjs";
+import { HeldFast } from "./riders/held-fast.mjs";
+import { FlanksWith } from "./riders/flanks-with.mjs";
+import { DcSwap } from "./riders/dc-swap.mjs";
+import { Reminder } from "./riders/reminder.mjs";
+import { SpellImmunity } from "./riders/spell-immunity.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -92,6 +97,11 @@ export const INIT = [
     ["a circumstance bonus to AC that counts less", () => Phase.register()],
     ["a save a spell changes for some", () => SaveModifier.register()],
     ["metal drawn to a creature", () => Draws.register()],
+    ["a weapon that cannot be let go", () => HeldFast.registerHooks()],
+    ["a pair that flanks wherever it stands", () => FlanksWith.register()],
+    ["a DC its holder sets another way", () => DcSwap.register()],
+    ["a message for a moment of the clock", () => Reminder.registerHooks()],
+    ["a ward against one named spell", () => SpellImmunity.register()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

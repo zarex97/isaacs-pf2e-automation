@@ -184,7 +184,8 @@
             "BoltNone": "On no one",
             "BoltFlavor": "{name} — a lightning bolt",
             "Bolted": "a bolt falls on {name}",
-            "NoBolt": "no bolt"
+            "NoBolt": "no bolt",
+            "Crossed": "{name} is dispersed: {token} crossed its edge."
         },
         "Barrier": {
             "Lost": "{name} is lost: {names} stand where it would go.",
@@ -272,7 +273,8 @@
         },
         "Requires": {
             "HeldWeapon": "{name} needs a weapon in hand.",
-            "FlyingTarget": "{name} needs a target in the air."
+            "FlyingTarget": "{name} needs a target in the air.",
+            "OwnFamiliar": "{name} needs your own familiar targeted."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -866,6 +868,76 @@
             },
             "take-root": {
                 "Grasp": "Take Root: the +1 circumstance bonus also applies to its saves against spells or effects that would take a held item from its grasp."
+            },
+            "deep-breath": {
+                "Breath": "deep breath"
+            },
+            "spell-immunity": {
+                "Ward": "spell immunity",
+                "Spell": "Spell",
+                "Prompt": "Name the spell this ward is against."
+            },
+            "pack-attack": {
+                "Pack": "pack attack"
+            },
+            "bracing-tendrils": {
+                "Tendrils": "bracing tendrils",
+                "Note": "Bracing Tendrils: a creature that needs no check to move the caster must succeed at an Athletics check against the spell DC; an effect must counteract the spell. A creature that fails can be pushed 5 feet away."
+            },
+            "telekinetic-haul": {
+                "Haul": "telekinetic haul",
+                "Note": "Telekinetic Haul: move the object up to 20 feet, perhaps leaving it in midair. Each Sustain moves it again, or another eligible object instead."
+            },
+            "invent-code": {
+                "Code": "invented code"
+            },
+            "liminal-doorway": {
+                "Note": "Liminal Doorway: a chalk door opens into a 20-foot room for 8 hours. If the drawing is scrubbed away, the surface broken, or the room overfilled, it collapses, putting one creature out at random each round."
+            },
+            "creation": {
+                "Note": "Creation: a temporary object of earthen or plant matter, 5 cubic feet at most, for 1 hour (metal or common minerals from rank 5). It can't be sold or passed off as real."
+            },
+            "temporary-tool": {
+                "Tool": "temporary tool",
+                "Prompt": "Which tool?",
+                "Rope": "Rope",
+                "Crowbar": "Crowbar",
+                "ToolLong": "Long tool (a shovel)",
+                "ToolShort": "Short tool",
+                "GrapplingHook": "Grappling hook",
+                "Ladder": "Ladder"
+            },
+            "familiars-call": {
+                "Note": "Familiar's Call: a familiar off this scene, within the spell's reach, is brought by the table."
+            },
+            "dome-of-tranquility": {
+                "Dome": "Dome of Tranquility",
+                "Note": "Dome of Tranquility: no sound crosses the dome's edge, either way."
+            },
+            "glowing-trail": {
+                "Trail": "glowing trail",
+                "Note": "Glowing Trail: the caster's path glows, visible or invisible, each stretch fading 10 minutes after it is laid (longer from rank 3)."
+            },
+            "timely-reminder": {
+                "Reminder": "timely reminder",
+                "Prompt": "A message of up to 8 words, and how long until it is delivered.",
+                "Message": "Message",
+                "Days": "Days",
+                "Hours": "Hours",
+                "Minutes": "Minutes"
+            },
+            "frozen-lungs": {
+                "Lungs": "frozen lungs"
+            },
+            "metal-merged": {
+                "Merged": "metal merged"
+            },
+            "phantom-crowd": {
+                "Crowd": "Phantom Crowd",
+                "Note": "Phantom Crowd: a creature that touches the crowd or Seeks to examine it can disbelieve; the crowd is not difficult terrain to one who has."
+            },
+            "countless-eyes": {
+                "Eyes": "countless eyes"
             }
         },
         "Conditions": {
@@ -905,6 +977,23 @@
         "Draws": {
             "Redirect": "If this weapon or projectile is metal, the attack goes to {holder} instead.",
             "Penalty": "If this melee weapon is metal, a –2 circumstance penalty to this attack roll."
+        },
+        "HeldFast": {
+            "Refused": "{actor} can't let go of {item}."
+        },
+        "FlanksWith": {
+            "OffGuard": "{name}, flanked with {partner}"
+        },
+        "DcSwap": {
+            "Label": "{name}"
+        },
+        "Reminder": {
+            "Chime": "<strong>{name}</strong>: a gentle chime, then “{message}” … “{message}”"
+        },
+        "SpellImmunity": {
+            "Check": "{name} against {spell}",
+            "Held": "{actor} is warded: {spell} does not reach it.",
+            "Failed": "{actor}'s ward does not hold against {spell}."
         }
     }
 }

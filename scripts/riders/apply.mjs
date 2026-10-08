@@ -9,7 +9,7 @@ import { applyHeightening, applyThresholds, bonusStepsFrom, effectiveLevel, step
 import { shapeFromArea } from "../targeting/place.mjs";
 import { LIB_ID } from "../id.mjs";
 import { Banish, durationSeconds } from "./banish.mjs";
-import { collectRiders, itemFor, riderAt } from "./data.mjs";
+import { collectRiders, itemFor, riderAt, usedOptions } from "./data.mjs";
 import { t } from "../i18n.mjs";
 import { Sustain } from "./sustain.mjs";
 import { Dismiss } from "./dismiss.mjs";
@@ -35,6 +35,7 @@ import { selectRiders } from "./select.mjs";
 import { spellShieldSource } from "./spell-shield.mjs";
 import { holdOption } from "./unfettered.mjs";
 import { PlanarTether } from "./tether.mjs";
+import { delaySeconds } from "./reminder.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
 const DEGREES = ["criticalFailure", "failure", "success", "criticalSuccess"];
@@ -128,7 +129,7 @@ async function applyToTarget(target, candidates, context, payload) {
         // `eventItem` last: it is the only one that can belong to somebody else, so it fills in only when
         // the event named no item of the origin's own. See `resolveContext` for why the two are separate.
         item: castItemOf(context) ?? context.eventItem,
-        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context), ...castChoiceOptions(context)],
+        extra: [...(payload.damage ? describeDamage(payload.damage) : []), ...shapeOptions(context.message, context.item ?? context.messageItem), ...triggerSide(context), ...castChoiceOptions(context), ...usedOptions(payload.used)],
     });
 
     // Most riders are chosen against the snapshot. A `live` rider is chosen against the world as this pass
@@ -762,7 +763,11 @@ async function applyTeleport(rider, context) {
 
     const gridSize = scene.grid.size;
     const perFoot = gridSize / (scene.grid.distance || 5);
-    const from = context.originToken ?? token;
+    // The caster's token on this scene: a linked actor's first active token can stand on another one, and the line to
+    // it then points off the board — *Familiar's Call* dragged the familiar 30 feet the wrong way.
+    const from = (context.originToken?.parent === scene ? context.originToken : null)
+        ?? context.originActor?.getActiveTokens?.(true, true).find((t) => t.parent === scene)
+        ?? token;
 
     // `TokenDocument#x` follows the *animation*, not the stored value: read it while a token is still
     // sliding — which it always is, a rider fires within a frame of the move that caused it — and every
@@ -1402,6 +1407,20 @@ async function applyCounteractArea(rider, context) {
     for (const region of crossed) await counteractArea(region, rider, context);
 }
 
+/**
+ * Does a counteract of this degree, at this rank, reach an effect of that rank? A critical success reaches three
+ * ranks above its own, a success one, a failure only below, and a critical failure nothing.
+ */
+export function counteracts(outcome, ourRank, targetRank) {
+    const reach = { criticalSuccess: 3, success: 1, failure: -1 }[outcome];
+    return reach !== undefined && Number(targetRank) <= Number(ourRank) + reach;
+}
+
+/** The slug a spell's typed name stands for — *Spell Immunity*'s named spell. */
+export function slugOfName(name) {
+    return String(name ?? "").toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 /** One area's counteract check, rolled and settled. */
 async function counteractArea(region, rider, context) {
     const actor = context.originActor;
@@ -1422,8 +1441,7 @@ async function counteractArea(region, rider, context) {
     });
     const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
     const ourRank = counteractRank(actor, cast, cast?.rank);
-    const reach = { criticalSuccess: 3, success: 1, failure: -1, criticalFailure: -Infinity }[outcome] ?? -Infinity;
-    const counteracted = targetRank <= ourRank + reach;
+    const counteracted = counteracts(outcome, ourRank, targetRank);
     if (counteracted) await region.delete();
     await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
@@ -1972,6 +1990,11 @@ async function applyEffect(rider, context) {
         if (rider.apply.endsPrevious && rider.apply.slug) await endPreviousEffects(rider.apply.slug, context.originActor);
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
+        // "You can Dismiss this spell" — *Frozen Lungs*, *Timely Reminder*: as for a pf2e effect, below.
+        if (created && rider.apply.dismissable) {
+            const who = rider.apply.dismissable === "holder" ? context.actor : context.originActor;
+            if (who) await Dismiss.grantForEffect(who, castItemOf(context) ?? context.item, created);
+        }
         // …and the action its caster spends it with (`origin-action.mjs`), at the cast's DC and rank.
         if (created && rider.apply.originAction) {
             await OriginAction.grant(created, rider.apply.originAction, context, {
@@ -3213,6 +3236,29 @@ function effectSource(label, rules, rider, context) {
             dc: RiderExtensions.resolveDC(g.dc ?? "spell", context),
             burst: g.burst ? { formula: `${dice}${g.burst.die ?? "d8"}`, type: g.burst.type ?? "untyped", save: g.burst.save ?? "reflex", range: g.burst.range ?? 10 } : null,
         } } });
+    }
+    // *Metal Merged*: the weapons in hand cannot be let go of while it lasts (`held-fast.mjs`).
+    if (rider.apply?.heldFast) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { heldFast: { items: heldWeapons(context.actor).map((w) => w.id) } } });
+    // *Pack Attack*: flanking with the creature it is linked to, wherever the two stand (`flanks-with.mjs`).
+    if (rider.apply?.flanksWith) {
+        // Everyone the cast reached, the caster among them, but the holder: "You and the other target flank".
+        const pack = [context.originActor, ...(context.targets ?? []).map((t) => t?.actor ?? t)].filter((a) => a?.uuid && a !== context.actor);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { flanksWith: [...new Set(pack.map((a) => a.uuid))] } });
+    }
+    // *Bracing Tendrils*: the caster's spell DC against the actions that would move its holder (`dc-swap.mjs`).
+    if (rider.apply?.dcSwap) {
+        const { actions = [], dc = "spell" } = rider.apply.dcSwap;
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { dcSwap: { actions, dc: RiderExtensions.resolveDC(dc, context) } } });
+    }
+    // *Timely Reminder*: the words and the moment chosen as it was cast (`reminder.mjs`).
+    if (rider.apply?.reminder) {
+        const chosen = castChoicesOf(context);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { reminder: { at: game.time.worldTime + delaySeconds(chosen), message: String(chosen.message ?? "") } } });
+    }
+    // *Spell Immunity*: a ward against the spell named as it was cast (`spell-immunity.mjs`).
+    if (rider.apply?.immuneTo && context.originActor) {
+        const named = castChoicesOf(context)[rider.apply.immuneTo.flag ?? "spell"];
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { immuneTo: { slug: slugOfName(named), rank: Number(castItemOf(context)?.rank) || 1, casterUuid: context.originActor.uuid, statistic: rider.apply.immuneTo.statistic ?? "spellcasting" } } });
     }
     // *Magnetize*: metal attacks drawn to its holder, marked on their cards (`draws.mjs`).
     if (rider.apply?.draws) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { draws: rider.apply.draws === true ? { feet: 15 } : rider.apply.draws } });

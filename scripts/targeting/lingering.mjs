@@ -25,6 +25,9 @@ export const BEHAVIOR_TYPE = `${LIB_ID}.lingering`;
 
 const UNIT_SECONDS = { seconds: 1, rounds: 6, minutes: 60, hours: 3600, days: 86400 };
 
+/** Areas being ended because something crossed them, so the exits their ending reports do not end them twice. */
+const ending = new Set();
+
 /**
  * An area that stays behind after the Technique that made it.
  *
@@ -82,6 +85,18 @@ export const Lingering = {
             if (game.users?.activeGM?.id !== game.user?.id) return;
             Lingering.clearScenery(region.parent, flagOf(region, FLAG));
         });
+    },
+
+    /** An area something crossed the edge of, ended — once, however many tokens it hears leave as it goes. */
+    async crossed(region, token) {
+        if (!region?.uuid || ending.has(region.uuid) || !region.parent?.regions?.has(region.id)) return;
+        ending.add(region.uuid);
+        try {
+            await region.delete();
+            await ChatMessage.create({ content: `<p>${t("Lingering.Crossed", { name: flagOf(region, FLAG)?.name ?? region.name, token: token?.name ?? "" })}</p>` });
+        } finally {
+            ending.delete(region.uuid);
+        }
     },
 
     /** The lights and walls an area placed, whichever of them are still standing. */
@@ -238,6 +253,10 @@ export const Lingering = {
                 name: spec.name ?? config.item.name,
                 system: { role: "inside", events: ["tokenEnter", "tokenExit"] },
             });
+        }
+        // *Dome of Tranquility*: "If anything larger than 1 Bulk passes through it, the dome is automatically dispersed."
+        if (spec.endsOnCrossing) {
+            behaviors.push({ type: BEHAVIOR_TYPE, name: spec.name ?? config.item.name, system: { role: "crossed", events: ["tokenEnter", "tokenExit"] } });
         }
         // *Repulsion*: a Will save on entering, once; what the result does to moving closer is `repels.mjs`'s.
         if (spec.repels) {
@@ -891,7 +910,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
             // What this behavior does: burn or test whoever is on the ground, or hold an effect on whoever is
             // inside (`inside.mjs`). One declared type for both, so a new kind of area needs no new subtype —
             // and no world restart for Foundry to learn one.
-            role: new foundry.data.fields.StringField({ required: true, choices: ["ground", "inside"], initial: "ground" }),
+            role: new foundry.data.fields.StringField({ required: true, choices: ["ground", "inside", "crossed"], initial: "ground" }),
         };
     }
 
@@ -900,6 +919,9 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         const region = this.parent?.region ?? this.parent?.parent;
         if (this.role === "inside") return Inside.handle(event, region);
+        // Only a move crosses the edge: the creatures standing there when the area appears, or when it goes, are heard
+        // entering and leaving with no movement at all.
+        if (this.role === "crossed") return event.data?.movement ? Lingering.crossed(region, event.data?.token) : undefined;
         if (flagOf(region, FLAG)?.repels) {
             if (event.name === CONST.REGION_EVENTS.TOKEN_ENTER) await Repels.save(region, event.data?.token);
             return;

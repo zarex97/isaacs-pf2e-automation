@@ -30,6 +30,12 @@ export function unmetRequirement(spell) {
         const targets = [...(globalThis.game?.user?.targets ?? [])];
         if (targets.length === 0 || targets.some((token) => !((Number(token.document?._source?.elevation ?? token.document?.elevation ?? token.elevation) || 0) > 0))) return t("Requires.FlyingTarget", { name: spell.name });
     }
+    // *Familiar's Call*: "Target your familiar" — the caster's own, and nothing else. No target is a familiar out of sight,
+    // up to 100 miles off, which the table brings.
+    if (requires === "own-familiar") {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        if (targets.some((token) => token.actor?.type !== "familiar" || token.actor.system?.master?.id !== spell?.actor?.id)) return t("Requires.OwnFamiliar", { name: spell.name });
+    }
     return null;
 }
 
@@ -124,11 +130,15 @@ export const CAST_CHOICES = "castChoices";
  * the following list: acid, bludgeoning, cold, electricity, fire, piercing, slashing, sonic, or void." `castChoice`:
  * `{ flag, prompt, choices }` — damage types are labelled as pf2e labels them. Kept on the caster (`CAST_CHOICES`),
  * and read back by a rider's `"$cast"` (`preselect`) or `"$cast:<flag>"` (`carries`).
+ *
+ * `fields` asks for words or numbers instead of a button: *Timely Reminder*'s message and when, *Spell Immunity*'s
+ * spell. `[{ key, label, type: "text" | "number" }]`, each kept under its `key`.
  */
 export async function castChoice(spell, _options) {
     const spec = configOf(spell, "castChoice");
-    if (!spec?.flag || !Array.isArray(spec.choices) || spec.choices.length === 0) return true;
     const key = `${CAST_CHOICES}.${(spell.original ?? spell).id}`;
+    if (Array.isArray(spec?.fields) && spec.fields.length > 0) return askFields(spell, spec, key);
+    if (!spec?.flag || !Array.isArray(spec.choices) || spec.choices.length === 0) return true;
     // A choice only some ranks ask — *Enlarge*: "Heightened (6th) Choose either the 2nd-rank or 4th-rank version". Below
     // `fromRank` nothing is asked, and nothing an earlier cast chose is left to be read.
     if (Number(spec.fromRank) > 0 && (Number(spell.rank) || 0) < Number(spec.fromRank)) {
@@ -146,6 +156,21 @@ export async function castChoice(spell, _options) {
     });
     if (!chosen) return false;
     await spell.actor?.setFlag(LIB_ID, key, { [spec.flag]: chosen });
+    return true;
+}
+
+/** The words a `fields` choice asks for, in one dialog; a closed dialog refuses the cast. */
+async function askFields(spell, spec, key) {
+    const escape = (text) => foundry.utils.escapeHTML(game.i18n.localize(text ?? ""));
+    const rows = spec.fields.map((field) => `<div class="form-group"><label>${escape(field.label ?? field.key)}</label>`
+        + `<input type="${field.type === "number" ? "number" : "text"}" name="${field.key}"${field.type === "number" ? ' min="0" value="0"' : ""}></div>`);
+    const data = await foundry.applications.api.DialogV2.input({
+        window: { title: spell.name },
+        content: `<p>${escape(spec.prompt)}</p>${rows.join("")}`,
+        rejectClose: false,
+    });
+    if (!data) return false;
+    await spell.actor?.setFlag(LIB_ID, key, Object.fromEntries(spec.fields.map((field) => [field.key, data[field.key] ?? null])));
     return true;
 }
 

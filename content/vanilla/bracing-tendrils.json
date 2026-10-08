@@ -1,0 +1,31 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.bracing-tendrils.Tendrils",
+                "rules": [],
+                "dcSwap": {
+                    "actions": [
+                        "shove",
+                        "reposition"
+                    ]
+                }
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.bracing-tendrils.Note"
+            }
+        }
+    ]
+}

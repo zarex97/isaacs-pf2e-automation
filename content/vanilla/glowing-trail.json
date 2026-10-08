@@ -1,0 +1,25 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Trail",
+                "rules": []
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Note"
+            }
+        }
+    ]
+}

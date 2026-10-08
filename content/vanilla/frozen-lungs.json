@@ -1,0 +1,107 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.frozen-lungs.Lungs",
+                "rules": [],
+                "dismissable": true,
+                "carries": [
+                    {
+                        "event": "holder-acts",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "rider:used:spell",
+                                    "rider:used:trait:auditory"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "damage",
+                            "formula": "1",
+                            "damageType": "cold"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.frozen-lungs.Lungs",
+                "rules": [],
+                "dismissable": true,
+                "carries": [
+                    {
+                        "event": "holder-acts",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "rider:used:spell",
+                                    "rider:used:trait:auditory"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "damage",
+                            "formula": "1d8",
+                            "perStep": "1d8",
+                            "perStepInterval": 2,
+                            "damageType": "cold"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.frozen-lungs.Lungs",
+                "rules": [],
+                "dismissable": true,
+                "carries": [
+                    {
+                        "event": "holder-acts",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "rider:used:spell",
+                                    "rider:used:trait:auditory"
+                                ]
+                            }
+                        ],
+                        "apply": {
+                            "type": "damage",
+                            "formula": "2d8",
+                            "perStep": "1d8",
+                            "perStepInterval": 2,
+                            "damageType": "cold"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

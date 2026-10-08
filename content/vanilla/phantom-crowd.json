@@ -1,0 +1,24 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Crowd",
+        "duration": {
+            "value": 10,
+            "unit": "minutes"
+        },
+        "difficultTerrain": 2
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Note"
+            }
+        }
+    ]
+}
