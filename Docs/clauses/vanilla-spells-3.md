@@ -747,15 +747,15 @@ module alone — PF2e Automations and PF2e Assistant off.
 | VS-100a | "Once per round, either you or an ally can use an Interact action to supplicate and lay hands upon you to regain Hit Points" | The caster or an adjacent ally can take the beacon's healing, once a round | `content/vanilla/vital-beacon.json`: a written-out effect on the caster with 4 charges, `untilPreparations`, and an action (`originAction`, manipulate) whose `heal` rider is `oncePerRound`; it heals the creature targeted | ⚠️ | In an encounter, Aries' *Lay Hands on the Vital Beacon* at Leo: healed **15** (4d10); used again in the same round: **nothing**. **Gap:** the action sits on the caster's sheet and heals whoever is targeted — an ally laying hands uses it through the caster, and that the ally is adjacent is not checked |
 | VS-100b | "Each time the beacon heals someone, it decreases in strength" | d10s, then d8s, then d6s, then d4s, one die per rank | `heal.byCharge` (one die per the effect's level, the size by the charges left) with `spend: true` after the roll | ✅ | Round by round: **4d10** (15), **4d8** (18), **4d6** (13), **4d4** (12). (A first version spent the charge before the heal read it, rolling d8s first; the heal now spends after rolling) |
 | VS-100c | "after which the spell ends" | After the fourth healing it's gone | The last charge spent ends the effect, and the action goes with it | ✅ | After the fourth healing: the effect **gone**, the action **gone**; the next round, nothing to use |
-| VS-100d | "You can have only one vital beacon active at a time" | A second beacon ends the first | | ☐ | |
-| VS-100e | "The beacon restores one additional die of Hit Points each time it heals, using the same die size as the others for that step" | Rank 5: 5d10, 5d8, 5d6, 5d4 | | ☐ | |
+| VS-100d | "You can have only one vital beacon active at a time" | A second beacon ends the first | `slug: vital-beacon`, `endsPrevious`: casting again ends the caster's earlier beacon | ✅ | Rank 4, then rank 5: **one beacon** left (level 5, 4 charges); the first beacon's action gone with it |
+| VS-100e | "The beacon restores one additional die of Hit Points each time it heals, using the same die size as the others for that step" | Rank 5: 5d10, 5d8, 5d6, 5d4 | `byCharge`: one die per the effect's level (the cast rank) | ✅ | Rank 5, the first healing: **5d10** (36) |
 
 ## Counts
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 2 |
-| ✅ | 311 |
+| ☐ not yet driven | 0 |
+| ✅ | 313 |
 | ⚠️ | 12 |
 | ❌ | 0 |
 | 🔧 | 0 |

@@ -37,7 +37,9 @@
                             }
                         }
                     ]
-                }
+                },
+                "slug": "vital-beacon",
+                "endsPrevious": true
             }
         }
     ]
