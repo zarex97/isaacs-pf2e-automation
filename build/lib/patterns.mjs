@@ -17,6 +17,7 @@ export const DOC = path.join(ROOT, "Docs", "patterns.md");
 export const TRACKERS = path.join(ROOT, "Docs", "clauses");
 
 const SEPARATOR = "·";
+export const NO_MOVE = "—";
 const TAG = /^([a-z-]+):([a-z-]+)(?:\/([a-z-]+))?$/;
 
 export const readVocabulary = (file = VOCABULARY) => JSON.parse(fs.readFileSync(file, "utf8"));
@@ -58,7 +59,10 @@ export function trackerRows(markdown, source = "") {
         }
         if (!header || /^:?-+/.test(cells[0])) continue;
         const row = Object.fromEntries(header.map((name, i) => [name, cells[i] ?? ""]));
-        rows.push({ id: cells[0], source, heading, cells: row, tagged: "Patterns" in row, tags: tagsOf(row.Patterns) });
+        // A Patterns cell of `—` answers the column: the clause states a fact and makes no move (traits on an
+        // item, "you keep your feats", "nothing happens"). It carries no tags and is never a precedent.
+        const noMove = row.Patterns === NO_MOVE;
+        rows.push({ id: cells[0], source, heading, cells: row, tagged: "Patterns" in row, noMove, tags: noMove ? [] : tagsOf(row.Patterns) });
     }
     return rows;
 }
@@ -125,7 +129,7 @@ export function problems(vocabulary, rows, { requireTags = vocabulary.requireTag
 
     for (const row of rows.filter((r) => r.tagged)) {
         // A — row is a GM ruling with nothing automated: no precedent for anything, so it may stay untagged.
-        if (requireTags && row.tags.length === 0 && markOf(row) !== "—") found.push(`${row.id} (${row.source}) carries no patterns`);
+        if (requireTags && row.tags.length === 0 && !row.noMove && markOf(row) !== "—") found.push(`${row.id} (${row.source}) carries no patterns`);
         for (const tag of row.tags) {
             if (tags.has(tag)) continue;
             const parsed = TAG.exec(tag);
@@ -157,6 +161,7 @@ export function patternsDoc(vocabulary) {
         "",
         "A tag is `facet:value`, or `facet:value/variant` where two variants are done by different code. A new value",
         "needs a precedent clause that is ✅ — here, or in the homebrew, cited `isaacsHBPF2e:<ID>` (as its modules are).",
+        "A clause that states a fact and makes no move — traits on an item, \"nothing happens\" — has `—` for its patterns.",
         "",
     ];
     for (const [facet, { question, values }] of Object.entries(vocabulary.facets)) {
