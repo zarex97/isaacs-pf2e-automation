@@ -47,6 +47,7 @@ needs a precedent clause that is ✅.
 | `reach:minion` | The caster's own summoned minion. | VS-94a | `scripts/vanilla/sacrifice.mjs` | `sacrifice` | “your minion”, “summoned creature”, “creature you summoned” |
 | `reach:weapon` | A weapon the caster or target is holding. | VS-85a | `scripts/riders/weapon.mjs`, `scripts/vanilla/requires.mjs` | `requires: held-weapon`, `preselect: $held`, `variantFromWeapon` | “a weapon you're holding”, “the weapon”, “one weapon” |
 | `reach:filtered` | Only creatures of a kind qualify: a size, a level, living, breathing, flying. | VS-71e | `scripts/targeting/catch.mjs`, `scripts/vanilla/requires.mjs` | `areaTargeting.predicate`, `lingering.targetPredicate`, `requires` | “has no effect on”, “living creature”, “breathing creature”, “of 17th level or lower”, “Large or larger” |
+| `reach:attacker` | The creature that struck or damaged the holder, answered after the blow. | VS-80f | `scripts/riders/sources.mjs`, `scripts/riders/apply.mjs` | `carries: a damage-received rider aimed at the attacker` | “the attacker takes”, “the attacker” |
 
 ## `area` — If there is an area, how does it behave?
 
@@ -66,6 +67,8 @@ needs a precedent clause that is ✅.
 | `area:wall` | A run of sections laid on grid lines or squares. | VS-47b | `scripts/targeting/barrier.mjs` | `lingering.barrier` | “wall”, “each 5 feet of the wall”, “straight line up to” |
 | `area:clear-space` | The area must be placed where no creature or object stands, or the spell is lost. | VS-47d | `scripts/targeting/barrier.mjs` | `lingering.barrier` | “unbroken open space”, “or the spell is lost”, “unoccupied” |
 | `area:from-target` | The area starts from a creature other than the caster. | VS-58f | `scripts/riders/origin-action.mjs` | `originAction.areaTargeting.includesOrigin` | “originating from the target”, “centered on the target” |
+| `area:swept` | A moving area reaches everyone whose space it passed over, not only where it stops. | VS-41c | `scripts/targeting/lingering.mjs` | `lingering.sustain.move` | “whose space it shared”, “during its flight” |
+| `area:strikes-from` | A lingering area the caster aims a further, smaller strike from — a bolt, a vine. | VS-43a | `scripts/targeting/lingering.mjs` | `lingering.sustain.bolt`, `lingering.sustain.vine` | “call down”, “lash out from any square”, “within the spell's area” |
 
 ## `check` — What decides the outcome?
 
@@ -145,6 +148,11 @@ needs a precedent clause that is ✅.
 | `effect:strike-damage` | Strikes deal extra damage. | VS-86b | `scripts/riders/apply.mjs` | `an effect with DamageDice` | “Strikes deal an extra”, “extra damage” |
 | `effect:strikes-granted` | New attacks to Strike with. | VS-87b | `scripts/riders/apply.mjs` | `an effect with a Strike rule` | “The fangs deal”, “the claws deal”, “unarmed attacks” |
 | `effect:gm-note` | The part the table rules on, whispered to the GM rather than guessed. | VS-03 | `scripts/riders/apply.mjs` | `riders[].apply.type: prompt` | “as determined by the GM”, “the GM” |
+| `effect:damage-type` | The damage type is chosen at the cast, taken from a held weapon, or changed by the target. | VS-44a | `scripts/riders/apply.mjs`, `scripts/vanilla/requires.mjs`, `scripts/vanilla/sacrifice.mjs` | `typeFromSpell`, `variantFromWeapon`, `sacrifice.element` | “damage of the type you chose”, “same type as the weapon”, “deals cold damage” |
+| `effect:trait-gained` | A trait added to the spell, an item or a creature's Strikes while it lasts. | VS-86c | `scripts/targeting/cast-shape.mjs`, `scripts/riders/apply.mjs` | `areaTargetingShapes[].overlay`, `an effect with AdjustStrike` | “gains the trait”, “add that trait” |
+| `effect:approach-barred` | A creature can't move closer to the caster, or pays more to; moving away is free. | VS-46g | `scripts/targeting/repels.mjs`, `scripts/lib/movement-cost.mjs` | `lingering.repels` | “can't move closer to you”, “when moving closer to you” |
+| `effect:recast` | A Sustain repeats the spell's own attack or effect, at the same rank. | VS-53e | `scripts/riders/sustain.mjs`, `scripts/riders/apply.mjs` | `riders[].apply.sustained.repeat` | “repeat the attack”, “Each time you Sustain the spell, you can” |
+| `effect:disarm` | An item loosened in, or knocked from, the holder's grasp. | VS-54c | `scripts/riders/apply.mjs` | `riders[].apply.type: disarm` | “Disarm”, “something they carry” |
 
 ## `ending` — What stops it?
 
@@ -168,6 +176,7 @@ needs a precedent clause that is ✅.
 | `ending:dismiss` | The caster, or the holder, can Dismiss it. | VS-42d | `scripts/riders/dismiss.mjs` | `lingering.dismiss`, `riders[].apply.dismissable` | “You can Dismiss the spell”, “can Dismiss” |
 | `ending:out-of-range` | Ends when the two creatures it links move too far apart. | VS-81c | `scripts/riders/share-damage.mjs` | `shareDamage.range` | “more than 30 feet away from you” |
 | `ending:zero-hp` | Ends when a creature it involves reaches 0 Hit Points. | VS-81d | `scripts/riders/share-damage.mjs`, `scripts/riders/apply.mjs` | `shareDamage`, `transfer with link` | “is reduced to 0 Hit Points”, “then the spell ends” |
+| `ending:action-save` | The holder spends an action on a save that ends the effect on itself. | VS-87f | `scripts/riders/origin-action.mjs` | `originAction with holder: true, a save, and expire` | “attempt to end the spell's effect on itself”, “by using a single action” |
 
 ## `scaling` — What grows with rank or with actions?
 
@@ -190,3 +199,4 @@ needs a precedent clause that is ✅.
 | `economy:reaction` | Cast or used as a reaction to a trigger. | VS-65a | `scripts/riders/reactions.mjs` | `riders[].apply.type: reaction`, `riders[].apply.type: cast` | “Trigger”, “reaction” |
 | `economy:attack-penalty` | How it counts toward the multiple attack penalty. | VS-55f | `scripts/vanilla/requires.mjs` | `sameAttackPenalty` | “multiple attack penalty” |
 | `economy:requires` | The cast needs something first: a held weapon, a flying target. | VS-52a | `scripts/vanilla/requires.mjs` | `requires` | “a weapon you're holding”, “flight”, “flying” |
+| `economy:once-per-target` | Works at most once for a given creature, or a given case of an affliction. | VS-70c | `scripts/riders/cleanse.mjs` | `the entry's own once-per-case record` | “only once to a given”, “once per creature” |

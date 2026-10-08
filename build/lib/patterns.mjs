@@ -104,7 +104,8 @@ export function problems(vocabulary, rows, { requireTags = vocabulary.requireTag
     }
 
     for (const row of rows.filter((r) => r.tagged)) {
-        if (requireTags && row.tags.length === 0) found.push(`${row.id} (${row.source}) carries no patterns`);
+        // A — row is a GM ruling with nothing automated: no precedent for anything, so it may stay untagged.
+        if (requireTags && row.tags.length === 0 && markOf(row) !== "—") found.push(`${row.id} (${row.source}) carries no patterns`);
         for (const tag of row.tags) {
             if (tags.has(tag)) continue;
             const parsed = TAG.exec(tag);
