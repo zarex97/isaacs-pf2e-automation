@@ -52,6 +52,19 @@ async function setValue(actor, slug, value) {
     if (now && now.value !== value) await now.update({ "system.value.value": value });
 }
 
+/**
+ * End a condition however it is held. One an effect grants — a spell's timed fascinated, unconscious or invisible —
+ * is ended by ending that effect: pf2e refuses to delete a grant its effect restricts, and the effect would only
+ * grant it again. One that another condition grants (dying's unconscious) is left to that condition.
+ */
+async function endCondition(actor, slug) {
+    for (const condition of (actor?.itemTypes?.condition ?? []).filter((c) => c.slug === slug)) {
+        const granter = condition.grantedBy;
+        if (granter?.type === "effect") await granter.delete();
+        else if (!granter) await condition.delete();
+    }
+}
+
 /** Actors this module is writing dying to itself, so the hooks on dying do not answer their own writes. */
 const writing = new Set();
 
@@ -154,7 +167,7 @@ async function onEndTurn(combatant) {
     // CND-19c: "at the end of each of your turns, the value of your frightened condition decreases by 1" —
     // "unless specified otherwise": a frightened another item grants and holds is left alone.
     const frightened = actor.getCondition("frightened");
-    if (frightened?.active && !frightened.isLocked) await actor.decreaseCondition("frightened");
+    if (frightened?.active && !frightened.isLocked && !frightened.grantedBy) await actor.decreaseCondition("frightened");
 }
 
 /**
@@ -197,7 +210,7 @@ async function afterDamage(actor, params, before) {
         }
         // CND-39j, CND-39l: "If you are healed, you lose the unconscious condition."
         if (!dying && holds(actor, "unconscious") && after > 0) {
-            await actor.decreaseCondition("unconscious", { forceRemove: true });
+            await endCondition(actor, "unconscious");
             await say(actor, t("Conditions.Woken", { actor: actor.name }));
         }
         return;
@@ -227,7 +240,7 @@ async function confusedRecovery(actor, params, before) {
     const roll = await new Roll("1d20").evaluate();
     const passed = roll.total >= 11;
     await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: t(passed ? "Conditions.ConfusedRecovered" : "Conditions.ConfusedStays", { actor: actor.name }) });
-    if (passed) await actor.decreaseCondition("confused", { forceRemove: true });
+    if (passed) await endCondition(actor, "confused");
 }
 
 /* -------------------------------------------------------------------------------------------- */
@@ -285,7 +298,7 @@ async function onHostileAction(message) {
     const freed = (canvas.scene?.tokens ?? []).map((tok) => tok.actor).filter((actor) =>
         actor && holds(actor, "fascinated") && (actor === victim || actor.isAllyOf?.(victim)));
     for (const actor of new Set(freed)) {
-        await actor.decreaseCondition("fascinated", { forceRemove: true });
+        await endCondition(actor, "fascinated");
         await say(actor, t("Conditions.FascinationBroken", { actor: actor.name, attacker: attacker.name }));
     }
 }
@@ -304,7 +317,7 @@ async function onTreatmentOrRefocus(message, userId) {
         const patients = context.target?.actor ? [fromUuidSync(context.target.actor)] : [...(game.user.targets ?? [])].map((tok) => tok.actor);
         for (const patient of patients) {
             if (!patient?.isOwner || !holds(patient, "wounded")) continue;
-            await patient.decreaseCondition("wounded", { forceRemove: true });
+            await endCondition(patient, "wounded");
             await say(patient, t("Conditions.WoundsTreated", { actor: patient.name }));
         }
         return;
@@ -312,7 +325,7 @@ async function onTreatmentOrRefocus(message, userId) {
     if (!activeGM()) return;
     const item = message.item;
     if (item?.slug === "refocus" && holds(message.actor, "cursebound")) {
-        await message.actor.decreaseCondition("cursebound", { forceRemove: true });
+        await endCondition(message.actor, "cursebound");
         await say(message.actor, t("Conditions.Refocused", { actor: message.actor.name }));
     }
 }
@@ -326,12 +339,24 @@ async function onInvisible(item) {
     const actor = item.actor;
     if (!actor || ["hidden", "undetected", "unnoticed"].some((s) => holds(actor, s))) return;
     await actor.increaseCondition("hidden");
+    await actor.getCondition("hidden")?.update({ [`flags.${LIB_ID}.withInvisible`]: true });
+}
+
+/** …and ends with it: the hidden that becoming invisible started is the invisible's. */
+async function onVisible(item) {
+    if (item.slug !== "invisible" || !conditionsAutomated() || !activeGM()) return;
+    const actor = item.actor;
+    if (!actor || holds(actor, "invisible")) return;
+    for (const hidden of (actor.itemTypes?.condition ?? []).filter((c) => c.slug === "hidden" && c.flags?.[LIB_ID]?.withInvisible)) await hidden.delete();
 }
 
 /** CND-39e: "drop items you're holding". */
 async function onUnconscious(item) {
     if (item.slug !== "unconscious" || !conditionsAutomated() || !activeGM()) return;
     const actor = item.actor;
+    // A rider that takes the prone away (`withoutGrants`) does so just after the condition lands; wait for it.
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    if (!holds(actor, "unconscious") || !holds(actor, "prone")) return;
     const held = (actor?.items ?? []).filter((i) => i.system?.equipped?.carryType === "held");
     if (held.length === 0) return;
     await actor.updateEmbeddedDocuments("Item", held.map((i) => ({ _id: i.id, "system.equipped.carryType": "dropped", "system.equipped.handsHeld": 0 })));
@@ -353,7 +378,11 @@ function refuse(actor, name, condition) {
 export function actionRefused(action) {
     if (!conditionsAutomated() || !action?.actor) return false;
     const traits = action.system?.traits?.value ?? [];
-    const condition = R.refusedBy({ held: heldSlugs(action.actor), what: ["action", ...traits], slug: action.slug });
+    // The Escape actions this module grants (`riders/escape.mjs`, `riders/encasement.mjs`) are Escapes, whatever
+    // their names make of their slugs — restrained lets an Escape through.
+    const own = action.flags?.[LIB_ID] ?? {};
+    const slug = own.escape || own.encasement ? "escape" : action.slug;
+    const condition = R.refusedBy({ held: heldSlugs(action.actor), what: ["action", ...traits], slug });
     return condition ? refuse(action.actor, action.name, condition) : false;
 }
 
@@ -412,7 +441,9 @@ export const Conditions = {
             if (item.type === "condition") void onDyingUpdated(item);
         });
         Hooks.on("deleteItem", (item) => {
-            if (item.type === "condition") void onDyingDeleted(item);
+            if (item.type !== "condition") return;
+            void onDyingDeleted(item);
+            void onVisible(item);
         });
         // CND-24a: an immobilized creature's token does not move, unless the GM moves it.
         Hooks.on("preUpdateToken", (token, changes) => {
