@@ -1,0 +1,2283 @@
+{
+    "about": "The closed list of patterns a clause is tagged with. Edited only in this library; Docs/patterns.md is generated from it (npm run build:patterns). See CONTEXT.md and Docs/adr/0004.",
+    "requireTags": false,
+    "facets": {
+        "when": {
+            "question": "What makes it fire?",
+            "values": {
+                "cast": {
+                    "meaning": "On the cast or the use itself: the card is posted, the targets are confirmed, or each rolls its save from the card.",
+                    "precedent": "VS-01",
+                    "modules": [
+                        "scripts/riders/sources.mjs",
+                        "scripts/cast-pipeline.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: action-used",
+                        "riders[] with no event (save-rolled)"
+                    ],
+                    "phrases": [
+                        "you cast",
+                        "when you cast",
+                        "you send",
+                        "you create",
+                        "you summon"
+                    ]
+                },
+                "sustain": {
+                    "meaning": "Each time the caster Sustains the spell.",
+                    "precedent": "VS-41b",
+                    "modules": [
+                        "scripts/riders/sustain.mjs",
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.sustain",
+                        "riders[].apply.sustained",
+                        "riders[].apply.sustain"
+                    ],
+                    "phrases": [
+                        "Sustain the spell",
+                        "When you Sustain",
+                        "Each time you Sustain",
+                        "the first time you Sustain"
+                    ]
+                },
+                "turn-start": {
+                    "meaning": "When a creature starts its turn — in an area, or carrying an effect.",
+                    "precedent": "VS-10",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs",
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "lingering.events: tokenTurnStart",
+                        "riders[].event: turn-start"
+                    ],
+                    "phrases": [
+                        "starts its turn",
+                        "at the start of its turn",
+                        "at the start of each of its turns",
+                        "start of your turn"
+                    ]
+                },
+                "turn-end": {
+                    "meaning": "When a creature ends its turn — in an area, or carrying an effect.",
+                    "precedent": "VS-50b",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs",
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "lingering.events: tokenTurnEnd",
+                        "riders[].event: turn-end"
+                    ],
+                    "phrases": [
+                        "ends its turn",
+                        "at the end of each of its turns",
+                        "at the end of its turn"
+                    ]
+                },
+                "on-entering": {
+                    "meaning": "When a creature moves into an area.",
+                    "precedent": "VS-12",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.events: tokenMoveIn"
+                    ],
+                    "phrases": [
+                        "enters the area",
+                        "move into",
+                        "as soon as it enters",
+                        "when it enters"
+                    ]
+                },
+                "on-moving": {
+                    "meaning": "For each move action spent in or into an area, not just the first entry.",
+                    "precedent": "VS-48e",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.events: tokenMoveWithin"
+                    ],
+                    "phrases": [
+                        "For every move action",
+                        "begins to use a move action",
+                        "uses a move action"
+                    ]
+                },
+                "while-inside": {
+                    "meaning": "For as long as a creature stands in the area; it starts on entering and stops on leaving.",
+                    "precedent": "VS-07",
+                    "modules": [
+                        "scripts/targeting/inside.mjs"
+                    ],
+                    "authored": [
+                        "lingering.inside"
+                    ],
+                    "phrases": [
+                        "while inside",
+                        "within the",
+                        "while in the area",
+                        "in the area"
+                    ]
+                },
+                "save-made": {
+                    "meaning": "When this creature rolls a save against someone else's effect.",
+                    "precedent": "VS-65a",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: save-made"
+                    ],
+                    "phrases": [
+                        "a saving throw against",
+                        "fail a saving throw",
+                        "critically fail a saving throw"
+                    ]
+                },
+                "strike-made": {
+                    "meaning": "When this creature's Strike resolves.",
+                    "precedent": "VS-87d",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: strike-resolved"
+                    ],
+                    "phrases": [
+                        "On a critical hit",
+                        "when you hit",
+                        "Strikes deal"
+                    ]
+                },
+                "strike-received": {
+                    "meaning": "When a Strike resolves against this creature.",
+                    "precedent": "VS-34",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: strike-received"
+                    ],
+                    "phrases": [
+                        "is hit by",
+                        "attacks the target",
+                        "an attack against"
+                    ]
+                },
+                "damage-taken": {
+                    "meaning": "When damage from someone else lands on this creature.",
+                    "precedent": "VS-66a",
+                    "modules": [
+                        "scripts/riders/sources.mjs",
+                        "scripts/lib/damage-bus.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: damage-received"
+                    ],
+                    "phrases": [
+                        "damages you",
+                        "Each time the target is hit",
+                        "takes damage"
+                    ]
+                },
+                "damage-dealt": {
+                    "meaning": "When damage from this creature's item lands.",
+                    "precedent": "VS-38",
+                    "modules": [
+                        "scripts/riders/sources.mjs",
+                        "scripts/lib/damage-bus.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: damage-applied"
+                    ],
+                    "phrases": [
+                        "damage the target takes",
+                        "the damage dealt",
+                        "every time the target damages"
+                    ]
+                },
+                "dying": {
+                    "meaning": "When a creature nearby would die.",
+                    "precedent": "VS-67a",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: creature-dying"
+                    ],
+                    "phrases": [
+                        "would die",
+                        "is reduced to 0 Hit Points"
+                    ]
+                },
+                "check-rolled": {
+                    "meaning": "On a check the holder rolls, before or after the dice: a bonus to spend, a degree to change.",
+                    "precedent": "VS-84b",
+                    "modules": [
+                        "scripts/lib/check-pipeline.mjs",
+                        "scripts/riders/nudge.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.nudge",
+                        "pf2e FlatModifier with removeAfterRoll"
+                    ],
+                    "phrases": [
+                        "the check",
+                        "before rolling",
+                        "retroactively",
+                        "attack roll, Perception check, saving throw, or skill check"
+                    ]
+                }
+            }
+        },
+        "reach": {
+            "question": "Who or what does it touch?",
+            "values": {
+                "single": {
+                    "meaning": "One target creature.",
+                    "precedent": "VS-57a",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "pf2e's own target"
+                    ],
+                    "phrases": [
+                        "a single creature",
+                        "1 creature",
+                        "against the target"
+                    ]
+                },
+                "up-to-n": {
+                    "meaning": "Several chosen targets, up to a count.",
+                    "precedent": "VS-31",
+                    "modules": [
+                        "scripts/targeting/catch.mjs",
+                        "scripts/targeting/heightening.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.maxTargets"
+                    ],
+                    "phrases": [
+                        "you can target up to",
+                        "up to two creatures",
+                        "up to five creatures",
+                        "up to 10 willing creatures"
+                    ]
+                },
+                "area": {
+                    "meaning": "Everyone a placed area catches. The variant is its shape, because each shape aims differently.",
+                    "modules": [
+                        "scripts/targeting/place.mjs",
+                        "scripts/targeting/catch.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.area",
+                        "pf2e's system.area"
+                    ],
+                    "variants": {
+                        "burst": {
+                            "meaning": "A burst, placed at a point in range.",
+                            "precedent": "VS-02",
+                            "modules": [
+                                "scripts/targeting/place.mjs"
+                            ],
+                            "authored": [
+                                "system.area.type: burst"
+                            ],
+                            "phrases": [
+                                "-foot burst",
+                                "burst"
+                            ]
+                        },
+                        "cone": {
+                            "meaning": "A cone from the caster's edge, aimed in two clicks.",
+                            "precedent": "VS-52b",
+                            "modules": [
+                                "scripts/targeting/place.mjs"
+                            ],
+                            "authored": [
+                                "system.area.type: cone"
+                            ],
+                            "phrases": [
+                                "-foot cone",
+                                "cone"
+                            ]
+                        },
+                        "emanation": {
+                            "meaning": "An emanation around the caster or a creature; no aiming.",
+                            "precedent": "VS-52b",
+                            "modules": [
+                                "scripts/targeting/place.mjs"
+                            ],
+                            "authored": [
+                                "system.area.type: emanation"
+                            ],
+                            "phrases": [
+                                "-foot emanation",
+                                "emanation",
+                                "within 30 feet of you"
+                            ]
+                        },
+                        "line": {
+                            "meaning": "A line from the caster, aimed in two clicks.",
+                            "precedent": "VS-01",
+                            "modules": [
+                                "scripts/targeting/place.mjs"
+                            ],
+                            "authored": [
+                                "system.area.type: line",
+                                "areaTargeting.anchor: caster"
+                            ],
+                            "phrases": [
+                                "-foot line",
+                                "strikes outward",
+                                "vertical line"
+                            ]
+                        },
+                        "ring": {
+                            "meaning": "A ring whose band is the area and whose middle is not.",
+                            "precedent": "VS-06",
+                            "modules": [
+                                "scripts/targeting/barrier.mjs",
+                                "scripts/targeting/cast-shape.mjs"
+                            ],
+                            "authored": [
+                                "areaTargetingShapes[].area.type: ring"
+                            ],
+                            "phrases": [
+                                "-foot-radius ring",
+                                "ring"
+                            ]
+                        },
+                        "square": {
+                            "meaning": "One or more 5-foot squares.",
+                            "precedent": "VS-41a",
+                            "modules": [
+                                "scripts/targeting/place.mjs"
+                            ],
+                            "authored": [
+                                "system.area.type: square"
+                            ],
+                            "phrases": [
+                                "square",
+                                "contiguous squares"
+                            ]
+                        }
+                    }
+                },
+                "chain": {
+                    "meaning": "A first target, then each next one within a distance of the last.",
+                    "precedent": "VS-04",
+                    "modules": [
+                        "scripts/targeting/chain.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.chain"
+                    ],
+                    "phrases": [
+                        "arcs to another creature",
+                        "within 30 feet of the first target",
+                        "jumps"
+                    ]
+                },
+                "self": {
+                    "meaning": "The caster.",
+                    "precedent": "VS-29",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].self: true"
+                    ],
+                    "phrases": [
+                        "you gain",
+                        "yourself",
+                        "grants you"
+                    ]
+                },
+                "allies": {
+                    "meaning": "The area or effect counts only the caster's allies.",
+                    "precedent": "VS-13",
+                    "modules": [
+                        "scripts/targeting/catch.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.affects: allies"
+                    ],
+                    "phrases": [
+                        "you and your allies",
+                        "allies in the area",
+                        "your allies"
+                    ]
+                },
+                "enemies": {
+                    "meaning": "The area or effect counts only the caster's enemies.",
+                    "precedent": "VS-14",
+                    "modules": [
+                        "scripts/targeting/catch.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.affects: enemies"
+                    ],
+                    "phrases": [
+                        "enemies in the area",
+                        "your enemies",
+                        "foes"
+                    ]
+                },
+                "object": {
+                    "meaning": "An object rather than a creature: no area, no catch, or a wall section destroyed.",
+                    "precedent": "VS-03",
+                    "modules": [
+                        "scripts/targeting/cast-shape.mjs"
+                    ],
+                    "authored": [
+                        "areaTargetingShapes[] with area: none"
+                    ],
+                    "phrases": [
+                        "an object",
+                        "unattended object",
+                        "an area or target"
+                    ]
+                },
+                "minion": {
+                    "meaning": "The caster's own summoned minion.",
+                    "precedent": "VS-94a",
+                    "modules": [
+                        "scripts/vanilla/sacrifice.mjs"
+                    ],
+                    "authored": [
+                        "sacrifice"
+                    ],
+                    "phrases": [
+                        "your minion",
+                        "summoned creature",
+                        "creature you summoned"
+                    ]
+                },
+                "weapon": {
+                    "meaning": "A weapon the caster or target is holding.",
+                    "precedent": "VS-85a",
+                    "modules": [
+                        "scripts/riders/weapon.mjs",
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "requires: held-weapon",
+                        "preselect: $held",
+                        "variantFromWeapon"
+                    ],
+                    "phrases": [
+                        "a weapon you're holding",
+                        "the weapon",
+                        "one weapon"
+                    ]
+                },
+                "filtered": {
+                    "meaning": "Only creatures of a kind qualify: a size, a level, living, breathing, flying.",
+                    "precedent": "VS-71e",
+                    "modules": [
+                        "scripts/targeting/catch.mjs",
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.predicate",
+                        "lingering.targetPredicate",
+                        "requires"
+                    ],
+                    "phrases": [
+                        "has no effect on",
+                        "living creature",
+                        "breathing creature",
+                        "of 17th level or lower",
+                        "Large or larger"
+                    ]
+                }
+            }
+        },
+        "area": {
+            "question": "If there is an area, how does it behave?",
+            "values": {
+                "lingering": {
+                    "meaning": "The area stays on the board after the cast, as a Region, until its duration ends.",
+                    "precedent": "VS-10",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering"
+                    ],
+                    "phrases": [
+                        "for the duration",
+                        "in the spell's area",
+                        "the cloud",
+                        "remains"
+                    ]
+                },
+                "placed-only": {
+                    "meaning": "The area is placed and targets nobody at the cast; only what stands in it later matters.",
+                    "precedent": "VS-06",
+                    "modules": [
+                        "scripts/targeting/config.mjs",
+                        "scripts/targeting/index.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.placeOnly"
+                    ],
+                    "phrases": [
+                        "You create",
+                        "You conjure",
+                        "appears"
+                    ]
+                },
+                "aura": {
+                    "meaning": "An area around a creature that moves with it.",
+                    "variants": {
+                        "pf2e": {
+                            "meaning": "pf2e's own Aura rule on an effect.",
+                            "precedent": "VS-79b",
+                            "modules": [
+                                "scripts/riders/apply.mjs"
+                            ],
+                            "authored": [
+                                "an effect with an Aura rule",
+                                "riders[].apply.addRules"
+                            ],
+                            "phrases": [
+                                "aura",
+                                "emanation around the target",
+                                "an aura in a"
+                            ]
+                        },
+                        "region": {
+                            "meaning": "A lingering Region that follows the caster.",
+                            "precedent": "VS-14",
+                            "modules": [
+                                "scripts/targeting/lingering.mjs",
+                                "scripts/targeting/repels.mjs"
+                            ],
+                            "authored": [
+                                "lingering.followsCaster"
+                            ],
+                            "phrases": [
+                                "moves with you",
+                                "emanation",
+                                "around you"
+                            ]
+                        }
+                    }
+                },
+                "grows-on-sustain": {
+                    "meaning": "Each Sustain makes the area larger.",
+                    "precedent": "VS-13",
+                    "modules": [
+                        "scripts/riders/sustain.mjs",
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.sustain.step",
+                        "lingering.sustain.radius"
+                    ],
+                    "phrases": [
+                        "increase the emanation's radius",
+                        "Sustain the spell to increase"
+                    ]
+                },
+                "moved-on-sustain": {
+                    "meaning": "Each Sustain moves the area or the thing in it.",
+                    "precedent": "VS-41b",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs",
+                        "scripts/targeting/light-orb.mjs"
+                    ],
+                    "authored": [
+                        "lingering.sustain.move",
+                        "areaTargeting.lightOrb"
+                    ],
+                    "phrases": [
+                        "Sustain the spell to move",
+                        "you can levitate the flame",
+                        "move the light up to"
+                    ]
+                },
+                "drifts": {
+                    "meaning": "The area moves by itself each round.",
+                    "precedent": "VS-42b",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.drifts"
+                    ],
+                    "phrases": [
+                        "moves 10 feet away from you each round",
+                        "drifts",
+                        "the area moves"
+                    ]
+                },
+                "several": {
+                    "meaning": "One cast places more than one area.",
+                    "precedent": "VS-43e",
+                    "modules": [
+                        "scripts/targeting/index.mjs",
+                        "scripts/targeting/cast-shape.mjs"
+                    ],
+                    "authored": [
+                        "areaTargetingShapes[].areas",
+                        "registerAreaCount"
+                    ],
+                    "phrases": [
+                        "two non-overlapping",
+                        "instead of one",
+                        "four stars"
+                    ]
+                },
+                "apart": {
+                    "meaning": "The areas of one cast must not overlap, or must stand a distance apart.",
+                    "precedent": "VS-44c",
+                    "modules": [
+                        "scripts/targeting/index.mjs",
+                        "scripts/targeting/config.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.apart"
+                    ],
+                    "phrases": [
+                        "can't overlap",
+                        "non-overlapping"
+                    ]
+                },
+                "zones": {
+                    "meaning": "An area with an inner zone that deals something more.",
+                    "precedent": "VS-44d",
+                    "modules": [
+                        "scripts/targeting/zones.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.zones",
+                        "areaTargeting.markCentre"
+                    ],
+                    "phrases": [
+                        "at the center of its area",
+                        "central"
+                    ]
+                },
+                "shape-choice": {
+                    "meaning": "The caster chooses the area's shape or size at the cast, or no area at all.",
+                    "precedent": "VS-52b",
+                    "modules": [
+                        "scripts/targeting/cast-shape.mjs"
+                    ],
+                    "authored": [
+                        "areaTargetingShapes"
+                    ],
+                    "phrases": [
+                        "any radius you choose",
+                        "an area or target",
+                        "cone or",
+                        "or a 10-foot-radius ring"
+                    ]
+                },
+                "wall": {
+                    "meaning": "A run of sections laid on grid lines or squares.",
+                    "precedent": "VS-47b",
+                    "modules": [
+                        "scripts/targeting/barrier.mjs"
+                    ],
+                    "authored": [
+                        "lingering.barrier"
+                    ],
+                    "phrases": [
+                        "wall",
+                        "each 5 feet of the wall",
+                        "straight line up to"
+                    ]
+                },
+                "clear-space": {
+                    "meaning": "The area must be placed where no creature or object stands, or the spell is lost.",
+                    "precedent": "VS-47d",
+                    "modules": [
+                        "scripts/targeting/barrier.mjs"
+                    ],
+                    "authored": [
+                        "lingering.barrier"
+                    ],
+                    "phrases": [
+                        "unbroken open space",
+                        "or the spell is lost",
+                        "unoccupied"
+                    ]
+                },
+                "from-target": {
+                    "meaning": "The area starts from a creature other than the caster.",
+                    "precedent": "VS-58f",
+                    "modules": [
+                        "scripts/riders/origin-action.mjs"
+                    ],
+                    "authored": [
+                        "originAction.areaTargeting.includesOrigin"
+                    ],
+                    "phrases": [
+                        "originating from the target",
+                        "centered on the target"
+                    ]
+                }
+            }
+        },
+        "check": {
+            "question": "What decides the outcome?",
+            "values": {
+                "save": {
+                    "meaning": "A save whose degrees each say what happens.",
+                    "precedent": "VS-88a",
+                    "modules": [
+                        "scripts/riders/sources.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].outcomes",
+                        "riders[].apply.type: save"
+                    ],
+                    "phrases": [
+                        "saving throw",
+                        "Will save",
+                        "Fortitude save",
+                        "Reflex save",
+                        "Critical Success",
+                        "Critical Failure"
+                    ]
+                },
+                "basic-save": {
+                    "meaning": "A basic save against damage: half, full, double.",
+                    "precedent": "VS-41a",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "pf2e's own basic save",
+                        "riders[].apply.save.basic"
+                    ],
+                    "phrases": [
+                        "basic Reflex save",
+                        "basic Fortitude save",
+                        "basic Will save",
+                        "basic save"
+                    ]
+                },
+                "attack": {
+                    "meaning": "A spell attack roll against AC: rays the module rolls, or pf2e's own attack resolving.",
+                    "precedent": "VS-55a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: rays",
+                        "riders[].event: strike-resolved"
+                    ],
+                    "phrases": [
+                        "spell attack roll",
+                        "Make a spell attack",
+                        "on a hit",
+                        "critical hit"
+                    ]
+                },
+                "attack-then-save": {
+                    "meaning": "A hit gives a save rather than damage; a critical hit makes the save worse.",
+                    "precedent": "VS-57b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.rays.save"
+                    ],
+                    "phrases": [
+                        "If you hit",
+                        "with a basic Fortitude save"
+                    ]
+                },
+                "second-save": {
+                    "meaning": "One result forces a further save.",
+                    "precedent": "VS-63b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: save"
+                    ],
+                    "phrases": [
+                        "must also succeed at",
+                        "attempt another save",
+                        "a second save"
+                    ]
+                },
+                "counteract": {
+                    "meaning": "A counteract check against an effect, a condition or a teleport.",
+                    "precedent": "VS-40",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/tether.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: counteract"
+                    ],
+                    "phrases": [
+                        "counteract",
+                        "Attempt to counteract",
+                        "counteract check"
+                    ]
+                },
+                "flat-check": {
+                    "meaning": "A flat check gates an action.",
+                    "precedent": "VS-66b",
+                    "modules": [
+                        "scripts/riders/unobserved.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: flat-check",
+                        "riders[].apply.type: unobserve"
+                    ],
+                    "phrases": [
+                        "flat check",
+                        "DC 11",
+                        "DC 5"
+                    ]
+                },
+                "maneuver": {
+                    "meaning": "A combat maneuver rolled with another statistic, the caster against a DC.",
+                    "precedent": "VS-54b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: contest"
+                    ],
+                    "phrases": [
+                        "Disarm, Shove, Reposition, or Trip",
+                        "instead of an Athletics check"
+                    ]
+                },
+                "attacker-saves": {
+                    "meaning": "Whoever attacks the holder rolls first.",
+                    "precedent": "VS-39",
+                    "modules": [
+                        "scripts/riders/deters.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.deters"
+                    ],
+                    "phrases": [
+                        "Creatures attempting to attack the target",
+                        "must attempt a Will save"
+                    ]
+                },
+                "degree-shift": {
+                    "meaning": "A degree of success is raised or lowered after the roll.",
+                    "precedent": "VS-84b",
+                    "modules": [
+                        "scripts/riders/nudge.mjs",
+                        "scripts/lib/degree.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.nudge",
+                        "rays.save.worseOnCritical"
+                    ],
+                    "phrases": [
+                        "one degree of success worse",
+                        "turn a critical failure into a failure",
+                        "changing the outcome"
+                    ]
+                },
+                "roll-twice": {
+                    "meaning": "Fortune or misfortune: roll twice, keep one.",
+                    "precedent": "VS-24",
+                    "modules": [
+                        "scripts/lib/check-pipeline.mjs"
+                    ],
+                    "authored": [
+                        "pf2e RollTwice rule"
+                    ],
+                    "phrases": [
+                        "roll twice",
+                        "use the worse result",
+                        "use the better result"
+                    ]
+                },
+                "caster-choice": {
+                    "meaning": "The caster picks an option at the cast, and the rest follows from it.",
+                    "precedent": "VS-60a",
+                    "modules": [
+                        "scripts/cast-pipeline.mjs"
+                    ],
+                    "authored": [
+                        "castChoice",
+                        "preselect: $cast"
+                    ],
+                    "phrases": [
+                        "you choose",
+                        "of your choice",
+                        "Choose one",
+                        "When you Cast this Spell, choose"
+                    ]
+                },
+                "result-kept": {
+                    "meaning": "A creature's first result stands for the rest of the casting.",
+                    "precedent": "VS-46c",
+                    "modules": [
+                        "scripts/targeting/repels.mjs"
+                    ],
+                    "authored": [
+                        "lingering.repels"
+                    ],
+                    "phrases": [
+                        "uses the same result",
+                        "for that casting"
+                    ]
+                }
+            }
+        },
+        "effect": {
+            "question": "What changes on the sheet or the board?",
+            "values": {
+                "damage": {
+                    "meaning": "Damage, rolled from the card or by a rider.",
+                    "precedent": "VS-61a",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "pf2e's own damage",
+                        "riders[].apply.type: damage"
+                    ],
+                    "phrases": [
+                        "damage"
+                    ]
+                },
+                "damage-rolled-once": {
+                    "meaning": "One damage roll for the whole cast, saved against once per creature.",
+                    "precedent": "VS-44f",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: area-damage"
+                    ],
+                    "phrases": [
+                        "roll the damage once",
+                        "no matter how many",
+                        "only once"
+                    ]
+                },
+                "weapon-dice": {
+                    "meaning": "Damage dice taken from a held weapon: its die, its type, its critical specialization.",
+                    "precedent": "VS-52c",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/weapon.mjs"
+                    ],
+                    "authored": [
+                        "area-damage.parts[].weaponDice"
+                    ],
+                    "phrases": [
+                        "dice of damage",
+                        "same die size",
+                        "same type as the weapon"
+                    ]
+                },
+                "damage-on-miss": {
+                    "meaning": "Part of the damage lands even when the attack fails.",
+                    "precedent": "VS-56d",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "rays.failure"
+                    ],
+                    "phrases": [
+                        "Failure The target takes the",
+                        "but not the"
+                    ]
+                },
+                "persistent": {
+                    "meaning": "Persistent damage, sometimes ending with something else.",
+                    "precedent": "VS-22",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: persistent-damage"
+                    ],
+                    "phrases": [
+                        "persistent",
+                        "persistent fire damage",
+                        "persistent bleed"
+                    ]
+                },
+                "condition": {
+                    "meaning": "A pf2e condition, with or without a duration.",
+                    "precedent": "VS-65c",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: condition"
+                    ],
+                    "phrases": [
+                        "Frightened",
+                        "Stunned",
+                        "Stupefied",
+                        "Sickened",
+                        "Dazzled",
+                        "Blinded",
+                        "Slowed",
+                        "Enfeebled",
+                        "Clumsy"
+                    ]
+                },
+                "condition-climbs": {
+                    "meaning": "A condition's value rises or falls each time, and something happens at the top.",
+                    "precedent": "VS-20",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: climb"
+                    ],
+                    "phrases": [
+                        "increases by 1",
+                        "condition increases",
+                        "decreases by"
+                    ]
+                },
+                "condition-floor": {
+                    "meaning": "A condition can't drop below a value while the spell holds.",
+                    "precedent": "VS-88b",
+                    "modules": [
+                        "scripts/riders/condition-floor.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.floor"
+                    ],
+                    "phrases": [
+                        "can't be reduced below"
+                    ]
+                },
+                "forced-move": {
+                    "meaning": "The creature is moved against its will.",
+                    "variants": {
+                        "push": {
+                            "meaning": "Pushed away, or in a chosen direction, stopping at walls.",
+                            "precedent": "VS-26",
+                            "modules": [
+                                "scripts/riders/apply.mjs"
+                            ],
+                            "authored": [
+                                "riders[].apply.type: teleport, stopsAtWalls"
+                            ],
+                            "phrases": [
+                                "pushed",
+                                "knocked back",
+                                "away from you",
+                                "in a direction you choose"
+                            ]
+                        },
+                        "pull": {
+                            "meaning": "Pulled toward a centre, nearest first, a square at a time.",
+                            "precedent": "VS-45e",
+                            "modules": [
+                                "scripts/riders/pull.mjs"
+                            ],
+                            "authored": [
+                                "riders[].apply.type: pull",
+                                "areaTargeting.markCentre"
+                            ],
+                            "phrases": [
+                                "toward the center",
+                                "pulled",
+                                "pulls the target"
+                            ]
+                        }
+                    }
+                },
+                "elevation": {
+                    "meaning": "The creature's height above the ground changes.",
+                    "variants": {
+                        "fall": {
+                            "meaning": "Brought down safely, and kept down.",
+                            "precedent": "VS-74b",
+                            "modules": [
+                                "scripts/riders/fall.mjs"
+                            ],
+                            "authored": [
+                                "riders[].apply.type: fall"
+                            ],
+                            "phrases": [
+                                "falls safely",
+                                "can't Fly, levitate, or otherwise leave the ground"
+                            ]
+                        },
+                        "lift": {
+                            "meaning": "Raised, or moved up and down.",
+                            "precedent": "VS-75a",
+                            "modules": [
+                                "scripts/riders/fall.mjs"
+                            ],
+                            "authored": [
+                                "riders[].apply.type: elevation"
+                            ],
+                            "phrases": [
+                                "levitate",
+                                "off the ground",
+                                "up or down"
+                            ]
+                        }
+                    }
+                },
+                "teleport": {
+                    "meaning": "Instant movement to a space.",
+                    "precedent": "VS-05",
+                    "modules": [
+                        "scripts/targeting/move-caster.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.moveCaster",
+                        "riders[].apply.type: teleport"
+                    ],
+                    "phrases": [
+                        "transport yourself",
+                        "teleport",
+                        "unoccupied space within range"
+                    ]
+                },
+                "banish": {
+                    "meaning": "Sent off the scene, perhaps to come back.",
+                    "precedent": "VS-25",
+                    "modules": [
+                        "scripts/riders/banish.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: banish"
+                    ],
+                    "phrases": [
+                        "banished",
+                        "to its home plane",
+                        "another plane"
+                    ]
+                },
+                "terrain": {
+                    "meaning": "Difficult terrain, for everyone or only for some.",
+                    "precedent": "VS-48d",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs",
+                        "scripts/targeting/enemy-terrain.mjs",
+                        "scripts/lib/movement-cost.mjs"
+                    ],
+                    "authored": [
+                        "lingering.difficultTerrain"
+                    ],
+                    "phrases": [
+                        "difficult terrain",
+                        "greater difficult terrain"
+                    ]
+                },
+                "speed": {
+                    "meaning": "A Speed granted, raised, lowered or freed from penalties.",
+                    "precedent": "VS-73a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/unfettered.mjs"
+                    ],
+                    "authored": [
+                        "pf2e BaseSpeed / FlatModifier on speed"
+                    ],
+                    "phrases": [
+                        "Speed",
+                        "fly Speed",
+                        "status penalty to its Speeds"
+                    ]
+                },
+                "heal": {
+                    "meaning": "Hit Points regained.",
+                    "precedent": "VS-32",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: heal"
+                    ],
+                    "phrases": [
+                        "regains",
+                        "restore",
+                        "to regain Hit Points"
+                    ]
+                },
+                "fast-healing": {
+                    "meaning": "Healing at the start of each of the holder's turns.",
+                    "precedent": "VS-36",
+                    "modules": [
+                        "scripts/lib/fast-healing.mjs"
+                    ],
+                    "authored": [
+                        "pf2e FastHealing rule"
+                    ],
+                    "phrases": [
+                        "at the start of each of its turns",
+                        "regeneration",
+                        "fast healing"
+                    ]
+                },
+                "temp-hp": {
+                    "meaning": "Temporary Hit Points.",
+                    "precedent": "VS-38",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: temp-hp",
+                        "pf2e TempHP rule"
+                    ],
+                    "phrases": [
+                        "temporary Hit Points"
+                    ]
+                },
+                "hp-transfer": {
+                    "meaning": "Hit Points moved from one creature to another.",
+                    "precedent": "VS-37",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: transfer"
+                    ],
+                    "phrases": [
+                        "You lose as many Hit Points as",
+                        "transfer"
+                    ]
+                },
+                "damage-split": {
+                    "meaning": "A creature's damage is shared with another.",
+                    "precedent": "VS-81a",
+                    "modules": [
+                        "scripts/riders/share-damage.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.shareDamage"
+                    ],
+                    "phrases": [
+                        "takes half damage",
+                        "you take the remainder"
+                    ]
+                },
+                "stabilize": {
+                    "meaning": "Dying ended, or death prevented.",
+                    "precedent": "VS-68a",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: condition, remove",
+                        "heal.revive"
+                    ],
+                    "phrases": [
+                        "loses the Dying condition",
+                        "prevent the target from dying"
+                    ]
+                },
+                "death": {
+                    "meaning": "Killed outright, at 0 Hit Points or by a threshold.",
+                    "precedent": "VS-61b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: death"
+                    ],
+                    "phrases": [
+                        "dies",
+                        "kills it instantly",
+                        "is slain",
+                        "reduced to 0 HP"
+                    ]
+                },
+                "backlash": {
+                    "meaning": "Something happens afterwards depending on how the whole cast went.",
+                    "precedent": "VS-64f",
+                    "modules": [
+                        "scripts/riders/aftermath.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: aftermath"
+                    ],
+                    "phrases": [
+                        "If massacre doesn't kill",
+                        "turns backward toward you"
+                    ]
+                },
+                "hold": {
+                    "meaning": "The creature is held and may Escape.",
+                    "variants": {
+                        "hazard": {
+                            "meaning": "Held by a thing with its own AC and Hit Points that can be attacked.",
+                            "precedent": "VS-50e",
+                            "modules": [
+                                "scripts/riders/encasement.mjs"
+                            ],
+                            "authored": [
+                                "riders[].apply.type: encasement"
+                            ],
+                            "phrases": [
+                                "Escape DC is equal to your spell DC",
+                                "attack a snake",
+                                "release the creature"
+                            ]
+                        },
+                        "condition": {
+                            "meaning": "A condition with an Escape against the spell DC.",
+                            "precedent": "VS-28",
+                            "modules": [
+                                "scripts/riders/escape.mjs"
+                            ],
+                            "authored": [
+                                "riders[].apply.escapeDc"
+                            ],
+                            "phrases": [
+                                "attempt to Escape",
+                                "until the creature Escapes",
+                                "Immobilized",
+                                "Grabbed",
+                                "Restrained"
+                            ]
+                        }
+                    }
+                },
+                "escape-succeeds": {
+                    "meaning": "The holder's Escapes succeed by themselves.",
+                    "precedent": "VS-89b",
+                    "modules": [
+                        "scripts/riders/unfettered.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.unfettered"
+                    ],
+                    "phrases": [
+                        "they automatically succeed"
+                    ]
+                },
+                "tether": {
+                    "meaning": "A teleport or banishment of the holder is counteracted before it happens.",
+                    "precedent": "VS-90a",
+                    "modules": [
+                        "scripts/riders/tether.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.tether"
+                    ],
+                    "phrases": [
+                        "teleportation effect that would move the target",
+                        "transport it to a different plane"
+                    ]
+                },
+                "affliction": {
+                    "meaning": "An affliction with stages, a save at each turn end, and a maximum duration.",
+                    "precedent": "VS-59d",
+                    "modules": [
+                        "scripts/riders/affliction.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: affliction"
+                    ],
+                    "phrases": [
+                        "afflicted",
+                        "Stage 1",
+                        "Maximum Duration"
+                    ]
+                },
+                "cleanse": {
+                    "meaning": "An affliction's stage lowered, or the affliction counteracted.",
+                    "precedent": "VS-70b",
+                    "modules": [
+                        "scripts/riders/cleanse.mjs",
+                        "scripts/riders/affliction.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: cleanse"
+                    ],
+                    "phrases": [
+                        "reduce the stage by one",
+                        "curse, disease, or poison"
+                    ]
+                },
+                "suppress": {
+                    "meaning": "An effect paused rather than ended, its clock stopped.",
+                    "precedent": "VS-69b",
+                    "modules": [
+                        "scripts/riders/set-aside.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "counteract.nearMiss"
+                    ],
+                    "phrases": [
+                        "suppress the effect",
+                        "while it's suppressed"
+                    ]
+                },
+                "bonus": {
+                    "meaning": "A bonus to a statistic.",
+                    "precedent": "VS-79a",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a FlatModifier"
+                    ],
+                    "phrases": [
+                        "status bonus",
+                        "circumstance bonus",
+                        "item bonus"
+                    ]
+                },
+                "penalty": {
+                    "meaning": "A penalty to a statistic.",
+                    "precedent": "VS-65b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a FlatModifier"
+                    ],
+                    "phrases": [
+                        "status penalty",
+                        "circumstance penalty"
+                    ]
+                },
+                "weakness": {
+                    "meaning": "A weakness gained.",
+                    "precedent": "VS-60b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a Weakness rule"
+                    ],
+                    "phrases": [
+                        "gains weakness",
+                        "weakness"
+                    ]
+                },
+                "resistance": {
+                    "meaning": "A resistance or immunity gained.",
+                    "precedent": "VS-77b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a Resistance rule"
+                    ],
+                    "phrases": [
+                        "resistance",
+                        "immune to"
+                    ]
+                },
+                "sense": {
+                    "meaning": "A sense granted, or a way of seeing what is hidden.",
+                    "precedent": "VS-96a",
+                    "modules": [
+                        "scripts/lib/detection-modes.mjs",
+                        "scripts/riders/reveal.mjs"
+                    ],
+                    "authored": [
+                        "pf2e Sense rule"
+                    ],
+                    "phrases": [
+                        "Darkvision",
+                        "You can see",
+                        "low-light vision",
+                        "scent"
+                    ]
+                },
+                "concealment": {
+                    "meaning": "Concealed, by an area or on a creature.",
+                    "precedent": "VS-07",
+                    "modules": [
+                        "scripts/targeting/inside.mjs",
+                        "scripts/riders/unobserved.mjs"
+                    ],
+                    "authored": [
+                        "lingering.inside.conditions: concealed"
+                    ],
+                    "phrases": [
+                        "Concealed",
+                        "concealment"
+                    ]
+                },
+                "reveal": {
+                    "meaning": "Invisibility weakened to concealment, or concealment taken away.",
+                    "precedent": "VS-97b",
+                    "modules": [
+                        "scripts/riders/reveal.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.reveals"
+                    ],
+                    "phrases": [
+                        "If the creature was Invisible",
+                        "no longer concealed"
+                    ]
+                },
+                "unobserved": {
+                    "meaning": "One creature cannot observe another.",
+                    "precedent": "VS-66b",
+                    "modules": [
+                        "scripts/riders/unobserved.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: unobserve"
+                    ],
+                    "phrases": [
+                        "can't Observe you",
+                        "Hidden to it",
+                        "can't observe"
+                    ]
+                },
+                "light": {
+                    "meaning": "A light set down, attached to a creature, or moved.",
+                    "precedent": "VS-98a",
+                    "modules": [
+                        "scripts/targeting/light-orb.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.lightOrb"
+                    ],
+                    "phrases": [
+                        "sheds bright light",
+                        "dim light",
+                        "orb of light"
+                    ]
+                },
+                "darkness": {
+                    "meaning": "Light suppressed in an area.",
+                    "precedent": "VS-08",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.darkness"
+                    ],
+                    "phrases": [
+                        "Light does not enter",
+                        "darkness"
+                    ]
+                },
+                "info": {
+                    "meaning": "Information told to the caster.",
+                    "precedent": "VS-99a",
+                    "modules": [
+                        "scripts/riders/detect-magic.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: detect-magic",
+                        "riders[].apply.type: readout"
+                    ],
+                    "phrases": [
+                        "You learn",
+                        "registers the presence",
+                        "you detect",
+                        "pinpoint"
+                    ]
+                },
+                "forbid": {
+                    "meaning": "Actions of some traits refused while the effect lasts.",
+                    "precedent": "VS-76c",
+                    "modules": [
+                        "scripts/riders/forbids.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.forbids",
+                        "forbidsExcept"
+                    ],
+                    "phrases": [
+                        "can't cast spells",
+                        "can't use reactions",
+                        "actions that have the",
+                        "can't use concentrate actions"
+                    ]
+                },
+                "form": {
+                    "meaning": "A battle form: new statistics, attacks and senses.",
+                    "precedent": "VS-72c",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a BattleForm rule",
+                        "preselect"
+                    ],
+                    "phrases": [
+                        "battle form",
+                        "While in this form"
+                    ]
+                },
+                "size": {
+                    "meaning": "The creature grows or shrinks.",
+                    "precedent": "VS-71a",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a CreatureSize rule"
+                    ],
+                    "phrases": [
+                        "grows to size",
+                        "shrinks",
+                        "size Large",
+                        "size Huge"
+                    ]
+                },
+                "summon": {
+                    "meaning": "A creature brought onto the board.",
+                    "precedent": "VS-93a",
+                    "modules": [
+                        "scripts/targeting/summon.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.summon"
+                    ],
+                    "phrases": [
+                        "You summon",
+                        "summon trait"
+                    ]
+                },
+                "barrier": {
+                    "meaning": "Sections with AC, Hardness and Hit Points that can be broken.",
+                    "precedent": "VS-47e",
+                    "modules": [
+                        "scripts/targeting/barrier.mjs"
+                    ],
+                    "authored": [
+                        "lingering.barrier"
+                    ],
+                    "phrases": [
+                        "section of the wall has AC",
+                        "Hardness",
+                        "has AC"
+                    ]
+                },
+                "cover": {
+                    "meaning": "Cover from creatures on the other side.",
+                    "precedent": "VS-48c",
+                    "modules": [
+                        "scripts/targeting/barrier.mjs"
+                    ],
+                    "authored": [
+                        "lingering.barrier"
+                    ],
+                    "phrases": [
+                        "has cover",
+                        "cover from creatures"
+                    ]
+                },
+                "intercept": {
+                    "meaning": "Something takes a blow for an ally first.",
+                    "precedent": "VS-82c",
+                    "modules": [
+                        "scripts/targeting/barrier.mjs"
+                    ],
+                    "authored": [
+                        "lingering.barrier.interposes"
+                    ],
+                    "phrases": [
+                        "takes the damage first",
+                        "interposes"
+                    ]
+                },
+                "shield": {
+                    "meaning": "A shield to raise and block with.",
+                    "precedent": "VS-80d",
+                    "modules": [
+                        "scripts/riders/spell-shield.mjs",
+                        "scripts/riders/shield-block.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.shield",
+                        "riders[].apply.endsOnBlock"
+                    ],
+                    "phrases": [
+                        "Shield Block",
+                        "Raise a Shield"
+                    ]
+                },
+                "decoy": {
+                    "meaning": "Images that a hit may land on instead.",
+                    "precedent": "VS-34",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: decoy"
+                    ],
+                    "phrases": [
+                        "image",
+                        "Once an image is hit"
+                    ]
+                },
+                "destroy": {
+                    "meaning": "An object or a wall section destroyed.",
+                    "precedent": "VS-57e",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/targeting/barrier.mjs"
+                    ],
+                    "authored": [
+                        "rays.objects: destroy"
+                    ],
+                    "phrases": [
+                        "it's destroyed",
+                        "destroy"
+                    ]
+                },
+                "weapon-runes": {
+                    "meaning": "A weapon given runes for the duration.",
+                    "precedent": "VS-85a",
+                    "modules": [
+                        "scripts/riders/weapon.mjs"
+                    ],
+                    "authored": [
+                        "an effect with ItemAlteration",
+                        "preselect: $held"
+                    ],
+                    "phrases": [
+                        "striking weapon",
+                        "+1 striking",
+                        "greater striking"
+                    ]
+                },
+                "strike-damage": {
+                    "meaning": "Strikes deal extra damage.",
+                    "precedent": "VS-86b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with DamageDice"
+                    ],
+                    "phrases": [
+                        "Strikes deal an extra",
+                        "extra damage"
+                    ]
+                },
+                "strikes-granted": {
+                    "meaning": "New attacks to Strike with.",
+                    "precedent": "VS-87b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an effect with a Strike rule"
+                    ],
+                    "phrases": [
+                        "The fangs deal",
+                        "the claws deal",
+                        "unarmed attacks"
+                    ]
+                },
+                "gm-note": {
+                    "meaning": "The part the table rules on, whispered to the GM rather than guessed.",
+                    "precedent": "VS-03",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: prompt"
+                    ],
+                    "phrases": [
+                        "as determined by the GM",
+                        "the GM"
+                    ]
+                }
+            }
+        },
+        "ending": {
+            "question": "What stops it?",
+            "values": {
+                "duration": {
+                    "meaning": "A fixed duration, often set by the degree of the save.",
+                    "precedent": "VS-97e",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].duration"
+                    ],
+                    "phrases": [
+                        "for 1 minute",
+                        "for 1 round",
+                        "the duration is",
+                        "for 10 minutes"
+                    ]
+                },
+                "next-turn": {
+                    "meaning": "Until the start or end of the caster's next turn, or the target's.",
+                    "precedent": "VS-19",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].duration with of: target"
+                    ],
+                    "phrases": [
+                        "until the start of your next turn",
+                        "until the end of your next turn",
+                        "until the end of its turn"
+                    ]
+                },
+                "sustained": {
+                    "meaning": "Lasts only while the caster Sustains it.",
+                    "precedent": "VS-21",
+                    "modules": [
+                        "scripts/riders/sustain.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.sustained",
+                        "lingering.sustain"
+                    ],
+                    "phrases": [
+                        "Duration sustained",
+                        "sustained up to"
+                    ]
+                },
+                "save-ends": {
+                    "meaning": "A new save, each turn, ends it.",
+                    "precedent": "VS-63d",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "carries: a turn-end save with shorten: all"
+                    ],
+                    "phrases": [
+                        "attempt a new Will save at the end of each of its turns",
+                        "on a success, it"
+                    ]
+                },
+                "save-shortens": {
+                    "meaning": "A new save, each turn, takes rounds off it.",
+                    "precedent": "VS-18",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "carries: a turn-end save with shorten"
+                    ],
+                    "phrases": [
+                        "reduce the remaining duration"
+                    ]
+                },
+                "leaves-area": {
+                    "meaning": "Ends when the holder leaves the area that gave it.",
+                    "precedent": "VS-14",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/targeting/inside.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.endsOnLeaving"
+                    ],
+                    "phrases": [
+                        "leaves the area",
+                        "while in the area",
+                        "while inside"
+                    ]
+                },
+                "with-area": {
+                    "meaning": "Ends when the area ends, wherever its holder is.",
+                    "precedent": "VS-49f",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/targeting/inside.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.withArea"
+                    ],
+                    "phrases": [
+                        "by the cloud",
+                        "while the spell lasts"
+                    ]
+                },
+                "hostile-action": {
+                    "meaning": "Ends when its holder uses a hostile action.",
+                    "precedent": "VS-33",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.endsOnHostile"
+                    ],
+                    "phrases": [
+                        "uses a hostile action",
+                        "the spell ends"
+                    ]
+                },
+                "spent": {
+                    "meaning": "Ends when what it gives is used up: a bonus spent, images gone, charges popped.",
+                    "precedent": "VS-83c",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/riders/origin-action.mjs"
+                    ],
+                    "authored": [
+                        "removeAfterRoll",
+                        "spend-charge",
+                        "decoy"
+                    ],
+                    "phrases": [
+                        "If the target uses the bonus",
+                        "When no blisters are left",
+                        "after which the spell ends"
+                    ]
+                },
+                "worn-down": {
+                    "meaning": "Each hit or blow takes some of its duration.",
+                    "precedent": "VS-78b",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "carries: damage-received shorten"
+                    ],
+                    "phrases": [
+                        "duration decreases by"
+                    ]
+                },
+                "with-condition": {
+                    "meaning": "Ends when another condition ends.",
+                    "precedent": "VS-22",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.endsWith"
+                    ],
+                    "phrases": [
+                        "for as long as it's",
+                        "recovers from being",
+                        "ends when"
+                    ]
+                },
+                "permanent": {
+                    "meaning": "Has no end of its own.",
+                    "precedent": "VS-17",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "duration.unit: unlimited"
+                    ],
+                    "phrases": [
+                        "permanently",
+                        "the duration is unlimited"
+                    ]
+                },
+                "immunity-after": {
+                    "meaning": "Afterwards the holder is immune to it for a while.",
+                    "precedent": "VS-29",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "an immunity effect, and a not: predicate on it"
+                    ],
+                    "phrases": [
+                        "temporarily immune"
+                    ]
+                },
+                "preparations": {
+                    "meaning": "Lasts until the caster's next daily preparations.",
+                    "precedent": "VS-95c",
+                    "modules": [
+                        "scripts/riders/preparations.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.untilPreparations"
+                    ],
+                    "phrases": [
+                        "until the next time you make your daily preparations"
+                    ]
+                },
+                "replaces-previous": {
+                    "meaning": "A new casting ends the caster's earlier one, or one of several.",
+                    "precedent": "VS-11",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs",
+                        "scripts/riders/apply.mjs",
+                        "scripts/targeting/light-orb.mjs"
+                    ],
+                    "authored": [
+                        "lingering.replacesPrevious",
+                        "riders[].apply.endsPrevious"
+                    ],
+                    "phrases": [
+                        "previous",
+                        "only one",
+                        "at a time",
+                        "must choose one of the existing"
+                    ]
+                },
+                "dismiss": {
+                    "meaning": "The caster, or the holder, can Dismiss it.",
+                    "precedent": "VS-42d",
+                    "modules": [
+                        "scripts/riders/dismiss.mjs"
+                    ],
+                    "authored": [
+                        "lingering.dismiss",
+                        "riders[].apply.dismissable"
+                    ],
+                    "phrases": [
+                        "You can Dismiss the spell",
+                        "can Dismiss"
+                    ]
+                },
+                "out-of-range": {
+                    "meaning": "Ends when the two creatures it links move too far apart.",
+                    "precedent": "VS-81c",
+                    "modules": [
+                        "scripts/riders/share-damage.mjs"
+                    ],
+                    "authored": [
+                        "shareDamage.range"
+                    ],
+                    "phrases": [
+                        "more than 30 feet away from you"
+                    ]
+                },
+                "zero-hp": {
+                    "meaning": "Ends when a creature it involves reaches 0 Hit Points.",
+                    "precedent": "VS-81d",
+                    "modules": [
+                        "scripts/riders/share-damage.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "shareDamage",
+                        "transfer with link"
+                    ],
+                    "phrases": [
+                        "is reduced to 0 Hit Points",
+                        "then the spell ends"
+                    ]
+                }
+            }
+        },
+        "scaling": {
+            "question": "What grows with rank or with actions?",
+            "values": {
+                "dice-per-rank": {
+                    "meaning": "Dice or a number that grows with each rank or each step of heightening.",
+                    "precedent": "VS-41f",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/targeting/heightening.mjs"
+                    ],
+                    "authored": [
+                        "perStep",
+                        "perStepInterval",
+                        "hpPerStep"
+                    ],
+                    "phrases": [
+                        "The damage increases by",
+                        "increases by 1d",
+                        "Heightened (+1)",
+                        "Heightened (+2)"
+                    ]
+                },
+                "from-rank": {
+                    "meaning": "At a given rank something changes or is added.",
+                    "precedent": "VS-30",
+                    "modules": [
+                        "scripts/targeting/heightening.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "atRank",
+                        "fromRank",
+                        "atCastRank",
+                        "item:rank predicates"
+                    ],
+                    "phrases": [
+                        "Heightened (3rd)",
+                        "Heightened (4th)",
+                        "Heightened (6th)",
+                        "Heightened (7th)"
+                    ]
+                },
+                "per-action": {
+                    "meaning": "The actions spent casting change the targets or the damage.",
+                    "precedent": "VS-55c",
+                    "modules": [
+                        "scripts/vanilla/requires.mjs",
+                        "scripts/lib/config-of.mjs"
+                    ],
+                    "authored": [
+                        "targetsPerAction",
+                        "actionVariants"
+                    ],
+                    "phrases": [
+                        "For each additional action",
+                        "number of actions you spent",
+                        "If you spend 2 or more actions"
+                    ]
+                },
+                "targets-per-rank": {
+                    "meaning": "More targets at higher ranks.",
+                    "precedent": "VS-31",
+                    "modules": [
+                        "scripts/targeting/heightening.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.heightening",
+                        "maxTargets"
+                    ],
+                    "phrases": [
+                        "you can target up to"
+                    ]
+                },
+                "area-per-rank": {
+                    "meaning": "A larger area at higher ranks.",
+                    "precedent": "VS-62f",
+                    "modules": [
+                        "scripts/targeting/heightening.mjs"
+                    ],
+                    "authored": [
+                        "areaTargeting.heightening"
+                    ],
+                    "phrases": [
+                        "The area increases to"
+                    ]
+                },
+                "level-cap": {
+                    "meaning": "The level of creature it can affect rises with rank.",
+                    "precedent": "VS-60g",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "death.maxLevel",
+                        "maxLevelPerStep",
+                        "item:rank predicates"
+                    ],
+                    "phrases": [
+                        "maximum level of creature",
+                        "up to 19th level"
+                    ]
+                }
+            }
+        },
+        "economy": {
+            "question": "What does it cost, limit or need?",
+            "values": {
+                "once-per-round": {
+                    "meaning": "Happens at most once a round, for a creature or for the spell.",
+                    "precedent": "VS-41e",
+                    "modules": [
+                        "scripts/riders/round-gate.mjs",
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "riders[].oncePerRound"
+                    ],
+                    "phrases": [
+                        "only once per round",
+                        "Once per round",
+                        "the first time each round",
+                        "one bolt per turn"
+                    ]
+                },
+                "charges": {
+                    "meaning": "A counter that is spent, each use doing less or ending it at zero.",
+                    "precedent": "VS-100b",
+                    "modules": [
+                        "scripts/riders/origin-action.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "badge",
+                        "heal.byCharge",
+                        "spend-charge"
+                    ],
+                    "phrases": [
+                        "decreases in strength",
+                        "blister",
+                        "no blisters are left"
+                    ]
+                },
+                "granted-action": {
+                    "meaning": "The spell gives the caster or the holder an action to use later.",
+                    "precedent": "VS-58e",
+                    "modules": [
+                        "scripts/riders/origin-action.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.originAction"
+                    ],
+                    "phrases": [
+                        "You can spend a single action",
+                        "can use an Interact action",
+                        "by using a single action"
+                    ]
+                },
+                "reaction": {
+                    "meaning": "Cast or used as a reaction to a trigger.",
+                    "precedent": "VS-65a",
+                    "modules": [
+                        "scripts/riders/reactions.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: reaction",
+                        "riders[].apply.type: cast"
+                    ],
+                    "phrases": [
+                        "Trigger",
+                        "reaction"
+                    ]
+                },
+                "attack-penalty": {
+                    "meaning": "How it counts toward the multiple attack penalty.",
+                    "precedent": "VS-55f",
+                    "modules": [
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "sameAttackPenalty"
+                    ],
+                    "phrases": [
+                        "multiple attack penalty"
+                    ]
+                },
+                "requires": {
+                    "meaning": "The cast needs something first: a held weapon, a flying target.",
+                    "precedent": "VS-52a",
+                    "modules": [
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "requires"
+                    ],
+                    "phrases": [
+                        "a weapon you're holding",
+                        "flight",
+                        "flying"
+                    ]
+                }
+            }
+        }
+    }
+}

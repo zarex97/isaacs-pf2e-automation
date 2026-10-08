@@ -118,3 +118,23 @@ A table rider left to another active module that already covers the spell.
 **Indicator**:
 The mark on an automated item's sheet and chat card, and the panel it opens: what is automated, from
 where, what was deferred, and the GM's per-key switches.
+
+### Patterns
+
+**Clause**:
+A verbatim fragment of a rule's text that can fail on its own — `VS-43e` is one. The unit a tracker drives
+and a pattern is tagged on. A spell, feat or condition is the union of its clauses.
+
+**Pattern**:
+One reusable mechanical move a clause makes — "pulled toward a centre", "a save on entering", "a ray per
+action". Written `facet:value`, or `facet:value/variant` where two variants are done by different code
+(`effect:forced-move/pull`, `effect:forced-move/push`), from a closed list.
+_Avoid_: "shape" — an **Area**'s shape is burst, cone, line and the rest, and nothing else.
+
+**Facet**:
+One axis patterns sort on — when it fires, who it reaches, what it does, how it ends, how it scales. Every
+pattern sits on exactly one facet.
+
+**Precedent**:
+An implemented clause sharing patterns with the one being written: the first place to look before writing
+anything new.
