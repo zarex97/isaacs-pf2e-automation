@@ -12,44 +12,31 @@
                 "slug": "sickened",
                 "value": 1
             }
-        },
-        {
-            "outcomes": [
-                "criticalSuccess",
-                "success",
-                "failure",
-                "criticalFailure"
-            ],
-            "duration": {
-                "value": 1,
-                "unit": "rounds",
-                "expiry": "turn-start"
-            },
-            "apply": {
-                "type": "condition",
-                "slug": "concealed"
-            }
-        },
-        {
-            "event": "action-used",
-            "self": true,
-            "duration": {
-                "value": 1,
-                "unit": "rounds",
-                "expiry": "turn-start"
-            },
-            "apply": {
-                "type": "condition",
-                "slug": "concealed"
-            }
-        },
-        {
-            "event": "action-used",
-            "self": true,
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Outside"
-            }
         }
-    ]
+    ],
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Smoke",
+        "duration": {
+            "value": 1,
+            "unit": "rounds"
+        },
+        "until": "originTurnStart",
+        "inside": {
+            "conditions": [
+                "concealed"
+            ],
+            "rules": [
+                {
+                    "key": "EphemeralEffect",
+                    "affects": "target",
+                    "selectors": [
+                        "attack-roll",
+                        "spell-attack-roll"
+                    ],
+                    "uuid": "Compendium.pf2e.conditionitems.Item.DmAIPqOBomZ7H95W"
+                }
+            ],
+            "description": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Inside"
+        }
+    }
 }

@@ -49,6 +49,8 @@ import { MoveCaster } from "./targeting/move-caster.mjs";
 import { Summon } from "./targeting/summon.mjs";
 import { Sacrifice } from "./vanilla/sacrifice.mjs";
 import { Phase } from "./vanilla/phase.mjs";
+import { SaveModifier } from "./vanilla/save-modifier.mjs";
+import { Draws } from "./riders/draws.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -88,6 +90,8 @@ export const INIT = [
     ["a creature summoned", () => { Summon.register(); Summon.registerHooks(); }],
     ["a minion sacrificed", () => Sacrifice.register()],
     ["a circumstance bonus to AC that counts less", () => Phase.register()],
+    ["a save a spell changes for some", () => SaveModifier.register()],
+    ["metal drawn to a creature", () => Draws.register()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

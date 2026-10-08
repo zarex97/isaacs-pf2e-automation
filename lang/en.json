@@ -488,7 +488,8 @@
             "Holds": "<strong>{effect}</strong> holds — rank {rank} against a counteract rank of {ours} on a {outcome}.",
             "FailedCheck": "failed check",
             "NearMiss": "{effect} is not counteracted, but suppressed until the start of {actor}'s next turn; its duration does not run meanwhile.",
-            "Back": "{effect} returns to {actor}."
+            "Back": "{effect} returns to {actor}.",
+            "Against": "Counteract: {effect}"
         },
         "Readout": {
             "Title": "What the senses tell",
@@ -566,7 +567,8 @@
                 "sameAttackPenalty": "One attack penalty",
                 "castChoice": "A choice as it is cast",
                 "sacrifice": "A minion spent",
-                "circumstanceAcLess": "Circumstance bonus to AC"
+                "circumstanceAcLess": "Circumstance bonus to AC",
+                "saveModifier": "Save modifier for some"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -577,7 +579,8 @@
                 "Off": "Switched off on this item ({module})"
             },
             "SaveRider": "{statistic} save",
-            "CircumstanceAcLess": "A circumstance bonus to AC counts {by} less"
+            "CircumstanceAcLess": "A circumstance bonus to AC counts {by} less",
+            "SaveModifier": "A {value} {type} modifier to some creatures' saves"
         },
         "Vanilla": {
             "command": {
@@ -843,15 +846,14 @@
             },
             "wilding-word": {
                 "Word": "wilding word",
-                "Source": "wilding word's speaker",
-                "Kinds": "An animal, fungus or plant takes a –1 circumstance penalty to its save against wilding word — apply it before it rolls."
+                "Source": "wilding word's speaker"
             },
             "magnetize": {
-                "Field": "magnetized",
-                "Note": "Magnetize: a ranged attack with a metal weapon or projectile at a creature within 15 feet of the magnetized creature hits the magnetized one instead; a metal melee Strike within 15 feet at anyone else takes a –2 circumstance penalty."
+                "Field": "magnetized"
             },
             "noxious-vapors": {
-                "Outside": "Noxious Vapors: creatures outside the smoke are concealed to creatures within it."
+                "Smoke": "Noxious Vapors",
+                "Inside": "<p>You are within the toxic smoke: you are concealed, and creatures outside the smoke are concealed to you.</p>"
             },
             "mind-games": {
                 "Locked": "mind games"
@@ -862,8 +864,8 @@
             "nettleskin": {
                 "Thorns": "nettleskin"
             },
-            "holy-light": {
-                "Darkness": "Holy Light: if the light passes through magical darkness or targets a creature in it, it attempts to counteract the darkness."
+            "take-root": {
+                "Grasp": "Take Root: the +1 circumstance bonus also applies to its saves against spells or effects that would take a held item from its grasp."
             }
         },
         "Conditions": {
@@ -899,6 +901,10 @@
         },
         "Phase": {
             "Less": "{name}: circumstance bonus {by} less"
+        },
+        "Draws": {
+            "Redirect": "If this weapon or projectile is metal, the attack goes to {holder} instead.",
+            "Penalty": "If this melee weapon is metal, a –2 circumstance penalty to this attack roll."
         }
     }
 }

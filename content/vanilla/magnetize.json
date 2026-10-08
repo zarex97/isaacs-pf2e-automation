@@ -9,15 +9,10 @@
             "apply": {
                 "type": "effect",
                 "label": "ISAACS_AUTOMATION.Vanilla.magnetize.Field",
-                "rules": []
-            }
-        },
-        {
-            "event": "action-used",
-            "self": true,
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.magnetize.Note"
+                "rules": [],
+                "draws": {
+                    "feet": 15
+                }
             }
         }
     ]

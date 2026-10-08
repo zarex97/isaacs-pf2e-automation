@@ -1,12 +1,18 @@
 {
-    "riders": [
-        {
-            "event": "action-used",
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.wilding-word.Kinds"
+    "saveModifier": {
+        "value": -1,
+        "type": "circumstance",
+        "predicate": [
+            {
+                "or": [
+                    "self:trait:animal",
+                    "self:trait:fungus",
+                    "self:trait:plant"
+                ]
             }
-        },
+        ]
+    },
+    "riders": [
         {
             "outcomes": [
                 "success",

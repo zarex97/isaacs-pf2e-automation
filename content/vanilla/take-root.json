@@ -6,6 +6,14 @@
                 "type": "effect",
                 "uuid": "Compendium.pf2e.spell-effects.Item.ZGzhNFB3SM8owk85"
             }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.take-root.Grasp"
+            }
         }
     ]
 }

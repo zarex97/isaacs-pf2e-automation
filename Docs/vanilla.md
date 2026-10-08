@@ -56,7 +56,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Haste | 3 | up to 1, +5 at rank 7 | spell-effect-haste |  |
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
 | Heroism | 3 |  | spell-effect-heroism |  |
-| Holy Light | 3 |  | success: 5d6 spirit; crit. success: 10d6 spirit; GM note: “Holy Light: if the light passes through magical darkness or targets a creature in it, it attempts to counteract the darkness.” (on you) |  |
+| Holy Light | 3 |  | success: 5d6 spirit; crit. success: 10d6 spirit; counteract-area (on you) |  |
 | Hydraulic Push | 1 |  | success: pushed 5 ft away; crit. success: pushed 10 ft away |  |
 | Hypnotize | 3 | 10-ft burst (pf2e's), all | failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area) | ends if not Sustained, while inside: dazzled, will on entering / turn end — failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area), 1 minutes |
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
@@ -70,7 +70,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Live Wire | 1 |  | rays (on you) |  |
-| Magnetize | 4 |  | magnetized (1 minutes); GM note: “Magnetize: a ranged attack with a metal weapon or projectile at a creature within 15 feet of the magnetized creature hits the magnetized one instead; a metal melee Strike within 15 feet at anyone else takes a –2 circumstance penalty.” (on you) |  |
+| Magnetize | 4 |  | magnetized (1 minutes) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
 | Mind Games | 2 |  | success / failure / crit. failure: expire; success / failure / crit. failure: mind games (1 minutes, while Sustained); failure: stunned 1; crit. failure: stunned 2; crit. success: stunned 1; crit. success: expire |  |
@@ -79,7 +79,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
 | Mountain Resilience | 4 |  | spell-effect-mountain-resilience (carries damage-received shorten) |  |
 | Nettleskin | 1 |  | nettleskin (10 rounds, carries damage-received damage, damage-received shorten, on you) |  |
-| Noxious Vapors | 1 | 10-ft emanation (pf2e's), all | crit. failure: sickened 1; crit. success / success / failure / crit. failure: concealed (1 rounds); concealed (1 rounds, on you); GM note: “Noxious Vapors: creatures outside the smoke are concealed to creatures within it.” (on you) |  |
+| Noxious Vapors | 1 | 10-ft emanation (pf2e's), all | crit. failure: sickened 1 | until your next turn, while inside: concealed, its rules, 1 rounds |
 | Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
@@ -117,7 +117,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Summon Animal | 1 | 5-ft square, summons a common animal creature there, of the rank's summon level |  |  |
 | Sure Strike | 1 |  | spell-effect-sure-strike (on you); temporarily immune to sure strike (10 minutes, on you); GM note: “You are temporarily immune to sure strike: this casting has no effect.” (on you) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
-| Take Root | 1 |  | spell-effect-take-root |  |
+| Take Root | 1 |  | spell-effect-take-root; GM note: “Take Root: the +1 circumstance bonus also applies to its saves against spells or effects that would take a held item from its grasp.” (on you) |  |
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
 | Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
 | Telekinetic Maneuver | 2 |  | choice |  |
@@ -135,7 +135,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Wave of Despair | 5 |  | success: despair: no reactions, a Will save at the start of each turn (1 rounds, carries turn-start will save); failure / crit. failure: despair: no reactions, a Will save at the start of each turn (1 minutes, carries turn-start will save); crit. failure: slowed 1 (1 minutes) |  |
 | Weapon Storm | 4 | choose: 30-ft cone or 10-ft emanation, from you, all | rolled once: 4 dice of the held weapon (+1 per rank), one basic reflex each, critical specialization on a critical failure |  |
 | Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
-| Wilding Word | 1 |  | GM note: “An animal, fungus or plant takes a –1 circumstance penalty to its save against wilding word — apply it before it rolls.”; success / failure / crit. failure: wilding word's speaker (1 minutes, carries damage-received condition, damage-received condition, on you); success: wilding word (1 minutes); failure: wilding word (1 minutes); crit. failure: wilding word (1 minutes) |  |
+| Wilding Word | 1 |  | success / failure / crit. failure: wilding word's speaker (1 minutes, carries damage-received condition, damage-received condition, on you); success: wilding word (1 minutes); failure: wilding word (1 minutes); crit. failure: wilding word (1 minutes) |  |
 
 ## Legacy names
 
