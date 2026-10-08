@@ -1,0 +1,55 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "sickened",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "criticalSuccess",
+                "success",
+                "failure",
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "concealed"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "concealed"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.noxious-vapors.Outside"
+            }
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "riders": [
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "success"
+            ],
+            "predicate": [
+                "target:trait:unholy"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "5d6",
+                "perStep": "2d6",
+                "damageType": "spirit"
+            }
+        },
+        {
+            "event": "strike-resolved",
+            "outcomes": [
+                "criticalSuccess"
+            ],
+            "predicate": [
+                "target:trait:unholy"
+            ],
+            "apply": {
+                "type": "damage",
+                "formula": "10d6",
+                "perStep": "4d6",
+                "damageType": "spirit"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "prompt",
+                "text": "ISAACS_AUTOMATION.Vanilla.holy-light.Darkness"
+            }
+        }
+    ]
+}

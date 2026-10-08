@@ -19,6 +19,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
+| Chilling Spray | 1 | 15-ft cone (pf2e's), from you, all | failure: frosted (2 rounds); crit. failure: frosted (2 rounds) |  |
 | Cleanse Affliction | 2 |  | cleanse (on you) |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
 | Cone of Cold | 5 | 60-ft cone (pf2e's), from you, all |  |  |
@@ -32,11 +33,13 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
 | Earthbind | 3 |  | success: fall; failure: fall; crit. failure: fall |  |
 | Electric Arc | 1 | up to 2 |  |  |
+| Endure | 1 |  | spell-effect-endure |  |
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
 | Enlarge | 2 | up to 1, +9 at rank 6 | spell-effect-enlarge (below rank 4); spell-effect-enlarge (from rank 4) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
 | Evil Eye | 1 |  | failure: sickened 1; crit. failure: sickened 2; failure / crit. failure: evil eye (1 minutes, while Sustained) |  |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
+| False Vitality | 2 |  | spell-effect-false-vitality (on you) |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |
@@ -53,6 +56,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Haste | 3 | up to 1, +5 at rank 7 | spell-effect-haste |  |
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
 | Heroism | 3 |  | spell-effect-heroism |  |
+| Holy Light | 3 |  | success: 5d6 spirit; crit. success: 10d6 spirit; GM note: “Holy Light: if the light passes through magical darkness or targets a creature in it, it attempts to counteract the darkness.” (on you) |  |
 | Hydraulic Push | 1 |  | success: pushed 5 ft away; crit. success: pushed 10 ft away |  |
 | Hypnotize | 3 | 10-ft burst (pf2e's), all | failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area) | ends if not Sustained, while inside: dazzled, will on entering / turn end — failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area), 1 minutes |
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
@@ -69,18 +73,23 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Magnetize | 4 |  | magnetized (1 minutes); GM note: “Magnetize: a ranged attack with a metal weapon or projectile at a creature within 15 feet of the magnetized creature hits the magnetized one instead; a metal melee Strike within 15 feet at anyone else takes a –2 circumstance penalty.” (on you) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
+| Mind Games | 2 |  | success / failure / crit. failure: expire; success / failure / crit. failure: mind games (1 minutes, while Sustained); failure: stunned 1; crit. failure: stunned 2; crit. success: stunned 1; crit. success: expire |  |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
 | Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
 | Mountain Resilience | 4 |  | spell-effect-mountain-resilience (carries damage-received shorten) |  |
+| Nettleskin | 1 |  | nettleskin (10 rounds, carries damage-received damage, damage-received shorten, on you) |  |
+| Noxious Vapors | 1 | 10-ft emanation (pf2e's), all | crit. failure: sickened 1; crit. success / success / failure / crit. failure: concealed (1 rounds); concealed (1 rounds, on you); GM note: “Noxious Vapors: creatures outside the smoke are concealed to creatures within it.” (on you) |  |
 | Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantasmal Calamity | 6 |  | crit. failure: save |  |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
+| Phase Bolt | 1 |  |  |  |
 | Planar Tether | 4 |  | success: tethered (1 minutes); failure: tethered (10 minutes); crit. failure: tethered (1 hours) |  |
 | Protection | 1 |  | spell-effect-protection; protection emanation (1 minutes) |  |
 | Protector Tree | 1 | choose: 5-ft line, all, placed, no targets |  | a wall of squares, in 5-ft sections: AC 10, Hardness 0, 10 HP (+10 per rank), takes a Strike first for your allies beside it, 1 minutes |
+| Puff of Poison | 1 |  | failure: 1d4 (+1d4 per 2 ranks) persistent poison; crit. failure: 2d4 (+2d4 per 2 ranks) persistent poison |  |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
@@ -112,6 +121,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
 | Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
 | Telekinetic Maneuver | 2 |  | choice |  |
+| Timber | 1 | 15-ft line (pf2e's), from you, all | crit. failure: dazzled (until its next turn) |  |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
 | Unfettered Movement | 4 |  | spell-effect-unfettered-movement |  |

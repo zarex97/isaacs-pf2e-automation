@@ -565,7 +565,8 @@
                 "targetsPerAction": "Targets per action",
                 "sameAttackPenalty": "One attack penalty",
                 "castChoice": "A choice as it is cast",
-                "sacrifice": "A minion spent"
+                "sacrifice": "A minion spent",
+                "circumstanceAcLess": "Circumstance bonus to AC"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -575,7 +576,8 @@
                 "SettingOff": "Off: the \"Riders for vanilla spells\" setting",
                 "Off": "Switched off on this item ({module})"
             },
-            "SaveRider": "{statistic} save"
+            "SaveRider": "{statistic} save",
+            "CircumstanceAcLess": "A circumstance bonus to AC counts {by} less"
         },
         "Vanilla": {
             "command": {
@@ -847,6 +849,21 @@
             "magnetize": {
                 "Field": "magnetized",
                 "Note": "Magnetize: a ranged attack with a metal weapon or projectile at a creature within 15 feet of the magnetized creature hits the magnetized one instead; a metal melee Strike within 15 feet at anyone else takes a –2 circumstance penalty."
+            },
+            "noxious-vapors": {
+                "Outside": "Noxious Vapors: creatures outside the smoke are concealed to creatures within it."
+            },
+            "mind-games": {
+                "Locked": "mind games"
+            },
+            "chilling-spray": {
+                "Frost": "frosted"
+            },
+            "nettleskin": {
+                "Thorns": "nettleskin"
+            },
+            "holy-light": {
+                "Darkness": "Holy Light: if the light passes through magical darkness or targets a creature in it, it attempts to counteract the darkness."
             }
         },
         "Conditions": {
@@ -879,6 +896,9 @@
             "Takes": "{name} takes {taken} damage; {left} Hit Points left.",
             "Shatters": "{name} takes {taken} damage and shatters.",
             "Burst": "The shards strike {target}."
+        },
+        "Phase": {
+            "Less": "{name}: circumstance bonus {by} less"
         }
     }
 }

@@ -3108,7 +3108,12 @@ function effectSource(label, rules, rider, context) {
     // cast's heightening steps go with them: on the holder's turn the effect is the only item in hand.
     if (Array.isArray(rider.apply?.carries)) {
         const dc = RiderExtensions.resolveDC(undefined, context);
-        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(rider.apply.carries, dc), steps: riderSteps(rider, context) } });
+        // A carried formula is grown now, while the cast is in hand: when it fires the effect is the only item, and
+        // its own rank is no rank — *Nettleskin*'s jab stayed 1d4 at every rank.
+        const grown = rider.apply.carries.map((entry) => entry?.apply?.formula && entry.apply.perStep !== undefined
+            ? { ...entry, apply: (({ perStep, ...rest }) => ({ ...rest, formula: growByStep(entry.apply.formula, perStep, riderSteps(entry, context)) }))(entry.apply) }
+            : entry);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: carried(grown, dc), steps: riderSteps(rider, context) } });
     }
     // Who this effect is linked to — *Spirit Link*'s ally, kept on the caster's effect.
     if (rider.apply?.link) {

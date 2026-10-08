@@ -167,6 +167,13 @@ export const Sustain = {
         if (spec.spellUuid) {
             const round = roundFor(actor);
             const say = (key) => ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t(key, { name: action.name })}</p>` });
+            // Nothing the spell left is standing — *Mind Games*' critical success, "the spell ends": there is no spell
+            // to keep going, and Sustaining it must not cast it again.
+            if (heldBy(actor, spec.spellUuid).length === 0) {
+                await say("Sustain.Gone");
+                if (actor.items.has(action.id)) await action.delete();
+                return;
+            }
             if (!canSustain(spec, round)) return say(spec.castRound !== null && round <= spec.castRound ? "Sustain.NotYet" : "Sustain.Already");
             await action.setFlag(LIB_ID, FLAG, { ...spec, lastRound: round });
             // The spell again, as it was cast: its rank and its variant, a card to attack from.
