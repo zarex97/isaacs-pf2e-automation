@@ -47,6 +47,7 @@ import { MoveCaster } from "./targeting/move-caster.mjs";
 import { Summon } from "./targeting/summon.mjs";
 import { Sacrifice } from "./vanilla/sacrifice.mjs";
 import { Preparations } from "./riders/preparations.mjs";
+import { Reveal } from "./riders/reveal.mjs";
 import { Coexistence } from "./vanilla/coexistence.mjs";
 import { Indicator } from "./vanilla/indicator.mjs";
 import { Vanilla } from "./vanilla/table.mjs";
@@ -83,6 +84,7 @@ export const INIT = [
     ["a creature summoned", () => { Summon.register(); Summon.registerHooks(); }],
     ["a minion sacrificed", () => Sacrifice.register()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
+    ["a revealed creature is seen", () => Reveal.registerMode()],
 ];
 
 /**

@@ -701,10 +701,10 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-96a | "You can see invisible creatures as though they weren't invisible, although their features are blurred, making them Concealed" | Invisible creatures show to the caster's token, and count as concealed to it | | ☐ | |
-| VS-96b | "Subtler clues also grant you a +2 status bonus to checks you make to disbelieve illusions" | +2 to disbelieve | | ☐ | |
+| VS-96a | "You can see invisible creatures as though they weren't invisible, although their features are blurred, making them Concealed" | Invisible creatures show to the caster's token, and count as concealed to it | pf2e's *Spell Effect: See the Unseen* (`Sense` see-invisibility); the concealed gate (`reveal.mjs` `concealment`) counts an invisible target as concealed to an attacker with that sense | ✅ | Aries' senses gained **see-invisibility**. Aries' Strike at invisible ZZ: "concealed: the DC 5 flat check fails, and the attack misses" (a 3), **not rolled**; without the spell, no check. (Showing the token is pf2e's under rules-based vision, off in this world) |
+| VS-96b | "Subtler clues also grant you a +2 status bonus to checks you make to disbelieve illusions" | +2 to disbelieve | pf2e's `FlatModifier` +2 status to Perception and Will, predicated on `illusion` | ✅ | Aries' Will: **+22**; against an illusion: **+24** |
 | VS-96c | "You can also see incorporeal creatures, like ghosts, phased through an object from within 10 feet" | — | | — | Nothing to automate: a creature inside an object is the GM's |
-| VS-96d | "Heightened (5th) This spell has a duration of 8 hours" | Rank 5 lasts 8 hours | | ☐ | |
+| VS-96d | "Heightened (5th) This spell has a duration of 8 hours" | Rank 5 lasts 8 hours | A rider with `duration` 8 hours from rank 5 | ✅ | Rank 5: **8 hours** |
 
 ### VS-97 · Revealing Light
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 27 |
-| ✅ | 287 |
+| ☐ not yet driven | 24 |
+| ✅ | 290 |
 | ⚠️ | 11 |
 | ❌ | 0 |
 | 🔧 | 0 |

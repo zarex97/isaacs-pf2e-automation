@@ -81,6 +81,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |
 | Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
+| See the Unseen | 2 |  | spell-effect-see-the-unseen (below rank 5, on you); spell-effect-see-the-unseen (8 hours, from rank 5, on you) |  |
 | Share Life | 2 |  | life linked (10 minutes) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Silence | 2 |  | spell-effect-silence |  |

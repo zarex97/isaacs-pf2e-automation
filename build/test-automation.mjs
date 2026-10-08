@@ -1420,4 +1420,13 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("a caster's rest ends only that caster's until-preparations effects", endingWith(fx, "Actor.a").map((e) => e.id), [1]);
 }
 
+{
+    const { concealment, revealedSees } = await import("../scripts/riders/reveal.mjs");
+    const L = "isaacs-pf2e-automation";
+    const actor = (conds, revealed = true) => ({ itemTypes: { effect: revealed ? [{ flags: { [L]: { reveals: true } } }] : [] }, hasCondition: (...c) => c.some((x) => conds.includes(x)) });
+    check("the revealed mode sees a revealed creature, and an invisible one through undetected — not one hidden by other means", [revealedSees(actor([])), revealedSees(actor(["invisible", "undetected"])), revealedSees(actor(["undetected"])), revealedSees(actor([], false))], [true, true, false, false]);
+    const c = (o) => concealment({ revealed: false, invisible: false, concealed: false, seesInvisibility: false, ...o });
+    check("concealment: concealed; invisible to one who sees invisibility; revealed — only its invisibility", [c({ concealed: true }), c({ invisible: true }), c({ invisible: true, seesInvisibility: true }), c({ revealed: true, concealed: true }), c({ revealed: true, invisible: true })], [true, false, true, false, true]);
+}
+
 report("Automation tests");
