@@ -1,6 +1,6 @@
 {
   "name": "isaacs-pf2e-automation",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "PF2e automation for Foundry VTT: area targeting, single-wrap stage pipelines, and the allowances pf2e writes down but never enforces.",
   "private": true,
   "type": "module",
