@@ -623,6 +623,27 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
 }
 
 /* -------------------------------------------------------------------------------------------- */
+/*  The pilot's tracker: the eleven spells of 1.2.0, clausified after the fact                   */
+/* -------------------------------------------------------------------------------------------- */
+
+{
+    const { trackerRows } = await import("./lib/patterns.mjs");
+    const text = fs.readFileSync(path.join(ROOT, "Docs", "clauses", "vanilla-spells-pilot.md"), "utf8");
+    const words = JSON.parse(fs.readFileSync(path.join(ROOT, "build", "data", "pf2e-spell-text.json"), "utf8")).spells;
+    const MARKS = ["☐", "✅", "⚠️", "❌", "🔧", "—"];
+    const rows = trackerRows(text);
+    const spells = Object.fromEntries(rows.filter((r) => r.cells.Spell).map((r) => [r.id, r.cells.Spell.replace(/`/g, "")]));
+    const clauses = rows.filter((r) => /^VS-\d+[a-z]$/.test(r.id)).map((r) => ({ id: r.id, spell: /^(VS-\d+)/.exec(r.id)[1], clause: r.cells.Clause.replace(/^"|"$/g, ""), mark: r.cells.Status }));
+    const pilot = ["calm", "command", "daze", "electric-arc", "fear", "force-barrage", "frostbite", "heal", "ice-storm", "slow", "synesthesia"];
+    check("the pilot tracker lists the pilot's eleven spells", Object.values(spells).sort(), pilot);
+    check("…each with clauses, and each clause of a listed spell",
+        [Object.keys(spells).filter((id) => !clauses.some((c) => c.spell === id)), clauses.filter((c) => !spells[c.spell]).map((c) => c.id)], [[], []]);
+    check("…numbered once each", clauses.length - new Set(clauses.map((c) => c.id)).size, 0);
+    check("…carrying one of the six marks", clauses.filter((c) => !MARKS.includes(c.mark)).map((c) => `${c.id} ${c.mark}`), []);
+    check("…in pf2e's own words", clauses.filter((c) => !(words[spells[c.spell]] ?? "").includes(c.clause)).map((c) => c.id), []);
+}
+
+/* -------------------------------------------------------------------------------------------- */
 /*  Patterns: every tag is from the closed list, and every pattern has a precedent that works    */
 /* -------------------------------------------------------------------------------------------- */
 
@@ -639,6 +660,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
         Object.entries(vocabulary.facets).filter(([, f]) => !f.question || Object.keys(f.values ?? {}).length === 0).map(([k]) => k), []);
     check("no pattern goes without a precedent once tags are required",
         vocabulary.requireTags ? [...P.allowedTags(vocabulary)].filter(([, { entry }]) => !entry.precedent).map(([tag]) => tag) : [], []);
+    check("every pattern names where its code lives", [...P.allowedTags(vocabulary)].filter(([, { entry }]) => !entry.modules?.length).map(([tag]) => tag), []);
 
     // The parser reads a table by its header, so a column added or moved does not shift the others.
     const parsed = P.trackerRows([
@@ -672,6 +694,7 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("…and must work", P.problems(vocab, [...base.slice(0, 2), row("X-1d", ["effect:move/pull"], "⚠️")]), ["effect:move/pull's precedent X-1d is ⚠️, not ✅"]);
     check("an empty cell passes until tags are required", P.problems(vocab, [...base, row("X-2", [])]), []);
     check("…and fails once they are", P.problems({ ...vocab, requireTags: true }, [...base, row("X-2", [])]), ["X-2 (t.md) carries no patterns"]);
+    check("…except on a — row, which automates nothing", P.problems({ ...vocab, requireTags: true }, [...base, row("X-2", [], "—")]), []);
     check("a tag written twice is caught", P.problems(vocab, [...base, row("X-2", ["when:cast", "when:cast"])]), ["X-2 carries a pattern twice"]);
     check("a pattern naming a missing module is caught",
         P.problems({ ...vocab, facets: { when: { question: "?", values: { cast: { meaning: "m", precedent: "X-1a", modules: ["scripts/nowhere.mjs"] } } } } }, [row("X-1a", ["when:cast"])]),

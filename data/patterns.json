@@ -1,6 +1,6 @@
 {
     "about": "The closed list of patterns a clause is tagged with. Edited only in this library; Docs/patterns.md is generated from it (npm run build:patterns). See CONTEXT.md and Docs/adr/0004.",
-    "requireTags": false,
+    "requireTags": true,
     "facets": {
         "when": {
             "question": "What makes it fire?",
@@ -499,6 +499,21 @@
                         "of 17th level or lower",
                         "Large or larger"
                     ]
+                },
+                "attacker": {
+                    "meaning": "The creature that struck or damaged the holder, answered after the blow.",
+                    "precedent": "VS-80f",
+                    "modules": [
+                        "scripts/riders/sources.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "carries: a damage-received rider aimed at the attacker"
+                    ],
+                    "phrases": [
+                        "the attacker takes",
+                        "the attacker"
+                    ]
                 }
             }
         },
@@ -727,6 +742,36 @@
                     "phrases": [
                         "originating from the target",
                         "centered on the target"
+                    ]
+                },
+                "swept": {
+                    "meaning": "A moving area reaches everyone whose space it passed over, not only where it stops.",
+                    "precedent": "VS-41c",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.sustain.move"
+                    ],
+                    "phrases": [
+                        "whose space it shared",
+                        "during its flight"
+                    ]
+                },
+                "strikes-from": {
+                    "meaning": "A lingering area the caster aims a further, smaller strike from — a bolt, a vine.",
+                    "precedent": "VS-43a",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.sustain.bolt",
+                        "lingering.sustain.vine"
+                    ],
+                    "phrases": [
+                        "call down",
+                        "lash out from any square",
+                        "within the spell's area"
                     ]
                 }
             }
@@ -1802,6 +1847,85 @@
                         "as determined by the GM",
                         "the GM"
                     ]
+                },
+                "damage-type": {
+                    "meaning": "The damage type is chosen at the cast, taken from a held weapon, or changed by the target.",
+                    "precedent": "VS-44a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/vanilla/requires.mjs",
+                        "scripts/vanilla/sacrifice.mjs"
+                    ],
+                    "authored": [
+                        "typeFromSpell",
+                        "variantFromWeapon",
+                        "sacrifice.element"
+                    ],
+                    "phrases": [
+                        "damage of the type you chose",
+                        "same type as the weapon",
+                        "deals cold damage"
+                    ]
+                },
+                "trait-gained": {
+                    "meaning": "A trait added to the spell, an item or a creature's Strikes while it lasts.",
+                    "precedent": "VS-86c",
+                    "modules": [
+                        "scripts/targeting/cast-shape.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "areaTargetingShapes[].overlay",
+                        "an effect with AdjustStrike"
+                    ],
+                    "phrases": [
+                        "gains the trait",
+                        "add that trait"
+                    ]
+                },
+                "approach-barred": {
+                    "meaning": "A creature can't move closer to the caster, or pays more to; moving away is free.",
+                    "precedent": "VS-46g",
+                    "modules": [
+                        "scripts/targeting/repels.mjs",
+                        "scripts/lib/movement-cost.mjs"
+                    ],
+                    "authored": [
+                        "lingering.repels"
+                    ],
+                    "phrases": [
+                        "can't move closer to you",
+                        "when moving closer to you"
+                    ]
+                },
+                "recast": {
+                    "meaning": "A Sustain repeats the spell's own attack or effect, at the same rank.",
+                    "precedent": "VS-53e",
+                    "modules": [
+                        "scripts/riders/sustain.mjs",
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.sustained.repeat"
+                    ],
+                    "phrases": [
+                        "repeat the attack",
+                        "Each time you Sustain the spell, you can"
+                    ]
+                },
+                "disarm": {
+                    "meaning": "An item loosened in, or knocked from, the holder's grasp.",
+                    "precedent": "VS-54c",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: disarm"
+                    ],
+                    "phrases": [
+                        "Disarm",
+                        "something they carry"
+                    ]
                 }
             }
         },
@@ -2074,6 +2198,20 @@
                         "is reduced to 0 Hit Points",
                         "then the spell ends"
                     ]
+                },
+                "action-save": {
+                    "meaning": "The holder spends an action on a save that ends the effect on itself.",
+                    "precedent": "VS-87f",
+                    "modules": [
+                        "scripts/riders/origin-action.mjs"
+                    ],
+                    "authored": [
+                        "originAction with holder: true, a save, and expire"
+                    ],
+                    "phrases": [
+                        "attempt to end the spell's effect on itself",
+                        "by using a single action"
+                    ]
                 }
             }
         },
@@ -2275,6 +2413,20 @@
                         "a weapon you're holding",
                         "flight",
                         "flying"
+                    ]
+                },
+                "once-per-target": {
+                    "meaning": "Works at most once for a given creature, or a given case of an affliction.",
+                    "precedent": "VS-70c",
+                    "modules": [
+                        "scripts/riders/cleanse.mjs"
+                    ],
+                    "authored": [
+                        "the entry's own once-per-case record"
+                    ],
+                    "phrases": [
+                        "only once to a given",
+                        "once per creature"
                     ]
                 }
             }
