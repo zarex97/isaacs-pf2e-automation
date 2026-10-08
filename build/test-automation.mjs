@@ -1438,6 +1438,12 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
 }
 
 {
+    const { chargeDice } = await import("../scripts/riders/apply.mjs");
+    const beacon = { dice: { 4: "d10", 3: "d8", 2: "d6", 1: "d4" } };
+    check("a beacon's dice by the charges left, one per rank", [chargeDice(beacon, 4, 4), chargeDice(beacon, 3, 4), chargeDice(beacon, 1, 6), chargeDice(beacon, 0, 4)], ["4d10", "4d8", "6d4", null]);
+}
+
+{
     const { detected } = await import("../scripts/riders/detect-magic.mjs");
     const found = [{ level: 3, illusion: false, friendly: true }, { level: 2, illusion: true }, { level: 5, illusion: true }, { level: 1 }];
     check("detect magic: an illusion only below the spell's rank, known magic left out when chosen", [detected(found, { rank: 3 }).length, detected(found, { rank: 6 }).length, detected(found, { rank: 3, ignore: (m) => m.friendly }).length], [3, 4, 2]);

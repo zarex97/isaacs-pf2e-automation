@@ -1113,8 +1113,11 @@ async function applyHeal(rider, context) {
 
     // Dice rather than a number: *Shell of Hours* "regains 2d8 Hit Points", +2d8 every other rank (Stargazer
     // guide §5.2). Its own branch and its own words, so the Soulbound's capped, flame-worded heals are untouched.
-    if (typeof rider.apply.formula === "string") {
-        const dice = growByStep(rider.apply.formula, rider.apply.perStep ?? rider.apply.formula, riderSteps(rider, context));
+    // Dice set by what is left of the effect behind the action — *Vital Beacon*: "d10s, then d8s, then d6s, then d4s",
+    // one die per rank of the spell.
+    const charged = rider.apply.byCharge ? await chargedFormula(rider.apply.byCharge, context) : null;
+    if (typeof rider.apply.formula === "string" || charged) {
+        const dice = charged ?? growByStep(rider.apply.formula, rider.apply.perStep ?? rider.apply.formula, riderSteps(rider, context));
         const roll = await new Roll(String(dice)).evaluate();
         const healed = Math.max(0, Math.min(roll.total, hp.max - hp.value));
         if (healed > 0) await actor.update({ "system.attributes.hp.value": hp.value + healed });
@@ -1124,6 +1127,8 @@ async function applyHeal(rider, context) {
             speaker: ChatMessage.getSpeaker({ actor }),
             flavor: t("Heal.Regains", { item: context.item?.name ?? t("Rider.Name"), actor: actor.name, healed }),
         });
+        // "Each time the beacon heals someone, it decreases in strength": the charge goes after the dice were read.
+        if (charged && rider.apply.byCharge.spend) await OriginAction.spend(rider, context);
         return;
     }
 
@@ -3121,6 +3126,19 @@ function effectSource(label, rules, rider, context) {
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
+}
+
+/** The dice an action's effect has left: `byCharge.dice[<badge>]`, one per the effect's level. */
+export function chargeDice(byCharge, badge, level) {
+    const die = byCharge?.dice?.[String(badge)];
+    return die ? `${Math.max(1, Number(level) || 1)}${die}` : null;
+}
+
+async function chargedFormula(byCharge, context) {
+    const effectUuid = context.item?.flags?.[LIB_ID]?.originAction?.effectUuid;
+    const effect = effectUuid ? await fromUuid(effectUuid).catch(() => null) : null;
+    if (!effect) return null;
+    return chargeDice(byCharge, effect.system?.badge?.value, effect.system?.level?.value);
 }
 
 /** *Planar Tether*: does a tether on the creature hold it against this move (`tether.mjs`)? */

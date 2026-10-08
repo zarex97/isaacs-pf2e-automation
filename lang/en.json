@@ -648,6 +648,10 @@
                 "Ignore": "Leave it out",
                 "All": "Detect everything"
             },
+            "vital-beacon": {
+                "Beacon": "vital beacon",
+                "Lay": "Lay Hands on the Vital Beacon"
+            },
             "revealing-light": {
                 "Light": "revealed"
             },

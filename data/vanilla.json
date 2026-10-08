@@ -5373,6 +5373,50 @@
                 }
             ]
         },
+        "vital-beacon": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.vital-beacon.Beacon",
+                        "rules": [],
+                        "badge": 4,
+                        "untilPreparations": true,
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.vital-beacon.Lay",
+                            "actions": 1,
+                            "traits": [
+                                "manipulate"
+                            ],
+                            "spends": false,
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "oncePerRound": true,
+                                    "apply": {
+                                        "type": "heal",
+                                        "byCharge": {
+                                            "dice": {
+                                                "1": "d4",
+                                                "2": "d6",
+                                                "3": "d8",
+                                                "4": "d10"
+                                            },
+                                            "spend": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
         "wall-of-fire": {
             "areaTargeting": {
                 "affects": "all",
