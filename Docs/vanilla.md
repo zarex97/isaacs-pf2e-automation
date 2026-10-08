@@ -23,6 +23,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
 | Darkvision | 2 |  | spell-effect-darkvision (below rank 3, on you); spell-effect-darkvision (from rank 3, below rank 5); spell-effect-darkvision (until it ends, from rank 5) |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
+| Detect Magic | 1 |  | detect-magic (on you); detect-magic (on you) |  |
 | Disintegrate | 6 |  | rays (on you) |  |
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |

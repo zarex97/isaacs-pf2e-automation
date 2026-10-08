@@ -1437,4 +1437,10 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     check("an orb's light by rank: 20/40, and 60/120 from 4th", [orbRadii(spec, 1), orbRadii(spec, 3), orbRadii(spec, 4), orbRadii(spec, 9)], [{ bright: 20, dim: 40 }, { bright: 20, dim: 40 }, { bright: 60, dim: 120 }, { bright: 60, dim: 120 }]);
 }
 
+{
+    const { detected } = await import("../scripts/riders/detect-magic.mjs");
+    const found = [{ level: 3, illusion: false, friendly: true }, { level: 2, illusion: true }, { level: 5, illusion: true }, { level: 1 }];
+    check("detect magic: an illusion only below the spell's rank, known magic left out when chosen", [detected(found, { rank: 3 }).length, detected(found, { rank: 6 }).length, detected(found, { rank: 3, ignore: (m) => m.friendly }).length], [3, 4, 2]);
+}
+
 report("Automation tests");

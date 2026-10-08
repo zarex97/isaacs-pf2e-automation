@@ -733,12 +733,12 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-99a | "You send out a pulse that registers the presence of magic" | The caster is told whether magic is within 30 ft | | ☐ | |
-| VS-99b | "You receive no information beyond the presence or absence of magic" | Nothing more at rank 1 | | ☐ | |
-| VS-99c | "You can choose to ignore magic you're fully aware of, such as the magic items and ongoing spells of you and your allies" | The caster's and allies' own magic items and effects can be left out | | ☐ | |
-| VS-99d | "You detect illusion magic only if that magic's effect has a lower rank than the rank of your detect magic spell" | An illusion of equal or higher rank isn't found | | ☐ | |
-| VS-99e | "Heightened (3rd) You learn the rank or level of the most powerful magical effect the spell detects" | Rank 3 names the highest rank or level | | ☐ | |
-| VS-99f | "Heightened (4th) As 3rd rank, but you also pinpoint the source of the highest-rank magic" | Rank 4 names where it is | | ☐ | |
+| VS-99a | "You send out a pulse that registers the presence of magic" | The caster is told whether magic is within 30 ft | `detect-magic` (`scripts/riders/detect-magic.mjs`), a `self` rider on the cast: within 30 ft, creatures' magic items, effects from spells or magic, spells' areas; whispered to the caster's owners | ✅ | An NPC caster beside the party, rank 1: "Magic is present within 30 feet." (whispered) |
+| VS-99b | "You receive no information beyond the presence or absence of magic" | Nothing more at rank 1 | Below rank 3 the card says only present or absent | ✅ | Rank 1: that sentence and **nothing more** |
+| VS-99c | "You can choose to ignore magic you're fully aware of, such as the magic items and ongoing spells of you and your allies" | The caster's and allies' own magic items and effects can be left out | `castChoice` `known` (*Leave it out* / *Detect everything*); `ignoreKnown` drops the caster's own and its allies' | ✅ | Rank 3, everything: "The most powerful is of rank 3"; leaving it out: **rank 2** — the rank-3 magic was on an ally of the caster (D6). Rank 4: "… rank 3. It is on D6" / left out "… rank 2. It is on Leo" |
+| VS-99d | "You detect illusion magic only if that magic's effect has a lower rank than the rank of your detect magic spell" | An illusion of equal or higher rank isn't found | `detected`: an illusion counts only below the spell's rank | ✅ | An illusion effect of rank 9 on Leo: at rank 4 **not found** (the highest stayed rank 3 on D6); at rank 10: "rank 9. It is on Leo" |
+| VS-99e | "Heightened (3rd) You learn the rank or level of the most powerful magical effect the spell detects" | Rank 3 names the highest rank or level | From rank 3, the highest rank or level | ✅ | Rank 3: "The most powerful is of rank 3" |
+| VS-99f | "Heightened (4th) As 3rd rank, but you also pinpoint the source of the highest-rank magic" | Rank 4 names where it is | From rank 4, where it is | ✅ | Rank 4: "… It is on D6" |
 
 ### VS-100 · Vital Beacon
 
@@ -754,8 +754,8 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 11 |
-| ✅ | 303 |
+| ☐ not yet driven | 5 |
+| ✅ | 309 |
 | ⚠️ | 11 |
 | ❌ | 0 |
 | 🔧 | 0 |

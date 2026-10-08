@@ -97,6 +97,7 @@ and `npm test` fails if this table and that switch disagree.
 | `prompt` | Whispers the GM. Automating half of a rider and being honest about the other half beats guessing. |
 | `pick` | Whispers the caster a card of **creatures** — everything within `range` feet matching `affects` — and applies the nested `riders` to the one they click. |
 | `choice` | Whispers the caster a card of buttons and applies the one they pick. |
+| `detect-magic` | On the cast (`self: true`): the magic within `range` feet — creatures' magic items, the effects spells and magic left on them, spells' areas on the ground — whispered to the caster: present or not; from 3rd rank the highest rank or level, from 4th where it is. An illusion counts only below the spell's rank; `ignoreKnown` leaves out the caster's and their allies' own (*Detect Magic*). |
 | `readout` | Posts an informational card and touches no sheet. |
 
 Another module adds its own with `api.riderExtensions.registerApplyType(type, fn)`; the built-in types

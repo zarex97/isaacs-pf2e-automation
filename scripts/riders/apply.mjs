@@ -464,6 +464,8 @@ async function applyOne(rider, context) {
             return applyTransfer(rider, context);
         case "temp-hp":
             return applyTempHp(rider, context);
+        case "detect-magic":
+            return (await import("./detect-magic.mjs")).detectMagic(rider, context);
         case "dismiss":
             return Dismiss.apply(rider, context);
         case "spend-charge":
