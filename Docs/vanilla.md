@@ -21,7 +21,9 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Cleanse Affliction | 2 |  | cleanse (on you) |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
+| Darkvision | 2 |  | spell-effect-darkvision (below rank 3, on you); spell-effect-darkvision (from rank 3, below rank 5); spell-effect-darkvision (until it ends, from rank 5) |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
+| Detect Magic | 1 |  | detect-magic (on you); detect-magic (on you) |  |
 | Disintegrate | 6 |  | rays (on you) |  |
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
@@ -55,6 +57,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Levitate | 3 |  | elevation; spell-effect-levitate (carries turn-end toggle) |  |
+| Light | 1 | 5-ft square, an orb of light there, 20/40 ft, on a creature or the square; moved 60 ft by Sustain; 4 at most |  |  |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Live Wire | 1 |  | rays (on you) |  |
@@ -75,11 +78,13 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
+| Revealing Light | 2 | 10-ft burst (pf2e's), all | success: revealed (2 rounds); failure: revealed (1 minutes); crit. failure: revealed (10 minutes) |  |
 | Runic Weapon | 1 |  | spell-effect-runic-weapon |  |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |
 | Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
+| See the Unseen | 2 |  | spell-effect-see-the-unseen (below rank 5, on you); spell-effect-see-the-unseen (8 hours, from rank 5, on you) |  |
 | Share Life | 2 |  | life linked (10 minutes) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Silence | 2 |  | spell-effect-silence |  |
@@ -104,6 +109,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
 | Vapor Form | 4 |  | spell-effect-vapor-form |  |
 | Vision of Death | 4 |  | success: 8d6 mental; success: death; success: frightened 1; failure: 8d6 mental; failure: death; failure: frightened 2; crit. failure: 8d6 mental; crit. failure: death; crit. failure: frightened 4; crit. failure: fleeing (no end) |  |
+| Vital Beacon | 4 |  | vital beacon (until it ends, on you) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |
 | Wall of Stone | 5 | choose: 120-ft line or 60-ft line or 30-ft line or 2 × 60-ft line or 3 × 40-ft line or 4 × 30-ft line, all, placed, no targets |  | a wall of borders, in 10-ft sections: AC 10, Hardness 14, 50 HP (+15 per 2 ranks), rubble when breached |
 | Wall of Thorns | 3 | choose: 60-ft line or 30-ft line or 10-ft line, all, placed, no targets |  | difficult terrain, a wall of squares, in 10-ft sections: AC 10, Hardness 10, 20 HP (+5 per rank), cover across it, 3d4 piercing on entering, 1 minutes |

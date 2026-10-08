@@ -64,6 +64,7 @@ export function docs(built, index, en) {
         if (a.maxTargets) parts.push(`up to ${a.maxTargets}`);
         if (a.chain) parts.push(`a chain, each within ${a.chain.link} ft of the last`);
         if (a.placeOnly) parts.push("placed, no targets");
+        if (a.lightOrb) parts.push(`an orb of light there, ${a.lightOrb.bright ?? 20}/${a.lightOrb.dim ?? 40} ft, on a creature or the square; moved ${a.lightOrb.move ?? 60} ft by Sustain; ${a.lightOrb.max ?? 4} at most`);
         if (a.summon) parts.push(`summons a common ${(a.summon.traits ?? []).join(" ")} creature there, of the rank's summon level`);
         if (a.moveCaster) parts.push(a.moveCaster.seeBelowRank ? `you move there (seen, until rank ${a.moveCaster.seeBelowRank})` : "you move there");
         for (const [rank, gains] of Object.entries(a.heightening?.atRank ?? {})) {

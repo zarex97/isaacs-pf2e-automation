@@ -13,6 +13,7 @@ const HANDLERS = {
     applyReaction: resolveReaction,
     applyCleanse: (payload) => Cleanse.resolve(payload),
     summon: async (payload) => (await import("../targeting/summon.mjs")).Summon.create(payload),
+    lightOrb: async (payload) => (await import("../targeting/light-orb.mjs")).LightOrb.handle(payload),
 };
 
 /**

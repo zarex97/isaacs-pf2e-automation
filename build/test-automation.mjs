@@ -740,6 +740,8 @@ const { configFor } = await import("../scripts/targeting/config.mjs");
     check("a square on another creature is occupied", names(occupants({ x: 300, y: 300, width: 100, height: 100 }, [self, other, large], self)), ["other"]);
     check("…including a Large creature's far corner", names(occupants({ x: 600, y: 100, width: 100, height: 100 }, [self, other, large], self)), ["large"]);
     check("the caster's own space never counts", names(occupants({ x: 0, y: 0, width: 100, height: 100 }, [self], self)), []);
+    const undrawn = { n: "undrawn", x: 0, y: 0, w: 100, h: 100, document: { x: 300, y: 300, width: 1, height: 1, parent: { grid: { size: 100 } } } };
+    check("…a token not yet drawn is where its document says", names(occupants({ x: 300, y: 300, width: 100, height: 100 }, [undrawn], null)), ["undrawn"]);
     check("sight is needed below the waiving rank, not from it", [needsSight({ seeBelowRank: 5 }, 4), needsSight({ seeBelowRank: 5 }, 5), needsSight({}, 9)], [true, false, true]);
 }
 
@@ -1411,6 +1413,40 @@ check("a subclass override still runs, reaching the wrap through super", new Wra
     const src = { system: { damage: { 0: { formula: "6d6", type: "fire" } }, traits: { value: ["concentrate", "fire", "manipulate"] } } };
     const out = retyped(src, "fire", "cold");
     check("…its fire damage and trait made cold", [out.system.damage[0].type, out.system.traits.value], ["cold", ["concentrate", "cold", "manipulate"]]);
+}
+
+{
+    const { endingWith } = await import("../scripts/riders/preparations.mjs");
+    const L = "isaacs-pf2e-automation";
+    const fx = [{ id: 1, flags: { [L]: { untilPreparations: "Actor.a" } } }, { id: 2, flags: { [L]: { untilPreparations: "Actor.b" } } }, { id: 3, flags: {} }];
+    check("a caster's rest ends only that caster's until-preparations effects", endingWith(fx, "Actor.a").map((e) => e.id), [1]);
+}
+
+{
+    const { concealment, revealedSees } = await import("../scripts/riders/reveal.mjs");
+    const L = "isaacs-pf2e-automation";
+    const actor = (conds, revealed = true) => ({ itemTypes: { effect: revealed ? [{ flags: { [L]: { reveals: true } } }] : [] }, hasCondition: (...c) => c.some((x) => conds.includes(x)) });
+    check("the revealed mode sees a revealed creature, and an invisible one through undetected — not one hidden by other means", [revealedSees(actor([])), revealedSees(actor(["invisible", "undetected"])), revealedSees(actor(["undetected"])), revealedSees(actor([], false))], [true, true, false, false]);
+    const c = (o) => concealment({ revealed: false, invisible: false, concealed: false, seesInvisibility: false, ...o });
+    check("concealment: concealed; invisible to one who sees invisibility; revealed — only its invisibility", [c({ concealed: true }), c({ invisible: true }), c({ invisible: true, seesInvisibility: true }), c({ revealed: true, concealed: true }), c({ revealed: true, invisible: true })], [true, false, true, false, true]);
+}
+
+{
+    const { orbRadii } = await import("../scripts/targeting/light-orb.mjs");
+    const spec = { bright: 20, dim: 40, atRank: { 4: { bright: 60, dim: 120 } } };
+    check("an orb's light by rank: 20/40, and 60/120 from 4th", [orbRadii(spec, 1), orbRadii(spec, 3), orbRadii(spec, 4), orbRadii(spec, 9)], [{ bright: 20, dim: 40 }, { bright: 20, dim: 40 }, { bright: 60, dim: 120 }, { bright: 60, dim: 120 }]);
+}
+
+{
+    const { chargeDice } = await import("../scripts/riders/apply.mjs");
+    const beacon = { dice: { 4: "d10", 3: "d8", 2: "d6", 1: "d4" } };
+    check("a beacon's dice by the charges left, one per rank", [chargeDice(beacon, 4, 4), chargeDice(beacon, 3, 4), chargeDice(beacon, 1, 6), chargeDice(beacon, 0, 4)], ["4d10", "4d8", "6d4", null]);
+}
+
+{
+    const { detected } = await import("../scripts/riders/detect-magic.mjs");
+    const found = [{ level: 3, illusion: false, friendly: true }, { level: 2, illusion: true }, { level: 5, illusion: true }, { level: 1 }];
+    check("detect magic: an illusion only below the spell's rank, known magic left out when chosen", [detected(found, { rank: 3 }).length, detected(found, { rank: 6 }).length, detected(found, { rank: 3, ignore: (m) => m.friendly }).length], [3, 4, 2]);
 }
 
 report("Automation tests");

@@ -1,0 +1,21 @@
+{
+    "areaTargeting": {
+        "area": {
+            "type": "square",
+            "value": 5
+        },
+        "range": 120,
+        "lightOrb": {
+            "bright": 20,
+            "dim": 40,
+            "atRank": {
+                "4": {
+                    "bright": 60,
+                    "dim": 120
+                }
+            },
+            "max": 4,
+            "move": 60
+        }
+    }
+}

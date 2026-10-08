@@ -693,70 +693,70 @@ module alone — PF2e Automations and PF2e Assistant off.
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-95a | "You gain Darkvision" | The caster has darkvision, and its token sees in darkness | | ☐ | |
-| VS-95b | "Heightened (3rd) The spell's range is touch and it targets 1 willing creature" | Rank 3: another creature | | ☐ | |
-| VS-95c | "The duration is until the next time you make your daily preparations" | Rank 5 lasts until the next preparations | | ☐ | |
+| VS-95a | "You gain Darkvision" | The caster has darkvision, and its token sees in darkness | pf2e's *Spell Effect: Darkvision* (`Sense` darkvision) on the caster, below rank 3 | ⚠️ | Rank 2: Aries' effect (1 hour); `hasDarkvision` **false → true**. **Not observed:** the token's vision — pf2e turns senses into token vision only under its rules-based vision setting, which this world has off (the token stayed *basic*) |
+| VS-95b | "Heightened (3rd) The spell's range is touch and it targets 1 willing creature" | Rank 3: another creature | `content/vanilla/darkvision.json`: from rank 3 the effect goes on the target, not the caster | ✅ | Rank 3 with Leo targeted: **Leo** got the effect (1 hour), Aries none |
+| VS-95c | "The duration is until the next time you make your daily preparations" | Rank 5 lasts until the next preparations | From rank 5, no timer and `untilPreparations` (`scripts/riders/preparations.mjs`): ends when the caster Rests for the Night | ✅ | Rank 5 on Leo: duration **unlimited**, `untilPreparations` = Aries. (The rest itself is pf2e's `pf2e.restForTheNight`; the ending is covered by a test) |
 
 ### VS-96 · See the Unseen
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-96a | "You can see invisible creatures as though they weren't invisible, although their features are blurred, making them Concealed" | Invisible creatures show to the caster's token, and count as concealed to it | | ☐ | |
-| VS-96b | "Subtler clues also grant you a +2 status bonus to checks you make to disbelieve illusions" | +2 to disbelieve | | ☐ | |
+| VS-96a | "You can see invisible creatures as though they weren't invisible, although their features are blurred, making them Concealed" | Invisible creatures show to the caster's token, and count as concealed to it | pf2e's *Spell Effect: See the Unseen* (`Sense` see-invisibility); the concealed gate (`reveal.mjs` `concealment`) counts an invisible target as concealed to an attacker with that sense | ✅ | Aries' senses gained **see-invisibility**. Aries' Strike at invisible ZZ: "concealed: the DC 5 flat check fails, and the attack misses" (a 3), **not rolled**; without the spell, no check. (Showing the token is pf2e's under rules-based vision, off in this world) |
+| VS-96b | "Subtler clues also grant you a +2 status bonus to checks you make to disbelieve illusions" | +2 to disbelieve | pf2e's `FlatModifier` +2 status to Perception and Will, predicated on `illusion` | ✅ | Aries' Will: **+22**; against an illusion: **+24** |
 | VS-96c | "You can also see incorporeal creatures, like ghosts, phased through an object from within 10 feet" | — | | — | Nothing to automate: a creature inside an object is the GM's |
-| VS-96d | "Heightened (5th) This spell has a duration of 8 hours" | Rank 5 lasts 8 hours | | ☐ | |
+| VS-96d | "Heightened (5th) This spell has a duration of 8 hours" | Rank 5 lasts 8 hours | A rider with `duration` 8 hours from rank 5 | ✅ | Rank 5: **8 hours** |
 
 ### VS-97 · Revealing Light
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-97a | "A creature affected by revealing light is Dazzled" | Dazzled | | ☐ | |
-| VS-97b | "If the creature was Invisible, it becomes Concealed instead" | An invisible creature becomes concealed and can be seen | | ☐ | |
-| VS-97c | "If the creature was already concealed for any other reason, it is no longer concealed" | Its concealment (*Blur*, *Mist*) no longer counts | | ☐ | |
-| VS-97d | "Success The light affects the creature for 2 rounds" | Two rounds | | ☐ | |
-| VS-97e | "Failure The light affects the creature for 1 minute" | A minute | | ☐ | |
-| VS-97f | "Critical Failure The light affects the creature for 10 minutes" | Ten minutes | | ☐ | |
+| VS-97a | "A creature affected by revealing light is Dazzled" | Dazzled | `content/vanilla/revealing-light.json`: a written-out effect granting pf2e's *Dazzled* (`GrantItem`), `reveals` | ✅ | ZZ, Leo and Libra in the 10-ft burst: each **dazzled**; the effects removed, the dazzled with them |
+| VS-97b | "If the creature was Invisible, it becomes Concealed instead" | An invisible creature becomes concealed and can be seen | `reveals` (`scripts/riders/reveal.mjs`): the *revealed* detection mode on every seeing token sees a revealed creature, through hidden/undetected/unnoticed when it is invisible; the concealed gate counts it concealed | ✅ | ZZ invisible and undetected: Aries' basic sight **no**, revealed mode **no**. Revealed: basic sight still no, revealed mode **yes**. Aries' Strike at it: "concealed: the DC 5 flat check fails" — not rolled |
+| VS-97c | "If the creature was already concealed for any other reason, it is no longer concealed" | Its concealment (*Blur*, *Mist*) no longer counts | `concealment`: a revealed creature counts as concealed only for its invisibility | ✅ | Leo concealed (Blur) and revealed: Aries' Strike **rolled, no check**. The light gone: the DC 5 check again |
+| VS-97d | "Success The light affects the creature for 2 rounds" | Two rounds | success: 2 rounds | ✅ | Leo, 12 — success: **2 rounds** |
+| VS-97e | "Failure The light affects the creature for 1 minute" | A minute | failure: 1 minute | ✅ | Libra, 8 — failure: **1 minute** |
+| VS-97f | "Critical Failure The light affects the creature for 10 minutes" | Ten minutes | critical failure: 10 minutes | ✅ | ZZ, a natural 1: **10 minutes** |
 
 ### VS-98 · Light
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-98a | "You create an orb of light that sheds bright light in a 20-foot radius (and dim light for the next 20 feet)" | A light placed within 120 ft: bright 20 ft, dim 40 ft | | ☐ | |
-| VS-98b | "in a color you choose" | The cast asks for a colour | | ☐ | |
-| VS-98c | "If you create the light in the same space as a willing creature, you can attach the light to the creature, causing it to float near that creature as it moves" | Placed on a creature, it follows its token | | ☐ | |
-| VS-98d | "You can Sustain the spell to move the light up to 60 feet; you can attach or detach it from a creature as part of this movement" | Sustain moves it up to 60 ft, onto or off a creature | | ☐ | |
-| VS-98e | "You can Dismiss the spell" | Dismissing it puts the light out | | ☐ | |
-| VS-98f | "If you Cast the Spell while you already have four light spells active, you must choose one of the existing spells to end" | A fifth asks which of the four to end | | ☐ | |
-| VS-98g | "Heightened (4th) The orb sheds light in a 60-foot radius (and dim light for the next 60 feet)" | Rank 4: 60 and 120 ft | | ☐ | |
+| VS-98a | "You create an orb of light that sheds bright light in a 20-foot radius (and dim light for the next 20 feet)" | A light placed within 120 ft: bright 20 ft, dim 40 ft | `areaTargeting.lightOrb` (`scripts/targeting/light-orb.mjs`): a square within 120 ft; on an empty one, an ambient light bright 20 / dim 40 | ✅ | A level-1 NPC caster (rank 1): an ambient light **bright 20, dim 40** on the square |
+| VS-98b | "in a color you choose" | The cast asks for a colour | After the cast, a colour picker | ✅ | Asked each cast; the light took **#ff8800**, #0000ff, #ff00ff … as chosen |
+| VS-98c | "If you create the light in the same space as a willing creature, you can attach the light to the creature, causing it to float near that creature as it moves" | Placed on a creature, it follows its token | On a creature's square — the targeted one where several share it — pf2e's `TokenLight` on an effect on it, so it moves with the token | ✅ | Placed on Leo's square (thirteen tokens share it), Leo targeted: "Aries hangs an orb of light on Leo" — Leo's token **bright 60, dim 120, #ff0000**. (A token not yet drawn reported 0, 0 to the occupancy test; it now reads the document's position — Translocate and Summon Animal use the same test) |
+| VS-98d | "You can Sustain the spell to move the light up to 60 feet; you can attach or detach it from a creature as part of this movement" | Sustain moves it up to 60 ft, onto or off a creature | *Move the Light* (an action the caster gets, aimed again): within 60 ft of where the light is; onto a creature attaches, onto an empty square sets it down | ✅ | An orb on Aries: aimed 70 ft away — **refused**, still attached; to an empty square — an **ambient light** there, Aries unlit; back onto Aries' square — **attached again** |
+| VS-98e | "You can Dismiss the spell" | Dismissing it puts the light out | A *Dismiss* for the caster's effect; its deletion clears the light and the actions | ✅ | Dismissed: the orb's effect, its light, *Move the Light* and *Dismiss* **all gone** |
+| VS-98f | "If you Cast the Spell while you already have four light spells active, you must choose one of the existing spells to end" | A fifth asks which of the four to end | `max: 4`: a fifth asks which to end, each named by where it is | ✅ | With four up, the fifth asked "You already have 4 lights: which one ends?" — *The light at (3450, 2750)*, *(3350, 2250)* …; the one chosen **went out**, its actions with it, and the new one was set down |
+| VS-98g | "Heightened (4th) The orb sheds light in a 60-foot radius (and dim light for the next 60 feet)" | Rank 4: 60 and 120 ft | `atRank: { 4: { bright: 60, dim: 120 } }` | ✅ | Aries (level 20: the cantrip at rank 10): **bright 60, dim 120**; the rank-1 NPC: 20/40 |
 
 ### VS-99 · Detect Magic
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-99a | "You send out a pulse that registers the presence of magic" | The caster is told whether magic is within 30 ft | | ☐ | |
-| VS-99b | "You receive no information beyond the presence or absence of magic" | Nothing more at rank 1 | | ☐ | |
-| VS-99c | "You can choose to ignore magic you're fully aware of, such as the magic items and ongoing spells of you and your allies" | The caster's and allies' own magic items and effects can be left out | | ☐ | |
-| VS-99d | "You detect illusion magic only if that magic's effect has a lower rank than the rank of your detect magic spell" | An illusion of equal or higher rank isn't found | | ☐ | |
-| VS-99e | "Heightened (3rd) You learn the rank or level of the most powerful magical effect the spell detects" | Rank 3 names the highest rank or level | | ☐ | |
-| VS-99f | "Heightened (4th) As 3rd rank, but you also pinpoint the source of the highest-rank magic" | Rank 4 names where it is | | ☐ | |
+| VS-99a | "You send out a pulse that registers the presence of magic" | The caster is told whether magic is within 30 ft | `detect-magic` (`scripts/riders/detect-magic.mjs`), a `self` rider on the cast: within 30 ft, creatures' magic items, effects from spells or magic, spells' areas; whispered to the caster's owners | ✅ | An NPC caster beside the party, rank 1: "Magic is present within 30 feet." (whispered) |
+| VS-99b | "You receive no information beyond the presence or absence of magic" | Nothing more at rank 1 | Below rank 3 the card says only present or absent | ✅ | Rank 1: that sentence and **nothing more** |
+| VS-99c | "You can choose to ignore magic you're fully aware of, such as the magic items and ongoing spells of you and your allies" | The caster's and allies' own magic items and effects can be left out | `castChoice` `known` (*Leave it out* / *Detect everything*); `ignoreKnown` drops the caster's own and its allies' | ✅ | Rank 3, everything: "The most powerful is of rank 3"; leaving it out: **rank 2** — the rank-3 magic was on an ally of the caster (D6). Rank 4: "… rank 3. It is on D6" / left out "… rank 2. It is on Leo" |
+| VS-99d | "You detect illusion magic only if that magic's effect has a lower rank than the rank of your detect magic spell" | An illusion of equal or higher rank isn't found | `detected`: an illusion counts only below the spell's rank | ✅ | An illusion effect of rank 9 on Leo: at rank 4 **not found** (the highest stayed rank 3 on D6); at rank 10: "rank 9. It is on Leo" |
+| VS-99e | "Heightened (3rd) You learn the rank or level of the most powerful magical effect the spell detects" | Rank 3 names the highest rank or level | From rank 3, the highest rank or level | ✅ | Rank 3: "The most powerful is of rank 3" |
+| VS-99f | "Heightened (4th) As 3rd rank, but you also pinpoint the source of the highest-rank magic" | Rank 4 names where it is | From rank 4, where it is | ✅ | Rank 4: "… It is on D6" |
 
 ### VS-100 · Vital Beacon
 
 | ID | Clause | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-100a | "Once per round, either you or an ally can use an Interact action to supplicate and lay hands upon you to regain Hit Points" | The caster or an adjacent ally can take the beacon's healing, once a round | | ☐ | |
-| VS-100b | "Each time the beacon heals someone, it decreases in strength" | d10s, then d8s, then d6s, then d4s, one die per rank | | ☐ | |
-| VS-100c | "after which the spell ends" | After the fourth healing it's gone | | ☐ | |
-| VS-100d | "You can have only one vital beacon active at a time" | A second beacon ends the first | | ☐ | |
-| VS-100e | "The beacon restores one additional die of Hit Points each time it heals, using the same die size as the others for that step" | Rank 5: 5d10, 5d8, 5d6, 5d4 | | ☐ | |
+| VS-100a | "Once per round, either you or an ally can use an Interact action to supplicate and lay hands upon you to regain Hit Points" | The caster or an adjacent ally can take the beacon's healing, once a round | `content/vanilla/vital-beacon.json`: a written-out effect on the caster with 4 charges, `untilPreparations`, and an action (`originAction`, manipulate) whose `heal` rider is `oncePerRound`; it heals the creature targeted | ⚠️ | In an encounter, Aries' *Lay Hands on the Vital Beacon* at Leo: healed **15** (4d10); used again in the same round: **nothing**. **Gap:** the action sits on the caster's sheet and heals whoever is targeted — an ally laying hands uses it through the caster, and that the ally is adjacent is not checked |
+| VS-100b | "Each time the beacon heals someone, it decreases in strength" | d10s, then d8s, then d6s, then d4s, one die per rank | `heal.byCharge` (one die per the effect's level, the size by the charges left) with `spend: true` after the roll | ✅ | Round by round: **4d10** (15), **4d8** (18), **4d6** (13), **4d4** (12). (A first version spent the charge before the heal read it, rolling d8s first; the heal now spends after rolling) |
+| VS-100c | "after which the spell ends" | After the fourth healing it's gone | The last charge spent ends the effect, and the action goes with it | ✅ | After the fourth healing: the effect **gone**, the action **gone**; the next round, nothing to use |
+| VS-100d | "You can have only one vital beacon active at a time" | A second beacon ends the first | `slug: vital-beacon`, `endsPrevious`: casting again ends the caster's earlier beacon | ✅ | Rank 4, then rank 5: **one beacon** left (level 5, 4 charges); the first beacon's action gone with it |
+| VS-100e | "The beacon restores one additional die of Hit Points each time it heals, using the same die size as the others for that step" | Rank 5: 5d10, 5d8, 5d6, 5d4 | `byCharge`: one die per the effect's level (the cast rank) | ✅ | Rank 5, the first healing: **5d10** (36) |
 
 ## Counts
 
 | Status | Count |
 | :-- | --: |
-| ☐ not yet driven | 30 |
-| ✅ | 285 |
-| ⚠️ | 10 |
+| ☐ not yet driven | 0 |
+| ✅ | 313 |
+| ⚠️ | 12 |
 | ❌ | 0 |
 | 🔧 | 0 |
 | — | 11 |

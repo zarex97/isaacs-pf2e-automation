@@ -464,6 +464,8 @@ async function applyOne(rider, context) {
             return applyTransfer(rider, context);
         case "temp-hp":
             return applyTempHp(rider, context);
+        case "detect-magic":
+            return (await import("./detect-magic.mjs")).detectMagic(rider, context);
         case "dismiss":
             return Dismiss.apply(rider, context);
         case "spend-charge":
@@ -1111,8 +1113,11 @@ async function applyHeal(rider, context) {
 
     // Dice rather than a number: *Shell of Hours* "regains 2d8 Hit Points", +2d8 every other rank (Stargazer
     // guide §5.2). Its own branch and its own words, so the Soulbound's capped, flame-worded heals are untouched.
-    if (typeof rider.apply.formula === "string") {
-        const dice = growByStep(rider.apply.formula, rider.apply.perStep ?? rider.apply.formula, riderSteps(rider, context));
+    // Dice set by what is left of the effect behind the action — *Vital Beacon*: "d10s, then d8s, then d6s, then d4s",
+    // one die per rank of the spell.
+    const charged = rider.apply.byCharge ? await chargedFormula(rider.apply.byCharge, context) : null;
+    if (typeof rider.apply.formula === "string" || charged) {
+        const dice = charged ?? growByStep(rider.apply.formula, rider.apply.perStep ?? rider.apply.formula, riderSteps(rider, context));
         const roll = await new Roll(String(dice)).evaluate();
         const healed = Math.max(0, Math.min(roll.total, hp.max - hp.value));
         if (healed > 0) await actor.update({ "system.attributes.hp.value": hp.value + healed });
@@ -1122,6 +1127,8 @@ async function applyHeal(rider, context) {
             speaker: ChatMessage.getSpeaker({ actor }),
             flavor: t("Heal.Regains", { item: context.item?.name ?? t("Rider.Name"), actor: actor.name, healed }),
         });
+        // "Each time the beacon heals someone, it decreases in strength": the charge goes after the dice were read.
+        if (charged && rider.apply.byCharge.spend) await OriginAction.spend(rider, context);
         return;
     }
 
@@ -1961,6 +1968,8 @@ async function applyEffect(rider, context) {
     // Rules added to a pf2e effect — *Moon Frenzy*'s "+10-foot status bonus to their Speeds", where pf2e's has only the land Speed.
     if (Array.isArray(rider.apply.addRules)) source.system.rules = [...(source.system?.rules ?? []), ...rider.apply.addRules];
     const castRank = Number(castItemOf(context)?.rank);
+    // "Until your next daily preparations" — *Darkvision* at 5th: ends when its caster rests (`preparations.mjs`).
+    if (rider.apply.untilPreparations && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { untilPreparations: context.originActor.uuid } });
     // *Unfettered Movement*: its holder's Escapes succeed (`unfettered.mjs`), up to the spell's rank.
     if (rider.apply.unfettered) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { unfettered: { rank: castRank > 0 ? castRank : 1 } } });
     if (rider.apply.atCastRank && castRank > 0) source.system.level = { ...(source.system.level ?? {}), value: castRank };
@@ -3101,6 +3110,10 @@ function effectSource(label, rules, rider, context) {
     }
     // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
     if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });
+    // *Revealing Light*: its holder is seen through invisibility, and no longer concealed otherwise (`reveal.mjs`).
+    if (rider.apply?.reveals) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { reveals: true } });
+    // "Until your next daily preparations" — *Light*, *Vital Beacon* (`preparations.mjs`).
+    if (rider.apply?.untilPreparations && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { untilPreparations: context.originActor.uuid } });
     // *Planar Tether*: the caster and rank that counteract a teleport or a banishment (`tether.mjs`).
     if (rider.apply?.tether && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { tether: { casterUuid: context.originActor.uuid, rank: Number(castItemOf(context)?.rank) || 1, statistic: rider.apply.tether?.statistic ?? "spellcasting" } } });
     // *Nudge Fate*: a degree raised after the die falls (`nudge.mjs`).
@@ -3113,6 +3126,19 @@ function effectSource(label, rules, rider, context) {
     // *Spirit Link*: "While the duration persists, you gain no benefit from regeneration or fast healing."
     if (rider.apply?.noTurnHealing) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { noTurnHealing: true } });
     return source;
+}
+
+/** The dice an action's effect has left: `byCharge.dice[<badge>]`, one per the effect's level. */
+export function chargeDice(byCharge, badge, level) {
+    const die = byCharge?.dice?.[String(badge)];
+    return die ? `${Math.max(1, Number(level) || 1)}${die}` : null;
+}
+
+async function chargedFormula(byCharge, context) {
+    const effectUuid = context.item?.flags?.[LIB_ID]?.originAction?.effectUuid;
+    const effect = effectUuid ? await fromUuid(effectUuid).catch(() => null) : null;
+    if (!effect) return null;
+    return chargeDice(byCharge, effect.system?.badge?.value, effect.system?.level?.value);
 }
 
 /** *Planar Tether*: does a tether on the creature hold it against this move (`tether.mjs`)? */

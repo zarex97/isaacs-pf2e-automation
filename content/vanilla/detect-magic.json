@@ -1,0 +1,39 @@
+{
+    "castChoice": {
+        "flag": "known",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.detect-magic.Known",
+        "choices": [
+            "ignore",
+            "all"
+        ],
+        "labels": {
+            "ignore": "ISAACS_AUTOMATION.Vanilla.detect-magic.Ignore",
+            "all": "ISAACS_AUTOMATION.Vanilla.detect-magic.All"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:known:ignore"
+            ],
+            "apply": {
+                "type": "detect-magic",
+                "range": 30,
+                "ignoreKnown": true
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:known:all"
+            ],
+            "apply": {
+                "type": "detect-magic",
+                "range": 30
+            }
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "areaTargeting": {
+        "affects": "all"
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 2,
+                "unit": "rounds"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.revealing-light.Light",
+                "reveals": true,
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.conditionitems.Item.TkIyaNPgTZFBCCuh"
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.revealing-light.Light",
+                "reveals": true,
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.conditionitems.Item.TkIyaNPgTZFBCCuh"
+                    }
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.revealing-light.Light",
+                "reveals": true,
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.conditionitems.Item.TkIyaNPgTZFBCCuh"
+                    }
+                ]
+            }
+        }
+    ]
+}

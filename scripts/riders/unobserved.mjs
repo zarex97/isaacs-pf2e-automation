@@ -1,6 +1,7 @@
 import { t } from "../i18n.mjs";
 import { LIB_ID } from "../id.mjs";
 import { CheckPipeline } from "../lib/check-pipeline.mjs";
+import { concealmentOf } from "./reveal.mjs";
 
 /**
  * One creature that cannot observe another.
@@ -74,12 +75,13 @@ export const Unobserved = {
             return passed;
         });
         // An attack on a concealed creature — *Blur*: "When you target a concealed creature, you must succeed at a DC 5
-        // flat check before you roll your check. If you fail, you don't affect the target."
+        // flat check before you roll your check. If you fail, you don't affect the target." Concealed as `reveal.mjs`
+        // reckons it: *Revealing Light* and *See the Unseen* change who counts.
         CheckPipeline.gate("an attack on a concealed creature", 21, async (_check, context) => {
             if (context?.type !== "attack-roll") return true;
             const attacker = (context.origin?.actor ?? context.actor);
             const target = context.target?.actor;
-            if (!target?.hasCondition?.("concealed")) return true;
+            if (!target || !concealmentOf(attacker, target)) return true;
             const roll = await new Roll("1d20").evaluate();
             const passed = roll.total >= 5;
             await roll.toMessage({
