@@ -1842,7 +1842,7 @@ async function grantEscape(rider, context, release) {
  * so a rider can retire either kind without knowing which one made it.
  */
 async function applyExpire(rider, context) {
-    const wanted = [rider.apply.effect].flat().filter(Boolean);
+    const wanted = [rider.apply.effect].flat().filter(Boolean).map((name) => game.i18n.localize(name));
     for (const name of wanted) {
         const gone = context.actor.itemTypes.effect.filter(
             (e) => e.name === name || e.name.endsWith(`: ${name}`),
@@ -1850,6 +1850,19 @@ async function applyExpire(rider, context) {
         for (const effect of gone) {
             if (context.actor.items.has(effect.id)) await effect.delete();
         }
+    }
+    // A timed condition, by what it grants rather than what it is called — *Coral Scourge*'s scrape, "decreasing
+    // the clumsy condition to 0": the grant is named in the world's language, the slug is not.
+    const slugs = [rider.apply.granting].flat().filter(Boolean);
+    if (slugs.length === 0) return;
+    // "To 0" is the condition's value, whoever else gave it: every grant of it goes.
+    const grants = context.actor.itemTypes.effect.filter((e) => Object.values(e.flags?.pf2e?.itemGrants ?? {})
+        .some((g) => slugs.includes(context.actor.items.get(g.id)?.slug)));
+    for (const effect of grants) {
+        if (context.actor.items.has(effect.id)) await effect.delete();
+    }
+    for (const slug of slugs) {
+        if (context.actor.itemTypes.condition.some((c) => c.slug === slug)) await context.actor.decreaseCondition(slug, { forceRemove: true });
     }
 }
 
@@ -1870,7 +1883,8 @@ async function applyEffect(rider, context) {
     // An effect written out in the content — *Web*'s "–10-foot circumstance penalty to its Speeds" — when
     // pf2e has no effect item for it: the rules travel in the rider, and it lands like a timed condition.
     if (!rider.apply.uuid && Array.isArray(rider.apply.rules)) {
-        const label = rider.apply.label ?? t("Rider.Name");
+        // A table entry's label is a key: the effect is named in the table's language, not in its key.
+        const label = rider.apply.label ? game.i18n.localize(rider.apply.label) : t("Rider.Name");
         const source = effectSource(label, rider.apply.rules, rider, context);
         // "A creature that gets out of the web ceases to take a circumstance penalty": an effect given by a
         // lingering area's check can end on leaving it, the way an area held while inside does.
@@ -3109,6 +3123,20 @@ function effectSource(label, rules, rider, context) {
     if (rider.apply?.deters) {
         const dc = RiderExtensions.resolveDC(rider.apply.deters.dc ?? "spell", context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { deters: { statistic: rider.apply.deters.statistic ?? "will", dc, attackers: {} } } });
+    }
+    // *Shattering Gem*: a guardian with Hit Points of its own that takes a Strike first (`guardian.mjs`). Its Hit
+    // Points and burst grow per rank above the spell's own; the burst's DC is the caster's.
+    if (rider.apply?.guardian) {
+        const g = rider.apply.guardian;
+        const cast = castItemOf(context);
+        const steps = Math.max(0, (Number(cast?.rank) || 1) - (Number(cast?.baseRank ?? cast?.system?.level?.value) || 1));
+        const dice = (Number(g.burst?.dice) || 1) + steps * (Number(g.burst?.perStep) || 0);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { guardian: {
+            hp: (Number(g.hp) || 0) + steps * (Number(g.hpPerStep) || 0),
+            flatDc: Number(g.flatDc) || 11,
+            dc: RiderExtensions.resolveDC(g.dc ?? "spell", context),
+            burst: g.burst ? { formula: `${dice}${g.burst.die ?? "d8"}`, type: g.burst.type ?? "untyped", save: g.burst.save ?? "reflex", range: g.burst.range ?? 10 } : null,
+        } } });
     }
     // *Evil Eye*: a condition held at a value while the effect lasts (`condition-floor.mjs`).
     if (rider.apply?.floor && context.originActor) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { floor: { ...rider.apply.floor, casterUuid: context.originActor.uuid } } });

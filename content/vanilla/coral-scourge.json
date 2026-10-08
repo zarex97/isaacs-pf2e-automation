@@ -1,0 +1,176 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "clumsy",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Coral",
+                "rules": [],
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Scrape",
+                    "holder": true,
+                    "actions": 1,
+                    "traits": [
+                        "manipulate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "expire",
+                                "effect": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Coral",
+                                "granting": "clumsy"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "clumsy",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Coral",
+                "rules": [],
+                "carries": [
+                    {
+                        "event": "turn-start",
+                        "self": true,
+                        "apply": {
+                            "type": "climb",
+                            "slug": "clumsy",
+                            "by": 1,
+                            "max": 4,
+                            "onMax": [
+                                {
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "paralyzed"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Scrape",
+                    "holder": true,
+                    "actions": 1,
+                    "traits": [
+                        "manipulate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "expire",
+                                "effect": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Coral",
+                                "granting": "clumsy"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Coral",
+                "rules": [],
+                "carries": [
+                    {
+                        "event": "turn-start",
+                        "self": true,
+                        "apply": {
+                            "type": "climb",
+                            "slug": "clumsy",
+                            "by": 1,
+                            "max": 4,
+                            "onMax": [
+                                {
+                                    "apply": {
+                                        "type": "condition",
+                                        "slug": "paralyzed"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.coral-scourge.Scrape",
+                    "holder": true,
+                    "actions": 1,
+                    "traits": [
+                        "manipulate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "climb",
+                                "slug": "clumsy",
+                                "by": -1,
+                                "max": 4
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

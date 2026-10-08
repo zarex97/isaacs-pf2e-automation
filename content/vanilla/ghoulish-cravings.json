@@ -1,0 +1,101 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "sickened",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "sickened",
+                "value": 2
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": -1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.ghoulish-cravings.Hunger",
+                "rules": [],
+                "floor": {
+                    "slug": "sickened",
+                    "value": 1,
+                    "sight": false
+                },
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.ghoulish-cravings.Eat",
+                    "holder": true,
+                    "actions": 1,
+                    "traits": [
+                        "manipulate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "expire",
+                                "effect": "ISAACS_AUTOMATION.Vanilla.ghoulish-cravings.Hunger"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": -1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.ghoulish-cravings.Hunger",
+                "rules": [],
+                "floor": {
+                    "slug": "sickened",
+                    "value": 2,
+                    "sight": false
+                },
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.ghoulish-cravings.Eat",
+                    "holder": true,
+                    "actions": 1,
+                    "traits": [
+                        "manipulate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "expire",
+                                "effect": "ISAACS_AUTOMATION.Vanilla.ghoulish-cravings.Hunger"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

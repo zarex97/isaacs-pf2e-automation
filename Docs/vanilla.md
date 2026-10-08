@@ -8,6 +8,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | :-- | :-- | :-- | :-- | :-- |
 | Acid Grip | 2 |  | success: pushed 5 ft in a direction you choose; failure / crit. failure: 1d6 (+1d6 per 2 ranks) persistent acid; failure / crit. failure: spell-effect-acid-grip; failure: pushed 10 ft in a direction you choose; crit. failure: pushed 20 ft in a direction you choose |  |
 | Animal Form | 2 |  | choice (on you) |  |
+| Ant Haul | 1 |  | spell-effect-ant-haul |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
@@ -20,6 +21,8 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
 | Cleanse Affliction | 2 |  | cleanse (on you) |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
+| Cone of Cold | 5 | 60-ft cone (pf2e's), from you, all |  |  |
+| Coral Scourge | 3 |  | success: clumsy 1 (1 minutes); success: coral scourge (1 minutes); failure / crit. failure: clumsy 2 (1 minutes); failure: coral scourge (1 minutes, carries turn-start climb); crit. failure: coral scourge (1 minutes, carries turn-start climb) |  |
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
 | Darkvision | 2 |  | spell-effect-darkvision (below rank 3, on you); spell-effect-darkvision (from rank 3, below rank 5); spell-effect-darkvision (until it ends, from rank 5) |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
@@ -41,6 +44,8 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Fly | 4 |  | spell-effect-fly (below rank 7); spell-effect-fly (1 hours, from rank 7) |  |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
+| Gecko Grip | 2 |  | spell-effect-gecko-grip (below rank 5); spell-effect-gecko-grip (1 hours, from rank 5) |  |
+| Ghoulish Cravings | 2 |  | success: sickened 1; failure / crit. failure: sickened 2; failure: ghoulish hunger (until it ends); crit. failure: ghoulish hunger (until it ends) |  |
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
 | Guidance | 1 |  | spell-effect-guidance; effect-guidance-immunity; GM note: “The target is temporarily immune to Guidance: the spell does nothing.” |  |
@@ -61,6 +66,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Live Wire | 1 |  | rays (on you) |  |
+| Magnetize | 4 |  | magnetized (1 minutes); GM note: “Magnetize: a ranged attack with a metal weapon or projectile at a creature within 15 feet of the magnetized creature hits the magnetized one instead; a metal melee Strike within 15 feet at anyone else takes a –2 circumstance penalty.” (on you) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
@@ -86,11 +92,13 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
 | See the Unseen | 2 |  | spell-effect-see-the-unseen (below rank 5, on you); spell-effect-see-the-unseen (8 hours, from rank 5, on you) |  |
 | Share Life | 2 |  | life linked (10 minutes) |  |
+| Shattering Gem | 1 |  | shattering gem (1 minutes) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Silence | 2 |  | spell-effect-silence |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |
 | Slither | 5 | 20-ft burst (pf2e's), all | failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area) | Dismiss, reflex on turn end — failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area), 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
+| Song of Strength | 1 | 60-ft emanation (pf2e's), allies, includes you | spell-effect-song-of-strength |  |
 | Soothe | 1 |  | heals 1d10+4 (+1d10+4 per rank); spell-effect-soothe |  |
 | Sound Body | 2 |  | counteract (on you) |  |
 | Spider Sting | 1 |  | success: 1d4 poison; failure: affliction; crit. failure: affliction |  |
@@ -100,6 +108,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Summon Animal | 1 | 5-ft square, summons a common animal creature there, of the rank's summon level |  |  |
 | Sure Strike | 1 |  | spell-effect-sure-strike (on you); temporarily immune to sure strike (10 minutes, on you); GM note: “You are temporarily immune to sure strike: this casting has no effect.” (on you) |  |
 | Synesthesia | 5 | up to 1, +4 at rank 9 | success: spell-effect-synesthesia-success; failure: spell-effect-synesthesia-failure; crit. failure: spell-effect-synesthesia-failure; crit. failure: stunned 2 |  |
+| Take Root | 1 |  | spell-effect-take-root |  |
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
 | Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
 | Telekinetic Maneuver | 2 |  | choice |  |
@@ -116,6 +125,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Wave of Despair | 5 |  | success: despair: no reactions, a Will save at the start of each turn (1 rounds, carries turn-start will save); failure / crit. failure: despair: no reactions, a Will save at the start of each turn (1 minutes, carries turn-start will save); crit. failure: slowed 1 (1 minutes) |  |
 | Weapon Storm | 4 | choose: 30-ft cone or 10-ft emanation, from you, all | rolled once: 4 dice of the held weapon (+1 per rank), one basic reflex each, critical specialization on a critical failure |  |
 | Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
+| Wilding Word | 1 |  | GM note: “An animal, fungus or plant takes a –1 circumstance penalty to its save against wilding word — apply it before it rolls.”; success / failure / crit. failure: wilding word's speaker (1 minutes, carries damage-received condition, damage-received condition, on you); success: wilding word (1 minutes); failure: wilding word (1 minutes); crit. failure: wilding word (1 minutes) |  |
 
 ## Legacy names
 
