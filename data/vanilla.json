@@ -1532,6 +1532,16 @@
                 }
             ]
         },
+        "detect-poison": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "detect-poison"
+                    }
+                }
+            ]
+        },
         "disintegrate": {
             "riders": [
                 {
@@ -1829,6 +1839,60 @@
                         "type": "condition",
                         "slug": "enfeebled",
                         "value": 3
+                    }
+                }
+            ]
+        },
+        "enhance-senses": {
+            "areaTargeting": {
+                "maxTargets": 1,
+                "heightening": {
+                    "atRank": {
+                        "6": {
+                            "maxTargets": 2
+                        },
+                        "8": {
+                            "maxTargets": 3
+                        },
+                        "10": {
+                            "maxTargets": 4
+                        }
+                    }
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.enhance-senses.Senses",
+                        "rules": [],
+                        "enhanceSenses": true
+                    }
+                }
+            ]
+        },
+        "enhance-victuals": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.enhance-victuals.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.enhance-victuals.Item",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "victuals",
+                        "flag": "item"
                     }
                 }
             ]
@@ -2744,6 +2808,81 @@
                 }
             ]
         },
+        "glamorize": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.glamorize.Prompt",
+                "fields": [
+                    {
+                        "key": "look",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Look",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Glamour",
+                        "describes": "look",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "glamorize-bonus",
+                                "toggleable": true,
+                                "value": false,
+                                "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Bonus"
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "deception",
+                                "type": "status",
+                                "value": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Glamour",
+                                "predicate": [
+                                    "glamorize-bonus",
+                                    "action:impersonate"
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "performance",
+                                "type": "status",
+                                "value": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Glamour",
+                                "predicate": [
+                                    "glamorize-bonus",
+                                    "action:perform"
+                                ]
+                            }
+                        ],
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.glamorize.Sustain",
+                            "traits": [
+                                "concentrate"
+                            ],
+                            "spends": false,
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "self": true,
+                                    "apply": {
+                                        "type": "adjust"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
         "glowing-trail": {
             "castChoice": {
                 "prompt": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Prompt",
@@ -3195,6 +3334,18 @@
                         "type": "teleport",
                         "distance": 10,
                         "stopsAtWalls": true
+                    }
+                }
+            ]
+        },
+        "hypercognition": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "recall",
+                        "count": 6
                     }
                 }
             ]
@@ -4496,6 +4647,20 @@
                 }
             ]
         },
+        "mud-pit": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.mud-pit.Mud",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "difficultTerrain": 2
+            }
+        },
         "nettleskin": {
             "riders": [
                 {
@@ -5278,6 +5443,29 @@
                         "limitAtRank": {
                             "3": 500
                         }
+                    }
+                }
+            ]
+        },
+        "read-omens": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.read-omens.Prompt",
+                "fields": [
+                    {
+                        "key": "event",
+                        "label": "ISAACS_AUTOMATION.Vanilla.read-omens.Event",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "message",
+                        "flag": "event",
+                        "toGm": true
                     }
                 }
             ]
@@ -7639,6 +7827,52 @@
                 }
             ]
         },
+        "umbral-journey": {
+            "areaTargeting": {
+                "maxTargets": 10
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "journey",
+                        "days": 3,
+                        "hours": 8
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Journey",
+                        "rules": [],
+                        "dismissable": true,
+                        "together": true,
+                        "endNote": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Arrive"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Journey",
+                        "rules": [],
+                        "together": true,
+                        "endNote": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Arrive"
+                    }
+                }
+            ]
+        },
         "unfettered-movement": {
             "riders": [
                 {
@@ -8286,6 +8520,27 @@
                                 "perStepDice": 1
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "web-of-influence": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.web-of-influence.Prompt",
+                "fields": [
+                    {
+                        "key": "exclude",
+                        "label": "ISAACS_AUTOMATION.Vanilla.web-of-influence.Exclude",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "connections",
+                        "exclude": "exclude"
                     }
                 }
             ]

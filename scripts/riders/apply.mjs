@@ -42,7 +42,12 @@ import { Message, sendMessage } from "./message.mjs";
 import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
 import { fatesTravels } from "./travel.mjs";
-import { drawMap, reshapeItem, sortItems } from "./handiwork.mjs";
+import { adjustEffect, drawMap, reshapeItem, sortItems } from "./handiwork.mjs";
+import { detectPoison, enhanceVictuals } from "./poison.mjs";
+import { findConnection } from "./influence.mjs";
+import { offerRecall } from "./recall.mjs";
+import { journeyPace } from "./journey.mjs";
+import { enhancedSenseRules, sensesOf } from "./senses.mjs";
 import { fallOff } from "./fall-off.mjs";
 import { Conjure } from "./conjure.mjs";
 import { fadesAfter } from "./trail.mjs";
@@ -475,6 +480,18 @@ async function applyOne(rider, context) {
             return drawMap(rider, context, Number(castItemOf(context)?.rank) || 3);
         case "fall-off":
             return fallOff(rider, context);
+        case "detect-poison":
+            return detectPoison(rider, context, Number(castItemOf(context)?.rank) || 1);
+        case "victuals":
+            return enhanceVictuals(rider, context, castChoicesOf(context), { rank: Number(castItemOf(context)?.rank) || 2, item: castItemOf(context) });
+        case "connections":
+            return findConnection(rider, context, castChoicesOf(context));
+        case "recall":
+            return offerRecall(rider, context);
+        case "journey":
+            return journeyPace(rider, context);
+        case "adjust":
+            return adjustEffect(rider, context);
         case "secret-page":
             return changePage(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 1);
         case "reaction":
@@ -1997,6 +2014,16 @@ async function applyEffect(rider, context) {
         // A table entry's label is a key: the effect is named in the table's language, not in its key.
         const label = rider.apply.label ? game.i18n.localize(rider.apply.label) : t("Rider.Name");
         const source = effectSource(label, rider.apply.rules, rider, context);
+        // *Glamorize*: the change the caster described as it was cast, on the effect's own name.
+        if (rider.apply.describes) {
+            const words = String(castChoicesOf(context)[rider.apply.describes] ?? "").trim();
+            if (words) source.name = `${source.name} — ${words}`;
+        }
+        // *Umbral Journey*: words its holder's players are told when it ends, however it ends (`journey.mjs`).
+        if (rider.apply.together) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { together: true } });
+        if (rider.apply.endNote) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endNote: rider.apply.endNote } });
+        // *Enhance Senses*: senses read off the creature as it lands (`senses.mjs`).
+        if (rider.apply.enhanceSenses) source.system.rules = [...source.system.rules, ...enhancedSenseRules(sensesOf(context.actor))];
         // "A creature that gets out of the web ceases to take a circumstance penalty": an effect given by a
         // lingering area's check can end on leaving it, the way an area held while inside does.
         if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { inside: context.region } });

@@ -1,4 +1,5 @@
 import { t } from "../i18n.mjs";
+import { LIB_ID } from "../id.mjs";
 
 /**
  * Small magic done to things.
@@ -17,6 +18,9 @@ import { t } from "../i18n.mjs";
  * are labeled. A small star shows the spot where you are when the map is created." `{ type: "map" }` makes a journal
  * entry the caster's players own: the scene's own picture — or, with none, a snapshot of the board — and from 6th rank the scene's map notes by name and where
  * the caster stood. The parchment is used up.
+ *
+ * *Glamorize*: "While the spell is active, you can Sustain it to make further adjustments." `{ type: "adjust" }`, on the
+ * action an effect gives its caster (`originAction`), asks what changes now and writes it on the effect's name.
  */
 
 const MAPS = "isaacs-pf2e-automation-maps";
@@ -87,4 +91,20 @@ export async function drawMap(_rider, context, rank = 3) {
     if ((parchment.system?.quantity ?? 1) > 1) await parchment.update({ "system.quantity": parchment.system.quantity - 1 });
     else await parchment.delete();
     context.notes.push(t("Handiwork.Mapped", { scene: scene.name }));
+}
+
+export async function adjustEffect(_rider, context) {
+    const uuid = context.item?.flags?.[LIB_ID]?.originAction?.effectUuid;
+    const effect = uuid ? await fromUuid(uuid).catch(() => null) : null;
+    if (!effect) return;
+    const data = await foundry.applications.api.DialogV2.input({
+        window: { title: effect.name },
+        content: `<p>${t("Handiwork.Adjust")}</p><div class="form-group"><input type="text" name="text"></div>`,
+        rejectClose: false,
+    });
+    const words = String(data?.text ?? "").trim();
+    if (!words) return;
+    const base = effect.name.split(" — ")[0];
+    await effect.update({ name: `${base} — ${words}` });
+    context.notes.push(t("Handiwork.Adjusted", { name: base, words }));
 }

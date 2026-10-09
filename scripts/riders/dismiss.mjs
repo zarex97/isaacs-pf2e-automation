@@ -34,6 +34,15 @@ export function dismissActionSource({ item, regionUuid = null, effectUuid = null
     };
 }
 
+/** The other effects of the same caster's same spell, each marked to end `together`. */
+function sameCast(effect) {
+    const { actor, item } = effect.system?.context?.origin ?? {};
+    if (!actor || !item) return [];
+    const holders = [...game.actors, ...game.scenes.flatMap((scene) => scene.tokens.filter((token) => !token.actorLink && token.actor).map((token) => token.actor))];
+    return holders.flatMap((holder) => holder.itemTypes?.effect ?? []).filter((other) => other.id !== effect.id && other.flags?.[LIB_ID]?.together
+        && other.system?.context?.origin?.actor === actor && other.system?.context?.origin?.item === item);
+}
+
 export const Dismiss = {
     async grantForRegion(actor, item, region) {
         if (!actor || !region) return null;
@@ -61,6 +70,8 @@ export const Dismiss = {
         // The area's own clean-up (`registerHooks`) takes the action too, and may get there first.
         if (region) await region.delete();
         if (effect) await effect.delete().catch(() => {});
+        // *Umbral Journey*: one spell over many travellers — dismissed, it ends for all of them (`together`).
+        if (effect?.flags?.[LIB_ID]?.together) for (const other of sameCast(effect)) await other.delete().catch(() => {});
         if (actor.items.has(action.id)) await action.delete().catch(() => {});
     },
 

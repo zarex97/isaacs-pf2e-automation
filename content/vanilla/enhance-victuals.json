@@ -1,0 +1,21 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.enhance-victuals.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.enhance-victuals.Item",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "victuals",
+                "flag": "item"
+            }
+        }
+    ]
+}

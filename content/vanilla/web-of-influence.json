@@ -1,0 +1,21 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.web-of-influence.Prompt",
+        "fields": [
+            {
+                "key": "exclude",
+                "label": "ISAACS_AUTOMATION.Vanilla.web-of-influence.Exclude",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "connections",
+                "exclude": "exclude"
+            }
+        }
+    ]
+}
