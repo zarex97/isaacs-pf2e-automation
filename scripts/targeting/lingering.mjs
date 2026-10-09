@@ -14,6 +14,7 @@ import { Relay } from "../riders/relay.mjs";
 import { Repels } from "./repels.mjs";
 import { Barrier } from "./barrier.mjs";
 import { pullSteps } from "../riders/pull.mjs";
+import { Disbelief } from "./disbelief.mjs";
 
 export const FLAG = "lingering";
 
@@ -24,6 +25,9 @@ const TERRAIN_TYPE = `${LIB_ID}.enemyMovementCost`;
 export const BEHAVIOR_TYPE = `${LIB_ID}.lingering`;
 
 const UNIT_SECONDS = { seconds: 1, rounds: 6, minutes: 60, hours: 3600, days: 86400 };
+
+/** Areas being ended because something crossed them, so the exits their ending reports do not end them twice. */
+const ending = new Set();
 
 /**
  * An area that stays behind after the Technique that made it.
@@ -63,6 +67,7 @@ export const Lingering = {
 
     registerHooks() {
         Hooks.on("updateWorldTime", () => Lingering.sweep());
+        Hooks.on("createChatMessage", (message) => Lingering.sustainAlongside(message));
         // An emanation goes where its caster goes — *Malediction* is "enemies in the area", and the area is
         // around the caster wherever they stand.
         Hooks.on("updateToken", (token, changes) => {
@@ -82,6 +87,39 @@ export const Lingering = {
             if (game.users?.activeGM?.id !== game.user?.id) return;
             Lingering.clearScenery(region.parent, flagOf(region, FLAG));
         });
+    },
+
+    /**
+     * *Phantom Crowd*: "When you spend 1 or more actions to cast a Composition Spell or to perform an activity that
+     * includes a Performance check, you can also Sustain this Spell as part of that action." An area whose `sustain`
+     * names `alongside: ["composition", "performance"]` is Sustained by its caster's composition spell or Performance
+     * check, as their own Sustain action would. Active GM only.
+     */
+    async sustainAlongside(message) {
+        if (game.users?.activeGM?.id !== game.user?.id) return;
+        const actor = message?.actor;
+        const context = message?.flags?.pf2e?.context;
+        const kinds = [];
+        if (message?.item?.type === "spell" && !message.rolls?.length && (message.item.system?.traits?.value ?? []).includes("composition")) kinds.push("composition");
+        if (context?.type === "skill-check" && (context.domains ?? []).includes("performance")) kinds.push("performance");
+        if (!actor || kinds.length === 0) return;
+        for (const action of actor.items.filter((i) => i.flags?.[LIB_ID]?.sustain?.regionUuid)) {
+            const region = fromUuidSync(action.flags[LIB_ID].sustain.regionUuid);
+            const alongside = flagOf(region, FLAG)?.sustain?.alongside ?? [];
+            if (kinds.some((kind) => alongside.includes(kind))) await Sustain.apply({}, { item: action, actor });
+        }
+    },
+
+    /** An area something crossed the edge of, ended — once, however many tokens it hears leave as it goes. */
+    async crossed(region, token) {
+        if (!region?.uuid || ending.has(region.uuid) || !region.parent?.regions?.has(region.id)) return;
+        ending.add(region.uuid);
+        try {
+            await region.delete();
+            await ChatMessage.create({ content: `<p>${t("Lingering.Crossed", { name: flagOf(region, FLAG)?.name ?? region.name, token: token?.name ?? "" })}</p>` });
+        } finally {
+            ending.delete(region.uuid);
+        }
     },
 
     /** The lights and walls an area placed, whichever of them are still standing. */
@@ -212,7 +250,8 @@ export const Lingering = {
                 // `affects: "enemies"` swaps Foundry's own behavior for the module's subclass, which
                 // filters on the moving token's alliance. Foundry's has no such field, so a petal storm
                 // laid across a corridor used to slow the caster's own party too.
-                const enemiesOnly = spec.affects === "enemies" && CONFIG.RegionBehavior.dataModels[TERRAIN_TYPE];
+                // *Phantom Crowd*: everyone but those who have disbelieved it (`disbelief.mjs`) — the same subclass reads that too.
+                const enemiesOnly = (spec.affects === "enemies" || spec.disbelief) && CONFIG.RegionBehavior.dataModels[TERRAIN_TYPE];
                 behaviors.push({
                     type: enemiesOnly ? TERRAIN_TYPE : "modifyMovementCost",
                     name: t(enemiesOnly ? "Lingering.TerrainEnemies" : "Lingering.Terrain"),
@@ -238,6 +277,14 @@ export const Lingering = {
                 name: spec.name ?? config.item.name,
                 system: { role: "inside", events: ["tokenEnter", "tokenExit"] },
             });
+        }
+        // *Phantom Crowd*: "A creature that touches a member of the crowd … can attempt to disbelieve your illusion."
+        if (spec.disbelief) {
+            behaviors.push({ type: BEHAVIOR_TYPE, name: spec.name ?? config.item.name, system: { role: "disbelief", events: ["tokenMoveIn"] } });
+        }
+        // *Dome of Tranquility*: "If anything larger than 1 Bulk passes through it, the dome is automatically dispersed."
+        if (spec.endsOnCrossing) {
+            behaviors.push({ type: BEHAVIOR_TYPE, name: spec.name ?? config.item.name, system: { role: "crossed", events: ["tokenEnter", "tokenExit"] } });
         }
         // *Repulsion*: a Will save on entering, once; what the result does to moving closer is `repels.mjs`'s.
         if (spec.repels) {
@@ -292,6 +339,10 @@ export const Lingering = {
                             // ally beside them.
                             affects: spec.affects ?? null,
                             inside: insidePayload(spec.inside, config.item),
+                            // Who has seen through it, and the DC they rolled against (`disbelief.mjs`).
+                            disbelief: spec.disbelief ? { dc: config.item?.spellcasting?.statistic?.dc?.value ?? null } : null,
+                            tried: [],
+                            disbelieved: [],
                             ...scenery,
                         },
                     },
@@ -355,6 +406,20 @@ export const Lingering = {
                 },
             ]);
             if (light) lightIds.push(light.id);
+        }
+
+        // *Dome of Tranquility*: "you can't hear anything outside of it. The opposite is also true". Walls that stop sound and
+        // nothing else, around the area's edge: Foundry's sounds and pf2e's hearing both stop at them.
+        if (spec.blocksSound) {
+            const shape = region?.toObject?.().shapes?.[0] ?? region?.shapes?.[0];
+            const ring = Number(shape?.radius) > 0
+                ? Array.from({ length: 24 }, (_, i) => ({ x: shape.x + shape.radius * Math.cos((i / 24) * 2 * Math.PI), y: shape.y + shape.radius * Math.sin((i / 24) * 2 * Math.PI) }))
+                : [{ x: bounds.x, y: bounds.y }, { x: bounds.x + bounds.width, y: bounds.y }, { x: bounds.x + bounds.width, y: bounds.y + bounds.height }, { x: bounds.x, y: bounds.y + bounds.height }];
+            const walls = await canvas.scene.createEmbeddedDocuments("Wall", ring.map((p, i) => {
+                const q = ring[(i + 1) % ring.length];
+                return { c: [p.x, p.y, q.x, q.y], move: CONST.WALL_MOVEMENT_TYPES.NONE, sight: CONST.WALL_SENSE_TYPES.NONE, light: CONST.WALL_SENSE_TYPES.NONE, sound: CONST.WALL_SENSE_TYPES.NORMAL, flags: { [LIB_ID]: { [FLAG]: true } } };
+            }));
+            wallIds.push(...walls.map((wall) => wall.id));
         }
 
         if (spec.blocksSight) {
@@ -891,7 +956,7 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
             // What this behavior does: burn or test whoever is on the ground, or hold an effect on whoever is
             // inside (`inside.mjs`). One declared type for both, so a new kind of area needs no new subtype —
             // and no world restart for Foundry to learn one.
-            role: new foundry.data.fields.StringField({ required: true, choices: ["ground", "inside"], initial: "ground" }),
+            role: new foundry.data.fields.StringField({ required: true, choices: ["ground", "inside", "crossed", "disbelief"], initial: "ground" }),
         };
     }
 
@@ -900,6 +965,10 @@ class LingeringRegionBehaviorType extends RegionBehaviorBase {
 
         const region = this.parent?.region ?? this.parent?.parent;
         if (this.role === "inside") return Inside.handle(event, region);
+        // Only a move crosses the edge: the creatures standing there when the area appears, or when it goes, are heard
+        // entering and leaving with no movement at all.
+        if (this.role === "crossed") return event.data?.movement ? Lingering.crossed(region, event.data?.token) : undefined;
+        if (this.role === "disbelief") return Disbelief.attempt(region, event.data?.token);
         if (flagOf(region, FLAG)?.repels) {
             if (event.name === CONST.REGION_EVENTS.TOKEN_ENTER) await Repels.save(region, event.data?.token);
             return;

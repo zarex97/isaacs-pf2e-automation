@@ -23,6 +23,7 @@ export const EVENTS = [
     "aura-tick", // a creature entered this actor's aura, or ended its turn inside it
     "save-made", // this actor rolled a save against someone else's effect
     "creature-dying", // a creature within the rider's range would die
+    "holder-acts", // this actor used an action or Cast a Spell, for what it carries (`rider:used:*`)
 ];
 
 export const DEFAULT_EVENT = "save-rolled";
@@ -60,6 +61,17 @@ export function isAbilityUse(message) {
     if (!message) return false;
     if (message.rolls?.length) return false;
     return USE_CONTEXTS.has(message.flags?.pf2e?.context?.type);
+}
+
+/** What was used, for `holder-acts`: the item's type and its traits. */
+export function usedBy(item) {
+    return { type: item?.type ?? null, traits: [...(item?.system?.traits?.value ?? [])] };
+}
+
+/** `rider:used:<type>` and `rider:used:trait:<trait>`, for a `holder-acts` rider's predicate. */
+export function usedOptions(used) {
+    if (!used?.type) return [];
+    return [`rider:used:${used.type}`, ...(used.traits ?? []).map((trait) => `rider:used:trait:${trait}`)];
 }
 
 /** Every rider declared on an item, or an empty list. */

@@ -129,14 +129,14 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | VS-230 | `breadcrumbs` | 1 | 1 | A glittering trail behind a willing creature |
 | VS-231 | `claim-curse` | 3 | 1 | A target's curse carried by the caster for 5 minutes |
 
-**Where it stands:** 407 clauses — all ☐.
+**Where it stands:** 407 clauses — 68 ✅, 15 —, 324 ☐. The first batch was the seventeen spells whose clauses proposed new patterns; all sixteen it kept are now in `Docs/patterns.md`, each with its ✅ precedent here.
 
 ### VS-132 · Countless Eyes
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-132a | "The subject can't be flanked for the spell's duration" | when:cast · reach:single · ending:duration | The target is never off-guard from flanking for the minute | | ☐ | |
-| VS-132b | "when the subject succeeds when Seeking, it critically succeeds instead" | when:check-rolled · check:degree-shift | The target's successful Seek becomes a critical success | | ☐ | |
+| VS-132a | "The subject can't be flanked for the spell's duration" | when:cast · reach:single · effect:flank-immune · ending:duration | The target is never off-guard from flanking for the minute | `countless-eyes.json` | ✅ | D1, flanked by ZZ Ally: off-guard, DC 31. With the effect: not off-guard, DC 33. pf2e's own *Spell Effect: Countless Eyes* left it off-guard, so the entry sets `flankable` false itself | D1, flanked by ZZ Ally: off-guard, DC 31. With the effect: not off-guard, DC 33. pf2e's own *Spell Effect: Countless Eyes* left it off-guard, so the entry sets `flankable` false itself |
+| VS-132b | "when the subject succeeds when Seeking, it critically succeeds instead" | when:check-rolled · check:degree-shift | The target's successful Seek becomes a critical success | `countless-eyes.json` | ✅ | D1's Seek, 20 against DC 20: a success before, a critical success with the effect. pf2e's own effect spells its adjustment `adjusment` and changed nothing | D1's Seek, 20 against DC 20: a success before, a critical success with the effect. pf2e's own effect spells its adjustment `adjusment` and changed nothing |
 
 ### VS-133 · Create Earthen Facsimile
 
@@ -234,11 +234,11 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-144a | "You take an incredibly deep breath and can hold it for the spell's duration" | when:cast · reach:self · effect:gm-note · ending:duration | The caster carries the held breath for 10 minutes | | ☐ | |
-| VS-144b | "You don't lose breath when hit, but you do lose all the air you inhaled if you speak (including to Cast a Spell)" | effect:gm-note | Speaking or Casting a Spell ends the held breath | | ☐ | |
-| VS-144c | "This spell doesn't create air; if you don't have air to breathe when you cast it, you get no benefit" | economy:requires · effect:gm-note | A note: no benefit without air at the cast is the table's | | ☐ | |
-| VS-144d | "Heightened (2nd) The duration increases to 1 hour, and you lose only 10 minutes of breath if you speak" | scaling:from-rank · ending:duration · effect:gm-note | Rank 2 lasts 1 hour; speaking costs only 10 minutes | | ☐ | |
-| VS-144e | "Heightened (4th) The duration increases to 8 hours, and you lose only 10 minutes of breath if you speak" | scaling:from-rank · ending:duration · effect:gm-note | Rank 4 lasts 8 hours; speaking costs only 10 minutes | | ☐ | |
+| VS-144a | "You take an incredibly deep breath and can hold it for the spell's duration" | when:cast · reach:self · effect:gm-note · ending:duration | The caster carries the held breath for 10 minutes | `deep-breath.json` | ✅ | The caster: `deep breath`, 10 minutes | The caster: `deep breath`, 10 minutes |
+| VS-144b | "You don't lose breath when hit, but you do lose all the air you inhaled if you speak (including to Cast a Spell)" | when:holder-acts · ending:on-speaking | Speaking or Casting a Spell ends the held breath | `deep-breath.json` | ✅ | Posting Demoralize ended it, and so did casting Countless Eyes. Control: Stride left it | Posting Demoralize ended it, and so did casting Countless Eyes. Control: Stride left it |
+| VS-144c | "This spell doesn't create air; if you don't have air to breathe when you cast it, you get no benefit" | economy:requires · effect:gm-note | A note: no benefit without air at the cast is the table's | `deep-breath.json` | — | Whether there is air to breathe is the table's | Whether there is air to breathe is the table's |
+| VS-144d | "Heightened (2nd) The duration increases to 1 hour, and you lose only 10 minutes of breath if you speak" | scaling:from-rank · ending:duration · ending:on-speaking | Rank 2 lasts 1 hour; speaking costs only 10 minutes | `deep-breath.json` | ✅ | Rank 2: 60 minutes; Demoralize took it to 50. Control: Stride left 50 | Rank 2: 60 minutes; Demoralize took it to 50. Control: Stride left 50 |
+| VS-144e | "Heightened (4th) The duration increases to 8 hours, and you lose only 10 minutes of breath if you speak" | scaling:from-rank · ending:duration · ending:on-speaking | Rank 4 lasts 8 hours; speaking costs only 10 minutes | `deep-breath.json` | ✅ | Rank 4: 480 minutes; Demoralize took it to 470 | Rank 4: 480 minutes; Demoralize took it to 470 |
 
 ### VS-145 · Environmental Endurance
 
@@ -359,10 +359,10 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-159a | "You ward a creature against the effects of a single spell" | when:cast · reach:single · ending:preparations | The target carries the ward until the next daily preparations | | ☐ | |
-| VS-159b | "Choose a spell and name it aloud as part of the verbal component" | check:caster-choice | The caster names one spell at the cast | | ☐ | |
-| VS-159c | "Spell immunity attempts to counteract that spell whenever spell immunity's target is the target of the named spell or in that spell's area" | reach:single · check:counteract | The named spell targeting or catching the target triggers a counteract check | | ☐ | |
-| VS-159d | "Successfully counteracting a spell that targets an area or multiple targets with spell immunity negates the effects only for the target affected by spell immunity" | reach:single · check:counteract | Only the warded creature escapes an area or multi-target spell | | ☐ | |
+| VS-159a | "You ward a creature against the effects of a single spell" | when:cast · reach:single · ending:preparations | The target carries the ward until the next daily preparations | `spell-immunity.json` | ✅ | The patient: `spell immunity`, kept until the caster's daily preparations, as *Darkvision*'s | The patient: `spell immunity`, kept until the caster's daily preparations, as *Darkvision*'s |
+| VS-159b | "Choose a spell and name it aloud as part of the verbal component" | check:caster-choice | The caster names one spell at the cast | `spell-immunity.json` | ✅ | The cast asked for the spell; "Frozen Lungs" was kept as `frozen-lungs` | The cast asked for the spell; "Frozen Lungs" was kept as `frozen-lungs` |
+| VS-159c | "Spell immunity attempts to counteract that spell whenever spell immunity's target is the target of the named spell or in that spell's area" | reach:single · when:spell-received · check:counteract | The named spell targeting or catching the target triggers a counteract check | `spell-immunity.json` | ✅ | Frozen Lungs at the patient: the ward rolled 13 against DC 13, a success, and the card named no target. A natural 1 failed it, and the patient stayed. Control: Holy Light at the patient rolled no ward | Frozen Lungs at the patient: the ward rolled 13 against DC 13, a success, and the card named no target. A natural 1 failed it, and the patient stayed. Control: Holy Light at the patient rolled no ward |
+| VS-159d | "Successfully counteracting a spell that targets an area or multiple targets with spell immunity negates the effects only for the target affected by spell immunity" | reach:single · when:spell-received · check:counteract | Only the warded creature escapes an area or multi-target spell | `spell-immunity.json` | ✅ | Warded against Noxious Vapors, the patient was dropped from the emanation; the caster and the Target were still caught | Warded against Noxious Vapors, the patient was dropped from the emanation; the caster and the Target were still caught |
 
 ### VS-160 · Web of Influence
 
@@ -396,9 +396,9 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-163a | "You and one other target gain an uncanny coordination that helps you take down foes" | when:cast · reach:self · reach:single · ending:duration | The caster and one willing ally carry the effect for 1 minute | | ☐ | |
-| VS-163b | "You and the other target flank any enemy to which you are both adjacent, whether or not you are on opposite sides of the enemy's space" | reach:enemies · effect:condition | An enemy adjacent to both is off-guard to them, wherever they stand | | ☐ | |
-| VS-163c | "Heightened (5th) The spell can target you and up to 4 willing creatures touched" | scaling:from-rank · scaling:targets-per-rank · reach:up-to-n | Rank 5: the caster and up to 4 willing creatures | | ☐ | |
+| VS-163a | "You and one other target gain an uncanny coordination that helps you take down foes" | when:cast · reach:self · reach:single · ending:duration | The caster and one willing ally carry the effect for 1 minute | `pack-attack.json` | ✅ | The caster and the patient each carry `pack attack`, naming the other | The caster and the patient each carry `pack attack`, naming the other |
+| VS-163b | "You and the other target flank any enemy to which you are both adjacent, whether or not you are on opposite sides of the enemy's space" | reach:enemies · effect:flanking | An enemy adjacent to both is off-guard to them, wherever they stand | `pack-attack.json` | ✅ | The Target, adjacent to both: the caster's Club and the patient's at DC 13, not 15. Control: D2, far off, its own DC 20; after the effect ended, 15 | The Target, adjacent to both: the caster's Club and the patient's at DC 13, not 15. Control: D2, far off, its own DC 20; after the effect ended, 15 |
+| VS-163c | "Heightened (5th) The spell can target you and up to 4 willing creatures touched" | scaling:from-rank · scaling:targets-per-rank · reach:up-to-n | Rank 5: the caster and up to 4 willing creatures | `pack-attack.json` | ✅ | Rank 5 on the patient and ZZ Ally: each of the three names the other two | Rank 5 on the patient and ZZ Ally: each of the three names the other two |
 
 ### VS-164 · Enhance Senses
 
@@ -427,18 +427,18 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-167a | "Whenever you're on the ground and a creature or effect attempts to forcibly move you from your space, you can use your spell DC in place of your Fortitude DC as the DC of the check to move you" | when:cast · reach:self · check:maneuver · ending:duration | A Shove or Reposition on the caster uses its spell DC | | ☐ | |
-| VS-167b | "If a creature wouldn't normally need a check to move you, it must succeed at an appropriate check (usually an Athletics check for physical movement) against your spell DC or you are unmoved" | check:maneuver · effect:gm-note | A note: a checkless move needs Athletics against the spell DC | | ☐ | |
-| VS-167c | "if an effect wouldn't normally need a check to move you, it must counteract bracing tendrils or you are unmoved" | reach:self · check:counteract | A checkless forced-move effect must counteract the spell or fail | | ☐ | |
-| VS-167d | "When a creature fails to move you in this way, you can choose to have the tendrils lash back and push them 5 feet away from you" | check:caster-choice · effect:forced-move/push | On a failed attempt the caster may push the creature 5 feet | | ☐ | |
+| VS-167a | "Whenever you're on the ground and a creature or effect attempts to forcibly move you from your space, you can use your spell DC in place of your Fortitude DC as the DC of the check to move you" | when:cast · reach:self · check:maneuver · check:dc-swap · ending:duration | A Shove or Reposition on the caster uses its spell DC | `bracing-tendrils.json` | ✅ | The patient's Shove and Reposition at the caster: DC 10, its Fortitude DC, became 13, its spell DC. Control: Trip stayed 10 | The patient's Shove and Reposition at the caster: DC 10, its Fortitude DC, became 13, its spell DC. Control: Trip stayed 10 |
+| VS-167b | "If a creature wouldn't normally need a check to move you, it must succeed at an appropriate check (usually an Athletics check for physical movement) against your spell DC or you are unmoved" | check:skill · effect:forced-move/push | A note: a checkless move needs Athletics against the spell DC | `bracing-tendrils.json` | ✅ | The patient's own action shoving the caster 5 feet: its Athletics, a 2, against DC 13 left the caster where it stood; a natural 20 moved it. Control: with no tendrils, it moved with no roll | A note on the card, "Left to the table": a check where none was needed |
+| VS-167c | "if an effect wouldn't normally need a check to move you, it must counteract bracing tendrils or you are unmoved" | reach:self · check:counteract · effect:forced-move/push | A checkless forced-move effect must counteract the spell or fail | `bracing-tendrils.json` | ✅ | The patient's Hydraulic Push, rank 1, hit the caster: its counteract succeeded and still fell short of rank 3, and the caster stayed. A critical success moved it 10 feet | A note on the card, "Left to the table": an effect must counteract the spell |
+| VS-167d | "When a creature fails to move you in this way, you can choose to have the tendrils lash back and push them 5 feet away from you" | check:caster-choice · effect:forced-move/push | On a failed attempt the caster may push the creature 5 feet | `bracing-tendrils.json` | ✅ | Each held move whispered the caster a lash-back button; clicking it pushed the patient 5 feet away. A failed Shove offered it too. Control: a successful Shove offered nothing | A note on the card, "Left to the table": the push of 5 feet |
 
 ### VS-168 · Telekinetic Haul
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-168a | "You move the target up to 20 feet, potentially suspending it in midair" | when:cast · reach:object · effect:gm-note | The object moves up to 20 feet, perhaps held aloft | | ☐ | |
-| VS-168b | "When you Sustain the Spell, you can do so again" | when:sustain · reach:object · effect:recast | Each Sustain moves the object up to 20 feet again | | ☐ | |
-| VS-168c | "or you can shift your telekinetic focus to a different eligible target within range, moving it instead" | when:sustain · reach:object · check:caster-choice | A Sustain may move a different eligible object instead | | ☐ | |
+| VS-168a | "You move the target up to 20 feet, potentially suspending it in midair" | when:cast · reach:object · effect:object-moved · effect:elevation/lift | The object moves up to 20 feet, perhaps held aloft | `telekinetic-haul.json` | ✅ | A crate, a loot token, moved 20 feet east in the direction picked; a choice of height then left it 20 feet up. Control: aimed at a creature, the cast was refused | A note on the card, "Left to the table": where the object goes |
+| VS-168b | "When you Sustain the Spell, you can do so again" | when:sustain · reach:object · effect:recast · effect:object-moved | Each Sustain moves the object up to 20 feet again | `telekinetic-haul.json` | ✅ | Sustaining moved the crate another 20 feet | Sustain posts the spell and the note again; the move is the table's |
+| VS-168c | "or you can shift your telekinetic focus to a different eligible target within range, moving it instead" | when:sustain · reach:object · check:caster-choice · effect:object-moved | A Sustain may move a different eligible object instead | `telekinetic-haul.json` | ✅ | With a second crate targeted, Sustaining moved that one, and the first stayed | The same note: another object instead |
 
 ### VS-169 · Liberating Command
 
@@ -466,22 +466,22 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-172a | "You grant the targets the ability to understand a newly invented language" | when:cast · reach:up-to-n · effect:gm-note · ending:duration | The caster and up to 3 willing creatures share a language for 8 hours | | ☐ | |
-| VS-172b | "While those under the spell’s effects can comprehend each other’s speech, it sounds indecipherable to others" | effect:gm-note | A note: outsiders can't understand the code, the table's | | ☐ | |
-| VS-172c | "The targets can also read and write in their new language, but they cease to understand the language once the spell’s duration has ended" | effect:gm-note · ending:duration | A note: reading and writing it too, until the spell ends | | ☐ | |
-| VS-172d | "If the same caster targets the same group with another use of invent code, they can once again understand their previous codes while the spell is active" | effect:gm-note | A note: a recast restores the group's earlier codes, the table's | | ☐ | |
-| VS-172e | "Translate doesn’t allow a caster to understand the language, but it does reveal that the language is magically coded" | effect:gm-note | A note: Translate reveals only that the language is coded | | ☐ | |
-| VS-172f | "Dispel magic and other similar effects can revert written text to a random but translatable jumble of all the languages the caster of invent code knows" | effect:gm-note | A note: dispelled writing turns to a jumble, the table's | | ☐ | |
+| VS-172a | "You grant the targets the ability to understand a newly invented language" | when:cast · reach:up-to-n · effect:language · ending:duration | The caster and up to 3 willing creatures share a language for 8 hours | `invent-code.json` | ✅ | The caster, the patient and ZZ Ally each list `Invented code` among their languages; it was on none before, and is gone when the effect ends | The caster and two targets carry `invented code` for 8 hours; the language itself is the table's |
+| VS-172b | "While those under the spell’s effects can comprehend each other’s speech, it sounds indecipherable to others" | effect:gm-note | A note: outsiders can't understand the code, the table's | `invent-code.json` | — | Who understands whom is the table's | Who understands whom is the table's |
+| VS-172c | "The targets can also read and write in their new language, but they cease to understand the language once the spell’s duration has ended" | effect:gm-note · ending:duration | A note: reading and writing it too, until the spell ends | `invent-code.json` | — | Reading and writing it is the table's | Reading and writing it is the table's |
+| VS-172d | "If the same caster targets the same group with another use of invent code, they can once again understand their previous codes while the spell is active" | effect:gm-note | A note: a recast restores the group's earlier codes, the table's | `invent-code.json` | — | Earlier codes are the table's | Earlier codes are the table's |
+| VS-172e | "Translate doesn’t allow a caster to understand the language, but it does reveal that the language is magically coded" | effect:gm-note | A note: Translate reveals only that the language is coded | `invent-code.json` | — | What Translate reveals is the table's | What Translate reveals is the table's |
+| VS-172f | "Dispel magic and other similar effects can revert written text to a random but translatable jumble of all the languages the caster of invent code knows" | effect:gm-note | A note: dispelled writing turns to a jumble, the table's | `invent-code.json` | — | What dispelled writing becomes is the table's | What dispelled writing becomes is the table's |
 
 ### VS-173 · Liminal Doorway
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-173a | "You draw a chalk doorway on an unbroken surface, which opens into an extradimensional space" | when:cast · effect:gm-note · ending:duration | A note: the doorway and its room, for 8 hours, are the table's | | ☐ | |
-| VS-173b | "Any creature treating the drawing as an actual door can Interact to touch the doorknob and pass through" | effect:teleport · effect:gm-note | Interacting with the door moves a creature into the room | | ☐ | |
-| VS-173c | "The warped, chalk-drawn room beyond the door is 20 feet in width, depth, and height" | effect:gm-note | A note: the room's size and capacity are the table's | | ☐ | |
-| VS-173d | "If the drawing is scrubbed away, the underlying surface is broken, or a creature attempts to enter the space that would put it over capacity, the space begins to collapse" | effect:gm-note | A note: what starts the collapse is the table's | | ☐ | |
-| VS-173e | "The space ejects one creature at random each round, depositing it on the nearest open ground, until all creatures are returned outside" | effect:teleport · effect:gm-note | Each round of collapse, one random occupant is put back outside | | ☐ | |
+| VS-173a | "You draw a chalk doorway on an unbroken surface, which opens into an extradimensional space" | when:cast · effect:extradimensional · ending:duration | A note: the doorway and its room, for 8 hours, are the table's | `liminal-doorway.json` | ✅ | A 20-foot room of its own Scene, and a door Region beside the caster, for 8 hours | A note on the card, "Left to the table": the doorway and its room, 8 hours |
+| VS-173b | "Any creature treating the drawing as an actual door can Interact to touch the doorknob and pass through" | effect:teleport · effect:extradimensional | Interacting with the door moves a creature into the room | `liminal-doorway.json` | ✅ | Two creatures stepping onto the door were in the room; one stepping onto its way out was back beside the door | The same note: passing through is the table's |
+| VS-173c | "The warped, chalk-drawn room beyond the door is 20 feet in width, depth, and height" | effect:extradimensional | A note: the room's size and capacity are the table's | `liminal-doorway.json` | ✅ | The room is 400 by 400 pixels: 20 feet a side | The room's size is the table's |
+| VS-173d | "If the drawing is scrubbed away, the underlying surface is broken, or a creature attempts to enter the space that would put it over capacity, the space begins to collapse" | ending:with-area · effect:extradimensional | A note: what starts the collapse is the table's | `liminal-doorway.json` | ✅ | Deleting the door began the collapse; a seventeenth creature in the room did too. Control: sixteen did not | The same note names what starts the collapse |
+| VS-173e | "The space ejects one creature at random each round, depositing it on the nearest open ground, until all creatures are returned outside" | effect:teleport · effect:extradimensional | Each round of collapse, one random occupant is put back outside | `liminal-doorway.json` | ✅ | One creature was put back beside the door at once, the other a round later, and the room was deleted | The same note: one creature out each round |
 
 ### VS-174 · Sky Sight
 
@@ -519,13 +519,13 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-178a | "You conjure a temporary object from magical energy" | when:cast · effect:gm-note · ending:duration | A note: the object conjured for 1 hour is the table's | | ☐ | |
-| VS-178b | "It must consist of earthen or plant-derived matter (such as wood, paper, brick, or stone) and be 5 cubic feet or smaller" | effect:gm-note | A note: earthen or plant matter, 5 cubic feet at most | | ☐ | |
-| VS-178c | "It can't rely on intricate artistry or complex moving parts, never fulfills a cost or the like, and can't be made of precious materials or materials with a rarity of uncommon or higher" | effect:gm-note | A note: no fine work, costs or rare materials, the table's | | ☐ | |
-| VS-178d | "It is obviously temporarily conjured, and thus can't be sold or passed off as a genuine item" | effect:gm-note | A note: it can't be sold or passed off as real | | ☐ | |
-| VS-178e | "The spell gains the appropriate trait for the item created, typically earth, plant, or wood" | check:caster-choice · effect:trait-gained | The spell gains earth, plant or wood to match the item | | ☐ | |
-| VS-178f | "Heightened (5th) The item is metal and can include common minerals, like feldspar or quartz" | scaling:from-rank · effect:gm-note | Rank 5: the object may be metal or common minerals | | ☐ | |
-| VS-178g | "The spell gains the metal trait if used to create a metal object" | scaling:from-rank · effect:trait-gained | Rank 5, a metal object: the spell gains the metal trait | | ☐ | |
+| VS-178a | "You conjure a temporary object from magical energy" | when:cast · effect:item-conjured · ending:duration | A note: the object conjured for 1 hour is the table's | `creation.json` | ✅ | Asked what to create, "Wooden ladder": an item of that name, worth nothing, in the caster's inventory for 1 hour, gone with the effect | A note on the card, "Left to the table": the object, earthen or plant, for 1 hour |
+| VS-178b | "It must consist of earthen or plant-derived matter (such as wood, paper, brick, or stone) and be 5 cubic feet or smaller" | effect:gm-note | A note: earthen or plant matter, 5 cubic feet at most | `creation.json` | — | What it is made of is the table's | What it is made of is the table's |
+| VS-178c | "It can't rely on intricate artistry or complex moving parts, never fulfills a cost or the like, and can't be made of precious materials or materials with a rarity of uncommon or higher" | effect:gm-note | A note: no fine work, costs or rare materials, the table's | `creation.json` | — | What it cannot be is the table's | What it cannot be is the table's |
+| VS-178d | "It is obviously temporarily conjured, and thus can't be sold or passed off as a genuine item" | effect:gm-note | A note: it can't be sold or passed off as real | `creation.json` | — | That it cannot be sold is the table's | That it cannot be sold is the table's |
+| VS-178e | "The spell gains the appropriate trait for the item created, typically earth, plant, or wood" | check:caster-choice · effect:trait-gained | The spell gains earth, plant or wood to match the item | `creation.json` | — | The spell's trait changes nothing in play | The spell's trait changes nothing in play |
+| VS-178f | "Heightened (5th) The item is metal and can include common minerals, like feldspar or quartz" | scaling:from-rank · effect:gm-note | Rank 5: the object may be metal or common minerals | `creation.json` | — | The material is part of what the caster names; the prompt says metal and minerals come at rank 5 | The same note: metal or minerals from rank 5 |
+| VS-178g | "The spell gains the metal trait if used to create a metal object" | scaling:from-rank · effect:trait-gained | Rank 5, a metal object: the spell gains the metal trait | `creation.json` | — | The spell's trait changes nothing in play | The spell's trait changes nothing in play |
 
 ### VS-179 · King's Castle
 
@@ -558,18 +558,18 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-182a | "You conjure a temporary simple tool, such as a shovel or rope into your hands" | when:cast · reach:self · effect:gm-note | A note: the conjured tool the caster holds is the table's | | ☐ | |
-| VS-182b | "It lasts until it's used for a single activity or for 1 minute, whichever comes first, after which it disappears" | ending:spent · ending:duration | The tool is gone after one activity or 1 minute | | ☐ | |
-| VS-182c | "The tool is obviously temporarily conjured and thus can't be sold or passed off as a genuine item" | effect:gm-note | A note: the tool can't be sold is the table's | | ☐ | |
+| VS-182a | "You conjure a temporary simple tool, such as a shovel or rope into your hands" | when:cast · reach:self · effect:item-conjured | A note: the conjured tool the caster holds is the table's | `temporary-tool.json` | ✅ | Chose Rope: a Rope granted into the caster's inventory. Chose Crowbar: a Crowbar. Ending the effect took the Rope away | Chose Rope: a Rope granted into the caster's inventory. Chose Crowbar: a Crowbar. Ending the effect took the Rope away |
+| VS-182b | "It lasts until it's used for a single activity or for 1 minute, whichever comes first, after which it disappears" | ending:spent · ending:duration | The tool is gone after one activity or 1 minute | `temporary-tool.json` | ✅ | 1 minute, and the holder's own action spends it: used, the effect and the Rope were gone | The effect, and its tool, last 1 minute; ending it after one use is the table's |
+| VS-182c | "The tool is obviously temporarily conjured and thus can't be sold or passed off as a genuine item" | effect:gm-note | A note: the tool can't be sold is the table's | `temporary-tool.json` | — | That it cannot be sold is the table's | That it cannot be sold is the table's |
 
 ### VS-183 · Familiar's Call
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-183a | "Your familiar dissolves and rematerializes in your space" | when:cast · reach:single · effect:teleport | The caster's familiar moves to a space by the caster | | ☐ | |
-| VS-183b | "Heightened (5th) You can call your familiar so long as your familiar is on the same planet as you" | scaling:from-rank · effect:range | From rank 5 a familiar anywhere on the planet answers | | ☐ | |
-| VS-183c | "Heightened (7th) You can call your familiar so long as your familiar is on the same plane of existence as you" | scaling:from-rank · effect:range | From rank 7 a familiar anywhere on the plane answers | | ☐ | |
-| VS-183d | "Heightened (9th) You can call your familiar even if the familiar is on a different plane of existence" | scaling:from-rank · effect:range | From rank 9 a familiar on another plane answers | | ☐ | |
+| VS-183a | "Your familiar dissolves and rematerializes in your space" | when:cast · reach:companion · effect:teleport | The caster's familiar moves to a space by the caster | `familiars-call.json` | ✅ | The caster's familiar, 40 feet away, landed 5 feet from it. Control: aimed at the patient, the cast was refused | The caster's familiar, 40 feet away, landed 5 feet from it. Control: aimed at the patient, the cast was refused |
+| VS-183b | "Heightened (5th) You can call your familiar so long as your familiar is on the same planet as you" | scaling:from-rank · reach:companion · effect:teleport | From rank 5 a familiar anywhere on the planet answers | `familiars-call.json` | ✅ | The familiar on another scene was taken off it and set down 5 feet from the caster. The world has no miles: every scene is in reach | A note on the card, "Left to the table": a familiar off this scene is the table's |
+| VS-183c | "Heightened (7th) You can call your familiar so long as your familiar is on the same plane of existence as you" | scaling:from-rank · reach:companion · effect:teleport | From rank 7 a familiar anywhere on the plane answers | `familiars-call.json` | ✅ | The same: a familiar on any scene answers | The same note |
+| VS-183d | "Heightened (9th) You can call your familiar even if the familiar is on a different plane of existence" | scaling:from-rank · reach:companion · effect:teleport | From rank 9 a familiar on another plane answers | `familiars-call.json` | ✅ | The same | The same note |
 
 ### VS-184 · Fire's Pathway
 
@@ -619,27 +619,27 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-188a | "The air around you falls still and blocks out the sounds of the outside world" | when:cast · reach:area/burst · area:lingering · ending:duration | A 30-ft burst stays on the board for the hour | | ☐ | |
-| VS-188b | "While you can clearly hear anything within this isolated dome, you can't hear anything outside of it. The opposite is also true, with no one outside of your dome being able to hear what's within" | when:while-inside · effect:gm-note | A note: no sound crosses the dome's edge is the table's | | ☐ | |
-| VS-188c | "If anything larger than 1 Bulk passes through it, the dome is automatically dispersed" | when:on-entering · effect:gm-note | A creature crossing the dome's edge ends the spell | | ☐ | |
-| VS-188d | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
-| VS-188e | "Heightened (3rd) The duration increases to 8 hours" | scaling:from-rank · ending:duration | From rank 3 it lasts 8 hours | | ☐ | |
-| VS-188f | "Heightened (5th) The duration increases to 24 hours" | scaling:from-rank · ending:duration | From rank 5 it lasts 24 hours | | ☐ | |
+| VS-188a | "The air around you falls still and blocks out the sounds of the outside world" | when:cast · reach:area/burst · area:lingering · ending:duration | A 30-ft burst stays on the board for the hour | `dome-of-tranquility.json` | ✅ | A 30-foot burst placed in range, lasting 1 hour | A 30-foot burst placed in range, lasting 1 hour |
+| VS-188b | "While you can clearly hear anything within this isolated dome, you can't hear anything outside of it. The opposite is also true, with no one outside of your dome being able to hear what's within" | when:while-inside · effect:sense | A note: no sound crosses the dome's edge is the table's | `dome-of-tranquility.json` | ✅ | 24 walls on the dome's edge stop sound and nothing else: a sound test from its centre outward is blocked. Control: with the dome gone, it is not | A note on the card, "Left to the table": no sound crosses the dome's edge |
+| VS-188c | "If anything larger than 1 Bulk passes through it, the dome is automatically dispersed" | ending:crossed | A creature crossing the dome's edge ends the spell | `dome-of-tranquility.json` | ✅ | D2 moving in across the edge dispersed it, with a word why. Control: D2 moving 5 feet outside left it; the creatures inside when it was cast did not end it | D2 moving in across the edge dispersed it, with a word why. Control: D2 moving 5 feet outside left it; the creatures inside when it was cast did not end it |
+| VS-188d | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | `dome-of-tranquility.json` | ✅ | The caster's Dismiss ended it | The caster's Dismiss ended it |
+| VS-188e | "Heightened (3rd) The duration increases to 8 hours" | scaling:from-rank · ending:duration | From rank 3 it lasts 8 hours | `dome-of-tranquility.json` | ✅ | Rank 3: 8 hours. Control: rank 1, 1 hour | Rank 3: 8 hours. Control: rank 1, 1 hour |
+| VS-188f | "Heightened (5th) The duration increases to 24 hours" | scaling:from-rank · ending:duration | From rank 5 it lasts 24 hours | `dome-of-tranquility.json` | ✅ | Rank 5: 24 hours | Rank 5: 24 hours |
 
 ### VS-189 · Glowing Trail
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-189a | "Your movements leave a vague glowing path behind you" | when:cast · reach:self · effect:gm-note | A note: the path along the caster's movement is the table's | | ☐ | |
-| VS-189b | "The path fades after 10 minutes" | ending:duration | Each stretch of path fades 10 minutes after it is laid | | ☐ | |
-| VS-189c | "You can Dismiss this spell at any time, but the path fades normally" | ending:dismiss | Dismissing stops new path; the laid path still fades on time | | ☐ | |
-| VS-189d | "The path can be visible or Invisible" | check:caster-choice | The caster chooses visible or invisible at the cast | | ☐ | |
-| VS-189e | "While visible, it appears as a faintly glowing mist in a color of your choosing but sheds no light beyond its area" | effect:gm-note | A note: the mist's colour is the table's; it lights nothing | | ☐ | |
-| VS-189f | "While invisible, you can still detect the path, but it gives off no light" | reach:self · effect:sense | Only the caster can see an invisible path | | ☐ | |
-| VS-189g | "Heightened (3rd) The glowing trail fades after 1 day" | scaling:from-rank · ending:duration | From rank 3 the path lasts a day | | ☐ | |
-| VS-189h | "Heightened (5th) The glowing trail fades after 1 week" | scaling:from-rank · ending:duration | From rank 5 the path lasts a week | | ☐ | |
-| VS-189i | "Heightened (7th) The glowing trail fades after 1 month" | scaling:from-rank · ending:duration | From rank 7 the path lasts a month | | ☐ | |
-| VS-189j | "Heightened (9th) The glowing trail fades after 1 year" | scaling:from-rank · ending:duration | From rank 9 the path lasts a year | | ☐ | |
+| VS-189a | "Your movements leave a vague glowing path behind you" | when:self-moves · area:trail | A note: the path along the caster's movement is the table's | `glowing-trail.json` | ✅ | Each move of the caster left a mark where it started, at its elevation | The caster carries `glowing trail` for 1 hour; A note on the card, "Left to the table": the path |
+| VS-189b | "The path fades after 10 minutes" | area:trail · ending:duration | Each stretch of path fades 10 minutes after it is laid | `glowing-trail.json` | ✅ | Five minutes on, both marks stood; ten minutes on, they were gone | The same note: each stretch fades after 10 minutes |
+| VS-189c | "You can Dismiss this spell at any time, but the path fades normally" | ending:dismiss · area:trail | Dismissing stops new path; the laid path still fades on time | `glowing-trail.json` | ✅ | Dismissed, a move left no new mark; the one laid before stayed until its time | The same note |
+| VS-189d | "The path can be visible or Invisible" | check:caster-choice | The caster chooses visible or invisible at the cast | `glowing-trail.json` | ✅ | Asked at the cast: invisible marks are hidden Drawings, visible ones shown | The same note: visible or invisible |
+| VS-189e | "While visible, it appears as a faintly glowing mist in a color of your choosing but sheds no light beyond its area" | check:caster-choice | A note: the mist's colour is the table's; it lights nothing | `glowing-trail.json` | ✅ | The colour asked for at the cast, `#ff3366`, is the marks' colour | Its colour is the table's |
+| VS-189f | "While invisible, you can still detect the path, but it gives off no light" | reach:self · effect:sense | Only the caster can see an invisible path | `glowing-trail.json` | ✅ | An invisible mark is hidden, and authored by the caster's player — who, with the GM, is the only one to see it | The same note |
+| VS-189g | "Heightened (3rd) The glowing trail fades after 1 day" | scaling:from-rank · ending:duration | From rank 3 the path lasts a day | `glowing-trail.json` | ✅ | Rank 3: a mark lasts a day. Control: rank 1, 10 minutes | The same note: longer from rank 3 |
+| VS-189h | "Heightened (5th) The glowing trail fades after 1 week" | scaling:from-rank · ending:duration | From rank 5 the path lasts a week | `glowing-trail.json` | ✅ | Rank 5: a week | The same note |
+| VS-189i | "Heightened (7th) The glowing trail fades after 1 month" | scaling:from-rank · ending:duration | From rank 7 the path lasts a month | `glowing-trail.json` | ✅ | Rank 7: 30 days | The same note |
+| VS-189j | "Heightened (9th) The glowing trail fades after 1 year" | scaling:from-rank · ending:duration | From rank 9 the path lasts a year | `glowing-trail.json` | ✅ | Rank 9: a year | The same note |
 
 ### VS-190 · Message Rune
 
@@ -761,12 +761,12 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-203a | "You send a message to yourself that's delivered at a delayed time of your choosing. Whisper a message no longer than 8 words and concentrate on a date and time within the next year" | when:cast · reach:self · check:caster-choice | The message and a date within a year are recorded | | ☐ | |
-| VS-203b | "At the chosen moment, a gentle chime will sound in your head, followed by the message repeated twice in an average, steady tone" | effect:info | At the chosen world time the caster is told the message | | ☐ | |
-| VS-203c | "This spell can be Dismissed at any time" | ending:dismiss | The caster can Dismiss it | | ☐ | |
-| VS-203d | "If a new casting of timely reminder is used, the first message is erased as soon as the new message is created" | ending:replaces-previous | A new casting erases the earlier message | | ☐ | |
-| VS-203e | "Heightened (5th) You send the reminder message to another willing creature you know" | scaling:from-rank · reach:single | From rank 5 a known willing creature receives the message | | ☐ | |
-| VS-203f | "If the creature isn't on the same plane of existence when you Cast this Spell, the spell fails" | reach:filtered · effect:gm-note | A note: a recipient on another plane makes it fail | | ☐ | |
+| VS-203a | "You send a message to yourself that's delivered at a delayed time of your choosing. Whisper a message no longer than 8 words and concentrate on a date and time within the next year" | when:cast · reach:self · check:caster-choice | The message and a date within a year are recorded | `timely-reminder.json` | ✅ | The cast asked for a message and a delay: "Buy more rope", 10 minutes, kept for 600 seconds on | The cast asked for a message and a delay: "Buy more rope", 10 minutes, kept for 600 seconds on |
+| VS-203b | "At the chosen moment, a gentle chime will sound in your head, followed by the message repeated twice in an average, steady tone" | when:at-time · effect:info | At the chosen world time the caster is told the message | `timely-reminder.json` | ✅ | Five minutes on, nothing. Ten minutes on, a whisper: the chime, then the message twice; the effect ended | Five minutes on, nothing. Ten minutes on, a whisper: the chime, then the message twice; the effect ended |
+| VS-203c | "This spell can be Dismissed at any time" | ending:dismiss | The caster can Dismiss it | `timely-reminder.json` | ✅ | The caster's Dismiss ended it | The caster's Dismiss ended it |
+| VS-203d | "If a new casting of timely reminder is used, the first message is erased as soon as the new message is created" | ending:replaces-previous | A new casting erases the earlier message | `timely-reminder.json` | ✅ | A second cast left only "Second note" | A second cast left only "Second note" |
+| VS-203e | "Heightened (5th) You send the reminder message to another willing creature you know" | scaling:from-rank · reach:single | From rank 5 a known willing creature receives the message | `timely-reminder.json` | ✅ | Rank 5 at the patient: the patient carries it, the caster nothing | Rank 5 at the patient: the patient carries it, the caster nothing |
+| VS-203f | "If the creature isn't on the same plane of existence when you Cast this Spell, the spell fails" | reach:filtered · effect:gm-note | A note: a recipient on another plane makes it fail | `timely-reminder.json` | — | Another plane is the table's | Another plane is the table's |
 
 ### VS-204 · Blazing Fissure
 
@@ -795,13 +795,13 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-206a | "Freezing cold water pools within the lungs of the target, dealing 2d8 cold damage with a Fortitude save" | when:cast · reach:single · check:save · effect:damage | The target saves Fortitude against 2d8 cold | | ☐ | |
-| VS-206b | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
-| VS-206c | "Critical Success The target is unaffected" | check:save | Nothing | | ☐ | |
-| VS-206d | "Success The target takes half damage. For the spell's duration, the target takes 1[cold] damage whenever it performs an auditory action or Casts a Spell" | check:save · effect:damage · ending:duration | Half; then 1 cold per auditory action or cast, for the minute | | ☐ | |
-| VS-206e | "Failure The target takes full damage. For the spell's duration, the target takes (floor(@item.rank/2))d8[cold] damage whenever it performs an auditory action or Casts a Spell" | check:save · effect:damage · ending:duration | Full; then 1d8 cold per auditory action or cast at rank 2 | | ☐ | |
-| VS-206f | "Critical Failure The target takes double damage. For the spell's duration, the target takes (floor(@item.rank/2) + 1)d8[cold] damage whenever it performs an auditory action or Casts a Spell" | check:save · effect:damage · ending:duration | Double; then 2d8 cold per auditory action or cast at rank 2 | | ☐ | |
-| VS-206g | "Heightened (+2) The initial cold damage increases by 2d8, and on a failure or critical failure, the cold damage whenever the target performs an auditory action or Casts a Spell increases by 1d8" | scaling:dice-per-rank · effect:damage | Rank 4: 4d8, and the failure's rider 2d8 | | ☐ | |
+| VS-206a | "Freezing cold water pools within the lungs of the target, dealing 2d8 cold damage with a Fortitude save" | when:cast · reach:single · check:save · effect:damage | The target saves Fortitude against 2d8 cold | `frozen-lungs.json` | ✅ | The card rolls `2d8` cold with the Fortitude save | The card rolls `2d8` cold with the Fortitude save |
+| VS-206b | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | `frozen-lungs.json` | ✅ | The caster's Dismiss ended it | The caster's Dismiss ended it |
+| VS-206c | "Critical Success The target is unaffected" | check:save | Nothing | `frozen-lungs.json` | ✅ | Critical success: no effect | Critical success: no effect |
+| VS-206d | "Success The target takes half damage. For the spell's duration, the target takes 1[cold] damage whenever it performs an auditory action or Casts a Spell" | check:save · when:holder-acts · effect:damage · ending:duration | Half; then 1 cold per auditory action or cast, for the minute | `frozen-lungs.json` | ✅ | Success: `frozen lungs`, 1 minute; the patient's Demoralize then cost it 1 cold. Control: its Seek, nothing | Success: `frozen lungs`, 1 minute; the patient's Demoralize then cost it 1 cold. Control: its Seek, nothing |
+| VS-206e | "Failure The target takes full damage. For the spell's duration, the target takes (floor(@item.rank/2))d8[cold] damage whenever it performs an auditory action or Casts a Spell" | check:save · when:holder-acts · effect:damage · ending:duration | Full; then 1d8 cold per auditory action or cast at rank 2 | `frozen-lungs.json` | ✅ | Failure: Demoralize cost `1d8` cold. Control: Seek, nothing | Failure: Demoralize cost `1d8` cold. Control: Seek, nothing |
+| VS-206f | "Critical Failure The target takes double damage. For the spell's duration, the target takes (floor(@item.rank/2) + 1)d8[cold] damage whenever it performs an auditory action or Casts a Spell" | check:save · when:holder-acts · effect:damage · ending:duration | Double; then 2d8 cold per auditory action or cast at rank 2 | `frozen-lungs.json` | ✅ | Critical failure: Demoralize cost `2d8` cold | Critical failure: Demoralize cost `2d8` cold |
+| VS-206g | "Heightened (+2) The initial cold damage increases by 2d8, and on a failure or critical failure, the cold damage whenever the target performs an auditory action or Casts a Spell increases by 1d8" | scaling:dice-per-rank · effect:damage | Rank 4: 4d8, and the failure's rider 2d8 | `frozen-lungs.json` | ✅ | Rank 4 failure: Demoralize cost `2d8` cold. Control: rank 2, `1d8` | Rank 4 failure: Demoralize cost `2d8` cold. Control: rank 2, `1d8` |
 
 ### VS-207 · Sigil
 
@@ -945,8 +945,8 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-221a | "For the duration of this spell, you can't drop your weapon" | when:cast · reach:weapon · economy:requires · ending:duration | The wielded metal weapon can't be dropped for a minute | | ☐ | |
-| VS-221b | "you gain a +4 circumstance bonus to your Reflex DC against attempts to Disarm you" | reach:self · effect:bonus | +4 circumstance to Reflex DC against Disarm | | ☐ | |
+| VS-221a | "For the duration of this spell, you can't drop your weapon" | when:cast · reach:weapon · economy:requires · effect:held-fast · ending:duration | The wielded metal weapon can't be dropped for a minute | `metal-merged.json` | ✅ | Dropping and stowing the caster's Club were refused. Control: once the effect ended, it dropped | Dropping and stowing the caster's Club were refused. Control: once the effect ended, it dropped |
+| VS-221b | "you gain a +4 circumstance bonus to your Reflex DC against attempts to Disarm you" | reach:self · effect:bonus | +4 circumstance to Reflex DC against Disarm | `metal-merged.json` | ✅ | The patient's Disarm at the caster: DC 10 before, 14 with the effect | The patient's Disarm at the caster: DC 10 before, 14 with the effect |
 
 ### VS-222 · Threefold Aspect
 
@@ -963,12 +963,12 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-223a | "A tightly packed crowd of humanoids appropriate to the area appear, facing you and agreeing loudly with anything you say" | when:cast · reach:area/burst · area:placed-only · area:lingering | A crowd placed in range stands for 10 minutes | | ☐ | |
-| VS-223b | "A creature that touches a member of the crowd or makes a Seek action to examine the crowd can attempt to disbelieve your illusion" | effect:gm-note | A note: disbelieving on a touch or a Seek is the table's | | ☐ | |
-| VS-223c | "The crowd is difficult terrain for anyone who hasn't disbelieved the illusion" | area:lingering · effect:terrain | The crowd is difficult terrain, except to those who disbelieved | | ☐ | |
-| VS-223d | "When you spend 1 or more actions to cast a Composition Spell or to perform an activity that includes a Performance check, you can also Sustain this Spell as part of that action" | when:sustain · economy:action-cost | A composition or Performance action Sustains it too, at no cost | | ☐ | |
-| VS-223e | "Heightened (+1) The crowd occupies an additional 10-foot square in range" | scaling:area-per-rank · area:several | Rank 3 places one more 10-ft square in range | | ☐ | |
-| VS-223f | "It can overlap, but there's no additional effect in the overlapped squares" | area:several | Overlapped squares add nothing | | ☐ | |
+| VS-223a | "A tightly packed crowd of humanoids appropriate to the area appear, facing you and agreeing loudly with anything you say" | when:cast · reach:area/burst · area:placed-only · area:lingering | A crowd placed in range stands for 10 minutes | `phantom-crowd.json` | ✅ | A 5-foot burst placed in range, sustained up to 10 minutes: the caster has a Sustain that lapses | A 5-foot burst placed in range, lasting 10 minutes |
+| VS-223b | "A creature that touches a member of the crowd or makes a Seek action to examine the crowd can attempt to disbelieve your illusion" | check:disbelieve | A note: disbelieving on a touch or a Seek is the table's | `phantom-crowd.json` | ✅ | A creature that stepped in rolled Perception against DC 13: a natural 20 saw through it, a 1 was fooled, and neither rolled again. One that Sought within 30 feet rolled too. Control: a Seek 60 feet away, no roll | A note on the card, "Left to the table": disbelieving the crowd |
+| VS-223c | "The crowd is difficult terrain for anyone who hasn't disbelieved the illusion" | area:lingering · effect:terrain · check:disbelieve | The crowd is difficult terrain, except to those who disbelieved | `phantom-crowd.json` | ✅ | Its terrain slowed the fooled creature and not the one who saw through it; both were slowed before | The area is difficult terrain to everyone; that a disbeliever ignores it is the table's |
+| VS-223d | "When you spend 1 or more actions to cast a Composition Spell or to perform an activity that includes a Performance check, you can also Sustain this Spell as part of that action" | when:sustain · economy:action-cost | A composition or Performance action Sustains it too, at no cost | `phantom-crowd.json` | ✅ | Casting Courageous Anthem, a composition, Sustained the crowd; so did a Performance check. Control: Countless Eyes did not | The crowd has no Sustain: a composition or Performance cannot keep it |
+| VS-223e | "Heightened (+1) The crowd occupies an additional 10-foot square in range" | scaling:area-per-rank · area:several | Rank 3 places one more 10-ft square in range | `phantom-crowd.json` | ✅ | Rank 3 placed two areas. Control: rank 2, one | A higher rank places no more squares |
+| VS-223f | "It can overlap, but there's no additional effect in the overlapped squares" | area:several | Overlapped squares add nothing | `phantom-crowd.json` | — | Overlap adds nothing, so nothing to do | Overlap adds nothing, so nothing to do |
 
 ### VS-224 · Air Walk
 

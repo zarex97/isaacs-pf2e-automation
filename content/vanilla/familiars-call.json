@@ -1,0 +1,12 @@
+{
+    "requires": "own-familiar",
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "fetch-familiar"
+            }
+        }
+    ]
+}

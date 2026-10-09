@@ -184,7 +184,8 @@
             "BoltNone": "On no one",
             "BoltFlavor": "{name} — a lightning bolt",
             "Bolted": "a bolt falls on {name}",
-            "NoBolt": "no bolt"
+            "NoBolt": "no bolt",
+            "Crossed": "{name} is dispersed: {token} crossed its edge."
         },
         "Barrier": {
             "Lost": "{name} is lost: {names} stand where it would go.",
@@ -272,7 +273,9 @@
         },
         "Requires": {
             "HeldWeapon": "{name} needs a weapon in hand.",
-            "FlyingTarget": "{name} needs a target in the air."
+            "FlyingTarget": "{name} needs a target in the air.",
+            "OwnFamiliar": "{name} needs your own familiar targeted.",
+            "ObjectTarget": "{name} needs an unattended object targeted: loot or a vehicle, no more than 80 Bulk or 20 feet across."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -866,6 +869,76 @@
             },
             "take-root": {
                 "Grasp": "Take Root: the +1 circumstance bonus also applies to its saves against spells or effects that would take a held item from its grasp."
+            },
+            "deep-breath": {
+                "Breath": "deep breath"
+            },
+            "spell-immunity": {
+                "Ward": "spell immunity",
+                "Spell": "Spell",
+                "Prompt": "Name the spell this ward is against."
+            },
+            "pack-attack": {
+                "Pack": "pack attack"
+            },
+            "bracing-tendrils": {
+                "Tendrils": "bracing tendrils"
+            },
+            "telekinetic-haul": {
+                "Haul": "telekinetic haul",
+                "Height": "Where does the object stop?",
+                "Height0": "On the ground",
+                "Height10": "10 feet up",
+                "Height20": "20 feet up"
+            },
+            "invent-code": {
+                "Code": "invented code"
+            },
+            "creation": {
+                "Created": "creation",
+                "Prompt": "What do you create? Earthen or plant matter, 5 cubic feet at most (metal or common minerals from rank 5).",
+                "Object": "Object"
+            },
+            "temporary-tool": {
+                "Tool": "temporary tool",
+                "Prompt": "Which tool?",
+                "Rope": "Rope",
+                "Crowbar": "Crowbar",
+                "ToolLong": "Long tool (a shovel)",
+                "ToolShort": "Short tool",
+                "GrapplingHook": "Grappling hook",
+                "Ladder": "Ladder"
+            },
+            "dome-of-tranquility": {
+                "Dome": "Dome of Tranquility"
+            },
+            "glowing-trail": {
+                "Trail": "glowing trail",
+                "Prompt": "Is the path visible or invisible, and what colour?",
+                "Mode": "The path",
+                "Color": "Colour",
+                "Visible": "Visible",
+                "Invisible": "Invisible"
+            },
+            "timely-reminder": {
+                "Reminder": "timely reminder",
+                "Prompt": "A message of up to 8 words, and how long until it is delivered.",
+                "Message": "Message",
+                "Days": "Days",
+                "Hours": "Hours",
+                "Minutes": "Minutes"
+            },
+            "frozen-lungs": {
+                "Lungs": "frozen lungs"
+            },
+            "metal-merged": {
+                "Merged": "metal merged"
+            },
+            "phantom-crowd": {
+                "Crowd": "Phantom Crowd"
+            },
+            "countless-eyes": {
+                "Eyes": "countless eyes"
             }
         },
         "Conditions": {
@@ -905,6 +978,58 @@
         "Draws": {
             "Redirect": "If this weapon or projectile is metal, the attack goes to {holder} instead.",
             "Penalty": "If this melee weapon is metal, a –2 circumstance penalty to this attack roll."
+        },
+        "HeldFast": {
+            "Refused": "{actor} can't let go of {item}."
+        },
+        "FlanksWith": {
+            "OffGuard": "{name}, flanked with {partner}"
+        },
+        "DcSwap": {
+            "Label": "{name}"
+        },
+        "Reminder": {
+            "Chime": "<strong>{name}</strong>: a gentle chime, then “{message}” … “{message}”"
+        },
+        "SpellImmunity": {
+            "Check": "{name} against {spell}",
+            "Held": "{actor} is warded: {spell} does not reach it.",
+            "Failed": "{actor}'s ward does not hold against {spell}."
+        },
+        "Anchor": {
+            "Counteract": "{name}: counteract",
+            "Athletics": "{name}: Athletics to move",
+            "Held": "{name} holds {actor} where it stands.",
+            "Moved": "{actor} is moved past {name}.",
+            "LashPrompt": "{mover} failed to move {actor}. Lash back?",
+            "LashButton": "Push {mover} 5 feet away"
+        },
+        "Companion": {
+            "None": "{actor} has no familiar to call.",
+            "Arrives": "{familiar} rematerializes beside {actor}."
+        },
+        "Conjure": {
+            "Object": "Conjured object",
+            "Description": "Conjured by magic for a short time: it can't be sold or passed off as a genuine item."
+        },
+        "Disbelief": {
+            "Check": "Disbelieve {name}",
+            "Sees": "{actor} sees through {name}.",
+            "Fooled": "{actor} is fooled by {name}."
+        },
+        "Languages": {
+            "InventedCode": "Invented code"
+        },
+        "Pocket": {
+            "Room": "Extradimensional room",
+            "SceneName": "{name}: {actor}'s room",
+            "Door": "{name}: the door",
+            "Exit": "The way out",
+            "Opened": "{name}: a door to a {feet}-foot room.",
+            "Ejected": "{token} is put back outside.",
+            "Collapses": "{name} begins to collapse: {why}",
+            "DoorGone": "its door is gone.",
+            "Overfull": "one creature too many stepped in."
         }
     }
 }

@@ -1,0 +1,156 @@
+{
+    "castChoice": {
+        "flag": "tool",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Prompt",
+        "choices": [
+            "rope",
+            "crowbar",
+            "tool-long",
+            "tool-short",
+            "grappling-hook",
+            "ladder"
+        ],
+        "labels": {
+            "rope": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Rope",
+            "crowbar": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Crowbar",
+            "tool-long": "ISAACS_AUTOMATION.Vanilla.temporary-tool.ToolLong",
+            "tool-short": "ISAACS_AUTOMATION.Vanilla.temporary-tool.ToolShort",
+            "grappling-hook": "ISAACS_AUTOMATION.Vanilla.temporary-tool.GrapplingHook",
+            "ladder": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Ladder"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:tool:rope"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.equipment-srd.Item.fyYnQf1NAx9fWFaS"
+                    }
+                ],
+                "dismissable": "holder"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:tool:crowbar"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.equipment-srd.Item.44F1mfJei4GY8f2X"
+                    }
+                ],
+                "dismissable": "holder"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:tool:tool-long"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.equipment-srd.Item.wrpI5z7iWB8XvflQ"
+                    }
+                ],
+                "dismissable": "holder"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:tool:tool-short"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.equipment-srd.Item.Zr4PwTEuBLE30kkn"
+                    }
+                ],
+                "dismissable": "holder"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:tool:grappling-hook"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.equipment-srd.Item.6DCy7tEF1cxaIJMy"
+                    }
+                ],
+                "dismissable": "holder"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                "rider:cast:tool:ladder"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                "rules": [
+                    {
+                        "key": "GrantItem",
+                        "uuid": "Compendium.pf2e.equipment-srd.Item.5j5KyZsGOfbrJNUZ"
+                    }
+                ],
+                "dismissable": "holder"
+            }
+        }
+    ]
+}

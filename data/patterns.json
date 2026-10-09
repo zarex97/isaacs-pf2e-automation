@@ -309,6 +309,53 @@
                         "you begin every encounter",
                         "starts each encounter at"
                     ]
+                },
+                "spell-received": {
+                    "meaning": "When a named spell targets the holder or catches it in its area, before the spell's card is posted.",
+                    "precedent": "VS-159c",
+                    "modules": [
+                        "scripts/riders/spell-immunity.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.immuneTo"
+                    ],
+                    "phrases": [
+                        "is the target of the named spell",
+                        "in that spell's area"
+                    ]
+                },
+                "holder-acts": {
+                    "meaning": "Each time the holder uses an action or Casts a Spell, read by the action's traits.",
+                    "precedent": "VS-206d",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "riders[].event: holder-acts",
+                        "rider:used:spell",
+                        "rider:used:trait:<trait>"
+                    ],
+                    "phrases": [
+                        "whenever it performs an auditory action",
+                        "or Casts a Spell",
+                        "if you speak"
+                    ]
+                },
+                "at-time": {
+                    "meaning": "At a moment of the world clock chosen at the cast, not on a turn or an event.",
+                    "precedent": "VS-203b",
+                    "modules": [
+                        "scripts/riders/reminder.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.reminder",
+                        "castChoice.fields"
+                    ],
+                    "phrases": [
+                        "At the chosen moment",
+                        "a date and time",
+                        "delivered at a delayed time"
+                    ]
                 }
             }
         },
@@ -607,6 +654,20 @@
                         "without line of sight",
                         "may not be able to see"
                     ]
+                },
+                "companion": {
+                    "meaning": "The caster's own familiar or animal companion, and no other creature.",
+                    "precedent": "VS-183a",
+                    "modules": [
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "requires: own-familiar"
+                    ],
+                    "phrases": [
+                        "your familiar",
+                        "your animal companion"
+                    ]
                 }
             }
         },
@@ -865,6 +926,21 @@
                         "call down",
                         "lash out from any square",
                         "within the spell's area"
+                    ]
+                },
+                "trail": {
+                    "meaning": "An area laid along the path its holder moves, each stretch fading on its own clock.",
+                    "precedent": "VS-189a",
+                    "modules": [
+                        "scripts/riders/trail.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.trail"
+                    ],
+                    "phrases": [
+                        "Your movements leave",
+                        "glowing path behind you",
+                        "The path fades"
                     ]
                 }
             }
@@ -1233,6 +1309,34 @@
                         "cannot benefit from fortune effects",
                         "already altered by a fortune or misfortune effect",
                         "cancel each other out"
+                    ]
+                },
+                "dc-swap": {
+                    "meaning": "A DC the holder is checked against set by another statistic, the higher of the two.",
+                    "precedent": "VS-167a",
+                    "modules": [
+                        "scripts/riders/dc-swap.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.dcSwap"
+                    ],
+                    "phrases": [
+                        "in place of your Fortitude DC",
+                        "use your spell DC"
+                    ]
+                },
+                "disbelieve": {
+                    "meaning": "A creature that touches or Seeks an illusion rolls Perception against its DC; one who succeeds ignores what it does.",
+                    "precedent": "VS-223b",
+                    "modules": [
+                        "scripts/targeting/disbelief.mjs"
+                    ],
+                    "authored": [
+                        "lingering.disbelief"
+                    ],
+                    "phrases": [
+                        "attempt to disbelieve",
+                        "hasn't disbelieved the illusion"
                     ]
                 }
             }
@@ -2620,6 +2724,111 @@
                         "maximum",
                         "Focus Points, the game's maximum"
                     ]
+                },
+                "flank-immune": {
+                    "meaning": "The holder can't be flanked, so flanking never makes it off-guard.",
+                    "precedent": "VS-132a",
+                    "modules": [
+                        "scripts/riders/apply.mjs"
+                    ],
+                    "authored": [
+                        "pf2e ActiveEffectLike system.attributes.flanking.flankable: false"
+                    ],
+                    "phrases": [
+                        "can't be flanked",
+                        "can't be flanked for the spell's duration"
+                    ]
+                },
+                "flanking": {
+                    "meaning": "Creatures flank an enemy wherever they stand around it, making it off-guard to their attacks.",
+                    "precedent": "VS-163b",
+                    "modules": [
+                        "scripts/riders/flanks-with.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.flanksWith"
+                    ],
+                    "phrases": [
+                        "flank any enemy",
+                        "whether or not you are on opposite sides"
+                    ]
+                },
+                "item-conjured": {
+                    "meaning": "A temporary item conjured into the holder's inventory, gone when its effect ends.",
+                    "precedent": "VS-182a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "an effect with pf2e GrantItem",
+                        "castChoice"
+                    ],
+                    "phrases": [
+                        "You conjure a temporary",
+                        "temporarily conjured"
+                    ]
+                },
+                "held-fast": {
+                    "meaning": "An item in the holder's hands can't be dropped, stowed or taken away while the effect lasts.",
+                    "precedent": "VS-221a",
+                    "modules": [
+                        "scripts/riders/held-fast.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.heldFast"
+                    ],
+                    "phrases": [
+                        "can't drop your weapon",
+                        "can't drop"
+                    ]
+                },
+                "object-moved": {
+                    "meaning": "An object, not a creature, moved across or above the board.",
+                    "precedent": "VS-168a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "requires: object-target",
+                        "riders[].apply.type: teleport",
+                        "riders[].apply.type: elevation"
+                    ],
+                    "phrases": [
+                        "You move the target",
+                        "unattended object",
+                        "suspending it in midair"
+                    ]
+                },
+                "language": {
+                    "meaning": "A language its holder reads, writes and speaks while it lasts.",
+                    "precedent": "VS-172a",
+                    "modules": [
+                        "scripts/vanilla/languages.mjs"
+                    ],
+                    "authored": [
+                        "pf2e ActiveEffectLike system.build.languages.granted (character)",
+                        "pf2e ActiveEffectLike system.details.languages.value (npc)"
+                    ],
+                    "phrases": [
+                        "understand a newly invented language",
+                        "read and write in their new language"
+                    ]
+                },
+                "extradimensional": {
+                    "meaning": "A space off the map that creatures enter and leave, and are put out of when it collapses.",
+                    "precedent": "VS-173a",
+                    "modules": [
+                        "scripts/targeting/pocket.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: pocket"
+                    ],
+                    "phrases": [
+                        "extradimensional space",
+                        "the space begins to collapse"
+                    ]
                 }
             }
         },
@@ -2923,6 +3132,34 @@
                         "when the encounter ends",
                         "until the end of the encounter",
                         "lost when the encounter ends"
+                    ]
+                },
+                "on-speaking": {
+                    "meaning": "Ends, or shortens, when the holder speaks, Casts a Spell or uses an auditory or linguistic action.",
+                    "precedent": "VS-144b",
+                    "modules": [
+                        "scripts/riders/sources.mjs"
+                    ],
+                    "authored": [
+                        "carries: event holder-acts, apply shorten"
+                    ],
+                    "phrases": [
+                        "if you speak",
+                        "including to Cast a Spell"
+                    ]
+                },
+                "crossed": {
+                    "meaning": "An area that ends when a creature moves across its edge.",
+                    "precedent": "VS-188c",
+                    "modules": [
+                        "scripts/targeting/lingering.mjs"
+                    ],
+                    "authored": [
+                        "lingering.endsOnCrossing"
+                    ],
+                    "phrases": [
+                        "passes through it",
+                        "is automatically dispersed"
                     ]
                 }
             }

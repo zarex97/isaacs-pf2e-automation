@@ -1,0 +1,42 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Prompt",
+        "fields": [
+            {
+                "key": "mode",
+                "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Mode",
+                "options": [
+                    "visible",
+                    "invisible"
+                ]
+            },
+            {
+                "key": "color",
+                "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Color",
+                "type": "text",
+                "initial": "#9fd8ff"
+            }
+        ],
+        "labels": {
+            "visible": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Visible",
+            "invisible": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Invisible"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Trail",
+                "rules": [],
+                "trail": true,
+                "dismissable": true
+            }
+        }
+    ]
+}

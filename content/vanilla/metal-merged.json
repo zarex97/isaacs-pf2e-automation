@@ -1,0 +1,30 @@
+{
+    "requires": "held-weapon",
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.metal-merged.Merged",
+                "heldFast": true,
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "predicate": [
+                            "action:disarm"
+                        ],
+                        "selector": "reflex-dc",
+                        "type": "circumstance",
+                        "value": 4,
+                        "label": "ISAACS_AUTOMATION.Vanilla.metal-merged.Merged"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -623,6 +623,30 @@
                 }
             ]
         },
+        "bracing-tendrils": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.bracing-tendrils.Tendrils",
+                        "rules": [],
+                        "dcSwap": {
+                            "actions": [
+                                "shove",
+                                "reposition"
+                            ],
+                            "anchors": true
+                        }
+                    }
+                }
+            ]
+        },
         "breath-of-life": {
             "riders": [
                 {
@@ -975,6 +999,69 @@
                 }
             ]
         },
+        "countless-eyes": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.countless-eyes.Eyes",
+                        "rules": [
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "override",
+                                "path": "system.attributes.flanking.flankable",
+                                "value": false
+                            },
+                            {
+                                "key": "AdjustDegreeOfSuccess",
+                                "selector": "perception",
+                                "predicate": [
+                                    "action:seek"
+                                ],
+                                "adjustment": {
+                                    "success": "one-degree-better"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "creation": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.creation.Prompt",
+                "fields": [
+                    {
+                        "key": "object",
+                        "label": "ISAACS_AUTOMATION.Vanilla.creation.Object",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.creation.Created",
+                        "rules": [],
+                        "conjures": {
+                            "flag": "object"
+                        }
+                    }
+                }
+            ]
+        },
         "darkness": {
             "areaTargeting": {
                 "affects": "all",
@@ -1093,6 +1180,136 @@
                         "type": "condition",
                         "slug": "stunned",
                         "value": 1
+                    }
+                }
+            ]
+        },
+        "deep-breath": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                1
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.deep-breath.Breath",
+                        "slug": "deep-breath",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "holder-acts",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:used:spell",
+                                            "rider:used:trait:auditory",
+                                            "rider:used:trait:linguistic"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "shorten",
+                                    "rounds": "all"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                2
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                3
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 60,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.deep-breath.Breath",
+                        "slug": "deep-breath",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "holder-acts",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:used:spell",
+                                            "rider:used:trait:auditory",
+                                            "rider:used:trait:linguistic"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "shorten",
+                                    "rounds": 10
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 480,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.deep-breath.Breath",
+                        "slug": "deep-breath",
+                        "rules": [],
+                        "carries": [
+                            {
+                                "event": "holder-acts",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:used:spell",
+                                            "rider:used:trait:auditory",
+                                            "rider:used:trait:linguistic"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "shorten",
+                                    "rounds": 10
+                                }
+                            }
+                        ]
                     }
                 }
             ]
@@ -1262,6 +1479,74 @@
                         "type": "condition",
                         "slug": "blinded"
                     }
+                }
+            ]
+        },
+        "dome-of-tranquility": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": [
+                {
+                    "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "endsOnCrossing": true,
+                    "dismiss": true,
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ],
+                    "blocksSound": true
+                },
+                {
+                    "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "endsOnCrossing": true,
+                    "dismiss": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "blocksSound": true
+                },
+                {
+                    "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
+                    "duration": {
+                        "value": 24,
+                        "unit": "hours"
+                    },
+                    "endsOnCrossing": true,
+                    "dismiss": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "blocksSound": true
                 }
             ]
         },
@@ -1614,6 +1899,18 @@
                 }
             ]
         },
+        "familiars-call": {
+            "requires": "own-familiar",
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "fetch-familiar"
+                    }
+                }
+            ]
+        },
         "fear": {
             "areaTargeting": {
                 "maxTargets": 1,
@@ -1833,6 +2130,113 @@
                 }
             ]
         },
+        "frozen-lungs": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.frozen-lungs.Lungs",
+                        "rules": [],
+                        "dismissable": true,
+                        "carries": [
+                            {
+                                "event": "holder-acts",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:used:spell",
+                                            "rider:used:trait:auditory"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "1",
+                                    "damageType": "cold"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.frozen-lungs.Lungs",
+                        "rules": [],
+                        "dismissable": true,
+                        "carries": [
+                            {
+                                "event": "holder-acts",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:used:spell",
+                                            "rider:used:trait:auditory"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "1d8",
+                                    "perStep": "1d8",
+                                    "perStepInterval": 2,
+                                    "damageType": "cold"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.frozen-lungs.Lungs",
+                        "rules": [],
+                        "dismissable": true,
+                        "carries": [
+                            {
+                                "event": "holder-acts",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "rider:used:spell",
+                                            "rider:used:trait:auditory"
+                                        ]
+                                    }
+                                ],
+                                "apply": {
+                                    "type": "damage",
+                                    "formula": "2d8",
+                                    "perStep": "1d8",
+                                    "perStepInterval": 2,
+                                    "damageType": "cold"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "gecko-grip": {
             "riders": [
                 {
@@ -1968,6 +2372,48 @@
                                 }
                             ]
                         }
+                    }
+                }
+            ]
+        },
+        "glowing-trail": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Prompt",
+                "fields": [
+                    {
+                        "key": "mode",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Mode",
+                        "options": [
+                            "visible",
+                            "invisible"
+                        ]
+                    },
+                    {
+                        "key": "color",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Color",
+                        "type": "text",
+                        "initial": "#9fd8ff"
+                    }
+                ],
+                "labels": {
+                    "visible": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Visible",
+                    "invisible": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Invisible"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Trail",
+                        "rules": [],
+                        "trail": true,
+                        "dismissable": true
                     }
                 }
             ]
@@ -2588,6 +3034,79 @@
                 }
             ]
         },
+        "invent-code": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.invent-code.Code",
+                        "rules": [
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.build.languages.granted",
+                                "value": {
+                                    "slug": "invented-code",
+                                    "source": "Invent Code"
+                                },
+                                "predicate": [
+                                    "self:type:character"
+                                ]
+                            },
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.details.languages.value",
+                                "value": "invented-code",
+                                "predicate": [
+                                    "self:type:npc"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.invent-code.Code",
+                        "rules": [
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.build.languages.granted",
+                                "value": {
+                                    "slug": "invented-code",
+                                    "source": "Invent Code"
+                                },
+                                "predicate": [
+                                    "self:type:character"
+                                ]
+                            },
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.details.languages.value",
+                                "value": "invented-code",
+                                "predicate": [
+                                    "self:type:npc"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "invisibility": {
             "riders": [
                 {
@@ -2821,6 +3340,22 @@
                     }
                 }
             }
+        },
+        "liminal-doorway": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "pocket",
+                        "feet": 20
+                    }
+                }
+            ]
         },
         "live-wire": {
             "riders": [
@@ -3273,6 +3808,36 @@
                 }
             ]
         },
+        "metal-merged": {
+            "requires": "held-weapon",
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.metal-merged.Merged",
+                        "heldFast": true,
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "predicate": [
+                                    "action:disarm"
+                                ],
+                                "selector": "reflex-dc",
+                                "type": "circumstance",
+                                "value": 4,
+                                "label": "ISAACS_AUTOMATION.Vanilla.metal-merged.Merged"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "mind-games": {
             "riders": [
                 {
@@ -3633,6 +4198,37 @@
                 }
             ]
         },
+        "pack-attack": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.pack-attack.Pack",
+                        "rules": [],
+                        "flanksWith": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.pack-attack.Pack",
+                        "rules": [],
+                        "flanksWith": true
+                    }
+                }
+            ]
+        },
         "paralyze": {
             "riders": [
                 {
@@ -3953,6 +4549,31 @@
                     }
                 }
             ]
+        },
+        "phantom-crowd": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true,
+                "heightening": {
+                    "areas": 1
+                }
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Crowd",
+                "duration": {
+                    "value": 10,
+                    "unit": "minutes"
+                },
+                "difficultTerrain": 2,
+                "disbelief": true,
+                "sustain": {
+                    "lapses": true,
+                    "alongside": [
+                        "composition",
+                        "performance"
+                    ]
+                }
+            }
         },
         "phantom-pain": {
             "riders": [
@@ -5169,6 +5790,34 @@
                 }
             ]
         },
+        "spell-immunity": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.spell-immunity.Prompt",
+                "fields": [
+                    {
+                        "key": "spell",
+                        "label": "ISAACS_AUTOMATION.Vanilla.spell-immunity.Spell",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.spell-immunity.Ward",
+                        "rules": [],
+                        "immuneTo": {},
+                        "untilPreparations": true
+                    }
+                }
+            ]
+        },
         "spider-sting": {
             "riders": [
                 {
@@ -5670,6 +6319,65 @@
                 }
             }
         },
+        "telekinetic-haul": {
+            "requires": "object-target",
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "teleport",
+                        "distance": 20,
+                        "direction": "choose"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "choice",
+                        "prompt": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height",
+                        "options": [
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height0",
+                                "apply": {
+                                    "type": "elevation",
+                                    "set": 0
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height10",
+                                "apply": {
+                                    "type": "elevation",
+                                    "set": 10
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height20",
+                                "apply": {
+                                    "type": "elevation",
+                                    "set": 20
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Haul",
+                        "rules": [],
+                        "sustained": {
+                            "repeat": true
+                        }
+                    }
+                }
+            ]
+        },
         "telekinetic-maneuver": {
             "riders": [
                 {
@@ -5862,6 +6570,162 @@
                 }
             ]
         },
+        "temporary-tool": {
+            "castChoice": {
+                "flag": "tool",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Prompt",
+                "choices": [
+                    "rope",
+                    "crowbar",
+                    "tool-long",
+                    "tool-short",
+                    "grappling-hook",
+                    "ladder"
+                ],
+                "labels": {
+                    "rope": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Rope",
+                    "crowbar": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Crowbar",
+                    "tool-long": "ISAACS_AUTOMATION.Vanilla.temporary-tool.ToolLong",
+                    "tool-short": "ISAACS_AUTOMATION.Vanilla.temporary-tool.ToolShort",
+                    "grappling-hook": "ISAACS_AUTOMATION.Vanilla.temporary-tool.GrapplingHook",
+                    "ladder": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Ladder"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        "rider:cast:tool:rope"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.equipment-srd.Item.fyYnQf1NAx9fWFaS"
+                            }
+                        ],
+                        "dismissable": "holder"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        "rider:cast:tool:crowbar"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.equipment-srd.Item.44F1mfJei4GY8f2X"
+                            }
+                        ],
+                        "dismissable": "holder"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        "rider:cast:tool:tool-long"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.equipment-srd.Item.wrpI5z7iWB8XvflQ"
+                            }
+                        ],
+                        "dismissable": "holder"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        "rider:cast:tool:tool-short"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.equipment-srd.Item.Zr4PwTEuBLE30kkn"
+                            }
+                        ],
+                        "dismissable": "holder"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        "rider:cast:tool:grappling-hook"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.equipment-srd.Item.6DCy7tEF1cxaIJMy"
+                            }
+                        ],
+                        "dismissable": "holder"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        "rider:cast:tool:ladder"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.temporary-tool.Tool",
+                        "rules": [
+                            {
+                                "key": "GrantItem",
+                                "uuid": "Compendium.pf2e.equipment-srd.Item.5j5KyZsGOfbrJNUZ"
+                            }
+                        ],
+                        "dismissable": "holder"
+                    }
+                }
+            ]
+        },
         "timber": {
             "areaTargeting": {
                 "affects": "all",
@@ -5881,6 +6745,84 @@
                     "apply": {
                         "type": "condition",
                         "slug": "dazzled"
+                    }
+                }
+            ]
+        },
+        "timely-reminder": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Prompt",
+                "fields": [
+                    {
+                        "key": "message",
+                        "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Message",
+                        "type": "text"
+                    },
+                    {
+                        "key": "days",
+                        "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Days",
+                        "type": "number"
+                    },
+                    {
+                        "key": "hours",
+                        "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Hours",
+                        "type": "number"
+                    },
+                    {
+                        "key": "minutes",
+                        "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Minutes",
+                        "type": "number"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 365,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Reminder",
+                        "slug": "timely-reminder",
+                        "rules": [],
+                        "reminder": true,
+                        "dismissable": true,
+                        "endsPrevious": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 365,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.timely-reminder.Reminder",
+                        "slug": "timely-reminder",
+                        "rules": [],
+                        "reminder": true,
+                        "dismissable": true,
+                        "endsPrevious": true
                     }
                 }
             ]

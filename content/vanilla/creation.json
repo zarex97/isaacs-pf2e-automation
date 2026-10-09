@@ -1,0 +1,30 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.creation.Prompt",
+        "fields": [
+            {
+                "key": "object",
+                "label": "ISAACS_AUTOMATION.Vanilla.creation.Object",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.creation.Created",
+                "rules": [],
+                "conjures": {
+                    "flag": "object"
+                }
+            }
+        }
+    ]
+}

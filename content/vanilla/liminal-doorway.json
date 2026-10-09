@@ -1,0 +1,16 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "pocket",
+                "feet": 20
+            }
+        }
+    ]
+}

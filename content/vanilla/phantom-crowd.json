@@ -1,0 +1,25 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true,
+        "heightening": {
+            "areas": 1
+        }
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Crowd",
+        "duration": {
+            "value": 10,
+            "unit": "minutes"
+        },
+        "difficultTerrain": 2,
+        "disbelief": true,
+        "sustain": {
+            "lapses": true,
+            "alongside": [
+                "composition",
+                "performance"
+            ]
+        }
+    }
+}
