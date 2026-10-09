@@ -8,10 +8,12 @@ vanilla spells** setting); its area and lingering ground still apply.
 | :-- | :-- | :-- | :-- | :-- |
 | Acid Grip | 2 |  | success: pushed 5 ft in a direction you choose; failure / crit. failure: 1d6 (+1d6 per 2 ranks) persistent acid; failure / crit. failure: spell-effect-acid-grip; failure: pushed 10 ft in a direction you choose; crit. failure: pushed 20 ft in a direction you choose |  |
 | Animal Form | 2 |  | choice (on you) |  |
+| Animal Vision | 3 |  | animal vision (1 hours, on you); success / crit. success: expire |  |
 | Ant Haul | 1 |  | spell-effect-ant-haul |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
+| Blind Eye | 5 |  | blind eye (until it ends) |  |
 | Blinding Fury | 6 |  | reaction (on you); success / failure / crit. failure: unobserve; failure: blinding fury (1 minutes, carries damage-applied unobserve); crit. failure: blinding fury (until it ends, carries damage-applied unobserve) |  |
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
 | Blister | 5 |  | success: Blisters (1 minutes); failure: Blisters (1 minutes); crit. failure: Blisters (1 minutes) |  |
@@ -26,6 +28,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Cone of Cold | 5 | 60-ft cone (pf2e's), from you, all |  |  |
 | Coral Scourge | 3 |  | success: clumsy 1 (1 minutes); success: coral scourge (1 minutes); failure / crit. failure: clumsy 2 (1 minutes); failure: coral scourge (1 minutes, carries turn-start climb); crit. failure: coral scourge (1 minutes, carries turn-start climb) |  |
 | Countless Eyes | 4 |  | countless eyes (1 minutes) |  |
+| Create Earthen Facsimile | 1 |  | earthen facsimile (10 minutes, on you) |  |
 | Creation | 4 |  | creation (1 hours, on you) |  |
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
 | Darkvision | 2 |  | spell-effect-darkvision (below rank 3, on you); spell-effect-darkvision (from rank 3, below rank 5); spell-effect-darkvision (until it ends, from rank 5) |  |
@@ -85,6 +88,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
 | Metal Merged | 1 |  | metal merged (1 minutes, on you) |  |
 | Mind Games | 2 |  | success / failure / crit. failure: expire; success / failure / crit. failure: mind games (1 minutes, while Sustained); failure: stunned 1; crit. failure: stunned 2; crit. success: stunned 1; crit. success: expire |  |
+| Mindlink | 1 |  | message |  |
 | Mirror Image | 2 |  | spell-effect-mirror-image (carries strike-received decoy, on you) |  |
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
 | Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
@@ -94,6 +98,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
 | Pack Attack | 2 |  | pack attack (1 minutes, on you); pack attack (1 minutes) |  |
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |
+| Peaceful Rest | 2 |  | peaceful rest (until it ends); peaceful rest (until it ends, from rank 5) |  |
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantasmal Calamity | 6 |  | crit. failure: save |  |
 | Phantom Crowd | 2 | 5-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, ends if not Sustained, 10 minutes |
@@ -112,7 +117,9 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |
 | Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
+| Secret Page | 3 |  | secret-page (on you) |  |
 | See the Unseen | 2 |  | spell-effect-see-the-unseen (below rank 5, on you); spell-effect-see-the-unseen (8 hours, from rank 5, on you) |  |
+| Sending | 5 |  | message (on you) |  |
 | Share Life | 2 |  | life linked (10 minutes) |  |
 | Shattering Gem | 1 |  | shattering gem (1 minutes) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
@@ -123,6 +130,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Song of Strength | 1 | 60-ft emanation (pf2e's), allies, includes you | spell-effect-song-of-strength |  |
 | Soothe | 1 |  | heals 1d10+4 (+1d10+4 per rank); spell-effect-soothe |  |
 | Sound Body | 2 |  | counteract (on you) |  |
+| Speak with Animals | 2 |  | speak with animals (1 hours, on you) |  |
 | Spell Immunity | 4 |  | spell immunity (until it ends) |  |
 | Spider Sting | 1 |  | success: 1d4 poison; failure: affliction; crit. failure: affliction |  |
 | Spirit Link | 1 |  | transfer; spirit link (10 minutes, carries turn-start transfer, on you) |  |
@@ -136,6 +144,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
 | Telekinetic Haul | 5 |  | moved 20 ft in a direction you choose; choice; telekinetic haul (1 minutes, while Sustained, on you) |  |
 | Telekinetic Maneuver | 2 |  | choice |  |
+| Telepathic Bond | 5 |  | telepathic bond (8 hours, on you); telepathic bond (8 hours) |  |
 | Temporary Tool | 1 |  | temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you) |  |
 | Timber | 1 | 15-ft line (pf2e's), from you, all | crit. failure: dazzled (until its next turn) |  |
 | Timely Reminder | 2 |  | timely reminder (365 days, on you); timely reminder (365 days, from rank 5) |  |
@@ -144,6 +153,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Unfettered Movement | 4 |  | spell-effect-unfettered-movement |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
 | Vapor Form | 4 |  | spell-effect-vapor-form |  |
+| Ventriloquism | 1 |  | ventriloquism (10 minutes, on you); ventriloquism (1 hours, from rank 2, on you) |  |
 | Vision of Death | 4 |  | success: 8d6 mental; success: death; success: frightened 1; failure: 8d6 mental; failure: death; failure: frightened 2; crit. failure: 8d6 mental; crit. failure: death; crit. failure: frightened 4; crit. failure: fleeing (no end) |  |
 | Vital Beacon | 4 |  | vital beacon (until it ends, on you) |  |
 | Wall of Fire | 4 | choose: 60-ft line or 10-ft ring, all, placed, no targets |  | 4d6 fire on entering / turn start, 1 minutes |

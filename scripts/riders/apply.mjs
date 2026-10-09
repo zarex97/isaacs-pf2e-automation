@@ -38,6 +38,9 @@ import { PlanarTether, counteracts } from "./tether.mjs";
 import { Anchor } from "./dc-swap.mjs";
 import { fetchFamiliar } from "./companion.mjs";
 import { Pocket } from "../targeting/pocket.mjs";
+import { Message, sendMessage } from "./message.mjs";
+import { Ventriloquism } from "./ventriloquism.mjs";
+import { changePage } from "./secret-page.mjs";
 import { Conjure } from "./conjure.mjs";
 import { fadesAfter } from "./trail.mjs";
 import { delaySeconds } from "./reminder.mjs";
@@ -457,6 +460,10 @@ async function applyOne(rider, context) {
             return fetchFamiliar(rider, context);
         case "pocket":
             return Pocket.open(rider, context);
+        case "message":
+            return sendMessage(rider, context, castChoicesOf(context));
+        case "secret-page":
+            return changePage(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 1);
         case "reaction":
             return offerReaction(rider, context);
         case "flat-check":
@@ -1994,6 +2001,9 @@ async function applyEffect(rider, context) {
         record(context, created);
         // *Creation*: the object asked for as the spell was cast, gone when the effect goes (`conjure.mjs`).
         if (created && rider.apply.conjures) await Conjure.make(created, castChoicesOf(context)[rider.apply.conjures.flag ?? "object"]);
+        // *Telepathic Bond*, *Ventriloquism*: an action for the holder, gone with the effect.
+        if (created && rider.apply.telepathy) await Message.grantTelepathy(created);
+        if (created && rider.apply.ventriloquism) await Ventriloquism.grant(created);
         // "You can Dismiss this spell" — *Frozen Lungs*, *Timely Reminder*: as for a pf2e effect, below.
         if (created && rider.apply.dismissable) {
             const who = rider.apply.dismissable === "holder" ? context.actor : context.originActor;
@@ -3268,6 +3278,24 @@ function effectSource(label, rules, rider, context) {
     if (rider.apply?.trail) {
         const chosen = castChoicesOf(context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { trail: { visible: chosen.mode !== "invisible", color: String(chosen.color ?? "") || null, fades: fadesAfter(castItemOf(context)?.rank) } } });
+    }
+    // *Telepathic Bond*: everyone the cast reached, the caster among them (`message.mjs`).
+    if (rider.apply?.telepathy) {
+        const bond = [context.originActor, ...(context.targets ?? []).map((t) => t?.actor ?? t)].filter((a) => a?.uuid);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { telepathy: { bond: [...new Set(bond.map((a) => a.uuid))] } } });
+    }
+    // *Ventriloquism*: the spell DC its hearers disbelieve against, and the rank that says how (`ventriloquism.mjs`).
+    if (rider.apply?.ventriloquism) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { ventriloquism: { dc: RiderExtensions.resolveDC("spell", context), rank: Number(castItemOf(context)?.rank) || 1, voice: null, tried: [] } } });
+    // *Animal Vision*: the creature whose senses its holder borrows (`senses-link.mjs`).
+    if (rider.apply?.sharesSenses) {
+        const animal = [...(context.targets ?? [])].map((t) => t?.document ?? t).find((t) => t?.actor && t.actor !== context.actor);
+        if (animal) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { sharesSenses: { tokenUuid: animal.uuid, using: false } } });
+    }
+    // *Blind Eye*: the item named as it was cast, on the creature holding it (`blind-eye.mjs`).
+    if (rider.apply?.blindEye) {
+        const named = String(castChoicesOf(context)[rider.apply.blindEye.flag ?? "item"] ?? "").trim().toLowerCase();
+        const item = (context.actor?.items ?? []).find((i) => i.name.toLowerCase() === named);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { blindEye: { itemId: item?.id ?? null, rank: Number(castItemOf(context)?.rank) || 1 } } });
     }
     // *Magnetize*: metal attacks drawn to its holder, marked on their cards (`draws.mjs`).
     if (rider.apply?.draws) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { draws: rider.apply.draws === true ? { feet: 15 } : rider.apply.draws } });

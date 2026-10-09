@@ -1,0 +1,30 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.blind-eye.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.blind-eye.Item",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.blind-eye.Blind",
+                "rules": [],
+                "blindEye": {
+                    "flag": "item"
+                },
+                "untilPreparations": true
+            }
+        }
+    ]
+}

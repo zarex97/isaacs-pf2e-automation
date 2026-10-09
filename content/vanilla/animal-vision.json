@@ -1,0 +1,30 @@
+{
+    "requires": "animal-target",
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.animal-vision.Vision",
+                "rules": [],
+                "sharesSenses": true
+            }
+        },
+        {
+            "outcomes": [
+                "success",
+                "criticalSuccess"
+            ],
+            "toOrigin": true,
+            "apply": {
+                "type": "expire",
+                "effect": "ISAACS_AUTOMATION.Vanilla.animal-vision.Vision"
+            }
+        }
+    ]
+}

@@ -61,6 +61,11 @@ import { Trail } from "./riders/trail.mjs";
 import { Disbelief } from "./targeting/disbelief.mjs";
 import { Languages } from "./vanilla/languages.mjs";
 import { Pocket } from "./targeting/pocket.mjs";
+import { Message } from "./riders/message.mjs";
+import { Ventriloquism } from "./riders/ventriloquism.mjs";
+import { SensesLink } from "./riders/senses-link.mjs";
+import { SecretPage } from "./riders/secret-page.mjs";
+import { BlindEye } from "./riders/blind-eye.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -112,6 +117,11 @@ export const INIT = [
     ["an illusion a creature can see through", () => Disbelief.registerHooks()],
     ["languages a vanilla spell makes up", () => Languages.register()],
     ["a room that is not on the map", () => Pocket.registerHooks()],
+    ["words passed from mind to mind", () => Message.registerHooks()],
+    ["a voice thrown", () => Ventriloquism.registerHooks()],
+    ["seeing through another creature's eyes", () => SensesLink.registerHooks()],
+    ["a page that says something else", () => SecretPage.registerHooks()],
+    ["an object that will not be used to watch", () => BlindEye.register()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

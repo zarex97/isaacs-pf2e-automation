@@ -205,6 +205,8 @@ A clause that states a fact and makes no move — traits on an item, "nothing ha
 | `effect:object-moved` | An object, not a creature, moved across or above the board. | VS-168a | `scripts/riders/apply.mjs`, `scripts/vanilla/requires.mjs` | `requires: object-target`, `riders[].apply.type: teleport`, `riders[].apply.type: elevation` | “You move the target”, “unattended object”, “suspending it in midair” |
 | `effect:language` | A language its holder reads, writes and speaks while it lasts. | VS-172a | `scripts/vanilla/languages.mjs` | `pf2e ActiveEffectLike system.build.languages.granted (character)`, `pf2e ActiveEffectLike system.details.languages.value (npc)` | “understand a newly invented language”, “read and write in their new language” |
 | `effect:extradimensional` | A space off the map that creatures enter and leave, and are put out of when it collapses. | VS-173a | `scripts/targeting/pocket.mjs` | `riders[].apply.type: pocket` | “extradimensional space”, “the space begins to collapse” |
+| `effect:message` | Words passed from one creature to another, whispered to the recipient's players, with a reply when the spell allows one. | VS-134a | `scripts/riders/message.mjs` | `riders[].apply.type: message`, `riders[].apply.telepathy` | “mentally impart”, “mental message”, “communicate telepathically” |
+| `effect:text-changed` | A written text shown as something else, with a way to change it back. | VS-141a | `scripts/riders/secret-page.mjs` | `riders[].apply.type: secret-page` | “change the target's text”, “different text entirely” |
 
 ## `ending` — What stops it?
 

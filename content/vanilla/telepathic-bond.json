@@ -1,0 +1,31 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.telepathic-bond.Bond",
+                "rules": [],
+                "telepathy": true
+            }
+        },
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.telepathic-bond.Bond",
+                "rules": [],
+                "telepathy": true
+            }
+        }
+    ]
+}

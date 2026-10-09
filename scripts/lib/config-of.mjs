@@ -31,6 +31,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "circumstanceAcLess",
     // A modifier to the save for some of those who roll it — *Wilding Word* (`vanilla/save-modifier.mjs`).
     "saveModifier",
+    // A cost paid as the spell is cast — *Peaceful Rest* (`vanilla/requires.mjs`).
+    "castCost",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

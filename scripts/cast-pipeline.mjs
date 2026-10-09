@@ -17,6 +17,7 @@ export const CAST_PRIORITY = {
     weaponVariant: 7,
     actionVariant: 8,
     castChoice: 9,
+    castCost: 49,
     aim: 10,
     spellFrequency: 50,
 };
@@ -92,6 +93,8 @@ export const CastPipeline = {
         // A choice the spell asks for as it is cast — *Seal Fate*'s damage type.
         CastPipeline.before("a choice made as it is cast", CAST_PRIORITY.castChoice, async (spell, options) => (await import("./vanilla/requires.mjs")).castChoice(spell, options));
         CastPipeline.before("area targeting", CAST_PRIORITY.aim, (spell, options) => AreaTargeting.run(spell, options));
+        // A cost paid as it is cast — *Peaceful Rest*'s embalming fluid at 5th rank. Last of the refusals before the Frequency.
+        CastPipeline.before("a cost paid as it is cast", CAST_PRIORITY.castCost, async (spell, options) => (await import("./vanilla/requires.mjs")).payCost(spell, options));
         // pf2e never spends a *spell's* Frequency, so a spell that says "once per round" was limited by
         // nothing until this step existed.
         CastPipeline.before("spell frequency", CAST_PRIORITY.spellFrequency, (spell) => SpellFrequency.beforeCast(spell));

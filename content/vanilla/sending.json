@@ -1,0 +1,30 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.sending.Prompt",
+        "fields": [
+            {
+                "key": "to",
+                "label": "ISAACS_AUTOMATION.Vanilla.sending.To",
+                "type": "text"
+            },
+            {
+                "key": "message",
+                "label": "ISAACS_AUTOMATION.Vanilla.sending.Message",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "message",
+                "flag": "message",
+                "to": "to",
+                "words": 25,
+                "reply": true
+            }
+        }
+    ]
+}
