@@ -129,7 +129,7 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | VS-230 | `breadcrumbs` | 1 | 1 | A glittering trail behind a willing creature |
 | VS-231 | `claim-curse` | 3 | 1 | A target's curse carried by the caster for 5 minutes |
 
-**Where it stands:** 407 clauses — 95 ✅, 20 —, 292 ☐. Batch 1 was the seventeen spells whose clauses proposed new patterns; batch 2 the next ten in the list.
+**Where it stands:** 407 clauses — 128 ✅, 22 —, 257 ☐. Batches of ten in the list's order, after a first batch of the seventeen spells whose clauses proposed new patterns.
 
 ### VS-132 · Countless Eyes
 
@@ -224,11 +224,11 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-143a | "A magical interference prevents the target from contributing to any form of cooperative spellcasting" | when:cast · reach:single · check:save | The target rolls a Will save from the card | | ☐ | |
-| VS-143b | "On a failed save, the target can't participate in any ritual unless they can cast the ritual alone" | check:save · effect:gm-note · ending:duration | A note: on a failure, ritual participation is barred for the minute | | ☐ | |
-| VS-143c | "they can't access any spells provided by a coven or similar cooperative ability" | check:save · effect:forbid | On a failure, coven spells are refused while it lasts | | ☐ | |
-| VS-143d | "Heightened (4th) Increase the duration to 1 hour" | scaling:from-rank · ending:duration | Rank 4 lasts 1 hour | | ☐ | |
-| VS-143e | "Heightened (5th) Increase the duration to 1 day" | scaling:from-rank · ending:duration | Rank 5 lasts 1 day | | ☐ | |
+| VS-143a | "A magical interference prevents the target from contributing to any form of cooperative spellcasting" | when:cast · reach:single · check:save | The target rolls a Will save from the card | `casters-imposition.json` | ✅ | The patient's Will save rolled from the card; on a success, no effect |
+| VS-143b | "On a failed save, the target can't participate in any ritual unless they can cast the ritual alone" | check:save · effect:forbid · ending:duration | A note: on a failure, ritual participation is barred for the minute | `casters-imposition.json` | ✅ | On a failure, `caster's imposition` for 1 minute: a ritual needing a secondary caster was refused, one cast alone still posted. Control: before, both posted |
+| VS-143c | "they can't access any spells provided by a coven or similar cooperative ability" | check:save · effect:forbid | On a failure, coven spells are refused while it lasts | `casters-imposition.json` | ✅ | A Daze from the patient's coven entry was refused; the same Daze from its own entry cast. Control: before, both cast |
+| VS-143d | "Heightened (4th) Increase the duration to 1 hour" | scaling:from-rank · ending:duration | Rank 4 lasts 1 hour | `casters-imposition.json` | ✅ | Rank 4: 1 hour. Control: rank 3, 1 minute |
+| VS-143e | "Heightened (5th) Increase the duration to 1 day" | scaling:from-rank · ending:duration | Rank 5 lasts 1 day | `casters-imposition.json` | ✅ | Rank 5: 1 day |
 
 ### VS-144 · Deep Breath
 
@@ -244,76 +244,76 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-145a | "Choose severe cold or heat" | when:cast · reach:single · check:caster-choice | Cold or heat is chosen at the cast | | ☐ | |
-| VS-145b | "The target is protected from the temperature you chose (but not extreme cold or heat)" | effect:gm-note · ending:preparations | A note: protection from the chosen severe temperature, until preparations | | ☐ | |
-| VS-145c | "Heightened (3rd) The target is protected from severe cold and severe heat" | scaling:from-rank · effect:gm-note | From rank 3, both severe cold and severe heat | | ☐ | |
-| VS-145d | "Heightened (5th) The target is protected from severe cold, severe heat, extreme cold, and extreme heat" | scaling:from-rank · effect:gm-note | From rank 5, severe and extreme cold and heat | | ☐ | |
+| VS-145a | "Choose severe cold or heat" | when:cast · reach:single · check:caster-choice | Cold or heat is chosen at the cast | `environmental-endurance.json` | ✅ | Asked at rank 2: heat chosen. Not asked from rank 3, where it covers both |
+| VS-145b | "The target is protected from the temperature you chose (but not extreme cold or heat)" | ending:preparations | A note: protection from the chosen severe temperature, until preparations | `environmental-endurance.json` | ✅ | The patient carries it until the caster's daily preparations, stating `protected:severe-heat` for any rule of the place to read; neither pf2e nor this module deals temperature damage itself |
+| VS-145c | "Heightened (3rd) The target is protected from severe cold and severe heat" | scaling:from-rank · effect:gm-note | From rank 3, both severe cold and severe heat | `environmental-endurance.json` | ✅ | Rank 3: severe cold and severe heat |
+| VS-145d | "Heightened (5th) The target is protected from severe cold, severe heat, extreme cold, and extreme heat" | scaling:from-rank · effect:gm-note | From rank 5, severe and extreme cold and heat | `environmental-endurance.json` | ✅ | Rank 5: severe and extreme, cold and heat |
 
 ### VS-146 · Impart Empathy
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-146a | "Any creature to which the target isn't unfriendly or hostile can use Diplomacy to Make an Impression on it and to make very simple Requests of it" | when:cast · reach:single · reach:filtered · effect:gm-note | An animal only; a note: Diplomacy with it is the table's | | ☐ | |
-| VS-146b | "Heightened (4th) The spell can also target plants and fungi" | scaling:from-rank · reach:filtered | From rank 4 a plant or fungus can be targeted | | ☐ | |
+| VS-146a | "Any creature to which the target isn't unfriendly or hostile can use Diplomacy to Make an Impression on it and to make very simple Requests of it" | when:cast · reach:filtered · check:save · ending:duration | An animal only; a note: Diplomacy with it is the table's | `impart-empathy.json` | ✅ | A hound failing its Will save carries `impart empathy` a day, and its roll option. Control: aimed at the patient, refused |
+| VS-146b | "Heightened (4th) The spell can also target plants and fungi" | scaling:from-rank · reach:filtered | From rank 4 a plant or fungus can be targeted | `impart-empathy.json` | ✅ | A fern: refused at rank 2, cast at rank 4 |
 
 ### VS-147 · Quick Sort
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-147a | "You magically sort a group of objects into neat stacks or piles" | when:cast · reach:object · effect:gm-note | A note: the sorted objects are the table's | | ☐ | |
-| VS-147b | "You can sort the objects in two different ways" | check:caster-choice · effect:gm-note | A note: sorting by look or by notation is chosen | | ☐ | |
-| VS-147c | "The objects sort themselves throughout the duration, though it takes less time per object to sort a smaller number of objects, down to a single round for 30 or fewer objects" | effect:gm-note · ending:duration | A note: up to a minute, one round for 30 objects | | ☐ | |
-| VS-147d | "Heightened (3rd) The spell can sort up to 500 objects in a minute, or 75 objects in a round" | scaling:targets-per-rank · effect:gm-note | From rank 3, 500 objects a minute or 75 a round | | ☐ | |
+| VS-147a | "You magically sort a group of objects into neat stacks or piles" | when:cast · reach:object · effect:item-changed | A note: the sorted objects are the table's | `quick-sort.json` | ✅ | A chest's five things, Bedroll, Torch, Chalk, Crowbar, Rope, sorted |
+| VS-147b | "You can sort the objects in two different ways" | check:caster-choice · effect:item-changed | A note: sorting by look or by notation is chosen | `quick-sort.json` | ✅ | By name: Bedroll, Chalk, Crowbar, Rope, Torch. By kind and look: the consumables, then the equipment |
+| VS-147c | "The objects sort themselves throughout the duration, though it takes less time per object to sort a smaller number of objects, down to a single round for 30 or fewer objects" | effect:gm-note · ending:duration | A note: up to a minute, one round for 30 objects | `quick-sort.json` | ✅ | Sorted at once, within the round |
+| VS-147d | "Heightened (3rd) The spell can sort up to 500 objects in a minute, or 75 objects in a round" | scaling:targets-per-rank · effect:gm-note | From rank 3, 500 objects a minute or 75 a round | `quick-sort.json` | ✅ | The sort takes up to 200, and 500 from rank 3; the chest held five |
 
 ### VS-148 · Spontaneous Cartography
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-148a | "You concentrate on a blank piece of parchment in your possession and record the landscape and geographical features within range" | when:cast · economy:requires · effect:info | A note: the map of the land within a mile is the table's | | ☐ | |
-| VS-148b | "The resulting map bears crude but recognizable symbols to represent structures, landmarks, and pathways but doesn't label them" | effect:info | A note: unlabelled symbols on the map are the table's | | ☐ | |
-| VS-148c | "Heightened (6th) The range of this spell increases to 10 miles, and major landmarks are labeled" | scaling:from-rank · effect:range · effect:info | From rank 6, 10 miles and major landmarks labelled | | ☐ | |
-| VS-148d | "A small star shows the spot where you are when the map is created" | scaling:from-rank · effect:info | From rank 6 the map marks the caster's spot | | ☐ | |
+| VS-148a | "You concentrate on a blank piece of parchment in your possession and record the landscape and geographical features within range" | when:cast · economy:requires · effect:info | A note: the map of the land within a mile is the table's | `spontaneous-cartography.json` | ✅ | With no parchment, refused; with one, used up and a journal map made of the scene: its picture, or a snapshot of the board when it has none |
+| VS-148b | "The resulting map bears crude but recognizable symbols to represent structures, landmarks, and pathways but doesn't label them" | effect:info | A note: unlabelled symbols on the map are the table's | `spontaneous-cartography.json` | ✅ | Rank 3: the picture alone, nothing labelled |
+| VS-148c | "Heightened (6th) The range of this spell increases to 10 miles, and major landmarks are labeled" | scaling:from-rank · effect:info | From rank 6, 10 miles and major landmarks labelled | `spontaneous-cartography.json` | ✅ | Rank 6: a legend of the scene's map notes by name — "ZZ Old Mill" |
+| VS-148d | "A small star shows the spot where you are when the map is created" | scaling:from-rank · effect:info | From rank 6 the map marks the caster's spot | `spontaneous-cartography.json` | ✅ | Rank 6: "★ you stood at square" and where |
 
 ### VS-149 · Water Breathing
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-149a | "The targets can breathe underwater" | when:cast · reach:up-to-n · effect:gm-note | Up to 5 targets carry the effect for an hour | | ☐ | |
-| VS-149b | "Heightened (3rd) The duration increases to 8 hours" | scaling:from-rank · ending:duration | Rank 3 lasts 8 hours | | ☐ | |
-| VS-149c | "Heightened (4th) The duration increases to until your next daily preparations" | scaling:from-rank · ending:preparations | From rank 4 it lasts until the next daily preparations | | ☐ | |
+| VS-149a | "The targets can breathe underwater" | when:cast · reach:up-to-n · ending:duration | Up to 5 targets carry the effect for an hour | `water-breathing.json` | ✅ | The patient and the Target: `water breathing`, 1 hour |
+| VS-149b | "Heightened (3rd) The duration increases to 8 hours" | scaling:from-rank · ending:duration | Rank 3 lasts 8 hours | `water-breathing.json` | ✅ | Rank 3: 8 hours |
+| VS-149c | "Heightened (4th) The duration increases to until your next daily preparations" | scaling:from-rank · ending:preparations | From rank 4 it lasts until the next daily preparations | `water-breathing.json` | ✅ | Rank 4: until the caster's daily preparations |
 
 ### VS-150 · Fate's Travels
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-150a | "You get a vision of the creature when it was alive, and its last 10 minutes of travel" | when:cast · reach:object · effect:info | A note: the corpse's last 10 minutes of travel is the table's | | ☐ | |
-| VS-150b | "This vision gives you a clear impression of the route it took and locations it visited, if any, but not any creatures or hazards in those areas" | effect:info | A note: the route and places, without creatures or hazards | | ☐ | |
-| VS-150c | "This information is enough to automatically succeed at Tracking the creature over that distance" | check:degree-shift · effect:gm-note | Tracking the creature over that route succeeds by itself | | ☐ | |
-| VS-150d | "Heightened (6th) Your vision covers the creature's last hour of travel, and you gain an impression of the hazards, creature types, and number of creatures it encountered along the way, as well as a clear impression of how it died" | scaling:from-rank · effect:info | A note: from rank 6, the last hour, encounters and its death | | ☐ | |
+| VS-150a | "You get a vision of the creature when it was alive, and its last 10 minutes of travel" | when:cast · reach:filtered · effect:info | A note: the corpse's last 10 minutes of travel is the table's | `fates-travels.json` | ✅ | A creature that walked three legs and fell: its route drawn for the caster's players, and "35 feet in 3 legs" whispered. This module keeps the last hour of every token's moves for it |
+| VS-150b | "This vision gives you a clear impression of the route it took and locations it visited, if any, but not any creatures or hazards in those areas" | effect:info | A note: the route and places, without creatures or hazards | `fates-travels.json` | ✅ | Rank 3 names no creatures and no hazards |
+| VS-150c | "This information is enough to automatically succeed at Tracking the creature over that distance" | check:degree-shift | Tracking the creature over that route succeeds by itself | `fates-travels.json` | ✅ | The caster's Survival to Track, a 2 against DC 30: a success. Control: the same roll not to Track, a critical failure |
+| VS-150d | "Heightened (6th) Your vision covers the creature's last hour of travel, and you gain an impression of the hazards, creature types, and number of creatures it encountered along the way, as well as a clear impression of how it died" | scaling:from-rank · effect:info | A note: from rank 6, the last hour, encounters and its death | `fates-travels.json` | ✅ | Rank 6: the creatures along the way, by kind and number, and how it died: "takes 50 damage. The massive damage immediately kills them." |
 
 ### VS-151 · Stonesense
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-151a | "You gain tremorsense as an imprecise sense to a range of 100 feet" | when:cast · reach:self · effect:sense · ending:duration | The caster has imprecise tremorsense 100 ft for a minute | | ☐ | |
-| VS-151b | "but you can only sense vibrations through natural stone (not masonry, adobe, or any other manufactured edifice)" | effect:gm-note | A note: only through natural stone is the table's | | ☐ | |
+| VS-151a | "You gain tremorsense as an imprecise sense to a range of 100 feet" | when:cast · reach:self · effect:sense · ending:duration | The caster has imprecise tremorsense 100 ft for a minute | `stonesense.json` | ✅ | The caster: tremorsense, imprecise, 100 feet, for a minute |
+| VS-151b | "but you can only sense vibrations through natural stone (not masonry, adobe, or any other manufactured edifice)" | effect:gm-note | A note: only through natural stone is the table's | `stonesense.json` | — | No surface here says it is natural stone |
 
 ### VS-152 · Shape Stone
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-152a | "You shape the stone into a rough shape of your choice" | when:cast · reach:object · check:caster-choice · effect:gm-note | A note: the stone's new shape is the table's | | ☐ | |
-| VS-152b | "Any creatures standing atop the stone when you reshape it must each attempt a Reflex save or Acrobatics check" | reach:filtered · check:save · check:skill-swap | Each creature on the stone rolls Reflex or Acrobatics | | ☐ | |
-| VS-152c | "Success The creature is unaffected" | check:save | Nothing | | ☐ | |
-| VS-152d | "Failure The creature falls Prone atop the stone" | check:save · effect:condition | Prone on a failure | | ☐ | |
-| VS-152e | "Critical Failure The creature falls off the stone (if applicable) and lands Prone" | check:save · effect:condition · effect:gm-note | Prone; a note: falling off the stone is the table's | | ☐ | |
+| VS-152a | "You shape the stone into a rough shape of your choice" | when:cast · reach:object · check:caster-choice · effect:gm-note | A note: the stone's new shape is the table's | `shape-stone.json` | — | The stone's new shape is the caster's to describe |
+| VS-152b | "Any creatures standing atop the stone when you reshape it must each attempt a Reflex save or Acrobatics check" | reach:filtered · check:save · check:skill-swap | Each creature on the stone rolls Reflex or Acrobatics | `shape-stone.json` | ✅ | A 10-foot cube placed on the patient and the Target; each rolled from the card. The patient, nimbler, got `Acrobatics instead +8` |
+| VS-152c | "Success The creature is unaffected" | check:save | Nothing | `shape-stone.json` | ✅ | The patient's 18, with Acrobatics: a success, and nothing |
+| VS-152d | "Failure The creature falls Prone atop the stone" | check:save · effect:condition | Prone on a failure | `shape-stone.json` | ✅ | The patient's 10 without it: a failure, prone |
+| VS-152e | "Critical Failure The creature falls off the stone (if applicable) and lands Prone" | check:save · effect:condition · effect:forced-move/push | Prone; a note: falling off the stone is the table's | `shape-stone.json` | ✅ | The Target's 1: prone, and moved off the stone to the square beside it |
 
 ### VS-153 · Shape Wood
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-153a | "You shape the wood into a rough shape of your choice" | when:cast · reach:object · check:caster-choice · effect:gm-note | A note: the wood's new shape is the table's | | ☐ | |
-| VS-153b | "You cannot use this spell to enhance the value of the wooden object you are shaping" | effect:gm-note | A note: no added value is the table's | | ☐ | |
+| VS-153a | "You shape the wood into a rough shape of your choice" | when:cast · reach:object · check:caster-choice · effect:item-changed | A note: the wood's new shape is the table's | `shape-wood.json` | ✅ | "ZZ Plank" named at the cast became "ZZ Wooden Bowl" |
+| VS-153b | "You cannot use this spell to enhance the value of the wooden object you are shaping" | effect:item-changed | A note: no added value is the table's | `shape-wood.json` | ✅ | Its price stayed 2 gp |
 
 ### VS-154 · Hypercognition
 

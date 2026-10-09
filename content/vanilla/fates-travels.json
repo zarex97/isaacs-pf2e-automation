@@ -1,0 +1,36 @@
+{
+    "requires": "corpse-target",
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "fates-travels"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.fates-travels.Trail",
+                "rules": [
+                    {
+                        "key": "AdjustDegreeOfSuccess",
+                        "selector": "survival",
+                        "predicate": [
+                            "action:track"
+                        ],
+                        "adjustment": {
+                            "criticalFailure": "two-degrees-better",
+                            "failure": "one-degree-better"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

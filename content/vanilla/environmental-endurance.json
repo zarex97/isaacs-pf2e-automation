@@ -1,0 +1,153 @@
+{
+    "castChoice": {
+        "flag": "temperature",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Prompt",
+        "choices": [
+            "cold",
+            "heat"
+        ],
+        "labels": {
+            "cold": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Cold",
+            "heat": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Heat"
+        },
+        "toRank": 2
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                },
+                "rider:cast:temperature:cold"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                "untilPreparations": true,
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:severe-cold"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                },
+                "rider:cast:temperature:heat"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                "untilPreparations": true,
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:severe-heat"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                "untilPreparations": true,
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:severe-cold"
+                    },
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:severe-heat"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                "untilPreparations": true,
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:severe-cold"
+                    },
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:severe-heat"
+                    },
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:extreme-cold"
+                    },
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "protected:extreme-heat"
+                    }
+                ]
+            }
+        }
+    ]
+}

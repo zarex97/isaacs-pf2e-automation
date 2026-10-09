@@ -2859,6 +2859,22 @@
                         "change the target's text",
                         "different text entirely"
                     ]
+                },
+                "item-changed": {
+                    "meaning": "Items changed in place — reshaped, renamed or sorted — keeping what they are worth.",
+                    "precedent": "VS-153a",
+                    "modules": [
+                        "scripts/riders/handiwork.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: reshape",
+                        "riders[].apply.type: sort-items"
+                    ],
+                    "phrases": [
+                        "You shape the wood",
+                        "sort a group of objects",
+                        "into neat stacks"
+                    ]
                 }
             }
         },

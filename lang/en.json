@@ -278,7 +278,8 @@
             "ObjectTarget": "{name} needs an unattended object targeted: loot or a vehicle, no more than 80 Bulk or 20 feet across.",
             "CorpseTarget": "{name} needs a corpse targeted.",
             "AnimalTarget": "{name} needs an animal targeted.",
-            "Cost": "{name} at this rank costs {gp} gp, and there isn't enough."
+            "Cost": "{name} at this rank costs {gp} gp, and there isn't enough.",
+            "TargetTraits": "{name} needs every target to be: {traits}."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -575,7 +576,8 @@
                 "sacrifice": "A minion spent",
                 "circumstanceAcLess": "Circumstance bonus to AC",
                 "saveModifier": "Save modifier for some",
-                "castCost": "Cost to cast"
+                "castCost": "Cost to cast",
+                "saveOrSkill": "Save, or a skill"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -588,7 +590,8 @@
             "SaveRider": "{statistic} save",
             "CircumstanceAcLess": "A circumstance bonus to AC counts {by} less",
             "SaveModifier": "A {value} {type} modifier to some creatures' saves",
-            "CastCost": "{gp} gp to cast from rank {rank}"
+            "CastCost": "{gp} gp to cast from rank {rank}",
+            "SaveOrSkill": "The save, or {skill} if better"
         },
         "Vanilla": {
             "command": {
@@ -984,6 +987,37 @@
                 "Prompt": "To a creature you know well: its name, and 25 words at most.",
                 "To": "To",
                 "Message": "Message"
+            },
+            "casters-imposition": {
+                "Imposed": "caster's imposition"
+            },
+            "environmental-endurance": {
+                "Endurance": "environmental endurance",
+                "Prompt": "Severe cold, or severe heat?",
+                "Cold": "Severe cold",
+                "Heat": "Severe heat"
+            },
+            "impart-empathy": {
+                "Empathy": "impart empathy"
+            },
+            "quick-sort": {
+                "Prompt": "Sort by what can be seen, or by notation?",
+                "Look": "By kind and look",
+                "Notation": "By name"
+            },
+            "water-breathing": {
+                "Breathing": "water breathing"
+            },
+            "fates-travels": {
+                "Trail": "fate's travels"
+            },
+            "stonesense": {
+                "Sense": "stonesense"
+            },
+            "shape-wood": {
+                "Prompt": "Which piece of wood you carry, and its new shape.",
+                "Item": "Item",
+                "Shape": "New shape"
             }
         },
         "Conditions": {
@@ -1110,6 +1144,31 @@
         "BlindEye": {
             "NoTool": "{name}: every pouch, focus or spellbook you could cast it with is under blind eye.",
             "NoScrying": "{name} is under blind eye and can't be activated to scry."
+        },
+        "SaveModifier": {
+            "Instead": "{skill} instead"
+        },
+        "Travel": {
+            "Route": "{name}'s last travels: {feet} feet in {turns} legs, drawn on the map.",
+            "Still": "{name} went nowhere in that time.",
+            "Met": "Along the way: {list}.",
+            "MetNone": "Along the way: nobody.",
+            "Hazard": "hazard",
+            "Death": "How it died: {how}",
+            "DeathUnknown": "How it died is not recorded."
+        },
+        "Handiwork": {
+            "Sorted": "{count} of {name}'s things are sorted.",
+            "NoItem": "No item called \"{item}\" to shape.",
+            "Shaped": "{from} is now {to}.",
+            "NoParchment": "{actor} has no parchment to draw on.",
+            "Legend": "Landmarks",
+            "Here": "you stood at square {x}, {y}",
+            "MapName": "Map: {scene}",
+            "Mapped": "A map of {scene} is drawn."
+        },
+        "FallOff": {
+            "Fell": "{name} falls off."
         }
     }
 }

@@ -42,7 +42,9 @@ export const CastZones = {
     aimed(config, regions) {
         const zones = Array.isArray(config.zones) ? config.zones : [];
         if (zones.length === 0 && !config.markCentre) return;
-        const centres = [regions].flat().map((region) => region?.shapes?.[0]).filter((s) => Number.isFinite(s?.x) && Number.isFinite(s?.y));
+        // A rectangle's x and y are its corner: its centre is half its size on — *Shape Stone*'s cube.
+        const centres = [regions].flat().map((region) => region?.shapes?.[0]).filter((s) => Number.isFinite(s?.x) && Number.isFinite(s?.y))
+            .map((s) => (s.type === "rectangle" ? { x: s.x + (Number(s.width) || 0) / 2, y: s.y + (Number(s.height) || 0) / 2 } : s));
         const targets = [...(game.user?.targets ?? [])];
         const named = Object.fromEntries(zones.map((zone) => [zone.id, withinOfAny(targets, centres, Number(zone.within) || 0, canvas.grid.size, canvas.scene.grid.distance)]));
         pending = { uuid: config.item.uuid, zones: named, centres: centres.map(({ x, y }) => ({ x, y })), at: Date.now() };

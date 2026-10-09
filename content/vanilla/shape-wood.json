@@ -1,0 +1,28 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.shape-wood.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.shape-wood.Item",
+                "type": "text"
+            },
+            {
+                "key": "shape",
+                "label": "ISAACS_AUTOMATION.Vanilla.shape-wood.Shape",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "reshape",
+                "item": "item",
+                "shape": "shape"
+            }
+        }
+    ]
+}

@@ -22,8 +22,19 @@ export function actionChoices(counts, targets, perAction) {
  * What a spell needs before it can be cast. *Weapon Storm*: "You swing a weapon you're holding" — with nothing in
  * hand there is nothing to swing, and the cast is refused before anything is aimed. `requires` on a table entry.
  */
-export function unmetRequirement(spell) {
+export function unmetRequirement(spell, options = {}) {
     const requires = configOf(spell, "requires");
+    // `{ targetTraits, atRank }`: every target has one of the traits — *Impart Empathy*'s "1 animal", and from 4th rank
+    // "also target plants and fungi".
+    if (requires && typeof requires === "object" && Array.isArray(requires.targetTraits)) {
+        const rank = Number(options?.rank) || Number(spell?.rank) || 1;
+        const traits = [...requires.targetTraits, ...Object.entries(requires.atRank ?? {}).filter(([at]) => rank >= Number(at)).flatMap(([, list]) => list)];
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        if (targets.length === 0 || !targets.every((token) => traits.some((trait) => (token.actor?.system?.traits?.value ?? []).includes(trait)))) {
+            return t("Requires.TargetTraits", { name: spell.name, traits: traits.join(", ") });
+        }
+        return null;
+    }
     if (requires === "held-weapon" && heldWeapons(spell?.actor).length === 0) return t("Requires.HeldWeapon", { name: spell.name });
     // *Earthbind*: "you hamper a target's flight" — every creature targeted is off the ground.
     if (requires === "flying-target") {
@@ -154,14 +165,18 @@ export const CAST_CHOICES = "castChoices";
  * spell. `[{ key, label, type: "text" | "number", options }]`, each kept under its `key`; `options` makes it a list to pick
  * from — *Glowing Trail*'s visible or invisible.
  */
-export async function castChoice(spell, _options) {
+export async function castChoice(spell, options) {
     const spec = configOf(spell, "castChoice");
+    // The rank it is being cast at, which a heightened cast passes in: the sheet's spell is at its own.
+    const rank = Number(options?.rank) || Number(spell.rank) || 0;
     const key = `${CAST_CHOICES}.${(spell.original ?? spell).id}`;
     if (Array.isArray(spec?.fields) && spec.fields.length > 0) return askFields(spell, spec, key);
     if (!spec?.flag || !Array.isArray(spec.choices) || spec.choices.length === 0) return true;
     // A choice only some ranks ask — *Enlarge*: "Heightened (6th) Choose either the 2nd-rank or 4th-rank version". Below
     // `fromRank` nothing is asked, and nothing an earlier cast chose is left to be read.
-    if (Number(spec.fromRank) > 0 && (Number(spell.rank) || 0) < Number(spec.fromRank)) {
+    // …and one some ranks stop asking — *Environmental Endurance* protects from both from 3rd: `toRank`.
+    const outside = (Number(spec.fromRank) > 0 && rank < Number(spec.fromRank)) || (Number(spec.toRank) > 0 && rank > Number(spec.toRank));
+    if (outside) {
         if (spell.actor?.getFlag(LIB_ID, key)) await spell.actor.unsetFlag(LIB_ID, key);
         return true;
     }
@@ -211,8 +226,8 @@ export async function payCost(spell, options) {
     return false;
 }
 
-export function checkRequirements(spell) {
-    const unmet = unmetRequirement(spell);
+export function checkRequirements(spell, options = {}) {
+    const unmet = unmetRequirement(spell, options);
     if (!unmet) return true;
     ui.notifications.warn(unmet);
     return false;
