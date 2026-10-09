@@ -1,0 +1,31 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Prompt",
+        "fields": [
+            {
+                "key": "object",
+                "label": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Form",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Figurine",
+                "rules": [],
+                "conjures": {
+                    "flag": "object"
+                },
+                "dismissable": "holder"
+            }
+        }
+    ]
+}

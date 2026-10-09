@@ -275,7 +275,10 @@
             "HeldWeapon": "{name} needs a weapon in hand.",
             "FlyingTarget": "{name} needs a target in the air.",
             "OwnFamiliar": "{name} needs your own familiar targeted.",
-            "ObjectTarget": "{name} needs an unattended object targeted: loot or a vehicle, no more than 80 Bulk or 20 feet across."
+            "ObjectTarget": "{name} needs an unattended object targeted: loot or a vehicle, no more than 80 Bulk or 20 feet across.",
+            "CorpseTarget": "{name} needs a corpse targeted.",
+            "AnimalTarget": "{name} needs an animal targeted.",
+            "Cost": "{name} at this rank costs {gp} gp, and there isn't enough."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -571,7 +574,8 @@
                 "castChoice": "A choice as it is cast",
                 "sacrifice": "A minion spent",
                 "circumstanceAcLess": "Circumstance bonus to AC",
-                "saveModifier": "Save modifier for some"
+                "saveModifier": "Save modifier for some",
+                "castCost": "Cost to cast"
             },
             "Source": {
                 "Flags": "Written on this item ({module})",
@@ -583,7 +587,8 @@
             },
             "SaveRider": "{statistic} save",
             "CircumstanceAcLess": "A circumstance bonus to AC counts {by} less",
-            "SaveModifier": "A {value} {type} modifier to some creatures' saves"
+            "SaveModifier": "A {value} {type} modifier to some creatures' saves",
+            "CastCost": "{gp} gp to cast from rank {rank}"
         },
         "Vanilla": {
             "command": {
@@ -939,6 +944,46 @@
             },
             "countless-eyes": {
                 "Eyes": "countless eyes"
+            },
+            "create-earthen-facsimile": {
+                "Figurine": "earthen facsimile",
+                "Prompt": "What does the soil become?",
+                "Form": "Form"
+            },
+            "mindlink": {
+                "Prompt": "What do you impart?",
+                "Information": "Information"
+            },
+            "peaceful-rest": {
+                "Rest": "peaceful rest"
+            },
+            "speak-with-animals": {
+                "Speech": "speak with animals"
+            },
+            "telepathic-bond": {
+                "Bond": "telepathic bond"
+            },
+            "ventriloquism": {
+                "Voice": "ventriloquism"
+            },
+            "animal-vision": {
+                "Vision": "animal vision"
+            },
+            "blind-eye": {
+                "Prompt": "Which item, held by the creature you touch?",
+                "Item": "Item",
+                "Blind": "blind eye"
+            },
+            "secret-page": {
+                "Prompt": "Which journal page, what it shows now, and the password.",
+                "Page": "Page (name or uuid)",
+                "Text": "New text, or a spell you know",
+                "Password": "Password"
+            },
+            "sending": {
+                "Prompt": "To a creature you know well: its name, and 25 words at most.",
+                "To": "To",
+                "Message": "Message"
             }
         },
         "Conditions": {
@@ -1030,6 +1075,41 @@
             "Collapses": "{name} begins to collapse: {why}",
             "DoorGone": "its door is gone.",
             "Overfull": "one creature too many stepped in."
+        },
+        "Message": {
+            "Prompt": "Your message:",
+            "Words": "Your message, {words} words at most:",
+            "To": "{from} to {to}, in the mind",
+            "Reply": "Reply",
+            "Nobody": "Nobody to send it to.",
+            "Telepathy": "{name}: speak",
+            "TelepathyHint": "Speak telepathically to the others the bond joins: write the words, and they hear them."
+        },
+        "Ventriloquism": {
+            "Throw": "Throw your voice",
+            "ThrowHint": "Target a creature or object within 60 feet: your voice seems to come from it.",
+            "Range": "Target a creature or object within 60 feet first.",
+            "Check": "Disbelieve {name}",
+            "Sees": "{actor} hears through the illusion: it is {speaker} speaking.",
+            "Fooled": "{actor} believes the voice.",
+            "Offer": "{speaker}'s voice seems to come from {voice}. Who tries to disbelieve?"
+        },
+        "SensesLink": {
+            "Switch": "Switch senses",
+            "SwitchHint": "Sustain: change between your own senses and the animal's.",
+            "Theirs": "{actor} senses through the animal.",
+            "Own": "{actor} is back in its own senses."
+        },
+        "SecretPage": {
+            "NoPage": "No journal page called \"{page}\".",
+            "Changed": "The page \"{page}\" now says something else.",
+            "Touch": "Touch the page and speak the password",
+            "Password": "The password:",
+            "Wrong": "Nothing changes."
+        },
+        "BlindEye": {
+            "NoTool": "{name}: every pouch, focus or spellbook you could cast it with is under blind eye.",
+            "NoScrying": "{name} is under blind eye and can't be activated to scry."
         }
     }
 }

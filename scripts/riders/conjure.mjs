@@ -7,10 +7,11 @@ import { LIB_ID } from "../id.mjs";
  * *Creation*: "You conjure a temporary object from magical energy … It is obviously temporarily conjured, and thus
  * can't be sold or passed off as a genuine item." An effect with `conjures: { flag }` puts an item in its holder's
  * inventory, named for what the caster asked for as the spell was cast (`castChoice`), worth nothing and marked as
- * conjured. When the effect ends, however it ends, the item goes with it. Active GM only.
+ * conjured. When the effect ends, however it ends, the item goes with it — and so does any item marked `withEffect`
+ * with the effect's uuid: *Telepathic Bond*'s action, *Ventriloquism*'s. Active GM only.
  */
 
-const FLAG = "conjuredBy";
+const FLAG = "withEffect";
 
 /** The item a conjuring puts in hand: named, light, worthless, and marked with the effect it belongs to. */
 export function conjuredSource(name, effectUuid) {

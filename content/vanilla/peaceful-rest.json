@@ -1,0 +1,50 @@
+{
+    "requires": "corpse-target",
+    "castCost": {
+        "fromRank": 5,
+        "gp": 6
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.peaceful-rest.Rest",
+                "rules": [],
+                "untilPreparations": true
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.peaceful-rest.Rest",
+                "rules": []
+            }
+        }
+    ]
+}

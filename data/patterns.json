@@ -2829,6 +2829,36 @@
                         "extradimensional space",
                         "the space begins to collapse"
                     ]
+                },
+                "message": {
+                    "meaning": "Words passed from one creature to another, whispered to the recipient's players, with a reply when the spell allows one.",
+                    "precedent": "VS-134a",
+                    "modules": [
+                        "scripts/riders/message.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: message",
+                        "riders[].apply.telepathy"
+                    ],
+                    "phrases": [
+                        "mentally impart",
+                        "mental message",
+                        "communicate telepathically"
+                    ]
+                },
+                "text-changed": {
+                    "meaning": "A written text shown as something else, with a way to change it back.",
+                    "precedent": "VS-141a",
+                    "modules": [
+                        "scripts/riders/secret-page.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: secret-page"
+                    ],
+                    "phrases": [
+                        "change the target's text",
+                        "different text entirely"
+                    ]
                 }
             }
         },

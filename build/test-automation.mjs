@@ -199,7 +199,7 @@ check("a slug another module counts itself is left alone", mayPost({ type: "feat
     check(
         "the cast pipeline's own stages sit at their priorities, others between",
         CastPipeline.stages().before.map((s) => `${s.priority} ${s.name}`),
-        [`${CAST_PRIORITY.forbids} what a form forbids`, `${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.sacrifice} a minion sacrificed`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
+        [`${CAST_PRIORITY.forbids} what a form forbids`, `${CAST_PRIORITY.requires} what a spell needs`, `${CAST_PRIORITY.sacrifice} a minion sacrificed`, `${CAST_PRIORITY.weaponVariant} a variant from the weapon in hand`, `${CAST_PRIORITY.actionVariant} the actions spent`, `${CAST_PRIORITY.castChoice} a choice made as it is cast`, `${CAST_PRIORITY.aim} area targeting`, "30 a refusal", `${CAST_PRIORITY.castCost} a cost paid as it is cast`, `${CAST_PRIORITY.spellFrequency} spell frequency`, "60 a price"],
     );
 
     const seen = [];
@@ -1015,6 +1015,13 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
     const { besideSquares, familiarOf } = await import("../scripts/riders/companion.mjs");
     check("Familiar's Call: the squares beside the caster, nearest first", besideSquares({ x: 0, y: 0 }, 100).slice(0, 2), [{ x: 100, y: 0 }, { x: -100, y: 0 }]);
     check("…and the caster's own familiar", familiarOf({ id: "c" }, [{ type: "familiar", name: "x", system: { master: { id: "d" } } }, { type: "familiar", name: "y", system: { master: { id: "c" } } }])?.name, "y");
+    const { cutTo } = await import("../scripts/riders/message.mjs");
+    check("Sending: 25 words at most", [cutTo("a b  c d", 2), cutTo(" one two ", 25), cutTo("", 25)], ["a b", "one two", ""]);
+    const { lent } = await import("../scripts/riders/senses-link.mjs");
+    check("Animal Vision: its players observe, and nobody loses a higher level", lent({ default: 0, p1: 3 }, ["p1", "p2"], 2), { default: 0, p1: 3, p2: 2 });
+    const { castingTool, stopsScrying } = await import("../scripts/riders/blind-eye.mjs");
+    check("Blind Eye: what a spell is cast with", [castingTool({ type: "equipment", name: "Spell Component Pouch", system: { traits: { value: [] } } }), castingTool({ type: "action", name: "Refocus", system: { traits: { value: [] } } }), castingTool({ type: "equipment", name: "Focus", system: { traits: { value: ["magical"] } } })], [true, false, false]);
+    check("…and which scrying items it stops", [stopsScrying({ level: 7, system: { traits: { value: ["scrying"] } } }, 5), stopsScrying({ level: 10, system: { traits: { value: ["scrying"] } } }, 5), stopsScrying({ level: 1, system: { traits: { value: [] } } }, 5)], [true, false, false]);
     const { due, delaySeconds } = await import("../scripts/riders/reminder.mjs");
     const reminderAt = (at) => ({ flags: { [LIB_ID]: { reminder: { at } } } });
     check("Timely Reminder: due once the clock reaches it", due([reminderAt(100), reminderAt(200), {}], 150).length, 1);

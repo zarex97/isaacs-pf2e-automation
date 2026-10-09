@@ -38,6 +38,17 @@ export function unmetRequirement(spell) {
             && (Number(token.actor?.inventory?.bulk?.value?.normal) || 0) <= 80;
         if (targets.length === 0 || !targets.every(object)) return t("Requires.ObjectTarget", { name: spell.name });
     }
+    // *Peaceful Rest*: "Target 1 corpse" — a creature at 0 Hit Points, or marked dead.
+    if (requires === "corpse-target") {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        const dead = (token) => token.actor && ((token.actor.hitPoints?.value ?? 1) <= 0 || token.actor.statuses?.has?.("dead"));
+        if (targets.length === 0 || !targets.every(dead)) return t("Requires.CorpseTarget", { name: spell.name });
+    }
+    // *Animal Vision*: "Target 1 animal".
+    if (requires === "animal-target") {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        if (targets.length === 0 || !targets.every((token) => (token.actor?.system?.traits?.value ?? []).includes("animal"))) return t("Requires.AnimalTarget", { name: spell.name });
+    }
     // *Familiar's Call*: "Target your familiar" — the caster's own, and nothing else. No target is a familiar out of sight,
     // up to 100 miles off, which the table brings.
     if (requires === "own-familiar") {
@@ -183,6 +194,21 @@ async function askFields(spell, spec, key) {
     if (!data) return false;
     await spell.actor?.setFlag(LIB_ID, key, Object.fromEntries(spec.fields.map((field) => [field.key, data[field.key] ?? null])));
     return true;
+}
+
+/**
+ * A cost paid as the spell is cast. *Peaceful Rest*: "Heightened (5th) … requires a cost (embalming fluid worth 6 gp)".
+ * `castCost: { fromRank, gp }` takes the coins from the caster when cast at that rank or higher, and refuses the cast
+ * when they do not have them.
+ */
+export async function payCost(spell, options) {
+    const spec = configOf(spell, "castCost");
+    const rank = Number(options?.rank) || Number(spell?.rank) || 1;
+    if (!spec || rank < (Number(spec.fromRank) || 1)) return true;
+    const paid = await spell.actor?.inventory?.removeCoins?.({ gp: Number(spec.gp) || 0 });
+    if (paid) return true;
+    ui.notifications.warn(t("Requires.Cost", { name: spell.name, gp: spec.gp }));
+    return false;
 }
 
 export function checkRequirements(spell) {

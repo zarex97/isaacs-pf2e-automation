@@ -129,7 +129,7 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | VS-230 | `breadcrumbs` | 1 | 1 | A glittering trail behind a willing creature |
 | VS-231 | `claim-curse` | 3 | 1 | A target's curse carried by the caster for 5 minutes |
 
-**Where it stands:** 407 clauses — 68 ✅, 15 —, 324 ☐. The first batch was the seventeen spells whose clauses proposed new patterns; all sixteen it kept are now in `Docs/patterns.md`, each with its ✅ precedent here.
+**Where it stands:** 407 clauses — 95 ✅, 20 —, 292 ☐. Batch 1 was the seventeen spells whose clauses proposed new patterns; batch 2 the next ten in the list.
 
 ### VS-132 · Countless Eyes
 
@@ -142,83 +142,83 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-133a | "The soil transforms and hardens into a simple form of your choosing" | when:cast · check:caster-choice · effect:gm-note | A note: the figurine's form is the table's | | ☐ | |
-| VS-133b | "the figurine is brittle and will crumble under pressure or turn back to mush at the end of the spell's duration" | effect:gm-note · ending:duration | A note: the figurine crumbles under pressure or after 10 minutes | | ☐ | |
+| VS-133a | "The soil transforms and hardens into a simple form of your choosing" | when:cast · check:caster-choice · effect:item-conjured | A note: the figurine's form is the table's | `create-earthen-facsimile.json` | ✅ | Asked the form at the cast, "A small clay horse": an item of that name in the caster's inventory, worth nothing |
+| VS-133b | "the figurine is brittle and will crumble under pressure or turn back to mush at the end of the spell's duration" | effect:item-conjured · ending:spent · ending:duration | A note: the figurine crumbles under pressure or after 10 minutes | `create-earthen-facsimile.json` | ✅ | Its holder's own action crushed it, item and all; left alone, 10 minutes on it was gone |
 
 ### VS-134 · Mindlink
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-134a | "You link your mind to the target's mind and mentally impart to that target an amount of information in an instant that could otherwise be communicated in 10 minutes" | when:cast · reach:single · effect:gm-note | A note: the information passed is the table's | | ☐ | |
+| VS-134a | "You link your mind to the target's mind and mentally impart to that target an amount of information in an instant that could otherwise be communicated in 10 minutes" | when:cast · reach:single · effect:message | A note: the information passed is the table's | `mindlink.json` | ✅ | The words written at the cast were whispered to the patient's players and the GM, as from the caster's mind |
 
 ### VS-135 · Peaceful Rest
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-135a | "The targeted corpse doesn't decay, nor can it be transformed into an undead" | when:cast · reach:object · effect:gm-note | A note: the corpse is preserved until the next daily preparations | | ☐ | |
-| VS-135b | "do not count the duration of peaceful rest against that time" | effect:gm-note | A note: the preserved time doesn't count toward Raise Dead's limit | | ☐ | |
-| VS-135c | "This spell also prevents ordinary bugs and pests (such as maggots) from consuming the body" | effect:gm-note | A note: pests can't consume the body is the table's | | ☐ | |
-| VS-135d | "Heightened (5th) The spell's duration is unlimited" | scaling:from-rank · ending:permanent | From rank 5 the preservation has no end | | ☐ | |
-| VS-135e | "but the spell takes one more action to cast and requires a cost (embalming fluid worth 6 gp)" | scaling:from-rank · economy:requires | From rank 5 the cast takes one more action and 6 gp fluid | | ☐ | |
+| VS-135a | "The targeted corpse doesn't decay, nor can it be transformed into an undead" | when:cast · reach:filtered · ending:preparations | A note: the corpse is preserved until the next daily preparations | `peaceful-rest.json` | ✅ | A corpse at 0 Hit Points carries `peaceful rest` until the caster's daily preparations. Control: a living patient, the cast refused |
+| VS-135b | "do not count the duration of peaceful rest against that time" | effect:gm-note | A note: the preserved time doesn't count toward Raise Dead's limit | `peaceful-rest.json` | — | No time limit after death is kept anywhere to pause |
+| VS-135c | "This spell also prevents ordinary bugs and pests (such as maggots) from consuming the body" | effect:gm-note | A note: pests can't consume the body is the table's | `peaceful-rest.json` | — | Pests are the table's |
+| VS-135d | "Heightened (5th) The spell's duration is unlimited" | scaling:from-rank · ending:permanent | From rank 5 the preservation has no end | `peaceful-rest.json` | ✅ | Rank 5: unlimited, not ended by preparations |
+| VS-135e | "but the spell takes one more action to cast and requires a cost (embalming fluid worth 6 gp)" | scaling:from-rank · economy:requires · economy:action-cost | From rank 5 the cast takes one more action and 6 gp fluid | `peaceful-rest.json` | ✅ | Rank 5 took 6 gp, 10 to 4, and pf2e's card shows 3 actions. Control: with no coins the cast was refused |
 
 ### VS-136 · Speak with Animals
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-136a | "You can ask questions of, receive answers from, and use the Diplomacy skill with animals" | when:cast · reach:self · effect:gm-note | A note: the caster can talk with animals for an hour | | ☐ | |
-| VS-136b | "The spell doesn't make them more friendly than normal" | effect:gm-note | A note: the animals' attitude is the table's | | ☐ | |
+| VS-136a | "You can ask questions of, receive answers from, and use the Diplomacy skill with animals" | when:cast · reach:self · ending:duration | A note: the caster can talk with animals for an hour | `speak-with-animals.json` | ✅ | The caster: `speak with animals`, an hour, and its roll option for anything that asks |
+| VS-136b | "The spell doesn't make them more friendly than normal" | effect:gm-note | A note: the animals' attitude is the table's | `speak-with-animals.json` | — | An animal's attitude is the table's |
 
 ### VS-137 · Telepathic Bond
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-137a | "The targets can communicate telepathically with any or all of the other targets from any point on the same planet" | when:cast · reach:up-to-n · effect:gm-note | A note: the targets speak telepathically for 8 hours, planet-wide | | ☐ | |
+| VS-137a | "The targets can communicate telepathically with any or all of the other targets from any point on the same planet" | when:cast · reach:up-to-n · effect:message · ending:duration | A note: the targets speak telepathically for 8 hours, planet-wide | `telepathic-bond.json` | ✅ | The caster, the patient and ZZ Ally each carry the bond and an action to speak: the caster's words reached the other two, and the patient's the caster and the ally. Ending it took the actions |
 
 ### VS-138 · Ventriloquism
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-138a | "Whenever you speak or make any other sound vocally, you can make your vocalization seem to originate from somewhere else within 60 feet, and you can change that apparent location freely as you vocalize" | when:cast · reach:self · effect:gm-note · ending:duration | A note: the voice's apparent source is the table's, for 10 minutes | | ☐ | |
-| VS-138b | "Any creature that hears the sound can attempt to disbelieve your illusion" | effect:gm-note | A note: a hearer's attempt to disbelieve is the table's | | ☐ | |
-| VS-138c | "Heightened (2nd) The spell's duration increases to 1 hour" | scaling:from-rank · ending:duration | From rank 2 the spell lasts an hour | | ☐ | |
-| VS-138d | "you can also change the tone, quality, and other aspects of your voice" | scaling:from-rank · effect:gm-note | A note: from rank 2 the voice's tone is the table's | | ☐ | |
-| VS-138e | "Before a creature can attempt to disbelieve your illusion, it must actively attempt a Perception check or otherwise use actions to interact with the sound" | scaling:from-rank · effect:gm-note | A note: from rank 2 disbelief needs an active Perception check | | ☐ | |
+| VS-138a | "Whenever you speak or make any other sound vocally, you can make your vocalization seem to originate from somewhere else within 60 feet, and you can change that apparent location freely as you vocalize" | when:cast · reach:self · ending:duration | A note: the voice's apparent source is the table's, for 10 minutes | `ventriloquism.json` | ✅ | Thrown onto the Target, the caster's in-character words bubbled over the Target, not the caster. Once the spell ended, over the caster again |
+| VS-138b | "Any creature that hears the sound can attempt to disbelieve your illusion" | check:disbelieve | A note: a hearer's attempt to disbelieve is the table's | `ventriloquism.json` | ✅ | The GM was offered a button for each creature within 60 feet of the voice; the Target's Perception, a 20, saw through it |
+| VS-138c | "Heightened (2nd) The spell's duration increases to 1 hour" | scaling:from-rank · ending:duration | From rank 2 the spell lasts an hour | `ventriloquism.json` | ✅ | Rank 2: an hour. Control: rank 1, 10 minutes |
+| VS-138d | "you can also change the tone, quality, and other aspects of your voice" | scaling:from-rank · effect:gm-note | A note: from rank 2 the voice's tone is the table's | `ventriloquism.json` | — | The voice's tone is the speaker's to describe |
+| VS-138e | "Before a creature can attempt to disbelieve your illusion, it must actively attempt a Perception check or otherwise use actions to interact with the sound" | scaling:from-rank · check:disbelieve | A note: from rank 2 disbelief needs an active Perception check | `ventriloquism.json` | ✅ | Rank 2: no card; the patient's own Perception check within 60 feet of the voice was its attempt |
 
 ### VS-139 · Animal Vision
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-139a | "You tap into the target's senses, allowing you to sense whatever it senses for the spell's duration" | when:cast · reach:single · reach:filtered · effect:gm-note · ending:duration | An animal only; a note: what it senses for the hour is the table's | | ☐ | |
-| VS-139b | "If the target wishes to prevent you from doing so, it can attempt a Will save, negating the spell on a success" | check:save · effect:gm-note | An animal that resists saves Will; a success ends the spell | | ☐ | |
-| VS-139c | "While tapping into the target's senses, you can't use your own body's senses" | reach:self · effect:gm-note | A note: the caster's own senses are off while linked | | ☐ | |
-| VS-139d | "you can change back and forth from your body's senses to the target's senses using a Sustain action" | when:sustain · effect:gm-note | Sustaining switches between the caster's senses and the animal's | | ☐ | |
+| VS-139a | "You tap into the target's senses, allowing you to sense whatever it senses for the spell's duration" | when:cast · reach:filtered · effect:sense · ending:duration | An animal only; a note: what it senses for the hour is the table's | `animal-vision.json` | ✅ | On a hawk: an hour; a stand-in player of the caster's was given Observer on it, so its token's sight is theirs, and taken away after. Control: aimed at the patient, refused |
+| VS-139b | "If the target wishes to prevent you from doing so, it can attempt a Will save, negating the spell on a success" | check:save · ending:save-ends | An animal that resists saves Will; a success ends the spell | `animal-vision.json` | ✅ | The hawk's Will save, a success, ended the caster's link; a failure kept it |
+| VS-139c | "While tapping into the target's senses, you can't use your own body's senses" | reach:self · effect:gm-note | A note: the caster's own senses are off while linked | `animal-vision.json` | ✅ | The caster's own token's sight is off while linked, and back after |
+| VS-139d | "you can change back and forth from your body's senses to the target's senses using a Sustain action" | when:sustain · effect:sense | Sustaining switches between the caster's senses and the animal's | `animal-vision.json` | ✅ | Sustaining switched to the caster's own senses and back: sight on and off, Observer off and on |
 
 ### VS-140 · Blind Eye
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-140a | "You enchant a single object, preventing it from being used for magical observation" | when:cast · reach:object · effect:gm-note · ending:preparations | A note: the object can't scry until the next daily preparations | | ☐ | |
-| VS-140b | "If you cast this spell on a non-magical item used to cast scrying spells, such as a spell component pouch or a spell focus, the item can't be used to cast the spell" | reach:object · effect:gm-note | A note: the pouch or focus can't cast scrying spells | | ☐ | |
-| VS-140c | "If you cast blind eye on a magical item that can be activated to scry (such as a Crystal Ball or Hag Eye), the item can't be activated for scrying effects" | reach:object · effect:gm-note | A note: the magic item can't be activated to scry | | ☐ | |
-| VS-140d | "Magical items that are twice blind eye's spell rank or more aren't blocked this way" | reach:filtered · scaling:level-cap | An item of level twice the rank or more is unaffected | | ☐ | |
+| VS-140a | "You enchant a single object, preventing it from being used for magical observation" | when:cast · reach:object · effect:forbid · ending:preparations | A note: the object can't scry until the next daily preparations | `blind-eye.json` | ✅ | The caster's own pouch, named at the cast, is under `blind eye` until preparations |
+| VS-140b | "If you cast this spell on a non-magical item used to cast scrying spells, such as a spell component pouch or a spell focus, the item can't be used to cast the spell" | reach:object · effect:forbid | A note: the pouch or focus can't cast scrying spells | `blind-eye.json` | ✅ | Clairvoyance, a scrying spell, was refused while that pouch was the caster's only one. Control: with a second pouch, cast; with the effect ended, cast |
+| VS-140c | "If you cast blind eye on a magical item that can be activated to scry (such as a Crystal Ball or Hag Eye), the item can't be activated for scrying effects" | reach:object · effect:forbid | A note: the magic item can't be activated to scry | `blind-eye.json` | ✅ | The patient's crystal ball, level 7, posted nothing under it; after the effect ended, it did |
+| VS-140d | "Magical items that are twice blind eye's spell rank or more aren't blocked this way" | reach:filtered · scaling:level-cap | An item of level twice the rank or more is unaffected | `blind-eye.json` | ✅ | A level 12 orb under a rank 5 blind eye still posted |
 
 ### VS-141 · Secret Page
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-141a | "You change the target's text to different text entirely" | when:cast · reach:object · effect:gm-note · ending:permanent | A note: the page's new text is the table's, with no end | | ☐ | |
-| VS-141b | "If the text is a spellbook or a scroll, you can change it to show a spell you know of secret page's level or lower" | check:caster-choice · effect:gm-note | A note: the shown spell, of its rank or lower, is the table's | | ☐ | |
-| VS-141c | "The replacement spell cannot be cast or used to prepare a spell" | effect:gm-note | A note: the shown spell can't be cast or prepared | | ☐ | |
-| VS-141d | "You can also transform the text into some other text you have written or have access to" | check:caster-choice · effect:gm-note | A note: other replacement text is the table's | | ☐ | |
-| VS-141e | "You can specify a password that allows a creature touching the page to change the text back and forth" | check:caster-choice · effect:gm-note | A note: the password and who uses it is the table's | | ☐ | |
-| VS-141f | "You must choose the replacement text and the password, if any, when you Cast the Spell" | check:caster-choice | The text and password are chosen at the cast | | ☐ | |
+| VS-141a | "You change the target's text to different text entirely" | when:cast · reach:object · effect:text-changed · ending:permanent | A note: the page's new text is the table's, with no end | `secret-page.json` | ✅ | A journal page's text became what was chosen, with no end |
+| VS-141b | "If the text is a spellbook or a scroll, you can change it to show a spell you know of secret page's level or lower" | check:caster-choice · effect:text-changed | A note: the shown spell, of its rank or lower, is the table's | `secret-page.json` | ✅ | Naming Deep Breath, a spell the caster knows at rank 1, showed its description. Control: Countless Eyes, rank 4 against a rank 3 cast, showed only the words |
+| VS-141c | "The replacement spell cannot be cast or used to prepare a spell" | effect:gm-note | A note: the shown spell can't be cast or prepared | `secret-page.json` | — | A spell shown on a page is words: nothing casts or prepares from it |
+| VS-141d | "You can also transform the text into some other text you have written or have access to" | check:caster-choice · effect:text-changed | A note: other replacement text is the table's | `secret-page.json` | ✅ | "Meet at the old mill." showed as written |
+| VS-141e | "You can specify a password that allows a creature touching the page to change the text back and forth" | check:caster-choice · effect:text-changed | A note: the password and who uses it is the table's | `secret-page.json` | ✅ | A wrong password changed nothing; the right one swapped back to the original words, and again to the new |
+| VS-141f | "You must choose the replacement text and the password, if any, when you Cast the Spell" | check:caster-choice | The text and password are chosen at the cast | `secret-page.json` | ✅ | The page, the text and the password were asked as it was cast |
 
 ### VS-142 · Sending
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-142a | "You send the creature a mental message of 25 words or fewer" | when:cast · reach:single · effect:gm-note | A note: the 25-word message is the table's | | ☐ | |
-| VS-142b | "it can respond immediately with its own message of 25 words or fewer" | effect:gm-note | A note: the 25-word reply is the table's | | ☐ | |
+| VS-142a | "You send the creature a mental message of 25 words or fewer" | when:cast · reach:single · effect:message | A note: the 25-word message is the table's | `sending.json` | ✅ | Named by its actor, the patient got the first 25 of 30 words, whispered |
+| VS-142b | "it can respond immediately with its own message of 25 words or fewer" | effect:message | A note: the 25-word reply is the table's | `sending.json` | ✅ | The reply button on the patient's card sent its answer back to the caster |
 
 ### VS-143 · Caster's Imposition
 

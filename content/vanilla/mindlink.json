@@ -1,0 +1,21 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.mindlink.Prompt",
+        "fields": [
+            {
+                "key": "message",
+                "label": "ISAACS_AUTOMATION.Vanilla.mindlink.Information",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "message",
+                "flag": "message"
+            }
+        }
+    ]
+}

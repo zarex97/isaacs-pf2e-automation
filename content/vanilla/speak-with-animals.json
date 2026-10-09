@@ -1,0 +1,23 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.speak-with-animals.Speech",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "speak-with-animals"
+                    }
+                ]
+            }
+        }
+    ]
+}

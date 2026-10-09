@@ -209,6 +209,36 @@
                 }
             ]
         },
+        "animal-vision": {
+            "requires": "animal-target",
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.animal-vision.Vision",
+                        "rules": [],
+                        "sharesSenses": true
+                    }
+                },
+                {
+                    "outcomes": [
+                        "success",
+                        "criticalSuccess"
+                    ],
+                    "toOrigin": true,
+                    "apply": {
+                        "type": "expire",
+                        "effect": "ISAACS_AUTOMATION.Vanilla.animal-vision.Vision"
+                    }
+                }
+            ]
+        },
         "ant-haul": {
             "riders": [
                 {
@@ -296,6 +326,36 @@
                         "sustain": {
                             "step": 1
                         }
+                    }
+                }
+            ]
+        },
+        "blind-eye": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.blind-eye.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blind-eye.Item",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blind-eye.Blind",
+                        "rules": [],
+                        "blindEye": {
+                            "flag": "item"
+                        },
+                        "untilPreparations": true
                     }
                 }
             ]
@@ -1028,6 +1088,37 @@
                                 }
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "create-earthen-facsimile": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Prompt",
+                "fields": [
+                    {
+                        "key": "object",
+                        "label": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Form",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Figurine",
+                        "rules": [],
+                        "conjures": {
+                            "flag": "object"
+                        },
+                        "dismissable": "holder"
                     }
                 }
             ]
@@ -3913,6 +4004,27 @@
                 }
             ]
         },
+        "mindlink": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.mindlink.Prompt",
+                "fields": [
+                    {
+                        "key": "message",
+                        "label": "ISAACS_AUTOMATION.Vanilla.mindlink.Information",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "message",
+                        "flag": "message"
+                    }
+                }
+            ]
+        },
         "mirror-image": {
             "areaTargeting": false,
             "riders": [
@@ -4297,6 +4409,56 @@
                                 }
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "peaceful-rest": {
+            "requires": "corpse-target",
+            "castCost": {
+                "fromRank": 5,
+                "gp": 6
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.peaceful-rest.Rest",
+                        "rules": [],
+                        "untilPreparations": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.peaceful-rest.Rest",
+                        "rules": []
                     }
                 }
             ]
@@ -5187,6 +5349,37 @@
                 }
             ]
         },
+        "secret-page": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.secret-page.Prompt",
+                "fields": [
+                    {
+                        "key": "page",
+                        "label": "ISAACS_AUTOMATION.Vanilla.secret-page.Page",
+                        "type": "text"
+                    },
+                    {
+                        "key": "text",
+                        "label": "ISAACS_AUTOMATION.Vanilla.secret-page.Text",
+                        "type": "text"
+                    },
+                    {
+                        "key": "password",
+                        "label": "ISAACS_AUTOMATION.Vanilla.secret-page.Password",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "secret-page"
+                    }
+                }
+            ]
+        },
         "see-the-unseen": {
             "riders": [
                 {
@@ -5223,6 +5416,36 @@
                     "apply": {
                         "type": "effect",
                         "uuid": "Compendium.pf2e.spell-effects.Item.T5bk6UH7yuYog1Fp"
+                    }
+                }
+            ]
+        },
+        "sending": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.sending.Prompt",
+                "fields": [
+                    {
+                        "key": "to",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sending.To",
+                        "type": "text"
+                    },
+                    {
+                        "key": "message",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sending.Message",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "message",
+                        "flag": "message",
+                        "to": "to",
+                        "words": 25,
+                        "reply": true
                     }
                 }
             ]
@@ -5786,6 +6009,29 @@
                         "nearMiss": 2,
                         "dcFrom": "effect",
                         "statistic": "spellcasting"
+                    }
+                }
+            ]
+        },
+        "speak-with-animals": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.speak-with-animals.Speech",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "speak-with-animals"
+                            }
+                        ]
                     }
                 }
             ]
@@ -6570,6 +6816,37 @@
                 }
             ]
         },
+        "telepathic-bond": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.telepathic-bond.Bond",
+                        "rules": [],
+                        "telepathy": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.telepathic-bond.Bond",
+                        "rules": [],
+                        "telepathy": true
+                    }
+                }
+            ]
+        },
         "temporary-tool": {
             "castChoice": {
                 "flag": "tool",
@@ -6971,6 +7248,54 @@
                             "manipulate"
                         ],
                         "dismissable": "holder"
+                    }
+                }
+            ]
+        },
+        "ventriloquism": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                1
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.ventriloquism.Voice",
+                        "rules": [],
+                        "ventriloquism": true
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.ventriloquism.Voice",
+                        "rules": [],
+                        "ventriloquism": true
                     }
                 }
             ]
