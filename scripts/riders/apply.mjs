@@ -34,7 +34,12 @@ import { gateByRound } from "./round-gate.mjs";
 import { selectRiders } from "./select.mjs";
 import { spellShieldSource } from "./spell-shield.mjs";
 import { holdOption } from "./unfettered.mjs";
-import { PlanarTether } from "./tether.mjs";
+import { PlanarTether, counteracts } from "./tether.mjs";
+import { Anchor } from "./dc-swap.mjs";
+import { fetchFamiliar } from "./companion.mjs";
+import { Pocket } from "../targeting/pocket.mjs";
+import { Conjure } from "./conjure.mjs";
+import { fadesAfter } from "./trail.mjs";
 import { delaySeconds } from "./reminder.mjs";
 
 /** pf2e's DegreeOfSuccess is an index, not a word. */
@@ -448,6 +453,10 @@ async function applyOne(rider, context) {
             return applyCounteract(rider, context);
         case "counteract-area":
             return applyCounteractArea(rider, context);
+        case "fetch-familiar":
+            return fetchFamiliar(rider, context);
+        case "pocket":
+            return Pocket.open(rider, context);
         case "reaction":
             return offerReaction(rider, context);
         case "flat-check":
@@ -749,6 +758,8 @@ async function applyTeleport(rider, context) {
     const scene = token?.parent;
     if (!token || !scene) return;
     if (await tetherHolds(context, "teleport")) return;
+    // *Bracing Tendrils*: someone else's push, pull or teleport must get past the anchor first (`dc-swap.mjs`).
+    if (await Anchor.holds(context, castItemOf(context))) return;
 
     const feet = Number(rider.apply.distance) || 0;
     if (feet <= 0) return;
@@ -1407,15 +1418,6 @@ async function applyCounteractArea(rider, context) {
     for (const region of crossed) await counteractArea(region, rider, context);
 }
 
-/**
- * Does a counteract of this degree, at this rank, reach an effect of that rank? A critical success reaches three
- * ranks above its own, a success one, a failure only below, and a critical failure nothing.
- */
-export function counteracts(outcome, ourRank, targetRank) {
-    const reach = { criticalSuccess: 3, success: 1, failure: -1 }[outcome];
-    return reach !== undefined && Number(targetRank) <= Number(ourRank) + reach;
-}
-
 /** The slug a spell's typed name stands for — *Spell Immunity*'s named spell. */
 export function slugOfName(name) {
     return String(name ?? "").toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -1990,6 +1992,8 @@ async function applyEffect(rider, context) {
         if (rider.apply.endsPrevious && rider.apply.slug) await endPreviousEffects(rider.apply.slug, context.originActor);
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
         record(context, created);
+        // *Creation*: the object asked for as the spell was cast, gone when the effect goes (`conjure.mjs`).
+        if (created && rider.apply.conjures) await Conjure.make(created, castChoicesOf(context)[rider.apply.conjures.flag ?? "object"]);
         // "You can Dismiss this spell" — *Frozen Lungs*, *Timely Reminder*: as for a pf2e effect, below.
         if (created && rider.apply.dismissable) {
             const who = rider.apply.dismissable === "holder" ? context.actor : context.originActor;
@@ -3247,8 +3251,8 @@ function effectSource(label, rules, rider, context) {
     }
     // *Bracing Tendrils*: the caster's spell DC against the actions that would move its holder (`dc-swap.mjs`).
     if (rider.apply?.dcSwap) {
-        const { actions = [], dc = "spell" } = rider.apply.dcSwap;
-        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { dcSwap: { actions, dc: RiderExtensions.resolveDC(dc, context) } } });
+        const { actions = [], dc = "spell", anchors = false } = rider.apply.dcSwap;
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { dcSwap: { actions, dc: RiderExtensions.resolveDC(dc, context), rank: Number(castItemOf(context)?.rank) || 1, anchors } } });
     }
     // *Timely Reminder*: the words and the moment chosen as it was cast (`reminder.mjs`).
     if (rider.apply?.reminder) {
@@ -3259,6 +3263,11 @@ function effectSource(label, rules, rider, context) {
     if (rider.apply?.immuneTo && context.originActor) {
         const named = castChoicesOf(context)[rider.apply.immuneTo.flag ?? "spell"];
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { immuneTo: { slug: slugOfName(named), rank: Number(castItemOf(context)?.rank) || 1, casterUuid: context.originActor.uuid, statistic: rider.apply.immuneTo.statistic ?? "spellcasting" } } });
+    }
+    // *Glowing Trail*: a mark left at each move, visible or not, fading by the cast's rank (`trail.mjs`).
+    if (rider.apply?.trail) {
+        const chosen = castChoicesOf(context);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { trail: { visible: chosen.mode !== "invisible", color: String(chosen.color ?? "") || null, fades: fadesAfter(castItemOf(context)?.rank) } } });
     }
     // *Magnetize*: metal attacks drawn to its holder, marked on their cards (`draws.mjs`).
     if (rider.apply?.draws) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { draws: rider.apply.draws === true ? { feet: 15 } : rider.apply.draws } });

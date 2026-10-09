@@ -77,6 +77,9 @@ export function registerEnemyTerrain() {
     class EnemyMovementCost extends base {
         /** @override */
         _getTerrainEffects(token, segment, options) {
+            // *Phantom Crowd*: no terrain to whoever has disbelieved it, and terrain to everyone else on either side.
+            const payload = flagOf(this.parent?.parent, LINGERING_FLAG);
+            if (payload?.disbelief) return (payload.disbelieved ?? []).includes(token?.actor?.uuid) ? [] : super._getTerrainEffects(token, segment, options);
             const origin = originOf(this.parent?.parent);
             const mine = allianceOf(origin);
             const theirs = allianceOf(token?.actor);

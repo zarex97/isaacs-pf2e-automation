@@ -15,16 +15,9 @@
                     "actions": [
                         "shove",
                         "reposition"
-                    ]
+                    ],
+                    "anchors": true
                 }
-            }
-        },
-        {
-            "event": "action-used",
-            "self": true,
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.bracing-tendrils.Note"
             }
         }
     ]

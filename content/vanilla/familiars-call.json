@@ -3,19 +3,9 @@
     "riders": [
         {
             "event": "action-used",
-            "apply": {
-                "type": "teleport",
-                "distance": 5,
-                "direction": "toward",
-                "measure": "from-origin"
-            }
-        },
-        {
-            "event": "action-used",
             "self": true,
             "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.familiars-call.Note"
+                "type": "fetch-familiar"
             }
         }
     ]

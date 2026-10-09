@@ -1,7 +1,10 @@
 {
     "areaTargeting": {
         "affects": "all",
-        "placeOnly": true
+        "placeOnly": true,
+        "heightening": {
+            "areas": 1
+        }
     },
     "lingering": {
         "name": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Crowd",
@@ -9,16 +12,14 @@
             "value": 10,
             "unit": "minutes"
         },
-        "difficultTerrain": 2
-    },
-    "riders": [
-        {
-            "event": "action-used",
-            "self": true,
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Note"
-            }
+        "difficultTerrain": 2,
+        "disbelief": true,
+        "sustain": {
+            "lapses": true,
+            "alongside": [
+                "composition",
+                "performance"
+            ]
         }
-    ]
+    }
 }

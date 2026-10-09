@@ -16,7 +16,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
 | Blister | 5 |  | success: Blisters (1 minutes); failure: Blisters (1 minutes); crit. failure: Blisters (1 minutes) |  |
 | Blur | 2 |  | concealed (1 minutes) |  |
-| Bracing Tendrils | 3 |  | bracing tendrils (1 minutes, on you); GM note: “Bracing Tendrils: a creature that needs no check to move the caster must succeed at an Athletics check against the spell DC; an effect must counteract the spell. A creature that fails can be pushed 5 feet away.” (on you) |  |
+| Bracing Tendrils | 3 |  | bracing tendrils (1 minutes, on you) |  |
 | Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
@@ -26,7 +26,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Cone of Cold | 5 | 60-ft cone (pf2e's), from you, all |  |  |
 | Coral Scourge | 3 |  | success: clumsy 1 (1 minutes); success: coral scourge (1 minutes); failure / crit. failure: clumsy 2 (1 minutes); failure: coral scourge (1 minutes, carries turn-start climb); crit. failure: coral scourge (1 minutes, carries turn-start climb) |  |
 | Countless Eyes | 4 |  | countless eyes (1 minutes) |  |
-| Creation | 4 |  | GM note: “Creation: a temporary object of earthen or plant matter, 5 cubic feet at most, for 1 hour (metal or common minerals from rank 5). It can't be sold or passed off as real.” (on you) |  |
+| Creation | 4 |  | creation (1 hours, on you) |  |
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
 | Darkvision | 2 |  | spell-effect-darkvision (below rank 3, on you); spell-effect-darkvision (from rank 3, below rank 5); spell-effect-darkvision (until it ends, from rank 5) |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
@@ -35,7 +35,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Disintegrate | 6 |  | rays (on you) |  |
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
-| Dome of Tranquility | 1 | 30-ft burst (pf2e's), all, placed, no targets | GM note: “Dome of Tranquility: no sound crosses the dome's edge, either way.” (on you) | Dismiss, 1 hours; from rank 3, Dismiss, 8 hours; from rank 5, Dismiss, 24 hours |
+| Dome of Tranquility | 1 | 30-ft burst (pf2e's), all, placed, no targets |  | Dismiss, 1 hours; from rank 3, Dismiss, 8 hours; from rank 5, Dismiss, 24 hours |
 | Earthbind | 3 |  | success: fall; failure: fall; crit. failure: fall |  |
 | Electric Arc | 1 | up to 2 |  |  |
 | Endure | 1 |  | spell-effect-endure |  |
@@ -45,7 +45,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Evil Eye | 1 |  | failure: sickened 1; crit. failure: sickened 2; failure / crit. failure: evil eye (1 minutes, while Sustained) |  |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | False Vitality | 2 |  | spell-effect-false-vitality (on you) |  |
-| Familiar's Call | 3 |  | moved 5 ft closer; GM note: “Familiar's Call: a familiar off this scene, within the spell's reach, is brought by the table.” (on you) |  |
+| Familiar's Call | 3 |  | fetch-familiar (on you) |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |
@@ -56,7 +56,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Frozen Lungs | 2 |  | success: frozen lungs (1 minutes, carries holder-acts damage); failure: frozen lungs (1 minutes, carries holder-acts damage); crit. failure: frozen lungs (1 minutes, carries holder-acts damage) |  |
 | Gecko Grip | 2 |  | spell-effect-gecko-grip (below rank 5); spell-effect-gecko-grip (1 hours, from rank 5) |  |
 | Ghoulish Cravings | 2 |  | success: sickened 1; failure / crit. failure: sickened 2; failure: ghoulish hunger (until it ends); crit. failure: ghoulish hunger (until it ends) |  |
-| Glowing Trail | 1 |  | glowing trail (1 hours, on you); GM note: “Glowing Trail: the caster's path glows, visible or invisible, each stretch fading 10 minutes after it is laid (longer from rank 3).” (on you) |  |
+| Glowing Trail | 1 |  | glowing trail (1 hours, on you) |  |
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
 | Guidance | 1 |  | spell-effect-guidance; effect-guidance-immunity; GM note: “The target is temporarily immune to Guidance: the spell does nothing.” |  |
@@ -78,7 +78,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Light | 1 | 5-ft square, an orb of light there, 20/40 ft, on a creature or the square; moved 60 ft by Sustain; 4 at most |  |  |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
-| Liminal Doorway | 4 |  | GM note: “Liminal Doorway: a chalk door opens into a 20-foot room for 8 hours. If the drawing is scrubbed away, the surface broken, or the room overfilled, it collapses, putting one creature out at random each round.” (on you) |  |
+| Liminal Doorway | 4 |  | pocket (8 hours, on you) |  |
 | Live Wire | 1 |  | rays (on you) |  |
 | Magnetize | 4 |  | magnetized (1 minutes) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
@@ -96,7 +96,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Paralyze | 3 |  | success: stunned 1; failure: paralyzed (1 rounds); crit. failure: paralyzed (4 rounds, carries turn-end will save) |  |
 | Petrify | 6 |  | success: slowed 1 (1 rounds); failure: slowed 1; crit. failure: slowed 2; failure / crit. failure: petrifying (until it ends, carries turn-end fortitude save); failure / crit. failure: GM note: “Petrify's ongoing save has the incapacitation trait; a creature of a much higher level than the spell may improve its result by one step.” |  |
 | Phantasmal Calamity | 6 |  | crit. failure: save |  |
-| Phantom Crowd | 2 | 5-ft burst (pf2e's), all, placed, no targets | GM note: “Phantom Crowd: a creature that touches the crowd or Seeks to examine it can disbelieve; the crowd is not difficult terrain to one who has.” (on you) | difficult terrain, 10 minutes |
+| Phantom Crowd | 2 | 5-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, ends if not Sustained, 10 minutes |
 | Phantom Pain | 1 |  | failure / crit. failure: 1d4 (+1d4 per rank) persistent mental, ends with sickened; failure: sickened 1; crit. failure: sickened 2 |  |
 | Phase Bolt | 1 |  |  |  |
 | Planar Tether | 4 |  | success: tethered (1 minutes); failure: tethered (10 minutes); crit. failure: tethered (1 hours) |  |
@@ -134,7 +134,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Take Root | 1 |  | spell-effect-take-root; GM note: “Take Root: the +1 circumstance bonus also applies to its saves against spells or effects that would take a held item from its grasp.” (on you) |  |
 | Tangle Vine | 1 |  | success / crit. success: spell-effect-tangle-vine (1 rounds, Escape, below rank 2); success / crit. success: spell-effect-tangle-vine (2 rounds, Escape, from rank 2, below rank 4); success / crit. success: spell-effect-tangle-vine (1 minutes, Escape, from rank 4) |  |
 | Tangling Creepers | 6 | 40-ft burst (pf2e's), all, placed, no targets |  | Sustain: a vine (15-ft reach) makes a melee spell attack — immobilized (1 rounds, Escape), while inside: its rules, 10 minutes |
-| Telekinetic Haul | 5 |  | telekinetic haul (1 minutes, while Sustained, on you); GM note: “Telekinetic Haul: move the object up to 20 feet, perhaps leaving it in midair. Each Sustain moves it again, or another eligible object instead.” (on you) |  |
+| Telekinetic Haul | 5 |  | moved 20 ft in a direction you choose; choice; telekinetic haul (1 minutes, while Sustained, on you) |  |
 | Telekinetic Maneuver | 2 |  | choice |  |
 | Temporary Tool | 1 |  | temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you) |  |
 | Timber | 1 | 15-ft line (pf2e's), from you, all | crit. failure: dazzled (until its next turn) |  |

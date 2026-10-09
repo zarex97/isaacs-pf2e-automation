@@ -1,7 +1,7 @@
 import { CastPipeline } from "../cast-pipeline.mjs";
 import { t } from "../i18n.mjs";
 import { LIB_ID } from "../id.mjs";
-import { counteracts } from "./apply.mjs";
+import { counteracts } from "./tether.mjs";
 import { RiderExtensions } from "./extensions.mjs";
 
 /**

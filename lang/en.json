@@ -274,7 +274,8 @@
         "Requires": {
             "HeldWeapon": "{name} needs a weapon in hand.",
             "FlyingTarget": "{name} needs a target in the air.",
-            "OwnFamiliar": "{name} needs your own familiar targeted."
+            "OwnFamiliar": "{name} needs your own familiar targeted.",
+            "ObjectTarget": "{name} needs an unattended object targeted: loot or a vehicle, no more than 80 Bulk or 20 feet across."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -881,21 +882,22 @@
                 "Pack": "pack attack"
             },
             "bracing-tendrils": {
-                "Tendrils": "bracing tendrils",
-                "Note": "Bracing Tendrils: a creature that needs no check to move the caster must succeed at an Athletics check against the spell DC; an effect must counteract the spell. A creature that fails can be pushed 5 feet away."
+                "Tendrils": "bracing tendrils"
             },
             "telekinetic-haul": {
                 "Haul": "telekinetic haul",
-                "Note": "Telekinetic Haul: move the object up to 20 feet, perhaps leaving it in midair. Each Sustain moves it again, or another eligible object instead."
+                "Height": "Where does the object stop?",
+                "Height0": "On the ground",
+                "Height10": "10 feet up",
+                "Height20": "20 feet up"
             },
             "invent-code": {
                 "Code": "invented code"
             },
-            "liminal-doorway": {
-                "Note": "Liminal Doorway: a chalk door opens into a 20-foot room for 8 hours. If the drawing is scrubbed away, the surface broken, or the room overfilled, it collapses, putting one creature out at random each round."
-            },
             "creation": {
-                "Note": "Creation: a temporary object of earthen or plant matter, 5 cubic feet at most, for 1 hour (metal or common minerals from rank 5). It can't be sold or passed off as real."
+                "Created": "creation",
+                "Prompt": "What do you create? Earthen or plant matter, 5 cubic feet at most (metal or common minerals from rank 5).",
+                "Object": "Object"
             },
             "temporary-tool": {
                 "Tool": "temporary tool",
@@ -907,16 +909,16 @@
                 "GrapplingHook": "Grappling hook",
                 "Ladder": "Ladder"
             },
-            "familiars-call": {
-                "Note": "Familiar's Call: a familiar off this scene, within the spell's reach, is brought by the table."
-            },
             "dome-of-tranquility": {
-                "Dome": "Dome of Tranquility",
-                "Note": "Dome of Tranquility: no sound crosses the dome's edge, either way."
+                "Dome": "Dome of Tranquility"
             },
             "glowing-trail": {
                 "Trail": "glowing trail",
-                "Note": "Glowing Trail: the caster's path glows, visible or invisible, each stretch fading 10 minutes after it is laid (longer from rank 3)."
+                "Prompt": "Is the path visible or invisible, and what colour?",
+                "Mode": "The path",
+                "Color": "Colour",
+                "Visible": "Visible",
+                "Invisible": "Invisible"
             },
             "timely-reminder": {
                 "Reminder": "timely reminder",
@@ -933,8 +935,7 @@
                 "Merged": "metal merged"
             },
             "phantom-crowd": {
-                "Crowd": "Phantom Crowd",
-                "Note": "Phantom Crowd: a creature that touches the crowd or Seeks to examine it can disbelieve; the crowd is not difficult terrain to one who has."
+                "Crowd": "Phantom Crowd"
             },
             "countless-eyes": {
                 "Eyes": "countless eyes"
@@ -994,6 +995,41 @@
             "Check": "{name} against {spell}",
             "Held": "{actor} is warded: {spell} does not reach it.",
             "Failed": "{actor}'s ward does not hold against {spell}."
+        },
+        "Anchor": {
+            "Counteract": "{name}: counteract",
+            "Athletics": "{name}: Athletics to move",
+            "Held": "{name} holds {actor} where it stands.",
+            "Moved": "{actor} is moved past {name}.",
+            "LashPrompt": "{mover} failed to move {actor}. Lash back?",
+            "LashButton": "Push {mover} 5 feet away"
+        },
+        "Companion": {
+            "None": "{actor} has no familiar to call.",
+            "Arrives": "{familiar} rematerializes beside {actor}."
+        },
+        "Conjure": {
+            "Object": "Conjured object",
+            "Description": "Conjured by magic for a short time: it can't be sold or passed off as a genuine item."
+        },
+        "Disbelief": {
+            "Check": "Disbelieve {name}",
+            "Sees": "{actor} sees through {name}.",
+            "Fooled": "{actor} is fooled by {name}."
+        },
+        "Languages": {
+            "InventedCode": "Invented code"
+        },
+        "Pocket": {
+            "Room": "Extradimensional room",
+            "SceneName": "{name}: {actor}'s room",
+            "Door": "{name}: the door",
+            "Exit": "The way out",
+            "Opened": "{name}: a door to a {feet}-foot room.",
+            "Ejected": "{token} is put back outside.",
+            "Collapses": "{name} begins to collapse: {why}",
+            "DoorGone": "its door is gone.",
+            "Overfull": "one creature too many stepped in."
         }
     }
 }

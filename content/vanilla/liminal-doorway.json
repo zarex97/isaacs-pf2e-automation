@@ -3,9 +3,13 @@
         {
             "event": "action-used",
             "self": true,
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
             "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.liminal-doorway.Note"
+                "type": "pocket",
+                "feet": 20
             }
         }
     ]

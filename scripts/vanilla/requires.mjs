@@ -30,6 +30,14 @@ export function unmetRequirement(spell) {
         const targets = [...(globalThis.game?.user?.targets ?? [])];
         if (targets.length === 0 || targets.some((token) => !((Number(token.document?._source?.elevation ?? token.document?.elevation ?? token.elevation) || 0) > 0))) return t("Requires.FlyingTarget", { name: spell.name });
     }
+    // *Telekinetic Haul*: "1 unattended object of up to 80 Bulk with no dimension longer than 20 feet" — loot or a
+    // vehicle, four squares across at most.
+    if (requires === "object-target") {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        const object = (token) => ["loot", "vehicle"].includes(token.actor?.type) && Math.max(token.document?.width ?? 1, token.document?.height ?? 1) <= 4
+            && (Number(token.actor?.inventory?.bulk?.value?.normal) || 0) <= 80;
+        if (targets.length === 0 || !targets.every(object)) return t("Requires.ObjectTarget", { name: spell.name });
+    }
     // *Familiar's Call*: "Target your familiar" — the caster's own, and nothing else. No target is a familiar out of sight,
     // up to 100 miles off, which the table brings.
     if (requires === "own-familiar") {
@@ -132,7 +140,8 @@ export const CAST_CHOICES = "castChoices";
  * and read back by a rider's `"$cast"` (`preselect`) or `"$cast:<flag>"` (`carries`).
  *
  * `fields` asks for words or numbers instead of a button: *Timely Reminder*'s message and when, *Spell Immunity*'s
- * spell. `[{ key, label, type: "text" | "number" }]`, each kept under its `key`.
+ * spell. `[{ key, label, type: "text" | "number", options }]`, each kept under its `key`; `options` makes it a list to pick
+ * from — *Glowing Trail*'s visible or invisible.
  */
 export async function castChoice(spell, _options) {
     const spec = configOf(spell, "castChoice");
@@ -162,8 +171,10 @@ export async function castChoice(spell, _options) {
 /** The words a `fields` choice asks for, in one dialog; a closed dialog refuses the cast. */
 async function askFields(spell, spec, key) {
     const escape = (text) => foundry.utils.escapeHTML(game.i18n.localize(text ?? ""));
-    const rows = spec.fields.map((field) => `<div class="form-group"><label>${escape(field.label ?? field.key)}</label>`
-        + `<input type="${field.type === "number" ? "number" : "text"}" name="${field.key}"${field.type === "number" ? ' min="0" value="0"' : ""}></div>`);
+    const input = (field) => Array.isArray(field.options)
+        ? `<select name="${field.key}">${field.options.map((option) => `<option value="${option}">${escape(spec.labels?.[option] ?? option)}</option>`).join("")}</select>`
+        : `<input type="${field.type === "number" ? "number" : "text"}" name="${field.key}"${field.type === "number" ? ' min="0" value="0"' : field.initial ? ` value="${field.initial}"` : ""}>`;
+    const rows = spec.fields.map((field) => `<div class="form-group"><label>${escape(field.label ?? field.key)}</label>${input(field)}</div>`);
     const data = await foundry.applications.api.DialogV2.input({
         window: { title: spell.name },
         content: `<p>${escape(spec.prompt)}</p>${rows.join("")}`,

@@ -640,16 +640,9 @@
                             "actions": [
                                 "shove",
                                 "reposition"
-                            ]
+                            ],
+                            "anchors": true
                         }
-                    }
-                },
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.bracing-tendrils.Note"
                     }
                 }
             ]
@@ -1040,13 +1033,31 @@
             ]
         },
         "creation": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.creation.Prompt",
+                "fields": [
+                    {
+                        "key": "object",
+                        "label": "ISAACS_AUTOMATION.Vanilla.creation.Object",
+                        "type": "text"
+                    }
+                ]
+            },
             "riders": [
                 {
                     "event": "action-used",
                     "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
                     "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.creation.Note"
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.creation.Created",
+                        "rules": [],
+                        "conjures": {
+                            "flag": "object"
+                        }
                     }
                 }
             ]
@@ -1492,7 +1503,8 @@
                                 2
                             ]
                         }
-                    ]
+                    ],
+                    "blocksSound": true
                 },
                 {
                     "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
@@ -1515,7 +1527,8 @@
                                 4
                             ]
                         }
-                    ]
+                    ],
+                    "blocksSound": true
                 },
                 {
                     "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
@@ -1532,17 +1545,8 @@
                                 5
                             ]
                         }
-                    ]
-                }
-            ],
-            "riders": [
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Note"
-                    }
+                    ],
+                    "blocksSound": true
                 }
             ]
         },
@@ -1900,19 +1904,9 @@
             "riders": [
                 {
                     "event": "action-used",
-                    "apply": {
-                        "type": "teleport",
-                        "distance": 5,
-                        "direction": "toward",
-                        "measure": "from-origin"
-                    }
-                },
-                {
-                    "event": "action-used",
                     "self": true,
                     "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.familiars-call.Note"
+                        "type": "fetch-familiar"
                     }
                 }
             ]
@@ -2383,6 +2377,29 @@
             ]
         },
         "glowing-trail": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Prompt",
+                "fields": [
+                    {
+                        "key": "mode",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Mode",
+                        "options": [
+                            "visible",
+                            "invisible"
+                        ]
+                    },
+                    {
+                        "key": "color",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Color",
+                        "type": "text",
+                        "initial": "#9fd8ff"
+                    }
+                ],
+                "labels": {
+                    "visible": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Visible",
+                    "invisible": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Invisible"
+                }
+            },
             "riders": [
                 {
                     "event": "action-used",
@@ -2394,15 +2411,9 @@
                     "apply": {
                         "type": "effect",
                         "label": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Trail",
-                        "rules": []
-                    }
-                },
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.glowing-trail.Note"
+                        "rules": [],
+                        "trail": true,
+                        "dismissable": true
                     }
                 }
             ]
@@ -3035,7 +3046,29 @@
                     "apply": {
                         "type": "effect",
                         "label": "ISAACS_AUTOMATION.Vanilla.invent-code.Code",
-                        "rules": []
+                        "rules": [
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.build.languages.granted",
+                                "value": {
+                                    "slug": "invented-code",
+                                    "source": "Invent Code"
+                                },
+                                "predicate": [
+                                    "self:type:character"
+                                ]
+                            },
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.details.languages.value",
+                                "value": "invented-code",
+                                "predicate": [
+                                    "self:type:npc"
+                                ]
+                            }
+                        ]
                     }
                 },
                 {
@@ -3047,7 +3080,29 @@
                     "apply": {
                         "type": "effect",
                         "label": "ISAACS_AUTOMATION.Vanilla.invent-code.Code",
-                        "rules": []
+                        "rules": [
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.build.languages.granted",
+                                "value": {
+                                    "slug": "invented-code",
+                                    "source": "Invent Code"
+                                },
+                                "predicate": [
+                                    "self:type:character"
+                                ]
+                            },
+                            {
+                                "key": "ActiveEffectLike",
+                                "mode": "add",
+                                "path": "system.details.languages.value",
+                                "value": "invented-code",
+                                "predicate": [
+                                    "self:type:npc"
+                                ]
+                            }
+                        ]
                     }
                 }
             ]
@@ -3291,9 +3346,13 @@
                 {
                     "event": "action-used",
                     "self": true,
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
                     "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.liminal-doorway.Note"
+                        "type": "pocket",
+                        "feet": 20
                     }
                 }
             ]
@@ -4494,7 +4553,10 @@
         "phantom-crowd": {
             "areaTargeting": {
                 "affects": "all",
-                "placeOnly": true
+                "placeOnly": true,
+                "heightening": {
+                    "areas": 1
+                }
             },
             "lingering": {
                 "name": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Crowd",
@@ -4502,18 +4564,16 @@
                     "value": 10,
                     "unit": "minutes"
                 },
-                "difficultTerrain": 2
-            },
-            "riders": [
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.phantom-crowd.Note"
-                    }
+                "difficultTerrain": 2,
+                "disbelief": true,
+                "sustain": {
+                    "lapses": true,
+                    "alongside": [
+                        "composition",
+                        "performance"
+                    ]
                 }
-            ]
+            }
         },
         "phantom-pain": {
             "riders": [
@@ -6260,7 +6320,46 @@
             }
         },
         "telekinetic-haul": {
+            "requires": "object-target",
             "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "teleport",
+                        "distance": 20,
+                        "direction": "choose"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "choice",
+                        "prompt": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height",
+                        "options": [
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height0",
+                                "apply": {
+                                    "type": "elevation",
+                                    "set": 0
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height10",
+                                "apply": {
+                                    "type": "elevation",
+                                    "set": 10
+                                }
+                            },
+                            {
+                                "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height20",
+                                "apply": {
+                                    "type": "elevation",
+                                    "set": 20
+                                }
+                            }
+                        ]
+                    }
+                },
                 {
                     "event": "action-used",
                     "self": true,
@@ -6275,14 +6374,6 @@
                         "sustained": {
                             "repeat": true
                         }
-                    }
-                },
-                {
-                    "event": "action-used",
-                    "self": true,
-                    "apply": {
-                        "type": "prompt",
-                        "text": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Note"
                     }
                 }
             ]
@@ -6519,7 +6610,8 @@
                                 "key": "GrantItem",
                                 "uuid": "Compendium.pf2e.equipment-srd.Item.fyYnQf1NAx9fWFaS"
                             }
-                        ]
+                        ],
+                        "dismissable": "holder"
                     }
                 },
                 {
@@ -6540,7 +6632,8 @@
                                 "key": "GrantItem",
                                 "uuid": "Compendium.pf2e.equipment-srd.Item.44F1mfJei4GY8f2X"
                             }
-                        ]
+                        ],
+                        "dismissable": "holder"
                     }
                 },
                 {
@@ -6561,7 +6654,8 @@
                                 "key": "GrantItem",
                                 "uuid": "Compendium.pf2e.equipment-srd.Item.wrpI5z7iWB8XvflQ"
                             }
-                        ]
+                        ],
+                        "dismissable": "holder"
                     }
                 },
                 {
@@ -6582,7 +6676,8 @@
                                 "key": "GrantItem",
                                 "uuid": "Compendium.pf2e.equipment-srd.Item.Zr4PwTEuBLE30kkn"
                             }
-                        ]
+                        ],
+                        "dismissable": "holder"
                     }
                 },
                 {
@@ -6603,7 +6698,8 @@
                                 "key": "GrantItem",
                                 "uuid": "Compendium.pf2e.equipment-srd.Item.6DCy7tEF1cxaIJMy"
                             }
-                        ]
+                        ],
+                        "dismissable": "holder"
                     }
                 },
                 {
@@ -6624,7 +6720,8 @@
                                 "key": "GrantItem",
                                 "uuid": "Compendium.pf2e.equipment-srd.Item.5j5KyZsGOfbrJNUZ"
                             }
-                        ]
+                        ],
+                        "dismissable": "holder"
                     }
                 }
             ]

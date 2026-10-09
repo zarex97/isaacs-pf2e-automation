@@ -990,7 +990,8 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
 {
     const { carried, shortened } = await import("../scripts/riders/apply.mjs");
     const { pointsAlong } = await import("../scripts/riders/apply.mjs");
-    const { counteracts, slugOfName } = await import("../scripts/riders/apply.mjs");
+    const { slugOfName } = await import("../scripts/riders/apply.mjs");
+    const { counteracts } = await import("../scripts/riders/tether.mjs");
     check("a counteract reaches by its degree", [counteracts("criticalSuccess", 4, 7), counteracts("criticalSuccess", 4, 8), counteracts("success", 4, 5), counteracts("failure", 4, 3), counteracts("failure", 4, 4), counteracts("criticalFailure", 4, 1)], [true, false, true, true, false, false]);
     check("a typed spell name is its slug", [slugOfName("Frozen Lungs"), slugOfName(" Familiar's Call "), slugOfName("")], ["frozen-lungs", "familiars-call", ""]);
     const { usedOptions } = await import("../scripts/riders/data.mjs");
@@ -1000,9 +1001,20 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
     const { flanks } = await import("../scripts/riders/flanks-with.mjs");
     const both = { attackerFeet: 5, partnerFeet: 5, partnerIsTarget: false, offGuard: false };
     check("Pack Attack: both adjacent, and not off-guard already", [flanks(both), flanks({ ...both, partnerFeet: 10 }), flanks({ ...both, offGuard: true }), flanks({ ...both, partnerIsTarget: true })], [true, false, false, false]);
-    const { swappedDc } = await import("../scripts/riders/dc-swap.mjs");
+    const { swappedDc, moves } = await import("../scripts/riders/dc-swap.mjs");
+    check("Bracing Tendrils: a spell must counteract it, a creature must succeed", [moves({ spell: true, outcome: "success", rank: 3, anchorRank: 3 }), moves({ spell: true, outcome: "failure", rank: 3, anchorRank: 3 }), moves({ spell: false, outcome: "success" }), moves({ spell: false, outcome: "failure" })], [true, false, true, false]);
     const swap = { actions: ["shove", "reposition"], dc: 13 };
     check("Bracing Tendrils: the higher DC, for the actions it answers", [swappedDc(10, swap, new Set(["action:shove"])), swappedDc(15, swap, new Set(["action:shove"])), swappedDc(10, swap, new Set(["action:trip"]))], [13, null, null]);
+    const { nearestOpen, capacityOf } = await import("../scripts/targeting/pocket.mjs");
+    check("Liminal Doorway: the nearest open square, and one creature a square", [nearestOpen({ x: 0, y: 0 }, 100, [{ x: 0, y: 0 }, { x: 100, y: 0 }]), capacityOf(20, 5), capacityOf(10, 5)], [{ x: -100, y: 0 }, 16, 4]);
+    const { fadesAfter, faded } = await import("../scripts/riders/trail.mjs");
+    check("Glowing Trail: how long a mark lasts by rank", [1, 3, 5, 7, 9].map(fadesAfter), [600, 86400, 7 * 86400, 30 * 86400, 365 * 86400]);
+    check("…and which have faded", faded([{ flags: { [LIB_ID]: { trail: { expiresAt: 10 } } } }, { flags: { [LIB_ID]: { trail: { expiresAt: 30 } } } }, { flags: {} }], 20).length, 1);
+    const { mayTry } = await import("../scripts/targeting/disbelief.mjs");
+    check("Phantom Crowd: one try at disbelief each", [mayTry({ disbelief: { dc: 13 }, tried: [] }, "A"), mayTry({ disbelief: { dc: 13 }, tried: ["A"] }, "A"), mayTry({ tried: [] }, "A")], [true, false, false]);
+    const { besideSquares, familiarOf } = await import("../scripts/riders/companion.mjs");
+    check("Familiar's Call: the squares beside the caster, nearest first", besideSquares({ x: 0, y: 0 }, 100).slice(0, 2), [{ x: 100, y: 0 }, { x: -100, y: 0 }]);
+    check("…and the caster's own familiar", familiarOf({ id: "c" }, [{ type: "familiar", name: "x", system: { master: { id: "d" } } }, { type: "familiar", name: "y", system: { master: { id: "c" } } }])?.name, "y");
     const { due, delaySeconds } = await import("../scripts/riders/reminder.mjs");
     const reminderAt = (at) => ({ flags: { [LIB_ID]: { reminder: { at } } } });
     check("Timely Reminder: due once the clock reaches it", due([reminderAt(100), reminderAt(200), {}], 150).length, 1);

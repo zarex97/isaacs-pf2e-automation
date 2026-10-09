@@ -69,7 +69,10 @@ async function resolvePull(rider, context, centre) {
     const item = context.item ?? null;
     // The saves first, all of them: who moves how far is settled before anyone moves.
     const planned = [];
+    const { Anchor } = await import("./dc-swap.mjs");
     for (const token of tokens) {
+        // *Bracing Tendrils*: an anchored creature is moved only past its anchor (`dc-swap.mjs`).
+        if (await Anchor.holds({ ...context, actor: token.actor, target: token }, item)) continue;
         const statistic = token.actor.getStatistic?.(rider.apply.save ?? "reflex");
         const roll = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item }) : null;
         const outcome = DEGREES[roll?.degreeOfSuccess ?? 1];

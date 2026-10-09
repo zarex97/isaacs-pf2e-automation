@@ -56,6 +56,11 @@ import { FlanksWith } from "./riders/flanks-with.mjs";
 import { DcSwap } from "./riders/dc-swap.mjs";
 import { Reminder } from "./riders/reminder.mjs";
 import { SpellImmunity } from "./riders/spell-immunity.mjs";
+import { Conjure } from "./riders/conjure.mjs";
+import { Trail } from "./riders/trail.mjs";
+import { Disbelief } from "./targeting/disbelief.mjs";
+import { Languages } from "./vanilla/languages.mjs";
+import { Pocket } from "./targeting/pocket.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -99,9 +104,14 @@ export const INIT = [
     ["metal drawn to a creature", () => Draws.register()],
     ["a weapon that cannot be let go", () => HeldFast.registerHooks()],
     ["a pair that flanks wherever it stands", () => FlanksWith.register()],
-    ["a DC its holder sets another way", () => DcSwap.register()],
+    ["a DC its holder sets another way, and an anchor", () => DcSwap.register()],
     ["a message for a moment of the clock", () => Reminder.registerHooks()],
     ["a ward against one named spell", () => SpellImmunity.register()],
+    ["an object conjured for as long as an effect lasts", () => Conjure.registerHooks()],
+    ["a path its holder leaves behind", () => Trail.registerHooks()],
+    ["an illusion a creature can see through", () => Disbelief.registerHooks()],
+    ["languages a vanilla spell makes up", () => Languages.register()],
+    ["a room that is not on the map", () => Pocket.registerHooks()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

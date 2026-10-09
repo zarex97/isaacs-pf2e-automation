@@ -10,7 +10,29 @@
             "apply": {
                 "type": "effect",
                 "label": "ISAACS_AUTOMATION.Vanilla.invent-code.Code",
-                "rules": []
+                "rules": [
+                    {
+                        "key": "ActiveEffectLike",
+                        "mode": "add",
+                        "path": "system.build.languages.granted",
+                        "value": {
+                            "slug": "invented-code",
+                            "source": "Invent Code"
+                        },
+                        "predicate": [
+                            "self:type:character"
+                        ]
+                    },
+                    {
+                        "key": "ActiveEffectLike",
+                        "mode": "add",
+                        "path": "system.details.languages.value",
+                        "value": "invented-code",
+                        "predicate": [
+                            "self:type:npc"
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -22,7 +44,29 @@
             "apply": {
                 "type": "effect",
                 "label": "ISAACS_AUTOMATION.Vanilla.invent-code.Code",
-                "rules": []
+                "rules": [
+                    {
+                        "key": "ActiveEffectLike",
+                        "mode": "add",
+                        "path": "system.build.languages.granted",
+                        "value": {
+                            "slug": "invented-code",
+                            "source": "Invent Code"
+                        },
+                        "predicate": [
+                            "self:type:character"
+                        ]
+                    },
+                    {
+                        "key": "ActiveEffectLike",
+                        "mode": "add",
+                        "path": "system.details.languages.value",
+                        "value": "invented-code",
+                        "predicate": [
+                            "self:type:npc"
+                        ]
+                    }
+                ]
             }
         }
     ]

@@ -79,6 +79,7 @@ A clause that states a fact and makes no move — traits on an item, "nothing ha
 | `area:from-target` | The area starts from a creature other than the caster. | VS-58f | `scripts/riders/origin-action.mjs` | `originAction.areaTargeting.includesOrigin` | “originating from the target”, “centered on the target” |
 | `area:swept` | A moving area reaches everyone whose space it passed over, not only where it stops. | VS-41c | `scripts/targeting/lingering.mjs` | `lingering.sustain.move` | “whose space it shared”, “during its flight” |
 | `area:strikes-from` | A lingering area the caster aims a further, smaller strike from — a bolt, a vine. | VS-43a | `scripts/targeting/lingering.mjs` | `lingering.sustain.bolt`, `lingering.sustain.vine` | “call down”, “lash out from any square”, “within the spell's area” |
+| `area:trail` | An area laid along the path its holder moves, each stretch fading on its own clock. | VS-189a | `scripts/riders/trail.mjs` | `riders[].apply.trail` | “Your movements leave”, “glowing path behind you”, “The path fades” |
 
 ## `check` — What decides the outcome?
 
@@ -106,6 +107,7 @@ A clause that states a fact and makes no move — traits on an item, "nothing ha
 | `check:skill` | The ability rolls a skill check (often a Lore, often secret) against a DC — a level-based one, or one set by the ability — and says what each degree gives. | isaacsHBPF2e:SF-06a | `isaacsHBPF2e:scripts/stargazer/feats.mjs` | `the action's slug, read by its module, which calls statistic.roll({ dc, traits: ['secret'] })`, `pf2e @Check inline roll` | “attempt a Deception check”, “Astronomy Lore check”, “level-based Hard DC”, “as a Recall Knowledge action”, “On a success you learn” |
 | `check:fortune` | The fortune and misfortune traits' own rules: a roll one already touched refuses another, a creature cannot benefit from fortune, the two cancel — or an ability that works in spite of them. | isaacsHBPF2e:HR-03c | `scripts/lib/reroll-pipeline.mjs`, `scripts/lib/check-pipeline.mjs`, `isaacsHBPF2e:scripts/stargazer/paths.mjs`, `isaacsHBPF2e:scripts/stargazer/armed.mjs` | `the fortune or misfortune trait on the item`, `a CheckPipeline or reroll-pipeline stage that refuses it` | “This is a fortune effect”, “This is a misfortune effect”, “cannot benefit from fortune effects”, “already altered by a fortune or misfortune effect”, “cancel each other out” |
 | `check:dc-swap` | A DC the holder is checked against set by another statistic, the higher of the two. | VS-167a | `scripts/riders/dc-swap.mjs` | `riders[].apply.dcSwap` | “in place of your Fortitude DC”, “use your spell DC” |
+| `check:disbelieve` | A creature that touches or Seeks an illusion rolls Perception against its DC; one who succeeds ignores what it does. | VS-223b | `scripts/targeting/disbelief.mjs` | `lingering.disbelief` | “attempt to disbelieve”, “hasn't disbelieved the illusion” |
 
 ## `effect` — What changes on the sheet or the board?
 
@@ -200,6 +202,9 @@ A clause that states a fact and makes no move — traits on an item, "nothing ha
 | `effect:flanking` | Creatures flank an enemy wherever they stand around it, making it off-guard to their attacks. | VS-163b | `scripts/riders/flanks-with.mjs` | `riders[].apply.flanksWith` | “flank any enemy”, “whether or not you are on opposite sides” |
 | `effect:item-conjured` | A temporary item conjured into the holder's inventory, gone when its effect ends. | VS-182a | `scripts/riders/apply.mjs`, `scripts/vanilla/requires.mjs` | `an effect with pf2e GrantItem`, `castChoice` | “You conjure a temporary”, “temporarily conjured” |
 | `effect:held-fast` | An item in the holder's hands can't be dropped, stowed or taken away while the effect lasts. | VS-221a | `scripts/riders/held-fast.mjs` | `riders[].apply.heldFast` | “can't drop your weapon”, “can't drop” |
+| `effect:object-moved` | An object, not a creature, moved across or above the board. | VS-168a | `scripts/riders/apply.mjs`, `scripts/vanilla/requires.mjs` | `requires: object-target`, `riders[].apply.type: teleport`, `riders[].apply.type: elevation` | “You move the target”, “unattended object”, “suspending it in midair” |
+| `effect:language` | A language its holder reads, writes and speaks while it lasts. | VS-172a | `scripts/vanilla/languages.mjs` | `pf2e ActiveEffectLike system.build.languages.granted (character)`, `pf2e ActiveEffectLike system.details.languages.value (npc)` | “understand a newly invented language”, “read and write in their new language” |
+| `effect:extradimensional` | A space off the map that creatures enter and leave, and are put out of when it collapses. | VS-173a | `scripts/targeting/pocket.mjs` | `riders[].apply.type: pocket` | “extradimensional space”, “the space begins to collapse” |
 
 ## `ending` — What stops it?
 

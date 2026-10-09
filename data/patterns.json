@@ -927,6 +927,21 @@
                         "lash out from any square",
                         "within the spell's area"
                     ]
+                },
+                "trail": {
+                    "meaning": "An area laid along the path its holder moves, each stretch fading on its own clock.",
+                    "precedent": "VS-189a",
+                    "modules": [
+                        "scripts/riders/trail.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.trail"
+                    ],
+                    "phrases": [
+                        "Your movements leave",
+                        "glowing path behind you",
+                        "The path fades"
+                    ]
                 }
             }
         },
@@ -1308,6 +1323,20 @@
                     "phrases": [
                         "in place of your Fortitude DC",
                         "use your spell DC"
+                    ]
+                },
+                "disbelieve": {
+                    "meaning": "A creature that touches or Seeks an illusion rolls Perception against its DC; one who succeeds ignores what it does.",
+                    "precedent": "VS-223b",
+                    "modules": [
+                        "scripts/targeting/disbelief.mjs"
+                    ],
+                    "authored": [
+                        "lingering.disbelief"
+                    ],
+                    "phrases": [
+                        "attempt to disbelieve",
+                        "hasn't disbelieved the illusion"
                     ]
                 }
             }
@@ -2752,6 +2781,53 @@
                     "phrases": [
                         "can't drop your weapon",
                         "can't drop"
+                    ]
+                },
+                "object-moved": {
+                    "meaning": "An object, not a creature, moved across or above the board.",
+                    "precedent": "VS-168a",
+                    "modules": [
+                        "scripts/riders/apply.mjs",
+                        "scripts/vanilla/requires.mjs"
+                    ],
+                    "authored": [
+                        "requires: object-target",
+                        "riders[].apply.type: teleport",
+                        "riders[].apply.type: elevation"
+                    ],
+                    "phrases": [
+                        "You move the target",
+                        "unattended object",
+                        "suspending it in midair"
+                    ]
+                },
+                "language": {
+                    "meaning": "A language its holder reads, writes and speaks while it lasts.",
+                    "precedent": "VS-172a",
+                    "modules": [
+                        "scripts/vanilla/languages.mjs"
+                    ],
+                    "authored": [
+                        "pf2e ActiveEffectLike system.build.languages.granted (character)",
+                        "pf2e ActiveEffectLike system.details.languages.value (npc)"
+                    ],
+                    "phrases": [
+                        "understand a newly invented language",
+                        "read and write in their new language"
+                    ]
+                },
+                "extradimensional": {
+                    "meaning": "A space off the map that creatures enter and leave, and are put out of when it collapses.",
+                    "precedent": "VS-173a",
+                    "modules": [
+                        "scripts/targeting/pocket.mjs"
+                    ],
+                    "authored": [
+                        "riders[].apply.type: pocket"
+                    ],
+                    "phrases": [
+                        "extradimensional space",
+                        "the space begins to collapse"
                     ]
                 }
             }

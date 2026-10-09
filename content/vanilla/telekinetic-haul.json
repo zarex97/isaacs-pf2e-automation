@@ -1,5 +1,44 @@
 {
+    "requires": "object-target",
     "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "teleport",
+                "distance": 20,
+                "direction": "choose"
+            }
+        },
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "choice",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height",
+                "options": [
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height0",
+                        "apply": {
+                            "type": "elevation",
+                            "set": 0
+                        }
+                    },
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height10",
+                        "apply": {
+                            "type": "elevation",
+                            "set": 10
+                        }
+                    },
+                    {
+                        "label": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Height20",
+                        "apply": {
+                            "type": "elevation",
+                            "set": 20
+                        }
+                    }
+                ]
+            }
+        },
         {
             "event": "action-used",
             "self": true,
@@ -14,14 +53,6 @@
                 "sustained": {
                     "repeat": true
                 }
-            }
-        },
-        {
-            "event": "action-used",
-            "self": true,
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.telekinetic-haul.Note"
             }
         }
     ]

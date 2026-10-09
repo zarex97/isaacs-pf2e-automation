@@ -38,7 +38,8 @@
                         "key": "GrantItem",
                         "uuid": "Compendium.pf2e.equipment-srd.Item.fyYnQf1NAx9fWFaS"
                     }
-                ]
+                ],
+                "dismissable": "holder"
             }
         },
         {
@@ -59,7 +60,8 @@
                         "key": "GrantItem",
                         "uuid": "Compendium.pf2e.equipment-srd.Item.44F1mfJei4GY8f2X"
                     }
-                ]
+                ],
+                "dismissable": "holder"
             }
         },
         {
@@ -80,7 +82,8 @@
                         "key": "GrantItem",
                         "uuid": "Compendium.pf2e.equipment-srd.Item.wrpI5z7iWB8XvflQ"
                     }
-                ]
+                ],
+                "dismissable": "holder"
             }
         },
         {
@@ -101,7 +104,8 @@
                         "key": "GrantItem",
                         "uuid": "Compendium.pf2e.equipment-srd.Item.Zr4PwTEuBLE30kkn"
                     }
-                ]
+                ],
+                "dismissable": "holder"
             }
         },
         {
@@ -122,7 +126,8 @@
                         "key": "GrantItem",
                         "uuid": "Compendium.pf2e.equipment-srd.Item.6DCy7tEF1cxaIJMy"
                     }
-                ]
+                ],
+                "dismissable": "holder"
             }
         },
         {
@@ -143,7 +148,8 @@
                         "key": "GrantItem",
                         "uuid": "Compendium.pf2e.equipment-srd.Item.5j5KyZsGOfbrJNUZ"
                     }
-                ]
+                ],
+                "dismissable": "holder"
             }
         }
     ]

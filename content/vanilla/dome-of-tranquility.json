@@ -19,7 +19,8 @@
                         2
                     ]
                 }
-            ]
+            ],
+            "blocksSound": true
         },
         {
             "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
@@ -42,7 +43,8 @@
                         4
                     ]
                 }
-            ]
+            ],
+            "blocksSound": true
         },
         {
             "name": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Dome",
@@ -59,17 +61,8 @@
                         5
                     ]
                 }
-            ]
-        }
-    ],
-    "riders": [
-        {
-            "event": "action-used",
-            "self": true,
-            "apply": {
-                "type": "prompt",
-                "text": "ISAACS_AUTOMATION.Vanilla.dome-of-tranquility.Note"
-            }
+            ],
+            "blocksSound": true
         }
     ]
 }
