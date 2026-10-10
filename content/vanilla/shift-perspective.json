@@ -1,0 +1,26 @@
+{
+    "requires": "held-light",
+    "areaTargeting": {
+        "area": {
+            "type": "square",
+            "value": 5
+        },
+        "range": 120,
+        "markCentre": true,
+        "affects": "all",
+        "placeOnly": true
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "throw-view"
+            }
+        }
+    ]
+}

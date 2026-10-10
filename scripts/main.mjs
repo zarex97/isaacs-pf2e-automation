@@ -71,6 +71,10 @@ import { Victuals } from "./riders/poison.mjs";
 import { Recall } from "./riders/recall.mjs";
 import { Journey } from "./riders/journey.mjs";
 import { Liberate } from "./riders/liberate.mjs";
+import { Leash } from "./riders/leash.mjs";
+import { Rune } from "./riders/rune.mjs";
+import { Pathway } from "./riders/pathway.mjs";
+import { Disguise } from "./riders/disguise.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -132,6 +136,10 @@ export const INIT = [
     ["knowledge recalled all at once", () => { Recall.register(); Recall.registerHooks(); }],
     ["words for when an effect ends", () => Journey.registerHooks()],
     ["an escape offered at once", () => Liberate.registerHooks()],
+    ["an effect that ends past a distance", () => Leash.registerHooks()],
+    ["a message left in a rune", () => Rune.registerHooks()],
+    ["from one fire or tree to another", () => Pathway.registerHooks()],
+    ["magic made to look like other magic", () => Disguise.registerHooks()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

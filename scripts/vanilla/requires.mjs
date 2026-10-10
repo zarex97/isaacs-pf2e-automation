@@ -3,6 +3,7 @@ import { t } from "../i18n.mjs";
 import { chooseHeldWeapon, heldWeapons, weaponDamageTypes } from "../riders/weapon.mjs";
 import { VARIANT } from "../targeting/index.mjs";
 import { LIB_ID } from "../id.mjs";
+import { throwable } from "../riders/perspective.mjs";
 
 /** The flag on the caster that carries the multiple attack penalty chosen for a cast's attacks to its riders. */
 export const ATTACK_NUMBER = "attackNumber";
@@ -35,11 +36,30 @@ export function unmetRequirement(spell, options = {}) {
         }
         return null;
     }
+    // `{ targetNotTraits }`: no target has any of them — *Spiritual Renewal*'s "1 living creature", not undead or construct.
+    if (requires && typeof requires === "object" && Array.isArray(requires.targetNotTraits)) {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        if (targets.length === 0 || targets.some((token) => requires.targetNotTraits.some((trait) => (token.actor?.system?.traits?.value ?? []).includes(trait)))) {
+            return t("Requires.TargetNotTraits", { name: spell.name, traits: requires.targetNotTraits.join(", ") });
+        }
+    }
+    // `{ targetSameSize, targetWithin }`: one creature the caster's size, within so many feet — *Reflected Beauty*'s "a
+    // willing creature that's the same size as you and that you can see within 30 feet".
+    if (requires && typeof requires === "object" && (requires.targetSameSize || requires.targetWithin)) {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        const own = spell?.actor?.getActiveTokens?.(true, false)?.[0];
+        const size = spell?.actor?.size;
+        const ok = targets.length === 1 && targets.every((token) => (!requires.targetSameSize || token.actor?.size === size)
+            && (!requires.targetWithin || (own && own.distanceTo(token) <= Number(requires.targetWithin))));
+        if (!ok) return t("Requires.SameSizeWithin", { name: spell.name, feet: requires.targetWithin ?? "" });
+    }
     // `{ heldGroups }`: a held weapon of one of those groups — *Shillelagh*'s "1 club or staff you hold".
     if (requires && typeof requires === "object" && Array.isArray(requires.heldGroups)) {
         const held = heldWeapons(spell?.actor).filter((weapon) => requires.heldGroups.includes(weapon.system?.group));
         return held.length > 0 ? null : t("Requires.HeldGroups", { name: spell.name, groups: requires.heldGroups.join(", ") });
     }
+    // *Shift Perspective*: "one item of light Bulk or less that you're holding".
+    if (requires === "held-light" && !throwable([...(spell?.actor?.items ?? [])])) return t("Requires.HeldLight", { name: spell.name });
     if (requires === "held-weapon" && heldWeapons(spell?.actor).length === 0) return t("Requires.HeldWeapon", { name: spell.name });
     // *Earthbind*: "you hamper a target's flight" — every creature targeted is off the ground.
     if (requires === "flying-target") {

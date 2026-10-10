@@ -1,4 +1,5 @@
 import { t } from "../i18n.mjs";
+import { asDisguised, disguiseOf, seesThrough } from "./disguise.mjs";
 import { LIB_ID } from "../id.mjs";
 
 /**
@@ -54,7 +55,10 @@ export async function detectMagic(rider, context) {
     for (const token of canvas.tokens.placeables) {
         if (!token.actor || origin.distanceTo(token) > range) continue;
         for (const item of token.actor.items) {
-            const magic = magicIn(item);
+            let magic = magicIn(item);
+            // *Disguise Magic*: hidden, or something lesser — unless this caster sees through it (`disguise.mjs`).
+            const disguise = magic ? disguiseOf(item, token.actor) : null;
+            if (disguise && !(await seesThrough(disguise, item.flags?.[LIB_ID]?.disguised ? item : token.actor, caster, rank))) magic = asDisguised(magic, disguise);
             if (magic) found.push({ ...magic, where: token.name, friendly: friendly(token.actor) });
         }
     }

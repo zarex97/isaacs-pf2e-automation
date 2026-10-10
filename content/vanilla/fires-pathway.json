@@ -1,0 +1,18 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "pathway",
+                "feature": "fire",
+                "miles": {
+                    "5": 5,
+                    "6": 50,
+                    "8": 500,
+                    "9": "planet"
+                }
+            }
+        }
+    ]
+}

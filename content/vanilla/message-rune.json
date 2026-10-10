@@ -1,0 +1,167 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.message-rune.Prompt",
+        "fields": [
+            {
+                "key": "message",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Message",
+                "type": "text"
+            },
+            {
+                "key": "trigger",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Trigger",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                "rules": [],
+                "dismissable": true,
+                "rune": {
+                    "message": "message",
+                    "trigger": "trigger"
+                }
+            },
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ]
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 7,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                "rules": [],
+                "dismissable": true,
+                "rune": {
+                    "message": "message",
+                    "trigger": "trigger"
+                }
+            },
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ]
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 30,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                "rules": [],
+                "dismissable": true,
+                "rune": {
+                    "message": "message",
+                    "trigger": "trigger"
+                }
+            },
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        6
+                    ]
+                }
+            ]
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 365,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                "rules": [],
+                "dismissable": true,
+                "rune": {
+                    "message": "message",
+                    "trigger": "trigger"
+                }
+            },
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        7
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        8
+                    ]
+                }
+            ]
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                "rules": [],
+                "dismissable": true,
+                "rune": {
+                    "message": "message",
+                    "trigger": "trigger"
+                }
+            },
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        9
+                    ]
+                }
+            ]
+        }
+    ]
+}

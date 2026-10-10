@@ -7,6 +7,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Spell | Rank | Area and targets | Riders | Lingering |
 | :-- | :-- | :-- | :-- | :-- |
 | Acid Grip | 2 |  | success: pushed 5 ft in a direction you choose; failure / crit. failure: 1d6 (+1d6 per 2 ranks) persistent acid; failure / crit. failure: spell-effect-acid-grip; failure: pushed 10 ft in a direction you choose; crit. failure: pushed 20 ft in a direction you choose |  |
+| Acid Storm | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | reflex on turn start — 3d8 (+1d8 per rank) acid, 1 minutes |
 | Air Bubble | 1 |  | air bubble (1 minutes) |  |
 | Animal Form | 2 |  | choice (on you) |  |
 | Animal Vision | 3 |  | animal vision (1 hours, on you); success / crit. success: expire |  |
@@ -39,6 +40,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Deep Breath | 1 |  | deep breath (10 minutes, carries holder-acts shorten, on you); deep breath (60 minutes, carries holder-acts shorten, from rank 2, on you); deep breath (480 minutes, carries holder-acts shorten, from rank 4, on you) |  |
 | Detect Magic | 1 |  | detect-magic (on you); detect-magic (on you) |  |
 | Detect Poison | 1 |  | detect-poison |  |
+| Disguise Magic | 1 |  | disguise (on you) |  |
 | Disintegrate | 6 |  | rays (on you) |  |
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
@@ -61,6 +63,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |
+| Fire's Pathway | 5 |  | pathway (on you) |  |
 | Floating Flame | 2 | 5-ft square (pf2e's), all |  | ends if not Sustained, Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
 | Fly | 4 |  | spell-effect-fly (below rank 7); spell-effect-fly (1 hours, from rank 7) |  |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
@@ -87,6 +90,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Ill Omen | 1 |  | failure / crit. failure: spell-effect-ill-omen |  |
 | Impart Empathy | 2 |  | failure / crit. failure: impart empathy (1 days) |  |
 | Infuse Vitality | 1 |  | spell-effect-infuse-vitality |  |
+| Instant Parade | 3 | 10-ft emanation (pf2e's), all, placed, no targets | Instant Parade (10 minutes, on you) | moves with you, Dismiss, while inside: its rules, 10 minutes |
 | Invent Code | 3 |  | invented code (8 hours, on you); invented code (8 hours) |  |
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | King's Castle | 5 |  | swap |  |
@@ -101,6 +105,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Magnetize | 4 |  | magnetized (1 minutes) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
+| Message Rune | 1 |  | message rune (1 days, on you); message rune (7 days, from rank 3, on you); message rune (30 days, from rank 5, on you); message rune (365 days, from rank 7, on you); message rune (until it ends, from rank 9, on you) |  |
 | Metal Merged | 1 |  | metal merged (1 minutes, on you) |  |
 | Mind Games | 2 |  | success / failure / crit. failure: expire; success / failure / crit. failure: mind games (1 minutes, while Sustained); failure: stunned 1; crit. failure: stunned 2; crit. success: stunned 1; crit. success: expire |  |
 | Mindlink | 1 |  | message |  |
@@ -109,6 +114,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
 | Mountain Resilience | 4 |  | spell-effect-mountain-resilience (carries damage-received shorten) |  |
 | Mud Pit | 1 | 15-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, 1 minutes |
+| Nature's Pathway | 5 |  | pathway (on you) |  |
 | Nettleskin | 1 |  | nettleskin (10 rounds, carries damage-received damage, damage-received shorten, on you) |  |
 | Noxious Vapors | 1 | 10-ft emanation (pf2e's), all | crit. failure: sickened 1 | until your next turn, while inside: concealed, its rules, 1 rounds |
 | Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
@@ -126,6 +132,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Puff of Poison | 1 |  | failure: 1d4 (+1d4 per 2 ranks) persistent poison; crit. failure: 2d4 (+2d4 per 2 ranks) persistent poison |  |
 | Quick Sort | 1 |  | sort-items |  |
 | Read Omens | 4 |  | message (on you) |  |
+| Reflected Beauty | 4 |  | spell-effect-illusory-disguise (1 hours, on you) |  |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
@@ -145,6 +152,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Share Life | 2 |  | life linked (10 minutes) |  |
 | Shattering Gem | 1 |  | shattering gem (1 minutes) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
+| Shift Perspective | 2 | 5-ft square, all, placed, no targets | throw-view (1 minutes, on you) |  |
 | Shillelagh | 1 |  | spell-effect-shillelagh (on you) |  |
 | Silence | 2 |  | spell-effect-silence |  |
 | Sky Sight | 1 |  | sky sight (1 hours, on you) |  |
@@ -159,6 +167,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Spider Sting | 1 |  | success: 1d4 poison; failure: affliction; crit. failure: affliction |  |
 | Spirit Link | 1 |  | transfer; spirit link (10 minutes, carries turn-start transfer, on you) |  |
 | Spiritual Armament | 2 |  | Spiritual Armament (1 minutes, while Sustained, on you) |  |
+| Spiritual Renewal | 4 |  | spell-effect-spiritual-renewal |  |
 | Spontaneous Cartography | 3 |  | map (on you) |  |
 | Stabilize | 1 |  | dying (no end); unconscious (no end) |  |
 | Stonesense | 4 |  | stonesense (1 minutes, on you) |  |
@@ -176,6 +185,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Timely Reminder | 2 |  | timely reminder (365 days, on you); timely reminder (365 days, from rank 5) |  |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
+| Tremorsense | 2 |  | spell-effect-tremorsense (10 minutes, on you); spell-effect-tremorsense (1 hours, from rank 3, on you); spell-effect-tremorsense (8 hours, from rank 5, on you) |  |
 | Umbral Journey | 5 | up to 10 | journey (on you); umbral journey (8 hours, on you); umbral journey (8 hours) |  |
 | Unfettered Movement | 4 |  | spell-effect-unfettered-movement |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |

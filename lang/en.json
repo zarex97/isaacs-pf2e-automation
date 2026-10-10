@@ -281,7 +281,10 @@
             "AnimalTarget": "{name} needs an animal targeted.",
             "Cost": "{name} at this rank costs {gp} gp, and there isn't enough.",
             "TargetTraits": "{name} needs every target to be: {traits}.",
-            "HeldGroups": "{name} needs a held weapon of these groups: {groups}."
+            "HeldGroups": "{name} needs a held weapon of these groups: {groups}.",
+            "TargetNotTraits": "{name} can't target a creature that is {traits}.",
+            "SameSizeWithin": "{name} needs one creature your size, within {feet} feet, targeted.",
+            "HeldLight": "{name} needs an item of light Bulk or less in your hand."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -1069,6 +1072,29 @@
             },
             "rope-trick": {
                 "Rope": "{name}: the rope"
+            },
+            "disguise-magic": {
+                "Prompt": "What to disguise, and how (leave the item blank, from 2nd rank, to disguise everything on the creature targeted):",
+                "Item": "Item or spell effect",
+                "Mode": "Disguise",
+                "As": "Registers as",
+                "Level": "At level or rank",
+                "Lower": "Something common and lesser",
+                "Hide": "No aura at all"
+            },
+            "message-rune": {
+                "Prompt": "The recorded message, and the trigger to hear it:",
+                "Message": "Message",
+                "Trigger": "Trigger",
+                "Rune": "message rune"
+            },
+            "instant-parade": {
+                "Parade": "Instant Parade",
+                "Inside": "Inside the parade, a creature can Hide and Sneak among the crowd, unless the seeker has disbelieved it.",
+                "Send": "Send the parade off"
+            },
+            "acid-storm": {
+                "Storm": "Acid Storm"
             }
         },
         "Conditions": {
@@ -1284,6 +1310,44 @@
             "Free": "{name} is not grabbed, immobilized or restrained.",
             "Offer": "{name} is {held}: escape now, with your reaction.",
             "Native": "Escape (against the creature you target)"
+        },
+        "Leash": {
+            "Ends": "{name} ends: more than {feet} feet from {other}."
+        },
+        "Rune": {
+            "Posted": "A message rune. Its trigger: {trigger}",
+            "Touch": "Touch the rune",
+            "Select": "Select the token that touches the rune.",
+            "Gone": "The rune is gone.",
+            "Ask": "{name} touches the rune. Does it meet the trigger — {trigger}?",
+            "Yes": "It does: play the message",
+            "Hears": "{name} hears, in its head:",
+            "Listening": "Someone is listening to your message rune."
+        },
+        "Pathway": {
+            "None": "No {feature} large enough here to step into: the spell fails.",
+            "Extradimensional": "You carry an extradimensional space: the spell fails.",
+            "Here": "{feet} feet to the {toward}",
+            "Afar": "on {scene}",
+            "Miles": "on {scene}, about {miles} miles away",
+            "Back": "Step back out of {name}",
+            "Known": "You know {count} other {feature} in reach. Choose where to step out:",
+            "Out": "{name} steps out at {at}."
+        },
+        "Perspective": {
+            "Nothing": "{actor} holds nothing of light Bulk or less to throw.",
+            "Thrown": "{item} (thrown)",
+            "View": "the view from {item}",
+            "Landed": "{item} lands, and you see from it.",
+            "NoParade": "No parade follows you to send off.",
+            "Which": "Which way does the parade go?",
+            "SentOff": "{name} moves off {feet} feet, and is gone in a round."
+        },
+        "Disguise": {
+            "Disbelieve": "Disbelieve the disguise on {name}",
+            "NoThing": "No \"{item}\" on {name} to disguise.",
+            "Hidden": "{thing}: its aura is hidden.",
+            "Lowered": "{thing}: its aura registers as {as}, level {level}."
         }
     }
 }

@@ -1,0 +1,60 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.instant-parade.Parade",
+        "duration": {
+            "value": 10,
+            "unit": "minutes"
+        },
+        "followsCaster": true,
+        "dismiss": true,
+        "disbelief": true,
+        "events": [],
+        "inside": {
+            "rules": [
+                {
+                    "key": "RollOption",
+                    "domain": "all",
+                    "option": "instant-parade"
+                }
+            ],
+            "description": "ISAACS_AUTOMATION.Vanilla.instant-parade.Inside"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.instant-parade.Parade",
+                "rules": [],
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.instant-parade.Send",
+                    "actions": 2,
+                    "traits": [
+                        "concentrate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "send-off",
+                                "feet": 100
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

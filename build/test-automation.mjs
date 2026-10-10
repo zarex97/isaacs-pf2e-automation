@@ -1059,6 +1059,17 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
     check("Restyle: only clothing worn", [isWorn({ system: { equipped: { carryType: "worn", inSlot: true } } }), isWorn({ system: { equipped: { carryType: "worn" } } }), isWorn({ system: { equipped: { carryType: "held" } } })], [true, true, false]);
     const { sizeWeight } = await import("../scripts/targeting/pocket.mjs");
     check("Rope Trick: Large two, Huge four, Gargantuan the lot", ["med", "lg", "huge", "grg", "sm"].map(sizeWeight), [1, 2, 4, 8, 1]);
+    const { reachAt, milesBetween } = await import("../scripts/riders/pathway.mjs");
+    const pathMiles = { 5: 5, 6: 50, 8: 500, 9: "planet" };
+    check("Fire's Pathway: 5 miles, 50 at 6th, 500 at 8th, the planet at 9th", [5, 6, 7, 8, 9].map((r) => reachAt(pathMiles, r)), [5, 50, 50, 500, "planet"]);
+    check("…miles between scenes that say where they are", [milesBetween({ x: 0, y: 0 }, { x: 3, y: 4 }), milesBetween(null, { x: 1, y: 1 })], [5, null]);
+    const { throwable, along } = await import("../scripts/riders/perspective.mjs");
+    check("Shift Perspective: a held item of light Bulk or less", [throwable([{ system: { equipped: { carryType: "held", handsHeld: 1 }, bulk: { value: 1 } } }, { name: "x", system: { equipped: { carryType: "held", handsHeld: 1 }, bulk: { value: 0.1 } } }])?.name, throwable([{ system: { equipped: { carryType: "worn" }, bulk: { value: 0 } } }])], ["x", null]);
+    check("Instant Parade: 100 feet east, or north", [along({ x: 0, y: 0 }, "east", 100, 20), along({ x: 0, y: 0 }, "north", 100, 20)], [{ x: 2000, y: 0 }, { x: 0, y: -2000 }]);
+    const { skillFor, asDisguised } = await import("../scripts/riders/disguise.mjs");
+    check("Disguise Magic: the tradition's skill; hidden, or lesser", [skillFor("divine"), skillFor("primal"), asDisguised({ name: "Wand", level: 5 }, { mode: "hide" }), asDisguised({ name: "Wand", level: 5 }, { mode: "lower", as: "Torch", level: 1 })], ["religion", "nature", null, { name: "Torch", level: 1, illusion: false }]);
+    const { strays } = await import("../scripts/riders/leash.mjs");
+    check("Reflected Beauty: more than 30 feet ends it", [strays(30, 30), strays(35, 30)], [false, true]);
     const { cutTo } = await import("../scripts/riders/message.mjs");
     check("Sending: 25 words at most", [cutTo("a b  c d", 2), cutTo(" one two ", 25), cutTo("", 25)], ["a b", "one two", ""]);
     const { lent } = await import("../scripts/riders/senses-link.mjs");
