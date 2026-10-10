@@ -1,0 +1,24 @@
+{
+    "requires": {
+        "targetSameSize": true,
+        "targetWithin": 30
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.3Ktyd5F9lOPo4myk",
+                "dismissable": true,
+                "leash": {
+                    "feet": 30
+                }
+            }
+        }
+    ]
+}

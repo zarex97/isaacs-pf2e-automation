@@ -915,7 +915,9 @@ function scaledSave(save, steps) {
     for (const rider of grown.riders ?? []) {
         const formula = rider.apply?.formula;
         if (rider.apply?.type === "damage" && formula && typeof formula === "object") {
-            rider.apply.formula = formula.perStep ? growByStep(formula.base, formula.perStep, steps) : formula.base;
+            // `perStepInterval: 2` — *Acid Storm*'s "Heightened (+2) The damage increases by 1d8".
+            const earned = Math.floor(steps / Math.max(1, Number(formula.perStepInterval) || 1));
+            rider.apply.formula = formula.perStep ? growByStep(formula.base, formula.perStep, earned) : formula.base;
         }
     }
     return grown;

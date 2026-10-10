@@ -1,0 +1,44 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Item",
+                "type": "text"
+            },
+            {
+                "key": "mode",
+                "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Mode",
+                "type": "text",
+                "options": [
+                    "lower",
+                    "hide"
+                ]
+            },
+            {
+                "key": "as",
+                "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.As",
+                "type": "text"
+            },
+            {
+                "key": "level",
+                "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Level",
+                "type": "number"
+            }
+        ],
+        "labels": {
+            "lower": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Lower",
+            "hide": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Hide"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "disguise"
+            }
+        }
+    ]
+}

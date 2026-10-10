@@ -1,0 +1,33 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.acid-storm.Storm",
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "events": [
+            "tokenTurnStart"
+        ],
+        "save": {
+            "statistic": "reflex",
+            "basic": true,
+            "riders": [
+                {
+                    "apply": {
+                        "type": "damage",
+                        "formula": {
+                            "base": "3d8",
+                            "perStep": "1d8",
+                            "perStepInterval": 2
+                        },
+                        "damageType": "acid"
+                    }
+                }
+            ]
+        }
+    }
+}

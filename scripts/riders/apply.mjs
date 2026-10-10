@@ -45,6 +45,11 @@ import { fatesTravels } from "./travel.mjs";
 import { adjustEffect, drawMap, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
 import { swapPlaces } from "./swap.mjs";
 import { offerLiberation } from "./liberate.mjs";
+import { Leash } from "./leash.mjs";
+import { Rune } from "./rune.mjs";
+import { offerPathway } from "./pathway.mjs";
+import { sendOff, throwView } from "./perspective.mjs";
+import { disguiseMagic } from "./disguise.mjs";
 import { detectPoison, enhanceVictuals } from "./poison.mjs";
 import { findConnection } from "./influence.mjs";
 import { offerRecall } from "./recall.mjs";
@@ -500,6 +505,14 @@ async function applyOne(rider, context) {
             return swapPlaces(rider, context);
         case "liberate":
             return offerLiberation(rider, context);
+        case "pathway":
+            return offerPathway(rider, context, Number(castItemOf(context)?.rank) || 5);
+        case "throw-view":
+            return throwView(rider, context);
+        case "send-off":
+            return sendOff(rider, context);
+        case "disguise":
+            return disguiseMagic(rider, context, castChoicesOf(context), { rank: Number(castItemOf(context)?.rank) || 1, item: castItemOf(context) });
         case "secret-page":
             return changePage(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 1);
         case "reaction":
@@ -2028,6 +2041,7 @@ async function applyEffect(rider, context) {
             if (words) source.name = `${source.name} — ${words}`;
         }
         // *Umbral Journey*: words its holder's players are told when it ends, however it ends (`journey.mjs`).
+        if (rider.apply.endsWithArea) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsWithArea: true } });
         if (rider.apply.together) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { together: true } });
         if (rider.apply.endNote) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endNote: rider.apply.endNote } });
         // *Enhance Senses*: senses read off the creature as it lands (`senses.mjs`) — without a previous casting's, which
@@ -2057,6 +2071,11 @@ async function applyEffect(rider, context) {
         // *Telepathic Bond*, *Ventriloquism*: an action for the holder, gone with the effect.
         if (created && rider.apply.telepathy) await Message.grantTelepathy(created);
         if (created && rider.apply.ventriloquism) await Ventriloquism.grant(created);
+        // *Message Rune*: the rune, posted for everyone, with the words the cast chose (`rune.mjs`).
+        if (created && rider.apply.rune) {
+            const chosen = castChoicesOf(context);
+            await Rune.post(created, { message: chosen[rider.apply.rune.message ?? "message"], trigger: chosen[rider.apply.rune.trigger ?? "trigger"] });
+        }
         // "You can Dismiss this spell" — *Frozen Lungs*, *Timely Reminder*: as for a pf2e effect, below.
         if (created && rider.apply.dismissable) {
             const who = rider.apply.dismissable === "holder" ? context.actor : context.originActor;
@@ -2159,6 +2178,11 @@ async function applyEffect(rider, context) {
     // save rolled from the spell's card has no area in hand; the one this caster left with this spell is it.
     const leaving = rider.apply.endsOnLeaving ? (context.region ?? areaLeftBy(context.originActor, context.item ?? context.riderItem)) : null;
     if (leaving) source.flags = foundry.utils.mergeObject(source.flags, { [LIB_ID]: { inside: leaving } });
+    // *Reflected Beauty*: it holds only while its holder stays near the other creature the cast reached (`leash.mjs`).
+    if (rider.apply.leash) {
+        const other = [context.eventTarget, ...(context.targets ?? [])].map((tk) => tk?.actor ?? tk).find((a) => a?.uuid && a !== context.actor);
+        source.flags = foundry.utils.mergeObject(source.flags, Leash.flag(rider.apply.leash.feet, other));
+    }
 
     // "You know the target's exact Hit Points until the end of the encounter" is knowledge tied to *one*
     // creature, not a range — the marker effect this grants onto the caster carries that creature's uuid so

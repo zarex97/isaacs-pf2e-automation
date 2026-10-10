@@ -1,4 +1,5 @@
 import { t } from "../i18n.mjs";
+import { asDisguised, disguiseOf, seesThrough } from "./disguise.mjs";
 import { LIB_ID } from "../id.mjs";
 
 /**
@@ -46,7 +47,9 @@ export async function detectMagic(rider, context) {
     const origin = caster?.getActiveTokens?.(true, false)?.[0];
     if (!caster || !origin) return;
     const spell = context.item;
-    const rank = Number(spell?.rank) || 1;
+    // The rank it was cast at: the sheet's spell is at its own (`castItemOf`).
+    const { castItemOf } = await import("./apply.mjs");
+    const rank = Number(castItemOf(context)?.rank ?? spell?.rank) || 1;
     const range = Number(rider.apply.range) || 30;
     const known = rider.apply.ignoreKnown === true;
     const friendly = (actor) => actor === caster || actor?.isAllyOf?.(caster);
@@ -54,7 +57,10 @@ export async function detectMagic(rider, context) {
     for (const token of canvas.tokens.placeables) {
         if (!token.actor || origin.distanceTo(token) > range) continue;
         for (const item of token.actor.items) {
-            const magic = magicIn(item);
+            let magic = magicIn(item);
+            // *Disguise Magic*: hidden, or something lesser — unless this caster sees through it (`disguise.mjs`).
+            const disguise = magic ? disguiseOf(item, token.actor) : null;
+            if (disguise && !(await seesThrough(disguise, item.flags?.[LIB_ID]?.disguised ? item : token.actor, caster, rank))) magic = asDisguised(magic, disguise);
             if (magic) found.push({ ...magic, where: token.name, friendly: friendly(token.actor) });
         }
     }

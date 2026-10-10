@@ -1,0 +1,70 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.7cYUiOONB2lZfSaA"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.7cYUiOONB2lZfSaA"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.7cYUiOONB2lZfSaA"
+            }
+        }
+    ]
+}

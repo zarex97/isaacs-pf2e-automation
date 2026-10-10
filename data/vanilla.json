@@ -65,6 +65,39 @@
                 }
             ]
         },
+        "acid-storm": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.acid-storm.Storm",
+                "duration": {
+                    "value": 1,
+                    "unit": "minutes"
+                },
+                "events": [
+                    "tokenTurnStart"
+                ],
+                "save": {
+                    "statistic": "reflex",
+                    "basic": true,
+                    "riders": [
+                        {
+                            "apply": {
+                                "type": "damage",
+                                "formula": {
+                                    "base": "3d8",
+                                    "perStep": "1d8",
+                                    "perStepInterval": 2
+                                },
+                                "damageType": "acid"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "air-bubble": {
             "riders": [
                 {
@@ -1576,6 +1609,50 @@
                 }
             ]
         },
+        "disguise-magic": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Item",
+                        "type": "text"
+                    },
+                    {
+                        "key": "mode",
+                        "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Mode",
+                        "type": "text",
+                        "options": [
+                            "lower",
+                            "hide"
+                        ]
+                    },
+                    {
+                        "key": "as",
+                        "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.As",
+                        "type": "text"
+                    },
+                    {
+                        "key": "level",
+                        "label": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Level",
+                        "type": "number"
+                    }
+                ],
+                "labels": {
+                    "lower": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Lower",
+                    "hide": "ISAACS_AUTOMATION.Vanilla.disguise-magic.Hide"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "disguise"
+                    }
+                }
+            ]
+        },
         "disintegrate": {
             "riders": [
                 {
@@ -2527,6 +2604,24 @@
                                 }
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "fires-pathway": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "pathway",
+                        "feature": "fire",
+                        "miles": {
+                            "5": 5,
+                            "6": 50,
+                            "8": 500,
+                            "9": "planet"
+                        }
                     }
                 }
             ]
@@ -3661,6 +3756,67 @@
                 }
             ]
         },
+        "instant-parade": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.instant-parade.Parade",
+                "duration": {
+                    "value": 10,
+                    "unit": "minutes"
+                },
+                "followsCaster": true,
+                "dismiss": true,
+                "disbelief": true,
+                "events": [],
+                "inside": {
+                    "rules": [
+                        {
+                            "key": "RollOption",
+                            "domain": "all",
+                            "option": "instant-parade"
+                        }
+                    ],
+                    "description": "ISAACS_AUTOMATION.Vanilla.instant-parade.Inside"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.instant-parade.Parade",
+                        "rules": [],
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.instant-parade.Send",
+                            "actions": 2,
+                            "traits": [
+                                "concentrate"
+                            ],
+                            "spends": false,
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "self": true,
+                                    "apply": {
+                                        "type": "send-off",
+                                        "feet": 100
+                                    }
+                                }
+                            ]
+                        },
+                        "endsWithArea": true
+                    }
+                }
+            ]
+        },
         "invent-code": {
             "riders": [
                 {
@@ -4456,6 +4612,173 @@
                 }
             ]
         },
+        "message-rune": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.message-rune.Prompt",
+                "fields": [
+                    {
+                        "key": "message",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Message",
+                        "type": "text"
+                    },
+                    {
+                        "key": "trigger",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Trigger",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                        "rules": [],
+                        "dismissable": true,
+                        "rune": {
+                            "message": "message",
+                            "trigger": "trigger"
+                        }
+                    },
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 7,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                        "rules": [],
+                        "dismissable": true,
+                        "rune": {
+                            "message": "message",
+                            "trigger": "trigger"
+                        }
+                    },
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 30,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                        "rules": [],
+                        "dismissable": true,
+                        "rune": {
+                            "message": "message",
+                            "trigger": "trigger"
+                        }
+                    },
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                6
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 365,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                        "rules": [],
+                        "dismissable": true,
+                        "rune": {
+                            "message": "message",
+                            "trigger": "trigger"
+                        }
+                    },
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                7
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                8
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.message-rune.Rune",
+                        "rules": [],
+                        "dismissable": true,
+                        "rune": {
+                            "message": "message",
+                            "trigger": "trigger"
+                        }
+                    },
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                9
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
         "metal-merged": {
             "requires": "held-weapon",
             "riders": [
@@ -4753,6 +5076,24 @@
                 },
                 "difficultTerrain": 2
             }
+        },
+        "natures-pathway": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "pathway",
+                        "feature": "tree",
+                        "miles": {
+                            "5": 5,
+                            "6": 50,
+                            "8": 500,
+                            "9": "planet"
+                        }
+                    }
+                }
+            ]
         },
         "nettleskin": {
             "riders": [
@@ -5563,6 +5904,30 @@
                 }
             ]
         },
+        "reflected-beauty": {
+            "requires": {
+                "targetSameSize": true,
+                "targetWithin": 30
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.3Ktyd5F9lOPo4myk",
+                        "dismissable": true,
+                        "leash": {
+                            "feet": 30
+                        }
+                    }
+                }
+            ]
+        },
         "regenerate": {
             "riders": [
                 {
@@ -6270,6 +6635,32 @@
                     "apply": {
                         "type": "prompt",
                         "text": "ISAACS_AUTOMATION.Vanilla.shield.Immune"
+                    }
+                }
+            ]
+        },
+        "shift-perspective": {
+            "requires": "held-light",
+            "areaTargeting": {
+                "area": {
+                    "type": "square",
+                    "value": 5
+                },
+                "range": 120,
+                "markCentre": true,
+                "affects": "all",
+                "placeOnly": true
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "throw-view"
                     }
                 }
             ]
@@ -7051,6 +7442,24 @@
                         "sustained": {
                             "repeat": true
                         }
+                    }
+                }
+            ]
+        },
+        "spiritual-renewal": {
+            "requires": {
+                "targetNotTraits": [
+                    "undead",
+                    "construct"
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.rtkSifnBQaf0TEPo",
+                        "atCastRank": true
                     }
                 }
             ]
@@ -8029,6 +8438,76 @@
                     "apply": {
                         "type": "prompt",
                         "text": "ISAACS_AUTOMATION.Vanilla.translocate.Alone"
+                    }
+                }
+            ]
+        },
+        "tremorsense": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.7cYUiOONB2lZfSaA"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.7cYUiOONB2lZfSaA"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.7cYUiOONB2lZfSaA"
                     }
                 }
             ]
