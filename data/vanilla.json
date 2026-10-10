@@ -401,13 +401,34 @@
             },
             "riders": [
                 {
-                    "outcomes": [
-                        "failure",
-                        "criticalFailure"
-                    ],
+                    "event": "action-used",
                     "apply": {
-                        "type": "condition",
-                        "slug": "prone"
+                        "type": "area-damage",
+                        "save": "reflex",
+                        "parts": [
+                            {
+                                "formula": "4d6",
+                                "perStep": "1d6",
+                                "type": "bludgeoning"
+                            },
+                            {
+                                "formula": "6d6",
+                                "perStep": "1d6",
+                                "type": "fire"
+                            }
+                        ],
+                        "riders": [
+                            {
+                                "outcomes": [
+                                    "failure",
+                                    "criticalFailure"
+                                ],
+                                "apply": {
+                                    "type": "condition",
+                                    "slug": "prone"
+                                }
+                            }
+                        ]
                     }
                 }
             ]
@@ -1078,7 +1099,8 @@
                                 "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
                                 "predicate": [
                                     "origin:trait:$cast:alignment"
-                                ]
+                                ],
+                                "slug": "circle-of-protection-ac"
                             },
                             {
                                 "key": "FlatModifier",
@@ -1088,7 +1110,8 @@
                                 "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
                                 "predicate": [
                                     "origin:trait:$cast:alignment"
-                                ]
+                                ],
+                                "slug": "circle-of-protection-save"
                             },
                             {
                                 "key": "FlatModifier",
@@ -1104,7 +1127,8 @@
                                             "origin:trait:minion"
                                         ]
                                     }
-                                ]
+                                ],
+                                "slug": "circle-of-protection-summoned"
                             },
                             {
                                 "key": "FlatModifier",
@@ -1124,7 +1148,8 @@
                                             "item:slug:mind-swap"
                                         ]
                                     }
-                                ]
+                                ],
+                                "slug": "circle-of-protection-control"
                             }
                         ],
                         "description": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Inside"
@@ -1164,7 +1189,8 @@
                                 "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
                                 "predicate": [
                                     "origin:trait:$cast:alignment"
-                                ]
+                                ],
+                                "slug": "circle-of-protection-ac"
                             },
                             {
                                 "key": "FlatModifier",
@@ -1174,7 +1200,8 @@
                                 "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
                                 "predicate": [
                                     "origin:trait:$cast:alignment"
-                                ]
+                                ],
+                                "slug": "circle-of-protection-save"
                             },
                             {
                                 "key": "FlatModifier",
@@ -1190,7 +1217,8 @@
                                             "origin:trait:minion"
                                         ]
                                     }
-                                ]
+                                ],
+                                "slug": "circle-of-protection-summoned"
                             },
                             {
                                 "key": "FlatModifier",
@@ -1210,7 +1238,8 @@
                                             "item:slug:mind-swap"
                                         ]
                                     }
-                                ]
+                                ],
+                                "slug": "circle-of-protection-control"
                             }
                         ],
                         "description": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Inside"
@@ -4625,11 +4654,9 @@
                         "carries": [
                             {
                                 "event": "strike-resolved",
-                                "predicate": [
-                                    "item:group:sling"
-                                ],
                                 "apply": {
-                                    "type": "spend-badge"
+                                    "type": "spend-badge",
+                                    "group": "sling"
                                 }
                             }
                         ]

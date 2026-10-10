@@ -89,6 +89,8 @@ export const Repels = {
                     }
                 }
                 if (area.caster === token || !barsApproach(area.payload.repelled?.[token.id])) continue;
+                // A kept failure bars only a creature the area still answers — one no longer summoned walks in.
+                if (!mustSave(area.payload.repels, token.actor, area.payload.originUuid ? fromUuidSync(area.payload.originUuid) : null, area.payload.itemUuid ? fromUuidSync(area.payload.itemUuid) : null)) continue;
                 const grid = scene.grid.size;
                 const caster = centreAt(area.caster, area.caster, grid);
                 const from = centreAt(movement.origin ?? token, token, grid);

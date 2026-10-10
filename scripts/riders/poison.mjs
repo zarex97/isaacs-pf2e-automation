@@ -131,7 +131,10 @@ export async function enhanceVictuals(rider, context, chosen = {}, { rank = 2, i
     const until = game.time.worldTime + ONE_HOUR;
     for (const dish of food) {
         const original = dish.flags?.[LIB_ID]?.[FLAG]?.name ?? dish.name;
-        if (rider.apply.lasting) await dish.update({ name: t("Poison.Fine", { name: original }) });
+        // Fine already, from an earlier casting: it stays as it is.
+        if (rider.apply.lasting) {
+            if (!dish.flags?.[LIB_ID]?.fine) await dish.update({ name: t("Poison.Fine", { name: original }), [`flags.${LIB_ID}.fine`]: true });
+        }
         else await dish.update({ name: t("Poison.Fine", { name: original }), [`flags.${LIB_ID}.${FLAG}`]: { name: original, until } });
     }
     if (rider.apply.lasting) {

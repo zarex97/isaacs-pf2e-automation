@@ -15,7 +15,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Approximate | 1 |  | approximate |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
-| Blazing Fissure | 5 | 120-ft line (pf2e's), from you, all, filtered | failure / crit. failure: prone (no end) |  |
+| Blazing Fissure | 5 | 120-ft line (pf2e's), from you, all, filtered | rolled once: 4d6 bludgeoning + 6d6 fire, one basic reflex each |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
 | Blessing of Vigor | 1 |  | spell-effect-blessing-of-vigor |  |
 | Blind Eye | 5 |  | blind eye (until it ends) |  |

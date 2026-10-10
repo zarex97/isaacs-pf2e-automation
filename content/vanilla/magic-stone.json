@@ -53,11 +53,9 @@
                 "carries": [
                     {
                         "event": "strike-resolved",
-                        "predicate": [
-                            "item:group:sling"
-                        ],
                         "apply": {
-                            "type": "spend-badge"
+                            "type": "spend-badge",
+                            "group": "sling"
                         }
                     }
                 ]

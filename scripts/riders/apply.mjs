@@ -357,9 +357,11 @@ export async function resolveReaction(payload) {
  * One off the counter of the effect that carries this rider; the last one ends it. *Magic Stone*: "Each stone can be
  * used only once, after which it crumbles to dust" — a Strike with a sling spends a stone.
  */
-async function spendBadge(_rider, context) {
+async function spendBadge(rider, context) {
     const effect = [context.riderItem, context.item].find((i) => i?.type === "effect" && i.system?.badge?.type === "counter");
     if (!effect) return;
+    // `group`: only a Strike with a weapon of that group spends one — the message's own weapon, not the effect.
+    if (rider.apply.group && context.message?.item?.system?.group !== rider.apply.group) return;
     const left = Math.max(0, (Number(effect.system.badge.value) || 1) - 1);
     if (left > 0) {
         await effect.update({ "system.badge.value": left });
@@ -3006,6 +3008,10 @@ async function applyAreaDamage(rider, context) {
     const statistic = actor.getStatistic?.(rider.apply.save ?? "reflex");
     const save = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item, extraRollOptions: ["damaging-effect"] }) : null;
     const multiplier = [2, 1, 0.5, 0][save?.degreeOfSuccess ?? 1];
+    // What the save's result brings besides damage — *Blazing Fissure*'s "it falls prone" on a failure or worse.
+    const outcome = DEGREES[save?.degreeOfSuccess ?? 1];
+    const following = (rider.apply.riders ?? []).filter((r) => !r.outcomes || r.outcomes.includes(outcome));
+    if (following.length > 0) await applyRiderList(following, { ...context, outcome });
     if (!multiplier) return;
     const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
     const roll = await new DamageRoll(typedTotals(reaching)).evaluate();
