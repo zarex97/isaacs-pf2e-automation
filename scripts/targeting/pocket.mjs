@@ -84,7 +84,8 @@ export const Pocket = {
         const at = { x: casterToken._source.x, y: casterToken._source.y };
         const occupied = scene.tokens.map((token) => ({ x: token._source.x, y: token._source.y }));
         const doorAt = nearestOpen({ x: at.x + grid, y: at.y }, grid, occupied);
-        const doorName = rider.apply.door ? t(rider.apply.door, { name }) : t("Pocket.Door", { name });
+        // The table may hand the key in already localized, which `format` would then not fill.
+        const doorName = rider.apply.door ? game.i18n.localize(rider.apply.door).replace("{name}", name) : t("Pocket.Door", { name });
         const capacity = Number(rider.apply.capacity) || capacityOf(feet, scene.grid.distance);
         const [door] = await scene.createEmbeddedDocuments("Region", [squareRegion(doorName, doorAt.x, doorAt.y, grid, [], {
             [LIB_ID]: { lingering: { expiresAt: game.time.worldTime + seconds, name, originUuid: caster.uuid }, [FLAG]: { roomUuid: room.uuid, capacity, weighted: !!rider.apply.weighted } },
@@ -156,6 +157,9 @@ export const Pocket = {
             await ChatMessage.create({ content: `<p>${t("Pocket.Ejected", { token: token.name })}</p>` });
         }
         await room.delete();
+        // The space is gone, and the rope that led to it with it.
+        const door = spec.doorUuid ? fromUuidSync(spec.doorUuid) : null;
+        if (door) await door.delete().catch(() => {});
     },
 
     registerHooks() {
