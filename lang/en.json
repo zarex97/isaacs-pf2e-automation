@@ -261,6 +261,7 @@
         },
         "OriginAction": {
             "Description": "{name}: from {target}, the creature {spell} marked. Each use spends one.",
+            "Keeps": "{name}: from {target}, the creature {spell} marked. It uses nothing up.",
             "Left": "{name}: {left} left.",
             "Last": "{name}: the last one — the spell ends."
         },

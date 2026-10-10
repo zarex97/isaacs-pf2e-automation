@@ -2022,8 +2022,13 @@ async function applyEffect(rider, context) {
         // *Umbral Journey*: words its holder's players are told when it ends, however it ends (`journey.mjs`).
         if (rider.apply.together) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { together: true } });
         if (rider.apply.endNote) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endNote: rider.apply.endNote } });
-        // *Enhance Senses*: senses read off the creature as it lands (`senses.mjs`).
-        if (rider.apply.enhanceSenses) source.system.rules = [...source.system.rules, ...enhancedSenseRules(sensesOf(context.actor))];
+        // *Enhance Senses*: senses read off the creature as it lands (`senses.mjs`) — without a previous casting's, which
+        // a new one replaces rather than doubling again.
+        if (rider.apply.enhanceSenses) {
+            const previous = context.actor.itemTypes.effect.filter((e) => e.slug === rider.apply.slug).map((e) => e.id);
+            if (rider.apply.slug && previous.length > 0) await context.actor.deleteEmbeddedDocuments("Item", previous);
+            source.system.rules = [...source.system.rules, ...enhancedSenseRules(sensesOf(context.actor))];
+        }
         // "A creature that gets out of the web ceases to take a circumstance penalty": an effect given by a
         // lingering area's check can end on leaving it, the way an area held while inside does.
         if (rider.apply.endsOnLeaving && context.region) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { inside: context.region } });

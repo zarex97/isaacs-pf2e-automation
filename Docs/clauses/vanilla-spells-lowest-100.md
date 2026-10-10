@@ -319,41 +319,41 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-154a | "You can instantly use up to 6 Recall Knowledge actions as part of Casting this Spell" | when:cast · reach:self · check:skill · economy:action-cost | Up to 6 Recall Knowledge checks are offered at no action cost | | ☐ | |
-| VS-154b | "For these actions, you can't use any special abilities, reactions, or free actions that trigger when you Recall Knowledge" | effect:forbid | Abilities triggered by Recall Knowledge are refused for these checks | | ☐ | |
+| VS-154a | "You can instantly use up to 6 Recall Knowledge actions as part of Casting this Spell" | when:cast · reach:self · check:skill · economy:action-cost | Up to 6 Recall Knowledge checks are offered at no action cost | `hypercognition.json` | ✅ | A card of 6 Recall Knowledge checks, at no action: six secret rolls (Arcana, Occultism…), each `concentrate`, `secret`; the seventh press rolled nothing |
+| VS-154b | "For these actions, you can't use any special abilities, reactions, or free actions that trigger when you Recall Knowledge" | effect:forbid | Abilities triggered by Recall Knowledge are refused for these checks | `hypercognition.json` | ✅ | A feat note on `action:recall-knowledge` reached the card's checks 0 times of 6. Control: the same Arcana Recall Knowledge rolled outside the spell carried it |
 
 ### VS-155 · Umbral Journey
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-155a | "Each hour, you cover roughly as much ground as you normally would in 3 days" | when:cast · reach:up-to-n · effect:gm-note · ending:duration | A note: travel at three days' ground an hour, for 8 hours | | ☐ | |
-| VS-155b | "leaving you within a mile of your intended destination when you Dismiss the spell or its duration ends" | effect:gm-note · ending:dismiss | A note: arrival within a mile of the destination is the table's | | ☐ | |
+| VS-155a | "Each hour, you cover roughly as much ground as you normally would in 3 days" | when:cast · reach:up-to-n · effect:gm-note · ending:duration | A note: travel at three days' ground an hour, for 8 hours | `umbral-journey.json` | ✅ | The caster and two others: `umbral journey`, 8 hours, and "Speed 25 feet: 60 miles an hour, 480 miles". Control: one traveller at Speed 20, 48 and 384 |
+| VS-155b | "leaving you within a mile of your intended destination when you Dismiss the spell or its duration ends" | effect:gm-note · ending:dismiss | A note: arrival within a mile of the destination is the table's | `umbral-journey.json` | ✅ | Dismiss ended all three journeys, and each holder was told "within a mile of where you meant to go". So did the 8 hours running out |
 
 ### VS-156 · Read Omens
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-156a | "Choose a particular goal or activity you plan to engage in within 1 week, or an event you expect might happen within 1 week" | when:cast · check:caster-choice | A goal or event within a week is chosen at the cast | | ☐ | |
-| VS-156b | "You learn a cryptic clue or piece of advice that could help with the chosen event, often in the form of a rhyme or omen" | effect:info · effect:gm-note | A note: the clue or advice is the table's | | ☐ | |
+| VS-156a | "Choose a particular goal or activity you plan to engage in within 1 week, or an event you expect might happen within 1 week" | when:cast · check:caster-choice | A goal or event within a week is chosen at the cast | `read-omens.json` | ✅ | Asked at the cast: "Storming the Crystal Wall on Thursday" |
+| VS-156b | "You learn a cryptic clue or piece of advice that could help with the chosen event, often in the form of a rhyme or omen" | effect:info · effect:gm-note | A note: the clue or advice is the table's | `read-omens.json` | ✅ | The goal went to the GM alone, with an Answer button; the clue came back whispered to the caster's owners |
 
 ### VS-157 · Enhance Victuals
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-157a | "You transform the target into delicious fare, changing water into wine or another fine beverage or enhancing the food's taste and ingredients to make it a gourmet treat" | when:cast · reach:object · effect:gm-note | A note: the food or drink made fine is the table's | | ☐ | |
-| VS-157b | "Prior to the transformation, the spell attempts to counteract any poisons in the food or water" | reach:object · check:counteract | A counteract check against poison in the food or water is rolled | | ☐ | |
-| VS-157c | "The food turns back to normal if not consumed before the duration expires, though any poisons that were counteracted are still gone" | ending:duration · effect:gm-note | A note: uneaten food reverts after 1 hour; counteracted poison stays gone | | ☐ | |
-| VS-157d | "Heightened (+1) The number of gallons of water you can target increases by 1, or the number of pounds of food you can target increases by 5" | scaling:dice-per-rank · reach:object | Rank 3: up to 2 gallons or 10 pounds | | ☐ | |
+| VS-157a | "You transform the target into delicious fare, changing water into wine or another fine beverage or enhancing the food's taste and ingredients to make it a gourmet treat" | when:cast · reach:object · effect:gm-note | A note: the food or drink made fine is the table's | `enhance-victuals.json` | ✅ | A loot pile's ZZ Stew became "Fine ZZ Stew". Control: a named ZZ Water was the only thing changed |
+| VS-157b | "Prior to the transformation, the spell attempts to counteract any poisons in the food or water" | reach:object · check:counteract | A counteract check against poison in the food or water is rolled | `enhance-victuals.json` | ✅ | Arsenic (level 1): counteracted and deleted. Control: Dragon Bile, counteract rank 8, stayed |
+| VS-157c | "The food turns back to normal if not consumed before the duration expires, though any poisons that were counteracted are still gone" | ending:duration · effect:gm-note | A note: uneaten food reverts after 1 hour; counteracted poison stays gone | `enhance-victuals.json` | ✅ | Still fine at 30 minutes; "ZZ Stew" again at the hour. Arsenic stayed gone |
+| VS-157d | "Heightened (+1) The number of gallons of water you can target increases by 1, or the number of pounds of food you can target increases by 5" | scaling:dice-per-rank · reach:object | Rank 3: up to 2 gallons or 10 pounds | `enhance-victuals.json` | ✅ | Rank 3's card: up to 2 gallons or 10 pounds. Rank 2: 1 gallon or 5 pounds |
 
 ### VS-158 · Glamorize
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-158a | "you alter a minor detail of your appearance" | when:cast · reach:self · effect:gm-note | A note: the change to the caster's looks is the table's | | ☐ | |
-| VS-158b | "create a small environmental effect that's confined to your person" | reach:self · effect:gm-note | A note: the small effect around the caster is the table's | | ☐ | |
-| VS-158c | "While the spell is active, you can Sustain it to make further adjustments" | when:sustain · effect:gm-note | Sustaining allows a further adjustment, which the table rules on | | ☐ | |
-| VS-158d | "The changes persist until the spell's duration ends" | ending:duration | The changes last 1 hour | | ☐ | |
-| VS-158e | "At the GM's discretion, such alterations might grant a +1 status bonus to certain tasks, such as Impersonate or Perform" | effect:bonus · effect:gm-note | A note: a +1 status bonus to Impersonate or Perform is the GM's | | ☐ | |
+| VS-158a | "you alter a minor detail of your appearance" | when:cast · reach:self · effect:gm-note | A note: the change to the caster's looks is the table's | `glamorize.json` | ✅ | Asked at the cast; the caster's effect: "glamorize — silver highlights in the hair" |
+| VS-158b | "create a small environmental effect that's confined to your person" | reach:self · effect:gm-note | A note: the small effect around the caster is the table's | `glamorize.json` | ✅ | The same field takes a small effect about the caster |
+| VS-158c | "While the spell is active, you can Sustain it to make further adjustments" | when:sustain · effect:gm-note | Sustaining allows a further adjustment, which the table rules on | `glamorize.json` | ✅ | *Sustain Glamorize*: asked again, the effect became "— a soft chime when smiling" |
+| VS-158d | "The changes persist until the spell's duration ends" | ending:duration | The changes last 1 hour | `glamorize.json` | ✅ | The effect lasts 1 hour, and its action goes with it |
+| VS-158e | "At the GM's discretion, such alterations might grant a +1 status bonus to certain tasks, such as Impersonate or Perform" | effect:bonus · effect:gm-note | A note: a +1 status bonus to Impersonate or Perform is the GM's | `glamorize.json` | ✅ | A GM toggle on the effect. Off: Impersonate and Perform had no bonus. On: +1 status to both. Control: Lie, toggle on, no bonus |
 
 ### VS-159 · Spell Immunity
 
@@ -368,29 +368,29 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-160a | "You learn the location of the nearest creature to whom the target is connected in a magical manner" | when:cast · reach:single · effect:info | The caster is told where the nearest magically connected creature is | | ☐ | |
-| VS-160b | "A creature sustaining a spell on the target is connected to it for the purposes of this spell, as are any creatures who are targets of a spell effect currently affecting the target" | effect:info | Sustainers and fellow targets of its spell effects count as connected | | ☐ | |
-| VS-160c | "The GM is the final arbiter of whether a creature is magically connected to the target" | effect:gm-note | A note: whether a creature is connected is the GM's | | ☐ | |
-| VS-160d | "If you already know individuals who are magically connected to the target, you can exclude them from the spell" | check:caster-choice · effect:info | Connected creatures the caster knows can be left out | | ☐ | |
-| VS-160e | "This spell doesn't tell you anything about the nearest magically connected creature other than its current distance and direction" | effect:info | Only distance and direction are told | | ☐ | |
-| VS-160f | "If the nearest creature is on a different plane the spell indicates this but doesn't reveal which plane" | effect:info | A creature on another plane is reported as elsewhere, the plane unnamed | | ☐ | |
+| VS-160a | "You learn the location of the nearest creature to whom the target is connected in a magical manner" | when:cast · reach:single · effect:info | The caster is told where the nearest magically connected creature is | `web-of-influence.json` | ✅ | A creature sharing the target's Water Breathing: "5 feet away, to the south". Control: no shared spell, "no magical connection" |
+| VS-160b | "A creature sustaining a spell on the target is connected to it for the purposes of this spell, as are any creatures who are targets of a spell effect currently affecting the target" | effect:info | Sustainers and fellow targets of its spell effects count as connected | `web-of-influence.json` | ✅ | A sustained effect on the target from D2: "140 feet away, to the southeast". Control: the same effect unsustained, nothing |
+| VS-160c | "The GM is the final arbiter of whether a creature is magically connected to the target" | effect:gm-note | A note: whether a creature is connected is the GM's | `web-of-influence.json` | — | Whether a creature is connected beyond what the board records is the GM's |
+| VS-160d | "If you already know individuals who are magically connected to the target, you can exclude them from the spell" | check:caster-choice · effect:info | Connected creatures the caster knows can be left out | `web-of-influence.json` | ✅ | "zz conditions patient" left out at the cast: nothing found. Control: left blank, the Patient found |
+| VS-160e | "This spell doesn't tell you anything about the nearest magically connected creature other than its current distance and direction" | effect:info | Only distance and direction are told | `web-of-influence.json` | ✅ | Only feet and a compass point, never a name |
+| VS-160f | "If the nearest creature is on a different plane the spell indicates this but doesn't reveal which plane" | effect:info | A creature on another plane is reported as elsewhere, the plane unnamed | `web-of-influence.json` | ✅ | A connected creature on a scene with another `plane` flag: "on a different plane". Control: the same `plane`, "beyond this map" |
 
 ### VS-161 · Detect Poison
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-161a | "You detect whether a creature is venomous or poisonous, or if an object is poison or has been poisoned" | when:cast · reach:single · reach:object · effect:info | The caster is told whether the target is poisonous or poisoned | | ☐ | |
-| VS-161b | "You do not ascertain whether the target is poisonous in multiple ways, nor do you learn the type or types of poison" | effect:info | Rank 1 tells only yes or no | | ☐ | |
-| VS-161c | "Certain substances, like lead and alcohol, are poisons and so mask other poisons" | effect:gm-note | A note: poisons masked by lead or alcohol are the table's | | ☐ | |
-| VS-161d | "Heightened (2nd) You learn the number and types of poison" | scaling:from-rank · effect:info | Rank 2 names how many poisons and their types | | ☐ | |
+| VS-161a | "You detect whether a creature is venomous or poisonous, or if an object is poison or has been poisoned" | when:cast · reach:single · reach:object · effect:info | The caster is told whether the target is poisonous or poisoned | `detect-poison.json` | ✅ | The Target: "neither venomous nor poisonous"; with a poison-trait venom added, "venomous or poisonous". A loot pile with Arsenic: poisoned |
+| VS-161b | "You do not ascertain whether the target is poisonous in multiple ways, nor do you learn the type or types of poison" | effect:info | Rank 1 tells only yes or no | `detect-poison.json` | ✅ | Rank 1 named no count and no poison |
+| VS-161c | "Certain substances, like lead and alcohol, are poisons and so mask other poisons" | effect:gm-note | A note: poisons masked by lead or alcohol are the table's | `detect-poison.json` | — | pf2e records no lead or alcohol in a thing |
+| VS-161d | "Heightened (2nd) You learn the number and types of poison" | scaling:from-rank · effect:info | Rank 2 names how many poisons and their types | `detect-poison.json` | ✅ | Rank 2: "2 poison(s): ZZ Spider Venom (injury); ZZ Wyvern Poison (injury)", and the pile's "Arsenic (ingested)" |
 
 ### VS-162 · Draw Moisture
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-162a | "You draw up to a pint of water from the object; this dries objects of less than 1 Bulk" | when:cast · reach:object · effect:gm-note | A note: an object under 1 Bulk dried is the table's | | ☐ | |
-| VS-162b | "The water collects in a globule floating in your hand, which you can direct into a nearby container as part of Casting the Spell; otherwise, it splashes to the ground" | effect:gm-note | A note: where the drawn water goes is the table's | | ☐ | |
-| VS-162c | "You can use this spell in especially humid environments to condense drinkable water from the air, though typically, you can't draw more than a few cups before depleting the ambient moisture" | effect:gm-note | A note: water condensed from humid air is the table's | | ☐ | |
+| VS-162a | "You draw up to a pint of water from the object; this dries objects of less than 1 Bulk" | when:cast · reach:object · effect:gm-note | A note: an object under 1 Bulk dried is the table's |  | — | pf2e records no wet or dry object |
+| VS-162b | "The water collects in a globule floating in your hand, which you can direct into a nearby container as part of Casting the Spell; otherwise, it splashes to the ground" | effect:gm-note | A note: where the drawn water goes is the table's |  | — | Where the drawn water goes is the table's |
+| VS-162c | "You can use this spell in especially humid environments to condense drinkable water from the air, though typically, you can't draw more than a few cups before depleting the ambient moisture" | effect:gm-note | A note: water condensed from humid air is the table's |  | — | Humid air is the table's |
 
 ### VS-163 · Pack Attack
 
@@ -404,17 +404,17 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-164a | "The target gains low-light vision" | when:cast · reach:single · effect:sense · ending:duration | The target has low-light vision for 1 hour | | ☐ | |
-| VS-164b | "all of the target's imprecise senses have their distances doubled" | effect:sense | Each imprecise sense's range is doubled | | ☐ | |
-| VS-164c | "If the target already has low-light vision, they gain darkvision" | effect:sense | A target that already has low-light vision gets darkvision | | ☐ | |
-| VS-164d | "Heightened (+2) The number of targets increases by 1" | scaling:targets-per-rank · reach:up-to-n | Rank 6: two targets | | ☐ | |
+| VS-164a | "The target gains low-light vision" | when:cast · reach:single · effect:sense · ending:duration | The target has low-light vision for 1 hour | `enhance-senses.json` | ✅ | The Patient, with no senses: low-light vision, 1 hour |
+| VS-164b | "all of the target's imprecise senses have their distances doubled" | effect:sense | Each imprecise sense's range is doubled | `enhance-senses.json` | ✅ | The Target's imprecise scent 30 became 60. Recast: still 60, the old effect replaced |
+| VS-164c | "If the target already has low-light vision, they gain darkvision" | effect:sense | A target that already has low-light vision gets darkvision | `enhance-senses.json` | ✅ | The Target, with low-light vision: darkvision. Control: the Patient had none and got low-light only |
+| VS-164d | "Heightened (+2) The number of targets increases by 1" | scaling:targets-per-rank · reach:up-to-n | Rank 6: two targets | `enhance-senses.json` | ✅ | Rank 6 took two targets without asking. Control: rank 4 asked "2 targeted, and it reaches 1", and No cast nothing |
 
 ### VS-165 · Mud Pit
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-165a | "Thick, clinging mud covers the ground, 1 foot deep" | when:cast · reach:area/burst · area:placed-only · area:lingering | A 15-ft burst placed within 60 ft stays on the board for 1 minute | | ☐ | |
-| VS-165b | "The mud is difficult terrain" | area:lingering · effect:terrain | Moving through the mud costs as difficult terrain | | ☐ | |
+| VS-165a | "Thick, clinging mud covers the ground, 1 foot deep" | when:cast · reach:area/burst · area:placed-only · area:lingering | A 15-ft burst placed within 60 ft stays on the board for 1 minute | `mud-pit.json` | ✅ | Aimed 40 ft away: a 15-ft burst Region that was gone after its minute |
+| VS-165b | "The mud is difficult terrain" | area:lingering · effect:terrain | Moving through the mud costs as difficult terrain | `mud-pit.json` | ✅ | A walk through it cost 60 ft. Control: the same walk beside it cost 35 |
 
 ### VS-166 · Shillelagh
 

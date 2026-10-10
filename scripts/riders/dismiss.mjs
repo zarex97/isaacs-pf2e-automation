@@ -38,7 +38,7 @@ export function dismissActionSource({ item, regionUuid = null, effectUuid = null
 function sameCast(effect) {
     const { actor, item } = effect.system?.context?.origin ?? {};
     if (!actor || !item) return [];
-    const holders = [...game.actors, ...game.scenes.flatMap((scene) => scene.tokens.filter((token) => !token.actorLink && token.actor).map((token) => token.actor))];
+    const holders = [...game.actors, ...[...game.scenes].flatMap((scene) => scene.tokens.filter((token) => !token.actorLink && token.actor).map((token) => token.actor))];
     return holders.flatMap((holder) => holder.itemTypes?.effect ?? []).filter((other) => other.id !== effect.id && other.flags?.[LIB_ID]?.together
         && other.system?.context?.origin?.actor === actor && other.system?.context?.origin?.item === item);
 }

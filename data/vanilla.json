@@ -1871,7 +1871,8 @@
                         "type": "effect",
                         "label": "ISAACS_AUTOMATION.Vanilla.enhance-senses.Senses",
                         "rules": [],
-                        "enhanceSenses": true
+                        "enhanceSenses": true,
+                        "slug": "enhance-senses"
                     }
                 }
             ]

@@ -136,7 +136,7 @@ export const Victuals = {
     async revert() {
         if (game.users?.activeGM?.id !== game.user?.id) return;
         const now = game.time.worldTime;
-        const actors = new Set([...(game.actors ?? []), ...(game.scenes ?? []).flatMap((scene) => scene.tokens.filter((token) => !token.actorLink && token.actor).map((token) => token.actor))]);
+        const actors = new Set([...(game.actors ?? []), ...[...(game.scenes ?? [])].flatMap((scene) => scene.tokens.filter((token) => !token.actorLink && token.actor).map((token) => token.actor))]);
         for (const actor of actors) {
             for (const dish of spoiled([...(actor.items ?? [])], now)) {
                 await dish.update({ name: dish.flags[LIB_ID][FLAG].name, [`flags.${LIB_ID}.-=${FLAG}`]: null });

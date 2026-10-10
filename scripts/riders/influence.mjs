@@ -62,7 +62,8 @@ export function connectionsOf(target, actors) {
 
 /** Where a connected creature stands: the token on the caster's scene, else any token of it, else nothing. */
 function placed(actor, scene) {
-    const tokens = actor.getActiveTokens?.(true, true) ?? [];
+    // `getActiveTokens` knows only the scene on the canvas; a linked creature may stand on any other.
+    const tokens = actor.token ? [actor.token] : [...(game.scenes ?? [])].flatMap((s) => s.tokens.filter((token) => token.actorLink && token.actorId === actor.id));
     return tokens.find((token) => token.parent === scene) ?? tokens[0] ?? null;
 }
 
@@ -73,7 +74,7 @@ export async function findConnection(rider, context, chosen = {}) {
     const scene = canvas?.scene;
     const here = (context.originToken?.object ?? context.originToken)?.center ?? from.getActiveTokens?.(true, false)?.[0]?.center;
     const skip = excluded(chosen[rider.apply.exclude ?? "exclude"]);
-    const actors = [...(game.actors ?? []), ...(game.scenes ?? []).flatMap((s) => s.tokens.filter((tk) => !tk.actorLink && tk.actor).map((tk) => tk.actor))];
+    const actors = [...(game.actors ?? []), ...[...(game.scenes ?? [])].flatMap((s) => s.tokens.filter((tk) => !tk.actorLink && tk.actor).map((tk) => tk.actor))];
     const linked = connectionsOf(target, actors)
         .map((uuid) => actors.find((a) => a.uuid === uuid) ?? fromUuidSync(uuid))
         .filter((actor) => actor && actor.uuid !== from.uuid && !skip.has(actor.name.toLowerCase()));
