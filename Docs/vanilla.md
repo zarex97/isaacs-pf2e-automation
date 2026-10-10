@@ -12,8 +12,10 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Animal Form | 2 |  | choice (on you) |  |
 | Animal Vision | 3 |  | animal vision (1 hours, on you); success / crit. success: expire |  |
 | Ant Haul | 1 |  | spell-effect-ant-haul |  |
+| Approximate | 1 |  | approximate |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
+| Blazing Fissure | 5 | 120-ft line (pf2e's), from you, all, filtered | failure / crit. failure: prone (no end) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
 | Blessing of Vigor | 1 |  | spell-effect-blessing-of-vigor |  |
 | Blind Eye | 5 |  | blind eye (until it ends) |  |
@@ -23,13 +25,17 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Blur | 2 |  | concealed (1 minutes) |  |
 | Bracing Tendrils | 3 |  | bracing tendrils (1 minutes, on you) |  |
 | Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
+| Breathe Fire | 1 | 15-ft cone (pf2e's), from you, all |  |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
 | Caster's Imposition | 3 |  | failure / crit. failure: caster's imposition (1 minutes); failure / crit. failure: caster's imposition (1 hours, from rank 4); failure / crit. failure: caster's imposition (1 days, from rank 5) |  |
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
 | Chilling Spray | 1 | 15-ft cone (pf2e's), from you, all | failure: frosted (2 rounds); crit. failure: frosted (2 rounds) |  |
+| Circle of Protection | 3 | 10-ft emanation (pf2e's), all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, while inside: its rules, 1 minutes; from rank 4, moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, while inside: its rules, 1 hours |
 | Cleanse Affliction | 2 |  | cleanse (on you) |  |
+| Cleanse Cuisine | 1 |  | victuals |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
 | Cone of Cold | 5 | 60-ft cone (pf2e's), from you, all |  |  |
+| Control Water | 5 | 50-ft square, all, filtered | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Coral Scourge | 3 |  | success: clumsy 1 (1 minutes); success: coral scourge (1 minutes); failure / crit. failure: clumsy 2 (1 minutes); failure: coral scourge (1 minutes, carries turn-start climb); crit. failure: coral scourge (1 minutes, carries turn-start climb) |  |
 | Countless Eyes | 4 |  | countless eyes (1 minutes) |  |
 | Create Earthen Facsimile | 1 |  | earthen facsimile (10 minutes, on you) |  |
@@ -45,6 +51,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
 | Dome of Tranquility | 1 | 30-ft burst (pf2e's), all, placed, no targets |  | Dismiss, 1 hours; from rank 3, Dismiss, 8 hours; from rank 5, Dismiss, 24 hours |
+| Dreaming Potential | 5 |  | dreaming potential (8 hours) |  |
 | Earthbind | 3 |  | success: fall; failure: fall; crit. failure: fall |  |
 | Electric Arc | 1 | up to 2 |  |  |
 | Endure | 1 |  | spell-effect-endure |  |
@@ -94,6 +101,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Invent Code | 3 |  | invented code (8 hours, on you); invented code (8 hours) |  |
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
 | King's Castle | 5 |  | swap |  |
+| Know the Way | 1 |  | know-way (on you) |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Levitate | 3 |  | elevation; spell-effect-levitate (carries turn-end toggle) |  |
 | Liberating Command | 1 |  | liberate |  |
@@ -102,6 +110,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
 | Liminal Doorway | 4 |  | pocket (8 hours, on you) |  |
 | Live Wire | 1 |  | rays (on you) |  |
+| Magic Stone | 1 |  | magic stones (1 minutes, carries strike-resolved spend-badge) |  |
 | Magnetize | 4 |  | magnetized (1 minutes) |  |
 | Malediction | 1 | 10-ft emanation (pf2e's), enemies | failure / crit. failure: spell-effect-malediction (ends on leaving) | moves with you, Sustain: +10 ft, newcomers save, will on a Sustain — failure / crit. failure: spell-effect-malediction (ends on leaving), 1 minutes |
 | Massacre | 9 | 60-ft line (pf2e's), from you | aftermath (on you); success: 9d6 void (below rank 10); success: 10d6 void (from rank 10); failure: 100 void (below rank 10); failure: 115 void (from rank 10); success / failure: death; crit. failure: death; aftermath-mark |  |
@@ -138,6 +147,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
 | Restyle | 1 |  | restyle (on you) |  |
 | Revealing Light | 2 | 10-ft burst (pf2e's), all | success: revealed (2 rounds); failure: revealed (1 minutes); crit. failure: revealed (10 minutes) |  |
+| Ritual Obstruction | 5 | 60-ft burst (pf2e's), all, placed, no targets |  | 1 days |
 | Rope Trick | 4 |  | pocket (8 hours, on you) |  |
 | Runic Weapon | 1 |  | spell-effect-runic-weapon |  |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |

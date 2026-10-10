@@ -25,6 +25,11 @@ import { LIB_ID } from "../id.mjs";
  * *Restyle*: "You permanently change the appearance of one piece of clothing currently worn by you or an ally … The
  * object's statistics also remain unchanged." `{ type: "restyle", item, look }` finds the worn item the cast named, on
  * the caster or a creature the cast reached, and writes its new look into its description — nothing else on it moves.
+ *
+ * *Approximate*: "Name a particular type of object you're looking for within the area. You gain an instant estimate of
+ * the quantity of the chosen objects … The number is rounded to the largest digit." `{ type: "approximate", flag }`
+ * counts, in the targeted pile, the items whose name holds the words the cast named — each by its quantity — and
+ * whispers the count rounded to its largest digit.
  */
 
 const MAPS = "isaacs-pf2e-automation-maps";
@@ -131,4 +136,30 @@ export async function restyleItem(rider, context, chosen = {}) {
     const was = item.system?.description?.value ?? "";
     await item.update({ "system.description.value": `${was}<p><em>${t("Handiwork.Restyled")}</em> ${foundry.utils.escapeHTML(look)}</p>` });
     context.notes.push(t("Handiwork.Restyle", { item: item.name, look }));
+}
+
+/** A count rounded to its largest digit: 180 is about 200, 1,449 about 1,000. */
+export function roughly(n) {
+    const count = Math.max(0, Math.round(Number(n) || 0));
+    if (count < 10) return count;
+    const unit = 10 ** Math.floor(Math.log10(count));
+    return Math.round(count / unit) * unit;
+}
+
+export async function approximateCount(rider, context, chosen = {}) {
+    const pile = context.actor;
+    const words = String(chosen[rider.apply.flag ?? "kind"] ?? "").trim().toLowerCase();
+    if (!pile || !words) return;
+    const count = pile.items.filter((item) => item.name.toLowerCase().includes(words)).reduce((sum, item) => sum + (Number(item.system?.quantity) || 1), 0)
+        + (/coin|gold|silver|copper|platinum|gp|sp|cp|pp/.test(words) ? coinsNamed(pile, words) : 0);
+    context.notes.push(t("Handiwork.Roughly", { count: roughly(count), kind: words, name: pile.name }));
+}
+
+/** Coins kept as pf2e's treasure items are already counted; a pile's loose denominations are named here. */
+function coinsNamed(pile, words) {
+    const coins = pile.inventory?.coins ?? {};
+    const by = { copper: "cp", silver: "sp", gold: "gp", platinum: "pp" };
+    const named = Object.entries(by).filter(([word]) => words.includes(word)).map(([, d]) => d);
+    if (pile.items.some((item) => item.name.toLowerCase().includes(words))) return 0;
+    return (named.length ? named : ["pp", "gp", "sp", "cp"]).reduce((sum, d) => sum + (Number(coins[d]) || 0), 0);
 }

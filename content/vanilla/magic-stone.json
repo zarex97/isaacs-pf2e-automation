@@ -1,0 +1,67 @@
+{
+    "castChoice": {
+        "flag": "stones",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.magic-stone.Prompt",
+        "choices": [
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.magic-stone.Stones",
+                "rules": [
+                    {
+                        "itemType": "weapon",
+                        "key": "ItemAlteration",
+                        "mode": "upgrade",
+                        "predicate": [
+                            "item:group:sling"
+                        ],
+                        "property": "runes-potency",
+                        "value": 1
+                    },
+                    {
+                        "itemType": "weapon",
+                        "key": "ItemAlteration",
+                        "mode": "upgrade",
+                        "predicate": [
+                            "item:group:sling"
+                        ],
+                        "property": "runes-striking",
+                        "value": 1
+                    },
+                    {
+                        "definition": [
+                            "item:group:sling"
+                        ],
+                        "key": "AdjustStrike",
+                        "mode": "add",
+                        "property": "property-runes",
+                        "value": "disrupting"
+                    }
+                ],
+                "badge": "$cast:stones",
+                "carries": [
+                    {
+                        "event": "strike-resolved",
+                        "predicate": [
+                            "item:group:sling"
+                        ],
+                        "apply": {
+                            "type": "spend-badge"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

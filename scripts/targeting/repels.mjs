@@ -17,6 +17,11 @@ import { MovementCost } from "../lib/movement-cost.mjs";
  * own client); a success is the area's terrain, which counts only for that creature and only while it is getting
  * closer (`enemy-terrain.mjs`). Forced movement is not voluntary: the module's own pushes and pulls say so
  * (`forcedMovement`) and pass.
+ *
+ * *Circle of Protection*: "Summoned creatures of the chosen alignment can't willingly enter the area without succeeding
+ * at a Will save; repeated attempts use the first save result." `repels.entry` bars a failed creature from stepping in
+ * from outside, rather than from closing in, and a success passes freely; `repels.traits` (any of them) and
+ * `repels.castTrait` (the trait the cast chose, by its flag) say who must save at all.
  */
 
 const LINGERING = "lingering";
@@ -53,6 +58,17 @@ function inside(point, { region, caster }, scene) {
     return Math.hypot(point.x - centre.x, point.y - centre.y) <= radius + (caster.width * scene.grid.size) / 2;
 }
 
+/** Must this creature save at all? Only one with any of `traits` and the trait the cast chose, when those are named. */
+export function mustSave(repels, actor, caster, item) {
+    const traits = actor?.system?.traits?.value ?? [];
+    if (Array.isArray(repels?.traits) && !repels.traits.some((trait) => traits.includes(trait))) return false;
+    if (repels?.castTrait) {
+        const chosen = caster?.flags?.[LIB_ID]?.castChoices?.[(item?.original ?? item)?.id]?.[repels.castTrait];
+        if (!chosen || !traits.includes(chosen)) return false;
+    }
+    return true;
+}
+
 export const Repels = {
     registerHooks() {
         Hooks.on("preMoveToken", (token, movement, operation) => {
@@ -60,12 +76,25 @@ export const Repels = {
             const scene = token.parent;
             if (!scene) return;
             for (const area of repellers(scene)) {
+                // Entering for the first time: the Will save comes first, and the step waits for it.
+                if (area.payload.repels.entry && area.caster !== token && !area.payload.repelled?.[token.id]) {
+                    const grid0 = scene.grid.size;
+                    const into = inside(centreAt(movement.destination ?? token, token, grid0), area, scene) && !inside(centreAt(movement.origin ?? token, token, grid0), area, scene);
+                    const item = area.payload.itemUuid ? fromUuidSync(area.payload.itemUuid) : null;
+                    const caster = area.payload.originUuid ? fromUuidSync(area.payload.originUuid) : null;
+                    if (into && mustSave(area.payload.repels, token.actor, caster, item)) {
+                        ui.notifications.warn(t("Repels.SaveFirst", { name: token.name, area: area.payload.name ?? area.region.name }));
+                        if (game.users?.activeGM?.id === game.user?.id) void Repels.save(area.region, token);
+                        return false;
+                    }
+                }
                 if (area.caster === token || !barsApproach(area.payload.repelled?.[token.id])) continue;
                 const grid = scene.grid.size;
                 const caster = centreAt(area.caster, area.caster, grid);
                 const from = centreAt(movement.origin ?? token, token, grid);
                 const to = centreAt(movement.destination ?? token, token, grid);
-                if (inside(to, area, scene) && movesCloser(from, to, caster)) {
+                const barred = area.payload.repels.entry ? inside(to, area, scene) && !inside(from, area, scene) : inside(to, area, scene) && movesCloser(from, to, caster);
+                if (barred) {
                     ui.notifications.warn(t("Repels.Barred", { name: token.name, caster: area.caster.name, area: area.payload.name ?? area.region.name }));
                     return false;
                 }
@@ -82,7 +111,7 @@ export const Repels = {
             const scene = token.document?.parent ?? canvas.scene;
             if (!scene || !Number.isFinite(cost)) return;
             for (const area of repellers(scene)) {
-                if (area.caster === token.document || area.payload.repelled?.[token.document?.id] !== "success") continue;
+                if (area.caster === token.document || area.payload.repels.entry || area.payload.repelled?.[token.document?.id] !== "success") continue;
                 const a = canvas.grid.getCenterPoint(from);
                 const b = canvas.grid.getCenterPoint(to);
                 const caster = centreAt(area.caster, area.caster, scene.grid.size);
@@ -99,6 +128,7 @@ export const Repels = {
         const caster = payload.originUuid ? fromUuidSync(payload.originUuid) : null;
         if (caster && token.actor === caster) return;
         const item = payload.itemUuid ? await fromUuid(payload.itemUuid) : null;
+        if (!mustSave(payload.repels, token.actor, caster, item)) return;
         const dc = item?.spellcasting?.statistic?.dc?.value ?? null;
         const statistic = token.actor.getStatistic?.(payload.repels.statistic ?? "will");
         if (!statistic || !dc) return;

@@ -1,0 +1,197 @@
+{
+    "castChoice": {
+        "flag": "alignment",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Prompt",
+        "choices": [
+            "unholy",
+            "holy",
+            "chaotic",
+            "lawful"
+        ],
+        "labels": {
+            "unholy": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Unholy",
+            "holy": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Holy",
+            "chaotic": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Chaotic",
+            "lawful": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Lawful"
+        }
+    },
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true,
+        "fromTarget": true
+    },
+    "lingering": [
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "followsCaster": true,
+            "inside": {
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "ac",
+                        "type": "status",
+                        "value": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment"
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "saving-throw",
+                        "type": "status",
+                        "value": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment"
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "ac",
+                        "type": "status",
+                        "value": 3,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment",
+                            {
+                                "or": [
+                                    "origin:trait:summoned",
+                                    "origin:trait:minion"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "saving-throw",
+                        "type": "status",
+                        "value": 3,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment",
+                            {
+                                "or": [
+                                    "item:slug:command",
+                                    "item:slug:dominate",
+                                    "item:slug:charm",
+                                    "item:slug:suggestion",
+                                    "item:slug:possession",
+                                    "item:slug:mind-swap"
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "description": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Inside"
+            },
+            "repels": {
+                "statistic": "will",
+                "entry": true,
+                "traits": [
+                    "summoned",
+                    "minion"
+                ],
+                "castTrait": "alignment"
+            },
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        3
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "followsCaster": true,
+            "inside": {
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "ac",
+                        "type": "status",
+                        "value": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment"
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "saving-throw",
+                        "type": "status",
+                        "value": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment"
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "ac",
+                        "type": "status",
+                        "value": 3,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment",
+                            {
+                                "or": [
+                                    "origin:trait:summoned",
+                                    "origin:trait:minion"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "saving-throw",
+                        "type": "status",
+                        "value": 3,
+                        "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                        "predicate": [
+                            "origin:trait:$cast:alignment",
+                            {
+                                "or": [
+                                    "item:slug:command",
+                                    "item:slug:dominate",
+                                    "item:slug:charm",
+                                    "item:slug:suggestion",
+                                    "item:slug:possession",
+                                    "item:slug:mind-swap"
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "description": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Inside"
+            },
+            "repels": {
+                "statistic": "will",
+                "entry": true,
+                "traits": [
+                    "summoned",
+                    "minion"
+                ],
+                "castTrait": "alignment"
+            },
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ]
+        }
+    ]
+}

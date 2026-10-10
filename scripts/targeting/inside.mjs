@@ -57,9 +57,12 @@ export function insidePayload(spec, item) {
     const conditions = (spec.conditions ?? [])
         .map((slug) => conditionUuidOf(game.pf2e?.ConditionManager?.getCondition?.(slug)))
         .filter(Boolean);
+    // `"$cast:<flag>"` in a rule is what the caster chose as it was cast — *Circle of Protection*'s alignment.
+    const chosen = item?.actor?.flags?.[LIB_ID]?.castChoices?.[(item.original ?? item).id] ?? {};
+    const rules = JSON.parse(JSON.stringify(spec.rules ?? []).replace(/\$cast:([A-Za-z]+)/g, (_m, flag) => String(chosen[flag] ?? "")));
     return {
         conditions,
-        rules: spec.rules ?? [],
+        rules,
         description: spec.description ?? item?.system?.description?.value ?? "",
         img: item?.img ?? null,
     };

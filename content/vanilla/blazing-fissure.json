@@ -1,0 +1,23 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "anchor": "caster",
+        "predicate": [
+            {
+                "not": "rider:target:elevated"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "prone"
+            }
+        }
+    ]
+}

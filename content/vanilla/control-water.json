@@ -1,0 +1,60 @@
+{
+    "areaTargeting": {
+        "area": {
+            "type": "square",
+            "value": 50
+        },
+        "range": 500,
+        "affects": "all",
+        "predicate": [
+            "target:trait:water"
+        ]
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "success"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "rounds",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "slowed",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "slowed",
+                "value": 1
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes",
+                "expiry": "turn-start"
+            },
+            "apply": {
+                "type": "condition",
+                "slug": "slowed",
+                "value": 2
+            }
+        }
+    ]
+}

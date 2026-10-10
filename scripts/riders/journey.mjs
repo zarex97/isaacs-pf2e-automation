@@ -9,7 +9,9 @@ import { playersOf } from "./message.mjs";
  * vague and symbolic rather than concrete, leaving you within a mile of your intended destination when you Dismiss the
  * spell or its duration ends." `{ type: "journey", days }` whispers the caster the group's pace: pf2e's travel table
  * gives 8 miles a day for each 10 feet of the slowest traveller's Speed, and each hour covers `days` of those. An effect
- * with `endNote` posts its words to its holder's players when it ends, however it ends — dismissed, run out or removed.
+ * with `endNote` posts its words to its holder's players when it ends, however it ends — dismissed, run out or removed;
+ * with `onlyIfExpired`, only when it ran its whole course. One with `whileCondition` ends when its holder loses that
+ * condition.
  */
 
 const NOTE = "endNote";
@@ -43,12 +45,27 @@ export async function journeyPace(rider, context) {
     });
 }
 
+/** Has an effect run its whole duration by this world time? */
+export function ranOut(effect, now) {
+    const d = effect.system?.duration ?? {};
+    const seconds = (Number(d.value) || 0) * ({ rounds: 6, minutes: 60, hours: 3600, days: 86400 }[d.unit] ?? 0);
+    return seconds > 0 && now >= (Number(effect.system?.start?.value) || 0) + seconds;
+}
+
 export const Journey = {
     registerHooks() {
+        // `whileCondition`: it ends when its holder loses that condition — *Dreaming Potential* ends when the sleeper wakes.
+        Hooks.on("deleteItem", async (item) => {
+            if (game.users?.activeGM?.id !== game.user?.id || item.type !== "condition" || !item.actor) return;
+            const ids = item.actor.itemTypes.effect.filter((e) => e.flags?.[LIB_ID]?.whileCondition === item.slug).map((e) => e.id);
+            if (ids.length) await item.actor.deleteEmbeddedDocuments("Item", ids).catch(() => null);
+        });
         Hooks.on("deleteItem", async (item) => {
             if (game.users?.activeGM?.id !== game.user?.id) return;
             const note = item.flags?.[LIB_ID]?.[NOTE];
             if (!note || !item.actor) return;
+            // `onlyIfExpired`: only when it ran its course — *Dreaming Potential*'s "if it sleeps the full 8 hours".
+            if (item.flags[LIB_ID].onlyIfExpired && !ranOut(item, game.time.worldTime)) return;
             await ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ actor: item.actor }),
                 whisper: playersOf(item.actor),

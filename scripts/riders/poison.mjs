@@ -21,6 +21,10 @@ import { counteracts } from "./tether.mjs";
  * poison in the pile is counteracted at the cast's rank against its level's DC, and gone on a success; the food or
  * drink the cast named — every food in it, if it named none — is renamed a fine version of itself until the hour is
  * up, then back, if it is still there.
+ *
+ * *Cleanse Cuisine*: "You transform all food and beverages in the area into delicious fare … You can also choose to
+ * remove all toxins and contaminations from the food." `cleanse: "<flag>"` names the cast's yes-or-no field: on a yes the
+ * pile's poisons are simply removed, no check; `lasting: true` keeps the fine food fine.
  */
 
 const FLAG = "victuals";
@@ -104,8 +108,15 @@ export async function enhanceVictuals(rider, context, chosen = {}, { rank = 2, i
         return;
     }
     const lines = [];
+    // *Cleanse Cuisine*: toxins removed outright, when the caster chose to.
+    if (rider.apply.cleanse && isObject(pile)) {
+        if (String(chosen[rider.apply.cleanse] ?? "") === "yes") {
+            const toxins = physical.filter((i) => traitsOf(i).includes("poison"));
+            for (const toxin of toxins) await toxin.delete();
+            if (toxins.length) lines.push(t("Poison.Removed", { items: toxins.map((i) => i.name).join(", ") }));
+        }
+    } else if (isObject(pile)) {
     // "Prior to the transformation": a pile's poisons first, each counteracted on its own.
-    if (isObject(pile)) {
         const statistic = item?.spellcasting?.statistic ?? RiderExtensions.statistic(from, "spellcasting");
         for (const poison of physical.filter((i) => traitsOf(i).includes("poison"))) {
             const level = Number(poison.system?.level?.value) || 0;
@@ -120,10 +131,15 @@ export async function enhanceVictuals(rider, context, chosen = {}, { rank = 2, i
     const until = game.time.worldTime + ONE_HOUR;
     for (const dish of food) {
         const original = dish.flags?.[LIB_ID]?.[FLAG]?.name ?? dish.name;
-        await dish.update({ name: t("Poison.Fine", { name: original }), [`flags.${LIB_ID}.${FLAG}`]: { name: original, until } });
+        if (rider.apply.lasting) await dish.update({ name: t("Poison.Fine", { name: original }) });
+        else await dish.update({ name: t("Poison.Fine", { name: original }), [`flags.${LIB_ID}.${FLAG}`]: { name: original, until } });
     }
-    const cap = victualsCap(rank);
-    lines.push(t("Poison.Enhanced", { items: food.map((i) => i.name).join(", "), gallons: cap.gallons, pounds: cap.pounds }));
+    if (rider.apply.lasting) {
+        lines.push(t("Poison.Cleansed", { items: food.map((i) => i.name).join(", "), feet: Math.ceil(rank / 2) }));
+    } else {
+        const cap = victualsCap(rank);
+        lines.push(t("Poison.Enhanced", { items: food.map((i) => i.name).join(", "), gallons: cap.gallons, pounds: cap.pounds }));
+    }
     context.notes.push(...lines);
 }
 

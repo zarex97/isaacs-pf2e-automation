@@ -305,6 +305,27 @@
                 }
             ]
         },
+        "approximate": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.approximate.Prompt",
+                "fields": [
+                    {
+                        "key": "kind",
+                        "label": "ISAACS_AUTOMATION.Vanilla.approximate.Kind",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "approximate",
+                        "flag": "kind"
+                    }
+                }
+            ]
+        },
         "banishment": {
             "riders": [
                 {
@@ -364,6 +385,29 @@
                     "self": true,
                     "apply": {
                         "type": "rays"
+                    }
+                }
+            ]
+        },
+        "blazing-fissure": {
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster",
+                "predicate": [
+                    {
+                        "not": "rider:target:elevated"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
                     }
                 }
             ]
@@ -807,6 +851,12 @@
                 }
             ]
         },
+        "breathe-fire": {
+            "areaTargeting": {
+                "affects": "all",
+                "anchor": "caster"
+            }
+        },
         "calm": {
             "areaTargeting": {
                 "affects": "all"
@@ -988,6 +1038,203 @@
                 }
             ]
         },
+        "circle-of-protection": {
+            "castChoice": {
+                "flag": "alignment",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Prompt",
+                "choices": [
+                    "unholy",
+                    "holy",
+                    "chaotic",
+                    "lawful"
+                ],
+                "labels": {
+                    "unholy": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Unholy",
+                    "holy": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Holy",
+                    "chaotic": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Chaotic",
+                    "lawful": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Lawful"
+                }
+            },
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true,
+                "fromTarget": true
+            },
+            "lingering": [
+                {
+                    "name": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "followsCaster": true,
+                    "inside": {
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": "ac",
+                                "type": "status",
+                                "value": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment"
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "saving-throw",
+                                "type": "status",
+                                "value": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment"
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "ac",
+                                "type": "status",
+                                "value": 3,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment",
+                                    {
+                                        "or": [
+                                            "origin:trait:summoned",
+                                            "origin:trait:minion"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "saving-throw",
+                                "type": "status",
+                                "value": 3,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment",
+                                    {
+                                        "or": [
+                                            "item:slug:command",
+                                            "item:slug:dominate",
+                                            "item:slug:charm",
+                                            "item:slug:suggestion",
+                                            "item:slug:possession",
+                                            "item:slug:mind-swap"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "description": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Inside"
+                    },
+                    "repels": {
+                        "statistic": "will",
+                        "entry": true,
+                        "traits": [
+                            "summoned",
+                            "minion"
+                        ],
+                        "castTrait": "alignment"
+                    },
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                3
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "followsCaster": true,
+                    "inside": {
+                        "rules": [
+                            {
+                                "key": "FlatModifier",
+                                "selector": "ac",
+                                "type": "status",
+                                "value": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment"
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "saving-throw",
+                                "type": "status",
+                                "value": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment"
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "ac",
+                                "type": "status",
+                                "value": 3,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment",
+                                    {
+                                        "or": [
+                                            "origin:trait:summoned",
+                                            "origin:trait:minion"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "saving-throw",
+                                "type": "status",
+                                "value": 3,
+                                "label": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Circle",
+                                "predicate": [
+                                    "origin:trait:$cast:alignment",
+                                    {
+                                        "or": [
+                                            "item:slug:command",
+                                            "item:slug:dominate",
+                                            "item:slug:charm",
+                                            "item:slug:suggestion",
+                                            "item:slug:possession",
+                                            "item:slug:mind-swap"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "description": "ISAACS_AUTOMATION.Vanilla.circle-of-protection.Inside"
+                    },
+                    "repels": {
+                        "statistic": "will",
+                        "entry": true,
+                        "traits": [
+                            "summoned",
+                            "minion"
+                        ],
+                        "castTrait": "alignment"
+                    },
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
         "cleanse-affliction": {
             "riders": [
                 {
@@ -996,6 +1243,42 @@
                     "apply": {
                         "type": "cleanse",
                         "statistic": "spellcasting"
+                    }
+                }
+            ]
+        },
+        "cleanse-cuisine": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Item",
+                        "type": "text"
+                    },
+                    {
+                        "key": "cleanse",
+                        "label": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Cleanse",
+                        "type": "text",
+                        "options": [
+                            "yes",
+                            "no"
+                        ]
+                    }
+                ],
+                "labels": {
+                    "yes": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Yes",
+                    "no": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.No"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "victuals",
+                        "flag": "item",
+                        "cleanse": "cleanse",
+                        "lasting": true
                     }
                 }
             ]
@@ -1037,6 +1320,66 @@
                 "affects": "all",
                 "anchor": "caster"
             }
+        },
+        "control-water": {
+            "areaTargeting": {
+                "area": {
+                    "type": "square",
+                    "value": 50
+                },
+                "range": 500,
+                "affects": "all",
+                "predicate": [
+                    "target:trait:water"
+                ]
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "success"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "rounds",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 1
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes",
+                        "expiry": "turn-start"
+                    },
+                    "apply": {
+                        "type": "condition",
+                        "slug": "slowed",
+                        "value": 2
+                    }
+                }
+            ]
         },
         "coral-scourge": {
             "riders": [
@@ -1847,6 +2190,28 @@
                         }
                     ],
                     "blocksSound": true
+                }
+            ]
+        },
+        "dreaming-potential": {
+            "requires": {
+                "targetCondition": "unconscious"
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.dreaming-potential.Dream",
+                        "rules": [],
+                        "endNote": "ISAACS_AUTOMATION.Vanilla.dreaming-potential.Woke",
+                        "onlyIfExpired": true,
+                        "whileCondition": "unconscious"
+                    }
                 }
             ]
         },
@@ -3944,6 +4309,22 @@
                 }
             ]
         },
+        "know-the-way": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "know-way",
+                        "window": {
+                            "1": 1,
+                            "3": 7,
+                            "7": "all"
+                        }
+                    }
+                }
+            ]
+        },
         "laughing-fit": {
             "riders": [
                 {
@@ -4182,6 +4563,73 @@
                                     "damageType": "electricity",
                                     "perStep": "1d4",
                                     "perStepInterval": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "magic-stone": {
+            "castChoice": {
+                "flag": "stones",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.magic-stone.Prompt",
+                "choices": [
+                    "1",
+                    "2",
+                    "3"
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.magic-stone.Stones",
+                        "rules": [
+                            {
+                                "itemType": "weapon",
+                                "key": "ItemAlteration",
+                                "mode": "upgrade",
+                                "predicate": [
+                                    "item:group:sling"
+                                ],
+                                "property": "runes-potency",
+                                "value": 1
+                            },
+                            {
+                                "itemType": "weapon",
+                                "key": "ItemAlteration",
+                                "mode": "upgrade",
+                                "predicate": [
+                                    "item:group:sling"
+                                ],
+                                "property": "runes-striking",
+                                "value": 1
+                            },
+                            {
+                                "definition": [
+                                    "item:group:sling"
+                                ],
+                                "key": "AdjustStrike",
+                                "mode": "add",
+                                "property": "property-runes",
+                                "value": "disrupting"
+                            }
+                        ],
+                        "badge": "$cast:stones",
+                        "carries": [
+                            {
+                                "event": "strike-resolved",
+                                "predicate": [
+                                    "item:group:sling"
+                                ],
+                                "apply": {
+                                    "type": "spend-badge"
                                 }
                             }
                         ]
@@ -6125,6 +6573,20 @@
                     }
                 }
             ]
+        },
+        "ritual-obstruction": {
+            "areaTargeting": {
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.ritual-obstruction.Zone",
+                "duration": {
+                    "value": 1,
+                    "unit": "days"
+                },
+                "obstructsRituals": true
+            }
         },
         "rope-trick": {
             "riders": [

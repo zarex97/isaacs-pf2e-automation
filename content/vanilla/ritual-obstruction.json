@@ -1,0 +1,14 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.ritual-obstruction.Zone",
+        "duration": {
+            "value": 1,
+            "unit": "days"
+        },
+        "obstructsRituals": true
+    }
+}
