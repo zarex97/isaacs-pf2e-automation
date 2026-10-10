@@ -207,6 +207,7 @@ A clause that states a fact and makes no move — traits on an item, "nothing ha
 | `effect:extradimensional` | A space off the map that creatures enter and leave, and are put out of when it collapses. | VS-173a | `scripts/targeting/pocket.mjs` | `riders[].apply.type: pocket` | “extradimensional space”, “the space begins to collapse” |
 | `effect:message` | Words passed from one creature to another, whispered to the recipient's players, with a reply when the spell allows one. | VS-134a | `scripts/riders/message.mjs` | `riders[].apply.type: message`, `riders[].apply.telepathy` | “mentally impart”, “mental message”, “communicate telepathically” |
 | `effect:text-changed` | A written text shown as something else, with a way to change it back. | VS-141a | `scripts/riders/secret-page.mjs` | `riders[].apply.type: secret-page` | “change the target's text”, “different text entirely” |
+| `effect:item-changed` | Items changed in place — reshaped, renamed or sorted — keeping what they are worth. | VS-153a | `scripts/riders/handiwork.mjs` | `riders[].apply.type: reshape`, `riders[].apply.type: sort-items` | “You shape the wood”, “sort a group of objects”, “into neat stacks” |
 
 ## `ending` — What stops it?
 

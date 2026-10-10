@@ -1,0 +1,36 @@
+{
+    "requires": {
+        "targetTraits": [
+            "animal"
+        ],
+        "atRank": {
+            "4": [
+                "plant",
+                "fungus"
+            ]
+        }
+    },
+    "riders": [
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.impart-empathy.Empathy",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "impart-empathy"
+                    }
+                ]
+            }
+        }
+    ]
+}

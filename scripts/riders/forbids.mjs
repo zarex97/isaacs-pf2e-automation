@@ -65,12 +65,24 @@ export function actionForbidden(action) {
     return false;
 }
 
+/** A ritual with secondary casters, or a spell from a coven's entry: casting it takes others. */
+export function needsOthers(spell) {
+    return (!!spell?.system?.ritual && Number(spell.system.ritual.secondary?.casters) > 0) || /coven/i.test(spell?.spellcasting?.name ?? "");
+}
+
 export const Forbids = {
     /** A cast refused. The cast pipeline's stage. */
     castAllowed(spell) {
         // A spell with the concentrate trait, under a form that forbids concentrate actions.
         const concentrate = (spell?.system?.traits?.value ?? []).includes("concentrate") ? forbiddenBy(spell?.actor, "concentrate") : null;
         const cast = forbiddenBy(spell?.actor, "cast");
+        // *Caster's Imposition*: "can't participate in any ritual unless they can cast the ritual alone, and they can't access
+        // any spells provided by a coven" — a ritual that needs secondary casters, a spell from a coven's entry.
+        const cooperative = needsOthers(spell) ? forbiddenBy(spell?.actor, "cooperative") : null;
+        if (cooperative) {
+            ui.notifications?.warn(t("Forbids.Refused", { actor: spell.actor.name, name: spell.name, effect: cooperative.name }));
+            return false;
+        }
         const effect = (cast && !excepted(cast, spell) ? cast : null) ?? (concentrate && !excepted(concentrate, spell) ? concentrate : null);
         if (!effect) return true;
         ui.notifications?.warn(t("Forbids.Refused", { actor: spell.actor.name, name: spell.name, effect: effect.name }));
@@ -78,6 +90,15 @@ export const Forbids = {
     },
 
     register() {
+        // A ritual is posted, not cast through a spellcasting entry: its card is what is refused.
+        Hooks.on("preCreateChatMessage", (message, _data, _options, userId) => {
+            const item = message.item;
+            if (userId !== game.user?.id || !item?.system?.ritual || message.rolls?.length || !needsOthers(item)) return true;
+            const effect = forbiddenBy(item.actor, "cooperative");
+            if (!effect) return true;
+            ui.notifications?.warn(t("Forbids.Refused", { actor: item.actor.name, name: item.name, effect: effect.name }));
+            return false;
+        });
         CheckPipeline.gate("an attack a form forbids", 15, (_check, context) => {
             if (context?.type !== "attack-roll") return true;
             const actor = context.origin?.actor ?? context.actor;

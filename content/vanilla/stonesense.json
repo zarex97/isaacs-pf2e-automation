@@ -1,0 +1,24 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.stonesense.Sense",
+                "rules": [
+                    {
+                        "key": "Sense",
+                        "selector": "tremorsense",
+                        "acuity": "imprecise",
+                        "range": 100
+                    }
+                ]
+            }
+        }
+    ]
+}

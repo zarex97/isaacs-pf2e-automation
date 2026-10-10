@@ -1,0 +1,42 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "markCentre": true
+    },
+    "areaTargetingShapes": [
+        {
+            "type": "square",
+            "value": 10
+        }
+    ],
+    "saveOrSkill": "acrobatics",
+    "riders": [
+        {
+            "outcomes": [
+                "failure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "prone"
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "fall-off",
+                "feet": 5
+            }
+        },
+        {
+            "outcomes": [
+                "criticalFailure"
+            ],
+            "apply": {
+                "type": "condition",
+                "slug": "prone"
+            }
+        }
+    ]
+}

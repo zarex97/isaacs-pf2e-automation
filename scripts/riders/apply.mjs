@@ -41,6 +41,9 @@ import { Pocket } from "../targeting/pocket.mjs";
 import { Message, sendMessage } from "./message.mjs";
 import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
+import { fatesTravels } from "./travel.mjs";
+import { drawMap, reshapeItem, sortItems } from "./handiwork.mjs";
+import { fallOff } from "./fall-off.mjs";
 import { Conjure } from "./conjure.mjs";
 import { fadesAfter } from "./trail.mjs";
 import { delaySeconds } from "./reminder.mjs";
@@ -462,6 +465,16 @@ async function applyOne(rider, context) {
             return Pocket.open(rider, context);
         case "message":
             return sendMessage(rider, context, castChoicesOf(context));
+        case "fates-travels":
+            return fatesTravels(rider, context, Number(castItemOf(context)?.rank) || 3);
+        case "sort-items":
+            return sortItems(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 1);
+        case "reshape":
+            return reshapeItem(rider, context, castChoicesOf(context));
+        case "map":
+            return drawMap(rider, context, Number(castItemOf(context)?.rank) || 3);
+        case "fall-off":
+            return fallOff(rider, context);
         case "secret-page":
             return changePage(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 1);
         case "reaction":
@@ -3279,6 +3292,8 @@ function effectSource(label, rules, rider, context) {
         const chosen = castChoicesOf(context);
         source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { trail: { visible: chosen.mode !== "invisible", color: String(chosen.color ?? "") || null, fades: fadesAfter(castItemOf(context)?.rank) } } });
     }
+    // What it forbids its holder, as a pf2e effect's below — *Caster's Imposition*'s cooperative casting (`forbids.mjs`).
+    if (Array.isArray(rider.apply?.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids, ...(rider.apply.forbidsExcept ? { forbidsExcept: rider.apply.forbidsExcept } : {}) } });
     // *Telepathic Bond*: everyone the cast reached, the caster among them (`message.mjs`).
     if (rider.apply?.telepathy) {
         const bond = [context.originActor, ...(context.targets ?? []).map((t) => t?.actor ?? t)].filter((a) => a?.uuid);

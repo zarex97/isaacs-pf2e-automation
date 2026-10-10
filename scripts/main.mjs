@@ -66,6 +66,7 @@ import { Ventriloquism } from "./riders/ventriloquism.mjs";
 import { SensesLink } from "./riders/senses-link.mjs";
 import { SecretPage } from "./riders/secret-page.mjs";
 import { BlindEye } from "./riders/blind-eye.mjs";
+import { Travel } from "./riders/travel.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -122,6 +123,7 @@ export const INIT = [
     ["seeing through another creature's eyes", () => SensesLink.registerHooks()],
     ["a page that says something else", () => SecretPage.registerHooks()],
     ["an object that will not be used to watch", () => BlindEye.register()],
+    ["where a creature has been", () => Travel.registerHooks()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

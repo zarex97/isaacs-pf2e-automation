@@ -64,6 +64,7 @@ const SUMMARIES = {
     castChoice: (spec) => [t("Indicator.CastChoice", { count: spec?.choices?.length ?? spec?.fields?.length ?? 0 })],
     sacrifice: () => [t("Indicator.Sacrifice")],
     circumstanceAcLess: (by) => [t("Indicator.CircumstanceAcLess", { by })],
+    saveOrSkill: (skill) => [t("Indicator.SaveOrSkill", { skill })],
     castCost: (spec) => [t("Indicator.CastCost", { gp: spec?.gp ?? 0, rank: spec?.fromRank ?? 1 })],
     saveModifier: (spec) => [spec].flat().filter(Boolean).map((s) => t("Indicator.SaveModifier", { value: s.value, type: s.type ?? "untyped" })),
 };

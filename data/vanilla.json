@@ -774,6 +774,94 @@
                 }
             ]
         },
+        "casters-imposition": {
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                3
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.casters-imposition.Imposed",
+                        "rules": [],
+                        "forbids": [
+                            "cooperative"
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.casters-imposition.Imposed",
+                        "rules": [],
+                        "forbids": [
+                            "cooperative"
+                        ]
+                    }
+                },
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.casters-imposition.Imposed",
+                        "rules": [],
+                        "forbids": [
+                            "cooperative"
+                        ]
+                    }
+                }
+            ]
+        },
         "chain-lightning": {
             "areaTargeting": {
                 "chain": {
@@ -1868,6 +1956,159 @@
                 }
             }
         },
+        "environmental-endurance": {
+            "castChoice": {
+                "flag": "temperature",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Prompt",
+                "choices": [
+                    "cold",
+                    "heat"
+                ],
+                "labels": {
+                    "cold": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Cold",
+                    "heat": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Heat"
+                },
+                "toRank": 2
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        },
+                        "rider:cast:temperature:cold"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                        "untilPreparations": true,
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:severe-cold"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        },
+                        "rider:cast:temperature:heat"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                        "untilPreparations": true,
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:severe-heat"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                        "untilPreparations": true,
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:severe-cold"
+                            },
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:severe-heat"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.environmental-endurance.Endurance",
+                        "untilPreparations": true,
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:severe-cold"
+                            },
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:severe-heat"
+                            },
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:extreme-cold"
+                            },
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "protected:extreme-heat"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "evil-eye": {
             "riders": [
                 {
@@ -1998,6 +2239,42 @@
                     "self": true,
                     "apply": {
                         "type": "fetch-familiar"
+                    }
+                }
+            ]
+        },
+        "fates-travels": {
+            "requires": "corpse-target",
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "fates-travels"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.fates-travels.Trail",
+                        "rules": [
+                            {
+                                "key": "AdjustDegreeOfSuccess",
+                                "selector": "survival",
+                                "predicate": [
+                                    "action:track"
+                                ],
+                                "adjustment": {
+                                    "criticalFailure": "two-degrees-better",
+                                    "failure": "one-degree-better"
+                                }
+                            }
+                        ]
                     }
                 }
             ]
@@ -3108,6 +3385,42 @@
                         "preselect": {
                             "illOmen": "$outcome"
                         }
+                    }
+                }
+            ]
+        },
+        "impart-empathy": {
+            "requires": {
+                "targetTraits": [
+                    "animal"
+                ],
+                "atRank": {
+                    "4": [
+                        "plant",
+                        "fungus"
+                    ]
+                }
+            },
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure",
+                        "criticalFailure"
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.impart-empathy.Empathy",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "impart-empathy"
+                            }
+                        ]
                     }
                 }
             ]
@@ -4942,6 +5255,33 @@
                 }
             ]
         },
+        "quick-sort": {
+            "castChoice": {
+                "flag": "by",
+                "prompt": "ISAACS_AUTOMATION.Vanilla.quick-sort.Prompt",
+                "choices": [
+                    "look",
+                    "notation"
+                ],
+                "labels": {
+                    "look": "ISAACS_AUTOMATION.Vanilla.quick-sort.Look",
+                    "notation": "ISAACS_AUTOMATION.Vanilla.quick-sort.Notation"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "sort-items",
+                        "flag": "by",
+                        "limit": 200,
+                        "limitAtRank": {
+                            "3": 500
+                        }
+                    }
+                }
+            ]
+        },
         "regenerate": {
             "riders": [
                 {
@@ -5446,6 +5786,76 @@
                         "to": "to",
                         "words": 25,
                         "reply": true
+                    }
+                }
+            ]
+        },
+        "shape-stone": {
+            "areaTargeting": {
+                "affects": "all",
+                "markCentre": true
+            },
+            "areaTargetingShapes": [
+                {
+                    "type": "square",
+                    "value": 10
+                }
+            ],
+            "saveOrSkill": "acrobatics",
+            "riders": [
+                {
+                    "outcomes": [
+                        "failure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "fall-off",
+                        "feet": 5
+                    }
+                },
+                {
+                    "outcomes": [
+                        "criticalFailure"
+                    ],
+                    "apply": {
+                        "type": "condition",
+                        "slug": "prone"
+                    }
+                }
+            ]
+        },
+        "shape-wood": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.shape-wood.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.shape-wood.Item",
+                        "type": "text"
+                    },
+                    {
+                        "key": "shape",
+                        "label": "ISAACS_AUTOMATION.Vanilla.shape-wood.Shape",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "reshape",
+                        "item": "item",
+                        "shape": "shape"
                     }
                 }
             ]
@@ -6251,6 +6661,17 @@
                 }
             ]
         },
+        "spontaneous-cartography": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "map"
+                    }
+                }
+            ]
+        },
         "stabilize": {
             "riders": [
                 {
@@ -6266,6 +6687,30 @@
                     "apply": {
                         "type": "condition",
                         "slug": "unconscious"
+                    }
+                }
+            ]
+        },
+        "stonesense": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.stonesense.Sense",
+                        "rules": [
+                            {
+                                "key": "Sense",
+                                "selector": "tremorsense",
+                                "acuity": "imprecise",
+                                "range": 100
+                            }
+                        ]
                     }
                 }
             ]
@@ -7602,6 +8047,95 @@
                     "cover": true
                 }
             }
+        },
+        "water-breathing": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.water-breathing.Breathing",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "water-breathing"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                3
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.water-breathing.Breathing",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "water-breathing"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.water-breathing.Breathing",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "water-breathing"
+                            }
+                        ],
+                        "untilPreparations": true
+                    }
+                }
+            ]
         },
         "wave-of-despair": {
             "riders": [

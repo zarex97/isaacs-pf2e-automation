@@ -33,6 +33,8 @@ export const AUTHORED_KEYS = Object.freeze([
     "saveModifier",
     // A cost paid as the spell is cast — *Peaceful Rest* (`vanilla/requires.mjs`).
     "castCost",
+    // A skill a save may be rolled with instead — *Shape Stone* (`vanilla/save-modifier.mjs`).
+    "saveOrSkill",
 ]);
 
 /** The scope an item's own value for `key` was found in, or null. */

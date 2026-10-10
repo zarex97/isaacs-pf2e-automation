@@ -83,7 +83,7 @@ export const CastPipeline = {
         // What a spell needs in hand, before anything is asked or aimed.
         // A form that can't cast — *Vapor Form*.
         CastPipeline.before("what a form forbids", CAST_PRIORITY.forbids, async (spell) => (await import("./riders/forbids.mjs")).Forbids.castAllowed(spell));
-        CastPipeline.before("what a spell needs", CAST_PRIORITY.requires, async (spell) => (await import("./vanilla/requires.mjs")).checkRequirements(spell));
+        CastPipeline.before("what a spell needs", CAST_PRIORITY.requires, async (spell, options) => (await import("./vanilla/requires.mjs")).checkRequirements(spell, options));
         // A minion spent — *Final Sacrifice*: its target must be the caster's summon, and its element sets the spell's.
         CastPipeline.before("a minion sacrificed", CAST_PRIORITY.sacrifice, async (spell, options) => (await import("./vanilla/sacrifice.mjs")).sacrificeBefore(spell, options));
         // A spell whose damage type is a weapon's: the matching pf2e variant, chosen before anything is aimed.

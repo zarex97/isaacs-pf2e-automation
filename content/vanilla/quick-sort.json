@@ -1,0 +1,27 @@
+{
+    "castChoice": {
+        "flag": "by",
+        "prompt": "ISAACS_AUTOMATION.Vanilla.quick-sort.Prompt",
+        "choices": [
+            "look",
+            "notation"
+        ],
+        "labels": {
+            "look": "ISAACS_AUTOMATION.Vanilla.quick-sort.Look",
+            "notation": "ISAACS_AUTOMATION.Vanilla.quick-sort.Notation"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "sort-items",
+                "flag": "by",
+                "limit": 200,
+                "limitAtRank": {
+                    "3": 500
+                }
+            }
+        }
+    ]
+}

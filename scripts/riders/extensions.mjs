@@ -16,7 +16,7 @@
 export const BUILT_IN_APPLY_TYPES = Object.freeze([
     "prompt", "pick", "choice", "save", "pool", "damage", "death", "persistent-damage", "effect", "condition",
     "teleport", "strikes", "banish", "heal", "readout", "toggle", "counteract", "reaction", "flat-check",
-    "encasement", "escape", "expire", "sustain", "shorten", "climb", "decoy", "transfer", "temp-hp", "dismiss", "area-damage", "pull", "contest", "disarm", "rays", "spend-charge", "affliction", "aftermath", "aftermath-mark", "cast", "unobserve", "cleanse", "counteract-area", "fetch-familiar", "pocket", "message", "secret-page", "fall", "elevation", "detect-magic",
+    "encasement", "escape", "expire", "sustain", "shorten", "climb", "decoy", "transfer", "temp-hp", "dismiss", "area-damage", "pull", "contest", "disarm", "rays", "spend-charge", "affliction", "aftermath", "aftermath-mark", "cast", "unobserve", "cleanse", "counteract-area", "fetch-familiar", "pocket", "message", "secret-page", "fates-travels", "sort-items", "reshape", "map", "fall-off", "fall", "elevation", "detect-magic",
 ]);
 
 const applyTypes = new Map();

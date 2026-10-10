@@ -1,0 +1,88 @@
+{
+    "riders": [
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        3
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.casters-imposition.Imposed",
+                "rules": [],
+                "forbids": [
+                    "cooperative"
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        4
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.casters-imposition.Imposed",
+                "rules": [],
+                "forbids": [
+                    "cooperative"
+                ]
+            }
+        },
+        {
+            "outcomes": [
+                "failure",
+                "criticalFailure"
+            ],
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.casters-imposition.Imposed",
+                "rules": [],
+                "forbids": [
+                    "cooperative"
+                ]
+            }
+        }
+    ]
+}
