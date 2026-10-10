@@ -1,0 +1,53 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "area-damage",
+                "save": "will",
+                "parts": [
+                    {
+                        "formula": "1d10",
+                        "perStep": "1d10",
+                        "type": "mental"
+                    }
+                ],
+                "riders": [
+                    {
+                        "outcomes": [
+                            "success"
+                        ],
+                        "apply": {
+                            "type": "effect",
+                            "uuid": "Compendium.pf2e.spell-effects.Item.PDoTV4EhJp63FEaG"
+                        }
+                    },
+                    {
+                        "outcomes": [
+                            "failure"
+                        ],
+                        "apply": {
+                            "type": "effect",
+                            "uuid": "Compendium.pf2e.spell-effects.Item.0WYy3bY7HJ7TDSYD",
+                            "preselect": {
+                                "degreeOfSuccess": "-1"
+                            }
+                        }
+                    },
+                    {
+                        "outcomes": [
+                            "criticalFailure"
+                        ],
+                        "apply": {
+                            "type": "effect",
+                            "uuid": "Compendium.pf2e.spell-effects.Item.0WYy3bY7HJ7TDSYD",
+                            "preselect": {
+                                "degreeOfSuccess": "-2"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -371,6 +371,34 @@
                 }
             ]
         },
+        "bind-undead": {
+            "requires": {
+                "targetAllTraits": [
+                    "undead",
+                    "mindless"
+                ],
+                "targetMaxLevelRank": true
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.rVkUzqS4rpZp9LS3",
+                        "atCastRank": true,
+                        "endsOnHostileFrom": true,
+                        "addRules": [
+                            {
+                                "key": "ActorTraits",
+                                "add": [
+                                    "minion"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "blazing-bolt": {
             "actionVariants": {
                 "1": "wlrbtv7c5shfmdh1",
@@ -795,6 +823,52 @@
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            ]
+        },
+        "blood-duplicate": {
+            "requires": {
+                "casterNotTraits": [
+                    "construct",
+                    "undead",
+                    "elemental"
+                ]
+            },
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.blood-duplicate.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blood-duplicate.Item",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "damage",
+                        "formula": "1",
+                        "damageType": "piercing"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.blood-duplicate.Duplicate",
+                        "rules": [],
+                        "duplicates": {
+                            "flag": "item"
                         }
                     }
                 }
@@ -1619,6 +1693,28 @@
                 }
             ]
         },
+        "cradle-aloft": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.cradle-aloft.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.cradle-aloft.Item",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "cradle",
+                        "flag": "item"
+                    }
+                }
+            ]
+        },
         "create-earthen-facsimile": {
             "castChoice": {
                 "prompt": "ISAACS_AUTOMATION.Vanilla.create-earthen-facsimile.Prompt",
@@ -1932,6 +2028,17 @@
                 }
             ]
         },
+        "detect-creator": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "creator",
+                        "miles": 1
+                    }
+                }
+            ]
+        },
         "detect-magic": {
             "castChoice": {
                 "flag": "known",
@@ -2219,6 +2326,59 @@
                         }
                     ],
                     "blocksSound": true
+                }
+            ]
+        },
+        "draw-ire": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "area-damage",
+                        "save": "will",
+                        "parts": [
+                            {
+                                "formula": "1d10",
+                                "perStep": "1d10",
+                                "type": "mental"
+                            }
+                        ],
+                        "riders": [
+                            {
+                                "outcomes": [
+                                    "success"
+                                ],
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.PDoTV4EhJp63FEaG"
+                                }
+                            },
+                            {
+                                "outcomes": [
+                                    "failure"
+                                ],
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.0WYy3bY7HJ7TDSYD",
+                                    "preselect": {
+                                        "degreeOfSuccess": "-1"
+                                    }
+                                }
+                            },
+                            {
+                                "outcomes": [
+                                    "criticalFailure"
+                                ],
+                                "apply": {
+                                    "type": "effect",
+                                    "uuid": "Compendium.pf2e.spell-effects.Item.0WYy3bY7HJ7TDSYD",
+                                    "preselect": {
+                                        "degreeOfSuccess": "-2"
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 }
             ]
         },
@@ -2836,6 +2996,40 @@
                 }
             ]
         },
+        "fated-healing": {
+            "requires": {
+                "targetsHostile": true
+            },
+            "areaTargeting": {
+                "maxTargets": 2
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 5,
+                        "unit": "rounds"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.fated-healing.Healing",
+                        "rules": [],
+                        "link": true,
+                        "endsOnHostileTo": true,
+                        "carries": [
+                            {
+                                "event": "turn-end",
+                                "apply": {
+                                    "type": "heal",
+                                    "formula": "1d4",
+                                    "perStep": "1d4"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "fates-travels": {
             "requires": "corpse-target",
             "riders": [
@@ -3089,6 +3283,19 @@
                     "maxTargets": 3
                 }
             }
+        },
+        "friendfetch": {
+            "areaTargeting": {
+                "maxTargets": 2
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "fetch"
+                    }
+                }
+            ]
         },
         "frostbite": {
             "riders": [
@@ -3629,6 +3836,24 @@
                     "apply": {
                         "type": "prompt",
                         "text": "ISAACS_AUTOMATION.Vanilla.guidance.AlreadyImmune"
+                    }
+                }
+            ]
+        },
+        "guiding-star": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.guiding-star.Star",
+                        "rules": [],
+                        "namesPlace": true,
+                        "untilPreparations": true
                     }
                 }
             ]
@@ -6874,6 +7099,29 @@
                 }
             ]
         },
+        "secret-chest": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.secret-chest.Prompt",
+                "fields": [
+                    {
+                        "key": "container",
+                        "label": "ISAACS_AUTOMATION.Vanilla.secret-chest.Container",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "stash",
+                        "flag": "container",
+                        "bulk": 10
+                    }
+                }
+            ]
+        },
         "secret-page": {
             "castChoice": {
                 "prompt": "ISAACS_AUTOMATION.Vanilla.secret-page.Prompt",
@@ -7188,6 +7436,159 @@
                                         "not": "shillelagh-third-die"
                                     }
                                 ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "sigil": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        "rider:target:object"
+                    ],
+                    "apply": {
+                        "type": "mark"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "not": "rider:target:object"
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 7,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "sigil-visible",
+                                "toggleable": true,
+                                "value": true,
+                                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "not": "rider:target:object"
+                        },
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                4
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 30,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "sigil-visible",
+                                "toggleable": true,
+                                "value": true,
+                                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "not": "rider:target:object"
+                        },
+                        {
+                            "gte": [
+                                "item:rank",
+                                5
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                6
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 365,
+                        "unit": "days"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "sigil-visible",
+                                "toggleable": true,
+                                "value": true,
+                                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "not": "rider:target:object"
+                        },
+                        {
+                            "gte": [
+                                "item:rank",
+                                7
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "sigil-visible",
+                                "toggleable": true,
+                                "value": true,
+                                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
                             }
                         ]
                     }

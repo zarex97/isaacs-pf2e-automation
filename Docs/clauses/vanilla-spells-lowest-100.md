@@ -609,9 +609,9 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-187a | "You alter how an item's or spell's magical aura appears to effects like detect magic" | when:cast · reach:object · effect:gm-note | Detection reads the target's aura as disguised, until preparations | `disguise-magic.json` | ✅ | A level 4 dagger on the Target, hidden: Detect Magic said "no magic". Control: "present" once dismissed |
-| VS-187b | "You can hide the auras entirely, have an item register as a common item of lower level, or make a spell register as a common spell of the same or lower rank" | check:caster-choice · effect:gm-note | The caster's chosen disguise is recorded for the table | `disguise-magic.json` | ✅ | Hidden, or lowered: rank 4 detection reported the dagger as level 1 |
+| VS-187b | "You can hide the auras entirely, have an item register as a common item of lower level, or make a spell register as a common spell of the same or lower rank" | check:caster-choice · effect:gm-note | The caster's chosen disguise is recorded for the table | `disguise-magic.json` | ✅ | Hidden, or lowered: rank 7 detection reported the dagger as level 1 |
 | VS-187c | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss it | `disguise-magic.json` | ✅ | Its Dismiss ended it and lifted the disguise; it also ends at daily preparations |
-| VS-187d | "A caster using Detect Magic or Read Aura of a higher rank than disguise magic can attempt to disbelieve the illusion using the skill matching the tradition of the spell" | reach:filtered · check:skill | A higher-rank detector may roll its tradition's skill to disbelieve | `disguise-magic.json` | ✅ | Rank 4 detection rolled Occultism: a 20 saw level 4, a 1 saw level 1. Control: rank 1 detection rolled nothing |
+| VS-187d | "A caster using Detect Magic or Read Aura of a higher rank than disguise magic can attempt to disbelieve the illusion using the skill matching the tradition of the spell" | reach:filtered · check:skill | A higher-rank detector may roll its tradition's skill to disbelieve | `disguise-magic.json` | ✅ | Rank 7 detection rolled Occultism: a 20 saw level 4, a 1 saw level 1. Control: rank 1 detection rolled nothing |
 | VS-187e | "Further attempts by the same caster get the same result as the initial check to disbelieve" | check:result-kept | A detector's first disbelief result stands for its later tries | `disguise-magic.json` | ✅ | The next pulse with the opposite die rolled nothing and saw the same as before |
 | VS-187f | "Heightened (2nd) You can Cast this Spell on a creature, disguising all items and spell effects on it" | scaling:from-rank · reach:single · effect:gm-note | From rank 2 a creature can be the target | `disguise-magic.json` | ✅ | Rank 2, no item named: everything on the Target hidden. Control: rank 1, refused |
 
@@ -736,8 +736,8 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | VS-200a | "You immediately know which direction is north (if it exists at your current location)" | when:cast · reach:self · effect:info | A note: which way is north is the table's to tell | `know-the-way.json` | ✅ | "North is toward the top of the map"; with the scene's `north` at 90°, said so, and a place east on the map lay north |
 | VS-200b | "you can choose a location you were at within the last 24 hours and learn what direction it lies" | check:caster-choice · effect:info | A note: the direction to the chosen place is the table's | `know-the-way.json` | ✅ | The caster's last stops listed; square 12, 10 "lies to the southeast" |
-| VS-200c | "Heightened (3rd) You can choose a location you were at within the last week" | scaling:from-rank · effect:info | From rank 3 a place from the last week can be chosen | `know-the-way.json` | ✅ | A place from 3 days ago: listed at rank 3, not at 1 |
-| VS-200d | "Heightened (7th) You can choose a location you were at regardless of how long ago you were there" | scaling:from-rank · effect:info | From rank 7 any place ever visited can be chosen | `know-the-way.json` | ✅ | A place from 30 days ago: listed at rank 7, not at 3 |
+| VS-200c | "Heightened (3rd) You can choose a location you were at within the last week" | scaling:from-rank · effect:info | From rank 3 a place from the last week can be chosen | `know-the-way.json` | ✅ | A place from 3 days ago: listed at rank 5, not at 1 |
+| VS-200d | "Heightened (7th) You can choose a location you were at regardless of how long ago you were there" | scaling:from-rank · effect:info | From rank 7 any place ever visited can be chosen | `know-the-way.json` | ✅ | A place from 30 days ago: listed at rank 10, not at 5 |
 
 ### VS-201 · Magic Stone
 
@@ -807,101 +807,101 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-207a | "You harmlessly place your unique magical sigil, which is about 1 square inch in size, on the targeted creature or object" | when:cast · reach:single · reach:object · effect:gm-note | The touched creature or object carries the caster's sigil | | ☐ | |
-| VS-207b | "The mark can be visible or invisible, and you can change it from one state to another by using an Interact action to touch the target" | economy:granted-action · effect:gm-note | A note: switching the mark visible or invisible is the table's | | ☐ | |
-| VS-207c | "The mark can be scrubbed or scraped off with 5 minutes of work" | effect:gm-note | A note: scrubbing the mark off is the table's | | ☐ | |
-| VS-207d | "If it's on a creature, it fades naturally over the course of a week" | ending:duration | On a creature the sigil lasts a week | | ☐ | |
-| VS-207e | "Heightened (3rd) The sigil instead fades after 1 month" | scaling:from-rank · ending:duration | Rank 3: a month | | ☐ | |
-| VS-207f | "Heightened (5th) The sigil instead fades after 1 year" | scaling:from-rank · ending:duration | Rank 5: a year | | ☐ | |
-| VS-207g | "Heightened (7th) The sigil never fades" | scaling:from-rank · ending:permanent | Rank 7: the sigil has no end | | ☐ | |
+| VS-207a | "You harmlessly place your unique magical sigil, which is about 1 square inch in size, on the targeted creature or object" | when:cast · reach:single · reach:object · effect:gm-note | The touched creature or object carries the caster's sigil | `sigil.json` | ✅ | On the Target: a `sigil` effect. On a loot crate, which holds no effects: the caster's sigil kept on it as a flag |
+| VS-207b | "The mark can be visible or invisible, and you can change it from one state to another by using an Interact action to touch the target" | economy:granted-action · effect:gm-note | A note: switching the mark visible or invisible is the table's | `sigil.json` | ✅ | A toggle on the effect, visible by default: switched off, `sigil-visible` gone |
+| VS-207c | "The mark can be scrubbed or scraped off with 5 minutes of work" | effect:gm-note | A note: scrubbing the mark off is the table's | `sigil.json` | — | Five minutes' scrubbing is the table's; removing the effect is the scrubbing |
+| VS-207d | "If it's on a creature, it fades naturally over the course of a week" | ending:duration | On a creature the sigil lasts a week | `sigil.json` | ✅ | On a creature at rank 1: 7 days. Control: on the crate, for good |
+| VS-207e | "Heightened (3rd) The sigil instead fades after 1 month" | scaling:from-rank · ending:duration | Rank 3: a month | `sigil.json` | ✅ | Rank 3: 30 days |
+| VS-207f | "Heightened (5th) The sigil instead fades after 1 year" | scaling:from-rank · ending:duration | Rank 5: a year | `sigil.json` | ✅ | Rank 5: 365 days |
+| VS-207g | "Heightened (7th) The sigil never fades" | scaling:from-rank · ending:permanent | Rank 7: the sigil has no end | `sigil.json` | ✅ | Rank 7: no end |
 
 ### VS-208 · Bind Undead
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-208a | "With a word of power, you seize control of the target" | when:cast · reach:single · reach:filtered · ending:duration | Only a mindless undead of level up to the rank is bound, for a day | | ☐ | |
-| VS-208b | "It gains the minion trait" | effect:trait-gained | The target gains the minion trait | | ☐ | |
-| VS-208c | "If you or an ally uses any hostile actions against the target, the spell ends" | ending:hostile-action | A hostile action by the caster or an ally against it ends the spell | | ☐ | |
+| VS-208a | "With a word of power, you seize control of the target" | when:cast · reach:single · reach:filtered · ending:duration | Only a mindless undead of level up to the rank is bound, for a day | `bind-undead.json` | ✅ | A mindless skeleton of level −1, at rank 3: bound for a day. Control: the Ghoul Soldier, not mindless, refused |
+| VS-208b | "It gains the minion trait" | effect:trait-gained | The target gains the minion trait | `bind-undead.json` | ✅ | The skeleton gained `minion` (pf2e's own rule missed it at preparation, so the trait is added outright) |
+| VS-208c | "If you or an ally uses any hostile actions against the target, the spell ends" | ending:hostile-action | A hostile action by the caster or an ally against it ends the spell | `bind-undead.json` | ✅ | The caster's Club Strike at it ended the spell and the minion trait. Control: an enemy's claw at it, still bound |
 
 ### VS-209 · Blood Duplicate
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-209a | "This spell deals you 1 piercing damage as you shape a magical duplicate of the target from your blood" | when:cast · reach:self · effect:damage | The caster takes 1 piercing damage | | ☐ | |
-| VS-209b | "you can't cast this spell if you don't have blood" | economy:requires · reach:filtered | A caster without blood is refused the cast | | ☐ | |
-| VS-209c | "This spell can't duplicate an item made of precious materials, or materials with a rarity of uncommon or higher" | reach:object · reach:filtered · effect:gm-note | A note: whether the object's material qualifies is the table's | | ☐ | |
-| VS-209d | "If you're ever more than 5 feet from the duplicate, the spell's duration immediately ends" | ending:out-of-range | The caster more than 5 ft from the duplicate ends the spell | | ☐ | |
-| VS-209e | "The Perception DC to recognize the duplicate as false using any sense except touch is equal to 10 + your spellcasting ability modifier + your Crafting proficiency bonus" | effect:info · effect:gm-note | The DC to see through the fake is worked out and shown | | ☐ | |
-| VS-209f | "When the spell ends, the item collapses into a puddle of blood that quickly evaporates" | effect:destroy | The duplicate is gone when the spell ends | | ☐ | |
+| VS-209a | "This spell deals you 1 piercing damage as you shape a magical duplicate of the target from your blood" | when:cast · reach:self · effect:damage | The caster takes 1 piercing damage | `blood-duplicate.json` | ✅ | The caster lost 1 Hit Point, piercing |
+| VS-209b | "you can't cast this spell if you don't have blood" | economy:requires · reach:filtered | A caster without blood is refused the cast | `blood-duplicate.json` | ✅ | A caster given the construct trait: refused |
+| VS-209c | "This spell can't duplicate an item made of precious materials, or materials with a rarity of uncommon or higher" | reach:object · reach:filtered · effect:gm-note | A note: whether the object's material qualifies is the table's | `blood-duplicate.json` | ✅ | A non-magical brass key copied. Control: a magical ring refused |
+| VS-209d | "If you're ever more than 5 feet from the duplicate, the spell's duration immediately ends" | ending:out-of-range | The caster more than 5 ft from the duplicate ends the spell | `blood-duplicate.json` | ✅ | The copy handed to the Patient beside the caster: kept. The Patient stepped 25 ft off: the spell ended and the copy collapsed |
+| VS-209e | "The Perception DC to recognize the duplicate as false using any sense except touch is equal to 10 + your spellcasting ability modifier + your Crafting proficiency bonus" | effect:info · effect:gm-note | The DC to see through the fake is worked out and shown | `blood-duplicate.json` | ✅ | "The Perception DC to know it false … 10": 10 + Charisma +0 + untrained Crafting 0 |
+| VS-209f | "When the spell ends, the item collapses into a puddle of blood that quickly evaporates" | effect:destroy | The duplicate is gone when the spell ends | `blood-duplicate.json` | ✅ | Ended, the copy went wherever it was: "collapses into a puddle of blood" |
 
 ### VS-210 · Cradle Aloft
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-210a | "You temporarily release gravity's hold on an object, allowing you to let go of it without dropping it to the floor" | when:cast · reach:object · ending:duration | The held object floats by the caster for a minute | | ☐ | |
-| VS-210b | "The object floats next to you in your space, following you if you move" | effect:gm-note | A note: the object travelling with the caster is the table's | | ☐ | |
-| VS-210c | "You can Interact to retrieve the object on your turn as a free action" | economy:granted-action · economy:action-cost | Taking the object back costs the caster a free action | | ☐ | |
-| VS-210d | "If you're within reach of another creature, that creature can spend a single action with the attack trait to attempt an Athletics check against your spell DC, retrieving the object out of the air on a success" | economy:granted-action · check:skill | A creature in reach rolls Athletics against the spell DC to snatch it | | ☐ | |
-| VS-210e | "The creature must have a free hand to attempt this check" | economy:requires | Only a creature with a free hand may try | | ☐ | |
-| VS-210f | "The spell ends if a creature successfully retrieves the object" | ending:spent | A successful snatch ends the spell | | ☐ | |
-| VS-210g | "If the object is floating when the spell ends, it falls" | effect:gm-note | A note: the object dropping at the end is the table's | | ☐ | |
+| VS-210a | "You temporarily release gravity's hold on an object, allowing you to let go of it without dropping it to the floor" | when:cast · reach:object · ending:duration | The held object floats by the caster for a minute | `cradle-aloft.json` | ✅ | The held Club let go of, hands free, the caster's effect for 1 minute |
+| VS-210b | "The object floats next to you in your space, following you if you move" | effect:gm-note | A note: the object travelling with the caster is the table's | `cradle-aloft.json` | — | It stays on the caster's sheet, so it goes where the caster goes |
+| VS-210c | "You can Interact to retrieve the object on your turn as a free action" | economy:granted-action · economy:action-cost | Taking the object back costs the caster a free action | `cradle-aloft.json` | ✅ | *Take back Club*, a free action: held again, the spell over |
+| VS-210d | "If you're within reach of another creature, that creature can spend a single action with the attack trait to attempt an Athletics check against your spell DC, retrieving the object out of the air on a success" | economy:granted-action · check:skill | A creature in reach rolls Athletics against the spell DC to snatch it | `cradle-aloft.json` | ✅ | The Patient beside the caster: Athletics 20 against DC 13, the Club in its hand. Control: 25 ft off, "out of reach" |
+| VS-210e | "The creature must have a free hand to attempt this check" | economy:requires | Only a creature with a free hand may try | `cradle-aloft.json` | ✅ | The Patient holding a two-handed pole: "has no hand free", no roll. Control: hands empty, it rolled |
+| VS-210f | "The spell ends if a creature successfully retrieves the object" | ending:spent | A successful snatch ends the spell | `cradle-aloft.json` | ✅ | The snatch ended the spell |
+| VS-210g | "If the object is floating when the spell ends, it falls" | effect:gm-note | A note: the object dropping at the end is the table's | `cradle-aloft.json` | ✅ | The minute up with the Club afloat: dropped |
 
 ### VS-211 · Detect Creator
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-211a | "You examine the remains or spiritual residue of a destroyed undead creature to locate that undead's creator" | when:cast · reach:object · reach:filtered | The cast takes a destroyed undead's remains as its target | | ☐ | |
-| VS-211b | "If the creator is within range, you can sense the direction to them" | effect:info | The caster is told the creator's direction, if within a mile | | ☐ | |
-| VS-211c | "If the creator is within 100 feet, you sense their presence within 100 feet, and the spell ends" | effect:info · ending:spent | Within 100 ft the caster is told so, and the spell ends | | ☐ | |
-| VS-211d | "If there's lead or running water between you and the undead's creator, this spell can't locate them" | effect:gm-note | A note: lead or running water in between is the table's | | ☐ | |
-| VS-211e | "This spell fails automatically if the undead doesn't have a specific creator or the specific creator isn't on the same plane" | effect:gm-note | A note: whether a creator exists on this plane is the table's | | ☐ | |
+| VS-211a | "You examine the remains or spiritual residue of a destroyed undead creature to locate that undead's creator" | when:cast · reach:object · reach:filtered | The cast takes a destroyed undead's remains as its target | `detect-creator.json` | ✅ | The skeleton at 0 Hit Points. Control: alive, "not the remains of a destroyed undead" |
+| VS-211b | "If the creator is within range, you can sense the direction to them" | effect:info | The caster is told the creator's direction, if within a mile | `detect-creator.json` | ✅ | Its creator 140 ft off: "lies to the southeast"; on a scene half a mile north: "to the north". Control: 3 miles off, "not within a mile" |
+| VS-211c | "If the creator is within 100 feet, you sense their presence within 100 feet, and the spell ends" | effect:info · ending:spent | Within 100 ft the caster is told so, and the spell ends | `detect-creator.json` | ✅ | Its creator beside it: "within 100 feet. The spell ends" |
+| VS-211d | "If there's lead or running water between you and the undead's creator, this spell can't locate them" | effect:gm-note | A note: lead or running water in between is the table's | `detect-creator.json` | — | Lead or running water between is the table's |
+| VS-211e | "This spell fails automatically if the undead doesn't have a specific creator or the specific creator isn't on the same plane" | effect:gm-note | A note: whether a creator exists on this plane is the table's | `detect-creator.json` | ✅ | No creator recorded, or one on a scene of another plane: "No creator can be found" |
 
 ### VS-212 · Draw Ire
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-212a | "You deal 1d10 mental damage to the creature and cause it to take a -1 status penalty to attack rolls against creatures other than you" | when:cast · reach:single · effect:damage · effect:penalty | 1d10 mental, and a status penalty to attack anyone but the caster | | ☐ | |
-| VS-212b | "The creature must attempt a Will saving throw" | check:save | The target saves Will from the card | | ☐ | |
-| VS-212c | "Critical Success The target is unaffected" | check:save | Nothing | | ☐ | |
-| VS-212d | "Success The target takes half damage and the penalty. The spell ends at the end of the target's next turn" | check:save · effect:damage · effect:penalty · ending:next-turn | Half damage, the -1 penalty until the end of its next turn | | ☐ | |
-| VS-212e | "Failure The target takes full damage and the penalty" | check:save · effect:damage · effect:penalty · ending:duration | Full damage, the -1 penalty for a minute | | ☐ | |
-| VS-212f | "Critical Failure The target takes double damage, and the status penalty is -2" | check:save · effect:damage · effect:penalty · ending:duration | Double damage, a -2 penalty for a minute | | ☐ | |
-| VS-212g | "Heightened (+1) The damage increases by 1d10" | scaling:dice-per-rank · effect:damage | Rank 2 deals 2d10 | | ☐ | |
+| VS-212a | "You deal 1d10 mental damage to the creature and cause it to take a -1 status penalty to attack rolls against creatures other than you" | when:cast · reach:single · effect:damage · effect:penalty | 1d10 mental, and a status penalty to attack anyone but the caster | `draw-ire.json` | ✅ | 1d10 mental rolled once; on the Target a −2 to its claw at the Patient. Control: at the caster, none |
+| VS-212b | "The creature must attempt a Will saving throw" | check:save | The target saves Will from the card | `draw-ire.json` | ✅ | The Target rolled its Will against the spell DC |
+| VS-212c | "Critical Success The target is unaffected" | check:save | Nothing | `draw-ire.json` | ✅ | A critical success: no damage, no effect |
+| VS-212d | "Success The target takes half damage and the penalty. The spell ends at the end of the target's next turn" | check:save · effect:damage · effect:penalty · ending:next-turn | Half damage, the -1 penalty until the end of its next turn | `draw-ire.json` | ✅ | A success: half of 3, and pf2e's Draw Ire (Success), until the end of its next turn |
+| VS-212e | "Failure The target takes full damage and the penalty" | check:save · effect:damage · effect:penalty · ending:duration | Full damage, the -1 penalty for a minute | `draw-ire.json` | ✅ | A failure: all 6, and −1 for a minute |
+| VS-212f | "Critical Failure The target takes double damage, and the status penalty is -2" | check:save · effect:damage · effect:penalty · ending:duration | Double damage, a -2 penalty for a minute | `draw-ire.json` | ✅ | A critical failure: 14 of 7, and −2 for a minute |
+| VS-212g | "Heightened (+1) The damage increases by 1d10" | scaling:dice-per-rank · effect:damage | Rank 2 deals 2d10 | `draw-ire.json` | ✅ | Rank 2: 2d10 mental. Rank 1: 1d10 |
 
 ### VS-213 · Fated Healing
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-213a | "The targets regain 1d4 Hit Points at the end of each of their own turns while the spell is in effect" | when:turn-end · reach:up-to-n · effect:heal · ending:duration | Each of the two regains 1d4 at its own turn end, for 5 rounds | | ☐ | |
-| VS-213b | "If a target uses a hostile action against the other target, the spell ends for the target that used the hostile action" | ending:hostile-action | A target hostile to the other loses the healing; the other keeps it | | ☐ | |
-| VS-213c | "Heightened (+1) The targets regain an additional 1d4 Hit Points at the end of their own turns" | scaling:dice-per-rank · effect:heal | Rank 2: 2d4 at each turn end | | ☐ | |
+| VS-213a | "The targets regain 1d4 Hit Points at the end of each of their own turns while the spell is in effect" | when:turn-end · reach:up-to-n · effect:heal · ending:duration | Each of the two regains 1d4 at its own turn end, for 5 rounds | `fated-healing.json` | ✅ | The Patient and the Target, each linked to the other, for 5 rounds: the Patient regained 4 at its turn's end, the Target 5. Control: two allies, refused |
+| VS-213b | "If a target uses a hostile action against the other target, the spell ends for the target that used the hostile action" | ending:hostile-action | A target hostile to the other loses the healing; the other keeps it | `fated-healing.json` | ✅ | The Target clawed the Patient: its own healing ended; the Patient's stayed |
+| VS-213c | "Heightened (+1) The targets regain an additional 1d4 Hit Points at the end of their own turns" | scaling:dice-per-rank · effect:heal | Rank 2: 2d4 at each turn end | `fated-healing.json` | ✅ | Rank 2: 2d4 a turn. Rank 1: 1d4 |
 
 ### VS-214 · Friendfetch
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-214a | "You shoot out ephemeral, telekinetic strands that drag each target directly toward you" | when:cast · reach:up-to-n · effect:forced-move/pull | Each of up to two willing targets is pulled straight toward the caster | | ☐ | |
-| VS-214b | "stopping in the closest unoccupied space to you in this path" | effect:forced-move/pull | The pull stops in the free space nearest the caster on its line | | ☐ | |
+| VS-214a | "You shoot out ephemeral, telekinetic strands that drag each target directly toward you" | when:cast · reach:up-to-n · effect:forced-move/pull | Each of up to two willing targets is pulled straight toward the caster | `friendfetch.json` | ✅ | The Patient 35 ft east dragged straight toward the caster, as forced movement |
+| VS-214b | "stopping in the closest unoccupied space to you in this path" | effect:forced-move/pull | The pull stops in the free space nearest the caster on its line | `friendfetch.json` | ✅ | It stopped at the free square nearest the caster, 10 ft off, the Target in the square beyond |
 
 ### VS-215 · Guiding Star
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-215a | "you call on the constellations of the night sky to guide a creature to the location where you've Cast the Spell" | when:cast · reach:single · ending:preparations | The target carries the guidance until the caster's next preparations | | ☐ | |
-| VS-215b | "Each time the target views the stars, it receives a mental nudge toward your chosen location, though it isn't compelled to follow" | effect:gm-note | A note: the nudge toward the spot is the table's | | ☐ | |
-| VS-215c | "The target can recognize you as the source" | effect:gm-note | A note: the target knowing who sent it is the table's | | ☐ | |
-| VS-215d | "If the creature goes to another planet or plane, the spell's effects are suppressed, but they resume if the creature returns" | effect:suppress · effect:gm-note | A note: pausing it on another plane is the table's | | ☐ | |
+| VS-215a | "you call on the constellations of the night sky to guide a creature to the location where you've Cast the Spell" | when:cast · reach:single · ending:preparations | The target carries the guidance until the caster's next preparations | `guiding-star.json` | ✅ | The Patient: "guiding star — toward test_1, from ZZ Conditions Fixture", until the caster's preparations |
+| VS-215b | "Each time the target views the stars, it receives a mental nudge toward your chosen location, though it isn't compelled to follow" | effect:gm-note | A note: the nudge toward the spot is the table's | `guiding-star.json` | — | The nudge when it sees the stars is the table's |
+| VS-215c | "The target can recognize you as the source" | effect:gm-note | A note: the target knowing who sent it is the table's | `guiding-star.json` | ✅ | The effect names the caster |
+| VS-215d | "If the creature goes to another planet or plane, the spell's effects are suppressed, but they resume if the creature returns" | effect:suppress · effect:gm-note | A note: pausing it on another plane is the table's | `guiding-star.json` | — | Another planet or plane is the table's |
 
 ### VS-216 · Secret Chest
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-216a | "the container can't contain any creatures" | reach:object · reach:filtered | A container holding a creature is refused | | ☐ | |
-| VS-216b | "When you Cast this Spell, the container and all its contents are transported to a random location deep in the Ethereal Plane" | when:cast · reach:object · effect:banish | The container leaves the scene until recalled | | ☐ | |
-| VS-216c | "Time passes normally for the container and its contents, and the environmental effects of the Ethereal Plane apply to it" | effect:gm-note | A note: the Ethereal's effects on the contents are the table's | | ☐ | |
-| VS-216d | "it's possible for a creature on the Ethereal Plane to stumble upon the chest" | effect:gm-note | A note: someone finding the chest is the table's | | ☐ | |
-| VS-216e | "You can Dismiss the spell to return the chest to your current location" | ending:dismiss · effect:teleport | Dismissing brings the chest back beside the caster | | ☐ | |
-| VS-216f | "If the spell ends by any other means, the container is lost on the Ethereal Plane and you can no longer recall it with this spell" | ending:preparations · effect:banish | Reaching preparations without a Dismiss loses the chest for good | | ☐ | |
+| VS-216a | "the container can't contain any creatures" | reach:object · reach:filtered | A container holding a creature is refused | `secret-chest.json` | ✅ | Only a container item is taken; one of 12 Bulk refused. An item holds no creature |
+| VS-216b | "When you Cast this Spell, the container and all its contents are transported to a random location deep in the Ethereal Plane" | when:cast · reach:object · effect:banish | The container leaves the scene until recalled | `secret-chest.json` | ✅ | The Coffer, with its Deed and three Pearls, gone from the caster to the Ethereal, a hidden loot actor |
+| VS-216c | "Time passes normally for the container and its contents, and the environmental effects of the Ethereal Plane apply to it" | effect:gm-note | A note: the Ethereal's effects on the contents are the table's | `secret-chest.json` | — | The Ethereal's effects are the table's |
+| VS-216d | "it's possible for a creature on the Ethereal Plane to stumble upon the chest" | effect:gm-note | A note: someone finding the chest is the table's | `secret-chest.json` | — | Someone stumbling on it is the table's |
+| VS-216e | "You can Dismiss the spell to return the chest to your current location" | ending:dismiss · effect:teleport | Dismissing brings the chest back beside the caster | `secret-chest.json` | ✅ | Dismissed: the Coffer back in the caster's pack, its Deed and Pearls inside |
+| VS-216f | "If the spell ends by any other means, the container is lost on the Ethereal Plane and you can no longer recall it with this spell" | ending:preparations · effect:banish | Reaching preparations without a Dismiss loses the chest for good | `secret-chest.json` | ✅ | Ended otherwise: the chest stays in the Ethereal, marked lost |
 
 ### VS-217 · Cozy Cabin
 

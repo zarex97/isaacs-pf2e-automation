@@ -56,3 +56,37 @@ export async function swapPlaces(rider, context) {
     await target.update(casterAt, { animate: false });
     context.notes.push(t("Swap.Done", { caster: caster.name, name: target.name }));
 }
+
+/**
+ * *Friendfetch*: "ephemeral, telekinetic strands … drag each target directly toward you, stopping in the closest
+ * unoccupied space to you in this path. This is forced movement." `{ type: "fetch" }` moves each target along the
+ * straight line toward the caster, a square at a time, to the last square on it nobody stands on before the caster —
+ * forced movement, so what bars a creature's own steps does not bar it.
+ */
+
+/** The squares from one corner toward another, a grid square at a time, the last before the destination's included. */
+export function squaresToward(from, to, grid) {
+    const steps = Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y)) / grid;
+    const out = [];
+    for (let i = 1; i < steps; i++) out.push({ x: Math.round((from.x + ((to.x - from.x) * i) / steps) / grid) * grid, y: Math.round((from.y + ((to.y - from.y) * i) / steps) / grid) * grid });
+    return out;
+}
+
+export async function fetchToward(_rider, context) {
+    const target = context.target?.document ?? context.target;
+    const scene = target?.parent;
+    const own = context.originToken?.document ?? context.originToken;
+    const caster = own?.parent === scene ? own : context.originActor?.getActiveTokens?.(true, true).find((token) => token.parent === scene);
+    if (!target || !caster || target === caster) return;
+    const grid = scene.grid.size;
+    const taken = scene.tokens.filter((token) => token !== target && !token.hidden).map((token) => ({ x: token._source.x, y: token._source.y, w: token.width * grid, h: token.height * grid }));
+    const path = squaresToward({ x: target._source.x, y: target._source.y }, { x: caster._source.x, y: caster._source.y }, grid);
+    const free = path.filter((p) => !taken.some((o) => p.x < o.x + o.w && o.x < p.x + target.width * grid && p.y < o.y + o.h && o.y < p.y + target.height * grid));
+    const spot = free.at(-1);
+    if (!spot) {
+        context.notes.push(t("Swap.NoSpace", { name: target.name }));
+        return;
+    }
+    await target.update(spot, { animate: false, forcedMovement: true });
+    context.notes.push(t("Swap.Fetched", { name: target.name, caster: caster.name }));
+}

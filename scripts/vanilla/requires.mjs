@@ -36,6 +36,27 @@ export function unmetRequirement(spell, options = {}) {
         }
         return null;
     }
+    // `{ targetAllTraits, targetMaxLevelRank }`: every trait, and a level no greater than the rank — *Bind Undead*'s "1
+    // mindless undead creature with a level no greater than bind undead's spell rank".
+    if (requires && typeof requires === "object" && (Array.isArray(requires.targetAllTraits) || requires.targetMaxLevelRank)) {
+        const rank = Number(options?.rank) || Number(spell?.rank) || 1;
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        const ok = targets.length > 0 && targets.every((token) => (requires.targetAllTraits ?? []).every((trait) => (token.actor?.system?.traits?.value ?? []).includes(trait))
+            && (!requires.targetMaxLevelRank || (Number(token.actor?.level) || 0) <= rank));
+        if (!ok) return t("Requires.TargetAllTraits", { name: spell.name, traits: (requires.targetAllTraits ?? []).join(", "), rank });
+    }
+    // `{ casterNotTraits }`: the caster is none of them — *Blood Duplicate*'s "you can't cast this spell if you don't have blood".
+    if (requires && typeof requires === "object" && Array.isArray(requires.casterNotTraits)) {
+        // The traits as prepared — a character's come from its ancestry and its effects, not its source.
+        const own = [...(spell?.actor?.traits ?? spell?.actor?.system?.traits?.value ?? [])];
+        if (requires.casterNotTraits.some((trait) => own.includes(trait))) return t("Requires.CasterNotTraits", { name: spell.name, traits: requires.casterNotTraits.join(", ") });
+    }
+    // `{ targetsHostile }`: two targets, each hostile to the other — *Fated Healing*'s "2 creatures who are hostile toward each other".
+    if (requires && typeof requires === "object" && requires.targetsHostile) {
+        const [a, b] = [...(globalThis.game?.user?.targets ?? [])].map((token) => token.actor);
+        const both = [...(globalThis.game?.user?.targets ?? [])].length === 2;
+        if (!both || !a?.isEnemyOf?.(b)) return t("Requires.TargetsHostile", { name: spell.name });
+    }
     // `{ targetCondition }`: every target has it — *Dreaming Potential*'s "1 willing sleeping creature", unconscious.
     if (requires && typeof requires === "object" && requires.targetCondition) {
         const targets = [...(globalThis.game?.user?.targets ?? [])];

@@ -79,6 +79,9 @@ export function describeActor(actor, prefix = "target") {
         if (hp.max > 0 && hp.value <= hp.max / 2) options.push(`${at}:hp-half-or-less`);
     }
 
+    // A thing rather than a creature — *Sigil*: "If it's on a creature, it fades".
+    if (["loot", "vehicle", "party"].includes(actor.type)) options.push(`${at}:object`);
+
     // Off the ground — *Blazing Fissure* catches only "each creature along the line and on solid ground".
     const token = actor.token ?? actor.getActiveTokens?.(true, true)?.[0];
     if ((Number(token?._source?.elevation ?? token?.elevation) || 0) > 0) options.push(`${at}:elevated`);

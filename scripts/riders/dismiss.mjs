@@ -69,6 +69,8 @@ export const Dismiss = {
         await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t("Dismiss.Done", { actor: actor.name, name })}</p>` });
         // The area's own clean-up (`registerHooks`) takes the action too, and may get there first.
         if (region) await region.delete();
+        // Marked first, so what ends with the effect can tell a Dismiss from a lapse — *Secret Chest*.
+        if (effect) await effect.setFlag(LIB_ID, "dismissed", true).catch(() => {});
         if (effect) await effect.delete().catch(() => {});
         // *Umbral Journey*: one spell over many travellers — dismissed, it ends for all of them (`together`).
         if (effect?.flags?.[LIB_ID]?.together) for (const other of sameCast(effect)) await other.delete().catch(() => {});

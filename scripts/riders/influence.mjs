@@ -101,3 +101,48 @@ export async function findConnection(rider, context, chosen = {}) {
         content: `<p>${report}</p>`,
     });
 }
+
+/**
+ * *Detect Creator*: "You examine the remains … of a destroyed undead creature to locate that undead's creator … If the
+ * creator is within range, you can sense the direction to them. If the creator is within 100 feet, you sense their
+ * presence within 100 feet, and the spell ends … This spell fails automatically if the undead doesn't have a specific
+ * creator or the specific creator isn't on the same plane." `{ type: "creator", miles }` reads the destroyed undead's
+ * creator — its `creator` flag, or the master that summoned it — and tells the caster: within 100 feet, so; on this
+ * scene, its compass direction; on another, by the scenes' `at` flags, if within `miles`; else nothing found.
+ */
+export function creatorOf(actor) {
+    // Its `creator` flag, else the caster who summoned it (`summon.mjs` marks the summoned token).
+    const uuid = actor?.flags?.[LIB_ID]?.creator ?? actor?.token?.flags?.[LIB_ID]?.summoned?.casterUuid ?? actor?.flags?.[LIB_ID]?.summoned?.casterUuid ?? null;
+    return uuid ? fromUuidSync(uuid) : null;
+}
+
+export async function findCreator(rider, context) {
+    const from = context.originActor;
+    const remains = context.actor;
+    if (!from || !remains) return;
+    const undead = (remains.system?.traits?.value ?? []).includes("undead");
+    const destroyed = (remains.hitPoints?.value ?? 1) <= 0 || remains.statuses?.has?.("dead");
+    let report;
+    if (!undead || !destroyed) report = t("Influence.NotRemains", { name: remains.name });
+    else {
+        const creator = creatorOf(remains);
+        const scene = canvas?.scene;
+        const plane = (s) => s?.flags?.[LIB_ID]?.plane ?? null;
+        const token = creator ? placed(creator, scene) : null;
+        const here = (context.originToken?.object ?? context.originToken)?.center;
+        if (!creator || !token) report = t("Influence.NoCreator");
+        else if (plane(token.parent) !== plane(scene)) report = t("Influence.NoCreator");
+        else if (token.parent === scene && here) {
+            const center = token.object?.center ?? { x: token.x, y: token.y };
+            const feet = canvas.grid.measurePath([here, center]).distance;
+            report = feet <= 100 ? t("Influence.CreatorNear") : t("Influence.CreatorToward", { toward: t(WORDS[compass(here, center)]) });
+        } else {
+            const a = scene?.flags?.[LIB_ID]?.at, b = token.parent?.flags?.[LIB_ID]?.at;
+            const miles = a && b ? Math.hypot(a.x - b.x, a.y - b.y) : null;
+            report = miles !== null && miles <= (Number(rider.apply.miles) || 1)
+                ? t("Influence.CreatorToward", { toward: t(WORDS[compass({ x: a.x, y: -a.y }, { x: b.x, y: -b.y })]) })
+                : t("Influence.CreatorFar");
+        }
+    }
+    await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: from }), whisper: playersOf(from), flavor: context.item?.name ?? "", content: `<p>${report}</p>` });
+}

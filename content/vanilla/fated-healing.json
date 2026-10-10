@@ -1,0 +1,34 @@
+{
+    "requires": {
+        "targetsHostile": true
+    },
+    "areaTargeting": {
+        "maxTargets": 2
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 5,
+                "unit": "rounds"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.fated-healing.Healing",
+                "rules": [],
+                "link": true,
+                "endsOnHostileTo": true,
+                "carries": [
+                    {
+                        "event": "turn-end",
+                        "apply": {
+                            "type": "heal",
+                            "formula": "1d4",
+                            "perStep": "1d4"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

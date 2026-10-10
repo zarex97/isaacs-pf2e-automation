@@ -1,0 +1,22 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.cradle-aloft.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.cradle-aloft.Item",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "cradle",
+                "flag": "item"
+            }
+        }
+    ]
+}

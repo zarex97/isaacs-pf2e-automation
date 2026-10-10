@@ -286,7 +286,10 @@
             "TargetNotTraits": "{name} can't target a creature that is {traits}.",
             "SameSizeWithin": "{name} needs one creature your size, within {feet} feet, targeted.",
             "HeldLight": "{name} needs an item of light Bulk or less in your hand.",
-            "TargetCondition": "{name} needs a target that is {condition}."
+            "TargetCondition": "{name} needs a target that is {condition}.",
+            "TargetAllTraits": "{name} needs a target that is {traits}, of level {rank} or lower.",
+            "CasterNotTraits": "{name} needs a caster with blood, not {traits}.",
+            "TargetsHostile": "{name} needs two targets hostile toward each other."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -389,7 +392,8 @@
             "Ends": "{attacker} critically succeeds against {ward}: it ends."
         },
         "Hostile": {
-            "Ended": "{actor} acted with hostility: {what} ends."
+            "Ended": "{actor} acted with hostility: {what} ends.",
+            "Toward": "{what} ends: {attacker} acted with hostility toward {victim}."
         },
         "EndsWith": {
             "Ended": "{actor} is no longer {slug}: {what} ends."
@@ -431,7 +435,8 @@
             "TheTarget": "the target",
             "Flavor": "{name} — {actor}",
             "FlavorOutcome": "{name} — {actor}, {outcome}",
-            "LeftToTable": "Left to the table:"
+            "LeftToTable": "Left to the table:",
+            "Toward": "toward {scene}, from {caster}"
         },
         "Choice": {
             "Prompt": "Choose one.",
@@ -1128,6 +1133,29 @@
                 "Holy": "Good (holy)",
                 "Chaotic": "Chaotic",
                 "Lawful": "Lawful"
+            },
+            "sigil": {
+                "Sigil": "sigil",
+                "Visible": "The sigil is visible"
+            },
+            "blood-duplicate": {
+                "Prompt": "The object of yours to duplicate:",
+                "Item": "Object",
+                "Duplicate": "blood duplicate"
+            },
+            "cradle-aloft": {
+                "Prompt": "The held object (2 Bulk or less) to let float:",
+                "Item": "Object"
+            },
+            "fated-healing": {
+                "Healing": "fated healing"
+            },
+            "guiding-star": {
+                "Star": "guiding star"
+            },
+            "secret-chest": {
+                "Prompt": "The container to send to the Ethereal Plane:",
+                "Container": "Container"
             }
         },
         "Conditions": {
@@ -1290,7 +1318,8 @@
             "NotWorn": "Nobody the spell reached is wearing \"{item}\".",
             "Restyled": "Restyled:",
             "Restyle": "{item} now looks: {look}.",
-            "Roughly": "About {count} \"{kind}\" in {name}."
+            "Roughly": "About {count} \"{kind}\" in {name}.",
+            "Marked": "{caster}'s sigil is on {name}, for good."
         },
         "FallOff": {
             "Fell": "{name} falls off."
@@ -1323,7 +1352,12 @@
             "West": "west",
             "Northwest": "northwest",
             "North": "north",
-            "Northeast": "northeast"
+            "Northeast": "northeast",
+            "NotRemains": "{name} is not the remains of a destroyed undead.",
+            "NoCreator": "No creator can be found: it has none, or not on this plane.",
+            "CreatorNear": "Its creator is within 100 feet. The spell ends.",
+            "CreatorToward": "Its creator lies to the {toward}.",
+            "CreatorFar": "Its creator is not within a mile."
         },
         "Recall": {
             "Title": "Hypercognition",
@@ -1339,7 +1373,9 @@
             "NoOne": "Nobody to swap places with.",
             "TooFar": "{name} is {feet} feet away, beyond {range}: the spell fails.",
             "NoRoom": "{caster} and {name} cannot both fit in each other's space: the spell fails.",
-            "Done": "{caster} and {name} swap places."
+            "Done": "{caster} and {name} swap places.",
+            "NoSpace": "No free space between {name} and you.",
+            "Fetched": "{name} is dragged to {caster}."
         },
         "Liberate": {
             "Title": "Liberating Command",
@@ -1397,6 +1433,30 @@
         "Obstruction": {
             "Label": "{name}: no better than failure",
             "Cursed": "You begin {name}, and know at once: {area} is cursed to impede rituals."
+        },
+        "Cradle": {
+            "Nothing": "No held \"{item}\" of 2 Bulk or less to let float.",
+            "Retrieve": "Take back {item}",
+            "RetrieveHint": "Take the floating object back into your hand.",
+            "Floats": "{item} floats beside you. A creature in reach, with a hand free, can try to snatch it: Athletics against DC {dc}.",
+            "Snatch": "Snatch it from the air",
+            "Gone": "Nothing is floating there now.",
+            "NoHand": "{name} has no hand free.",
+            "OutOfReach": "{name} is out of reach.",
+            "Snatched": "{name} snatches it out of the air."
+        },
+        "Chest": {
+            "Ethereal": "The Ethereal Plane",
+            "NoContainer": "No container called \"{item}\" to send away.",
+            "TooHeavy": "{item} and what is in it come to {bulk} Bulk: too much.",
+            "Banished": "{item} vanishes into the Ethereal Plane.",
+            "Returned": "{item} returns to {actor}.",
+            "Lost": "{item} is lost on the Ethereal Plane."
+        },
+        "Duplicate": {
+            "Refused": "\"{item}\" can't be duplicated: it must be yours, non-magical, 1 Bulk or less, and of no precious or uncommon material.",
+            "Made": "A duplicate of {item} in your hands. The Perception DC to know it false, by any sense but touch: {dc}.",
+            "Puddle": "The duplicate collapses into a puddle of blood that quickly evaporates."
         }
     }
 }
