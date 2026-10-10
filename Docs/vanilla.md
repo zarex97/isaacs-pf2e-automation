@@ -14,6 +14,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Ant Haul | 1 |  | spell-effect-ant-haul |  |
 | Approximate | 1 |  | approximate |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
+| Bind Undead | 3 |  | spell-effect-bind-undead |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Blazing Fissure | 5 | 120-ft line (pf2e's), from you, all, filtered | rolled once: 4d6 bludgeoning + 6d6 fire, one basic reflex each |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
@@ -22,6 +23,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Blinding Fury | 6 |  | reaction (on you); success / failure / crit. failure: unobserve; failure: blinding fury (1 minutes, carries damage-applied unobserve); crit. failure: blinding fury (until it ends, carries damage-applied unobserve) |  |
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
 | Blister | 5 |  | success: Blisters (1 minutes); failure: Blisters (1 minutes); crit. failure: Blisters (1 minutes) |  |
+| Blood Duplicate | 2 |  | 1 piercing (on you); blood duplicate (1 hours, on you) |  |
 | Blur | 2 |  | concealed (1 minutes) |  |
 | Bracing Tendrils | 3 |  | bracing tendrils (1 minutes, on you) |  |
 | Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
@@ -38,12 +40,14 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Control Water | 5 | 50-ft square, all, filtered | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Coral Scourge | 3 |  | success: clumsy 1 (1 minutes); success: coral scourge (1 minutes); failure / crit. failure: clumsy 2 (1 minutes); failure: coral scourge (1 minutes, carries turn-start climb); crit. failure: coral scourge (1 minutes, carries turn-start climb) |  |
 | Countless Eyes | 4 |  | countless eyes (1 minutes) |  |
+| Cradle Aloft | 1 |  | cradle (on you) |  |
 | Create Earthen Facsimile | 1 |  | earthen facsimile (10 minutes, on you) |  |
 | Creation | 4 |  | creation (1 hours, on you) |  |
 | Darkness | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | darkness, outshining light up to its rank, 1 minutes; from rank 4, while inside: concealed, its rules, 1 minutes |
 | Darkvision | 2 |  | spell-effect-darkvision (below rank 3, on you); spell-effect-darkvision (from rank 3, below rank 5); spell-effect-darkvision (until it ends, from rank 5) |  |
 | Daze | 1 |  | crit. failure: stunned 1 |  |
 | Deep Breath | 1 |  | deep breath (10 minutes, carries holder-acts shorten, on you); deep breath (60 minutes, carries holder-acts shorten, from rank 2, on you); deep breath (480 minutes, carries holder-acts shorten, from rank 4, on you) |  |
+| Detect Creator | 4 |  | creator |  |
 | Detect Magic | 1 |  | detect-magic (on you); detect-magic (on you) |  |
 | Detect Poison | 1 |  | detect-poison |  |
 | Disguise Magic | 1 |  | disguise (on you) |  |
@@ -51,6 +55,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
 | Dome of Tranquility | 1 | 30-ft burst (pf2e's), all, placed, no targets |  | Dismiss, 1 hours; from rank 3, Dismiss, 8 hours; from rank 5, Dismiss, 24 hours |
+| Draw Ire | 1 |  | rolled once: 1d10 mental, one basic will each |  |
 | Dreaming Potential | 5 |  | dreaming potential (8 hours) |  |
 | Earthbind | 3 |  | success: fall; failure: fall; crit. failure: fall |  |
 | Electric Arc | 1 | up to 2 |  |  |
@@ -66,6 +71,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | False Vitality | 2 |  | spell-effect-false-vitality (on you) |  |
 | Familiar's Call | 3 |  | fetch-familiar (on you) |  |
 | Far Sight | 3 |  | far sight (10 minutes, on you) |  |
+| Fated Healing | 1 | up to 2 | fated healing (5 rounds, carries turn-end heal) |  |
 | Fate's Travels | 3 |  | fates-travels; fate's travels (1 days, on you) |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
@@ -74,6 +80,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Floating Flame | 2 | 5-ft square (pf2e's), all |  | ends if not Sustained, Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
 | Fly | 4 |  | spell-effect-fly (below rank 7); spell-effect-fly (1 hours, from rank 7) |  |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
+| Friendfetch | 1 | up to 2 | fetch |  |
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
 | Frozen Lungs | 2 |  | success: frozen lungs (1 minutes, carries holder-acts damage); failure: frozen lungs (1 minutes, carries holder-acts damage); crit. failure: frozen lungs (1 minutes, carries holder-acts damage) |  |
 | Gecko Grip | 2 |  | spell-effect-gecko-grip (below rank 5); spell-effect-gecko-grip (1 hours, from rank 5) |  |
@@ -84,6 +91,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
 | Guidance | 1 |  | spell-effect-guidance; effect-guidance-immunity; GM note: “The target is temporarily immune to Guidance: the spell does nothing.” |  |
+| Guiding Star | 2 |  | guiding star (until it ends) |  |
 | Gust of Wind | 1 | 60-ft line (pf2e's), from you, all, filtered | success: GM note: “The creature can't move against the wind.”; failure: prone (no end); failure: GM note: “If the creature was flying, it takes the effects of a critical failure instead (pushed 30 feet in the wind's direction, prone, 2d6 bludgeoning).”; crit. failure: pushed 30 ft away; crit. failure: prone (no end); crit. failure: 2d6 bludgeoning | until your next turn, fortitude on entering — success: GM note: “The creature can't move against the wind.”; failure: prone (no end); failure: GM note: “If the creature was flying, it takes the effects of a critical failure instead (pushed 30 feet in the wind's direction, prone, 2d6 bludgeoning).”; crit. failure: pushed 30 ft away; crit. failure: prone (no end); crit. failure: 2d6 bludgeoning, 1 rounds |
 | Haste | 3 | up to 1, +5 at rank 7 | spell-effect-haste |  |
 | Heal | 1 | variant — 30-ft emanation version: all, includes you |  |  |
@@ -154,6 +162,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
 | Schadenfreude | 1 |  | crit. failure: reaction (on you); success: amused: –1 to Perception and Will (1 rounds); failure: stupefied 1 (1 rounds); crit. failure: stupefied 2 (1 rounds); crit. failure: stunned 1 |  |
 | Seal Fate | 4 |  | success: spell-effect-seal-fate (1 rounds); failure: spell-effect-seal-fate (1 minutes, carries damage-received death); crit. failure: spell-effect-seal-fate (carries damage-received death) |  |
+| Secret Chest | 5 |  | stash (on you) |  |
 | Secret Page | 3 |  | secret-page (on you) |  |
 | See the Unseen | 2 |  | spell-effect-see-the-unseen (below rank 5, on you); spell-effect-see-the-unseen (8 hours, from rank 5, on you) |  |
 | Sending | 5 |  | message (on you) |  |
@@ -164,6 +173,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Shift Perspective | 2 | 5-ft square, all, placed, no targets | throw-view (1 minutes, on you) |  |
 | Shillelagh | 1 |  | spell-effect-shillelagh (on you) |  |
+| Sigil | 1 |  | sigil (until it ends); sigil (7 days); sigil (30 days, from rank 3); sigil (365 days, from rank 5); sigil (until it ends, from rank 7) |  |
 | Silence | 2 |  | spell-effect-silence |  |
 | Sky Sight | 1 |  | sky sight (1 hours, on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |

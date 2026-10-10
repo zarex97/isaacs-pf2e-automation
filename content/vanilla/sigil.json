@@ -1,0 +1,168 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "predicate": [
+                "rider:target:object"
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "sigil-visible",
+                        "toggleable": true,
+                        "value": true,
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "not": "rider:target:object"
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 7,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "sigil-visible",
+                        "toggleable": true,
+                        "value": true,
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "not": "rider:target:object"
+                },
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 30,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "sigil-visible",
+                        "toggleable": true,
+                        "value": true,
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "not": "rider:target:object"
+                },
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        6
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 365,
+                "unit": "days"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "sigil-visible",
+                        "toggleable": true,
+                        "value": true,
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "not": "rider:target:object"
+                },
+                {
+                    "gte": [
+                        "item:rank",
+                        7
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "sigil-visible",
+                        "toggleable": true,
+                        "value": true,
+                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
+                    }
+                ]
+            }
+        }
+    ]
+}

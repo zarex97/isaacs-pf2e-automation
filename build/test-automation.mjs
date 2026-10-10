@@ -1082,6 +1082,16 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
     const { mustSave } = await import("../scripts/targeting/repels.mjs");
     const circleCaster = { flags: { "isaacs-pf2e-automation": { castChoices: { s: { alignment: "unholy" } } } } };
     check("Circle of Protection: only a summoned creature of the alignment saves", [mustSave({ traits: ["summoned"], castTrait: "alignment" }, { system: { traits: { value: ["summoned", "unholy"] } } }, circleCaster, { id: "s" }), mustSave({ traits: ["summoned"], castTrait: "alignment" }, { system: { traits: { value: ["unholy"] } } }, circleCaster, { id: "s" }), mustSave({ statistic: "will" }, { system: { traits: { value: [] } } }, null, null)], [true, false, true]);
+    const { squaresToward } = await import("../scripts/riders/swap.mjs");
+    check("Friendfetch: the squares between, toward the caster", squaresToward({ x: 0, y: 0 }, { x: 400, y: 0 }, 100), [{ x: 100, y: 0 }, { x: 200, y: 0 }, { x: 300, y: 0 }]);
+    const { handFree } = await import("../scripts/riders/cradle.mjs");
+    check("Cradle Aloft: a hand free", [handFree([{ system: { equipped: { carryType: "held", handsHeld: 2 } } }]), handFree([{ system: { equipped: { carryType: "held", handsHeld: 1 } } }])], [false, true]);
+    const { bulkOf } = await import("../scripts/riders/chest.mjs");
+    check("Secret Chest: a container with what is in it", bulkOf({ id: "c", system: { bulk: { value: 1 } } }, [{ system: { containerId: "c", bulk: { value: 0.1 }, quantity: 10 } }, { system: { containerId: "x", bulk: { value: 5 } } }]), 2);
+    const { fakeDc } = await import("../scripts/riders/duplicate.mjs");
+    check("Blood Duplicate: 10, the attribute, the Crafting proficiency", fakeDc(3, 5), 18);
+    const { hostileKind } = await import("../scripts/riders/hostility.mjs");
+    check("Bind Undead: an attack, damage, or a spell with a save is hostile", [hostileKind("attack-roll", null), hostileKind(null, { system: { defense: { save: { statistic: "will" } }, traits: { value: [] } } }), hostileKind(null, { system: { traits: { value: [] } } })], [true, true, false]);
     const { cutTo } = await import("../scripts/riders/message.mjs");
     check("Sending: 25 words at most", [cutTo("a b  c d", 2), cutTo(" one two ", 25), cutTo("", 25)], ["a b", "one two", ""]);
     const { lent } = await import("../scripts/riders/senses-link.mjs");

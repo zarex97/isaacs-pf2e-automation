@@ -1,0 +1,46 @@
+{
+    "requires": {
+        "casterNotTraits": [
+            "construct",
+            "undead",
+            "elemental"
+        ]
+    },
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.blood-duplicate.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.blood-duplicate.Item",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "damage",
+                "formula": "1",
+                "damageType": "piercing"
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.blood-duplicate.Duplicate",
+                "rules": [],
+                "duplicates": {
+                    "flag": "item"
+                }
+            }
+        }
+    ]
+}

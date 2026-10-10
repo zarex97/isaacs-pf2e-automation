@@ -1,0 +1,13 @@
+{
+    "areaTargeting": {
+        "maxTargets": 2
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "fetch"
+            }
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.guiding-star.Star",
+                "rules": [],
+                "namesPlace": true,
+                "untilPreparations": true
+            }
+        }
+    ]
+}

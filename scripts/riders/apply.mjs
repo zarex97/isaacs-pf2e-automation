@@ -43,7 +43,7 @@ import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
 import { fatesTravels } from "./travel.mjs";
 import { adjustEffect, approximateCount, drawMap, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
-import { swapPlaces } from "./swap.mjs";
+import { fetchToward, swapPlaces } from "./swap.mjs";
 import { offerLiberation } from "./liberate.mjs";
 import { Leash } from "./leash.mjs";
 import { Rune } from "./rune.mjs";
@@ -51,8 +51,11 @@ import { offerPathway } from "./pathway.mjs";
 import { sendOff, throwView } from "./perspective.mjs";
 import { disguiseMagic } from "./disguise.mjs";
 import { knowTheWay } from "./wayfinding.mjs";
+import { cradleAloft } from "./cradle.mjs";
+import { stashChest } from "./chest.mjs";
+import { Duplicate } from "./duplicate.mjs";
 import { detectPoison, enhanceVictuals } from "./poison.mjs";
-import { findConnection } from "./influence.mjs";
+import { findConnection, findCreator } from "./influence.mjs";
 import { offerRecall } from "./recall.mjs";
 import { journeyPace } from "./journey.mjs";
 import { enhancedSenseRules, sensesOf } from "./senses.mjs";
@@ -533,6 +536,14 @@ async function applyOne(rider, context) {
             return sendOff(rider, context);
         case "spend-badge":
             return spendBadge(rider, context);
+        case "cradle":
+            return cradleAloft(rider, context, castChoicesOf(context), { dc: RiderExtensions.resolveDC("spell", context) });
+        case "stash":
+            return stashChest(rider, context, castChoicesOf(context));
+        case "fetch":
+            return fetchToward(rider, context);
+        case "creator":
+            return findCreator(rider, context);
         case "know-way":
             return knowTheWay(rider, context, Number(castItemOf(context)?.rank) || 1);
         case "approximate":
@@ -2067,6 +2078,11 @@ async function applyEffect(rider, context) {
             if (words) source.name = `${source.name} — ${words}`;
         }
         // *Umbral Journey*: words its holder's players are told when it ends, however it ends (`journey.mjs`).
+        // *Bind Undead*, *Fated Healing*: what a hostile act between two particular creatures ends (`hostility.mjs`).
+        // *Guiding Star*: where it was cast, and by whom, on the effect's own name.
+        if (rider.apply.namesPlace) source.name = `${source.name} — ${t("Rider.Toward", { scene: canvas?.scene?.name ?? "", caster: context.originActor?.name ?? "" })}`;
+        if (rider.apply.endsOnHostileFrom) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnHostileFrom: true } });
+        if (rider.apply.endsOnHostileTo) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnHostileTo: true } });
         if (rider.apply.onlyIfExpired) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { onlyIfExpired: true } });
         if (rider.apply.whileCondition) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { whileCondition: rider.apply.whileCondition } });
         if (rider.apply.endsWithArea) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsWithArea: true } });
@@ -2103,6 +2119,11 @@ async function applyEffect(rider, context) {
         // *Telepathic Bond*, *Ventriloquism*: an action for the holder, gone with the effect.
         if (created && rider.apply.telepathy) await Message.grantTelepathy(created);
         if (created && rider.apply.ventriloquism) await Ventriloquism.grant(created);
+        // *Blood Duplicate*: the copy, in the caster's hands (`duplicate.mjs`).
+        if (created && rider.apply.duplicates) {
+            const made = await Duplicate.make(created, castChoicesOf(context)[rider.apply.duplicates.flag ?? "item"], castItemOf(context));
+            if (made?.note) context.notes.push(made.note);
+        }
         // *Message Rune*: the rune, posted for everyone, with the words the cast chose (`rune.mjs`).
         if (created && rider.apply.rune) {
             const chosen = castChoicesOf(context);
@@ -2210,6 +2231,7 @@ async function applyEffect(rider, context) {
     // save rolled from the spell's card has no area in hand; the one this caster left with this spell is it.
     const leaving = rider.apply.endsOnLeaving ? (context.region ?? areaLeftBy(context.originActor, context.item ?? context.riderItem)) : null;
     if (leaving) source.flags = foundry.utils.mergeObject(source.flags, { [LIB_ID]: { inside: leaving } });
+    if (rider.apply.endsOnHostileFrom) source.flags = foundry.utils.mergeObject(source.flags, { [LIB_ID]: { endsOnHostileFrom: true } });
     // *Reflected Beauty*: it holds only while its holder stays near the other creature the cast reached (`leash.mjs`).
     if (rider.apply.leash) {
         const other = [context.eventTarget, ...(context.targets ?? [])].map((tk) => tk?.actor ?? tk).find((a) => a?.uuid && a !== context.actor);

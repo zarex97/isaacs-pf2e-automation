@@ -79,6 +79,10 @@ import { Parade } from "./riders/perspective.mjs";
 import { Wayfinding } from "./riders/wayfinding.mjs";
 import { Obstruction } from "./riders/obstruction.mjs";
 import { FromTarget } from "./targeting/from-target.mjs";
+import { Hostility } from "./riders/hostility.mjs";
+import { Cradle } from "./riders/cradle.mjs";
+import { Chest } from "./riders/chest.mjs";
+import { Duplicate } from "./riders/duplicate.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -148,6 +152,10 @@ export const INIT = [
     ["where each creature has been", () => Wayfinding.registerHooks()],
     ["a place where rituals fail", () => { Obstruction.register(); Obstruction.registerHooks(); }],
     ["an area on the creature touched", () => FromTarget.register()],
+    ["a hostile act between two particular creatures", () => Hostility.registerHooks()],
+    ["a held thing left floating", () => Cradle.registerHooks()],
+    ["a chest kept on another plane", () => Chest.registerHooks()],
+    ["a copy shaped from blood", () => Duplicate.registerHooks()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],
