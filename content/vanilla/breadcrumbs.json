@@ -1,0 +1,77 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        1
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.breadcrumbs.Trail",
+                "rules": [],
+                "trail": true,
+                "trailFades": "duration"
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        2
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.breadcrumbs.Trail",
+                "rules": [],
+                "trail": true,
+                "trailFades": "duration"
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.breadcrumbs.Trail",
+                "rules": [],
+                "trail": true,
+                "trailFades": "duration",
+                "untilPreparations": true
+            }
+        }
+    ]
+}

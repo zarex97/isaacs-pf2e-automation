@@ -907,39 +907,39 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-217a | "You shape a cabin 20 feet on each side and 10 feet high" | when:cast · reach:area/square · area:placed-only · area:lingering | A 20-ft square cabin placed in range, standing 12 hours | | ☐ | |
-| VS-217b | "This cabin has the structure trait and the same restrictions as magic items that create structures" | effect:gm-note | A note: where a structure may stand is the table's | | ☐ | |
-| VS-217c | "The interior is lit with a small magical light that you can light or extinguish at will using a Sustain action" | when:sustain · effect:light | Sustaining turns the cabin's light on or off | | ☐ | |
-| VS-217d | "allows creatures inside it to withstand most hostile weather conditions" | when:while-inside · effect:gm-note | A note: shelter from the weather is the table's | | ☐ | |
-| VS-217e | "incredible heat or cold, powerful storms, and winds of hurricane force or greater destroy the hut" | effect:destroy · effect:gm-note | A note: weather that destroys the hut is the table's | | ☐ | |
-| VS-217f | "if you exit the hut, the spell ends" | ending:leaves-area | The caster leaving the cabin ends the spell | | ☐ | |
-| VS-217g | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss the cabin | | ☐ | |
+| VS-217a | "You shape a cabin 20 feet on each side and 10 feet high" | when:cast · reach:area/square · area:placed-only · area:lingering | A 20-ft square cabin placed in range, standing 12 hours | `cozy-cabin.json` | ✅ | A 20-ft square placed around the caster, standing 12 hours, with a light at its middle |
+| VS-217b | "This cabin has the structure trait and the same restrictions as magic items that create structures" | effect:gm-note | A note: where a structure may stand is the table's | `cozy-cabin.json` | — | Where a structure may stand is the table's |
+| VS-217c | "The interior is lit with a small magical light that you can light or extinguish at will using a Sustain action" | when:sustain · effect:light | Sustaining turns the cabin's light on or off | `cozy-cabin.json` | ✅ | *Sustain: the cabin's light*: out, and lit again |
+| VS-217d | "allows creatures inside it to withstand most hostile weather conditions" | when:while-inside · effect:gm-note | A note: shelter from the weather is the table's | `cozy-cabin.json` | — | Shelter from the weather is the table's |
+| VS-217e | "incredible heat or cold, powerful storms, and winds of hurricane force or greater destroy the hut" | effect:destroy · effect:gm-note | A note: weather that destroys the hut is the table's | `cozy-cabin.json` | — | Weather fierce enough to destroy it is the table's |
+| VS-217f | "if you exit the hut, the spell ends" | ending:leaves-area | The caster leaving the cabin ends the spell | `cozy-cabin.json` | ✅ | The caster stepping outside: the cabin, its light and its action gone. Controls: the Patient walking out, and the caster moving within, left it standing |
+| VS-217g | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss the cabin | `cozy-cabin.json` | ✅ | The caster holds *Dismiss Cozy Cabin* |
 
 ### VS-218 · Extract Poison
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-218a | "Attempt a counteract check against one poison you're aware of on or in an object you touch" | when:cast · reach:object · check:counteract | A counteract check against the object's poison | | ☐ | |
-| VS-218b | "If you successfully counteract the poison, you negate the object's toxicity and transfer the poison into a weapon you are holding" | check:counteract · reach:weapon · economy:requires · effect:cleanse | On success the object is clean and the held weapon is coated | | ☐ | |
-| VS-218c | "On your next successful attack with that weapon before the end of your next turn, you add 1d6 poison damage per level of the poison you counteracted" | when:strike-made · effect:strike-damage · ending:spent · ending:next-turn | The next hit by next turn's end adds 1d6 poison per poison level | | ☐ | |
-| VS-218d | "On a critically failed attack roll, you lose the extracted poison from your weapon as normal" | when:strike-made · ending:spent | A critically failed attack wastes the coating | | ☐ | |
+| VS-218a | "Attempt a counteract check against one poison you're aware of on or in an object you touch" | when:cast · reach:object · check:counteract | A counteract check against the object's poison | `extract-poison.json` | ✅ | Against Arsenic in a goblet: a counteract check, DC 16; a critical failure left it there |
+| VS-218b | "If you successfully counteract the poison, you negate the object's toxicity and transfer the poison into a weapon you are holding" | check:counteract · reach:weapon · economy:requires · effect:cleanse | On success the object is clean and the held weapon is coated | `extract-poison.json` | ✅ | Counteracted: gone from the goblet, and pf2e's Extract Poison (Level 1) on the Club the caster chose of the two held |
+| VS-218c | "On your next successful attack with that weapon before the end of your next turn, you add 1d6 poison damage per level of the poison you counteracted" | when:strike-made · effect:strike-damage · ending:spent · ending:next-turn | The next hit by next turn's end adds 1d6 poison per poison level | `extract-poison.json` | ✅ | The Club's damage: 1d6 bludgeoning + 1d6 poison; applied, the coating was spent. Control: a plain miss kept it |
+| VS-218d | "On a critically failed attack roll, you lose the extracted poison from your weapon as normal" | when:strike-made · ending:spent | A critically failed attack wastes the coating | `extract-poison.json` | ✅ | A critically failed attack (a 1) lost it |
 
 ### VS-219 · Fishing Spot
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-219a | "After 10 minutes of fishing, you catch a magical fish; roll 1d8 to see which fish you caught" | when:cast · check:random-table | A d8 roll names the fish caught | | ☐ | |
-| VS-219b | "The fish must be cooked and eaten (a process that takes about 30 minutes) within 1 hour of being caught" | effect:gm-note | A note: cooking and eating within the hour is the table's | | ☐ | |
-| VS-219c | "the listed effect lasts for 1 hour after consumption" | ending:duration | The fish's bonus lasts an hour | | ☐ | |
-| VS-219d | "Each fish can feed only a single creature" | reach:single | One eater gets the fish's bonus | | ☐ | |
-| VS-219e | "Musical trout +2 status bonus to Performance checks Primordial bass +2 status bonus to Survival checks Ghoulfish +2 status bonus to Intimidation checks Burbling barbel +2 status bonus to Deception and Diplomacy checks Dashing dace +2 status bonus to Acrobatics checks Vigocarp +2 status bonus to Athletics checks to climb and swim Aggressive perch +2 status bonus to Athletics checks to disarm, grapple, reposition, shove, and trip Scholar salmon +2 status bonus to checks to Recall Knowledge" | check:random-table · effect:bonus | The fish rolled gives its own +2 status bonus | | ☐ | |
+| VS-219a | "After 10 minutes of fishing, you catch a magical fish; roll 1d8 to see which fish you caught" | when:cast · check:random-table | A d8 roll names the fish caught | `fishing-spot.json` | ✅ | A d8 rolled: a primordial bass, then a scholar salmon, in the caster's pack |
+| VS-219b | "The fish must be cooked and eaten (a process that takes about 30 minutes) within 1 hour of being caught" | effect:gm-note | A note: cooking and eating within the hour is the table's | `fishing-spot.json` | ✅ | Not eaten within the hour: gone |
+| VS-219c | "the listed effect lasts for 1 hour after consumption" | ending:duration | The fish's bonus lasts an hour | `fishing-spot.json` | ✅ | Eaten: pf2e's Fishing Spot effect, 1 hour |
+| VS-219d | "Each fish can feed only a single creature" | reach:single | One eater gets the fish's bonus | `fishing-spot.json` | ✅ | Handed to the Patient, who ate it: the Patient's effect alone. Control: handing it over gave the caster nothing |
+| VS-219e | "Musical trout +2 status bonus to Performance checks Primordial bass +2 status bonus to Survival checks Ghoulfish +2 status bonus to Intimidation checks Burbling barbel +2 status bonus to Deception and Diplomacy checks Dashing dace +2 status bonus to Acrobatics checks Vigocarp +2 status bonus to Athletics checks to climb and swim Aggressive perch +2 status bonus to Athletics checks to disarm, grapple, reposition, shove, and trip Scholar salmon +2 status bonus to checks to Recall Knowledge" | check:random-table · effect:bonus | The fish rolled gives its own +2 status bonus | `fishing-spot.json` | ✅ | A scholar salmon eaten: +2 status to Arcana to Recall Knowledge. Controls: Arcana otherwise, and Performance, none |
 
 ### VS-220 · Glimpse Weakness
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-220a | "The first ally that hits the target with a successful Strike deals additional precision damage equal to 1 + this spell's rank" | when:strike-received · reach:allies · effect:strike-damage · scaling:dice-per-rank | The first ally's hit adds 1 + rank precision damage | | ☐ | |
-| VS-220b | "and then the spell ends" | ending:spent | That first hit ends the spell | | ☐ | |
+| VS-220a | "The first ally that hits the target with a successful Strike deals additional precision damage equal to 1 + this spell's rank" | when:strike-received · reach:allies · effect:strike-damage · scaling:dice-per-rank | The first ally's hit adds 1 + rank precision damage | `glimpse-weakness.json` | ✅ | The caster's Club hit on the marked Target: 1d6 + 2 at rank 1, + 4 at rank 3. Control: the Ghoul Soldier's hit, a foe of the caster's, cashed nothing |
+| VS-220b | "and then the spell ends" | ending:spent | That first hit ends the spell | `glimpse-weakness.json` | ✅ | That hit took the mark off, and the damage roll the bonus |
 
 ### VS-221 · Metal Merged
 
@@ -952,12 +952,12 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-222a | "Choose one when you Cast the Spell" | when:cast · reach:self · check:caster-choice · ending:preparations | The caster picks an age at the cast, until preparations | | ☐ | |
-| VS-222b | "While the spell lasts, you can change the age to any of the three or to your natural age by Sustaining the spell" | when:sustain · check:caster-choice | Sustaining reopens the choice of age, the natural one included | | ☐ | |
-| VS-222c | "This grants you a +4 status bonus to Deception checks to pass as the chosen age" | effect:bonus | +4 status to Deception to pass as that age | | ☐ | |
-| VS-222d | "you can add your level as a proficiency bonus to these checks even if you're untrained" | effect:proficiency · scaling:from-level | Untrained, the caster still adds its level to those checks | | ☐ | |
-| VS-222e | "unless a creature specifically uses a Seek action or otherwise carefully examines you, it doesn't get a chance to notice that you aren't at your true age" | effect:gm-note | A note: who gets a chance to notice is the table's | | ☐ | |
-| VS-222f | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
+| VS-222a | "Choose one when you Cast the Spell" | when:cast · reach:self · check:caster-choice · ending:preparations | The caster picks an age at the cast, until preparations | `threefold-aspect.json` | ✅ | Maiden chosen at the cast; the effect lasts until the caster's preparations |
+| VS-222b | "While the spell lasts, you can change the age to any of the three or to your natural age by Sustaining the spell" | when:sustain · check:caster-choice | Sustaining reopens the choice of age, the natural one included | `threefold-aspect.json` | ✅ | *Sustain Threefold Aspect*: natural age, then matriarch |
+| VS-222c | "This grants you a +4 status bonus to Deception checks to pass as the chosen age" | effect:bonus | +4 status to Deception to pass as that age | `threefold-aspect.json` | ✅ | Impersonate: +4 status. Controls: Lie, none; at natural age, none |
+| VS-222d | "you can add your level as a proficiency bonus to these checks even if you're untrained" | effect:proficiency · scaling:from-level | Untrained, the caster still adds its level to those checks | `threefold-aspect.json` | ✅ | Untrained Deception: a proficiency +1, its level, to Impersonate |
+| VS-222e | "unless a creature specifically uses a Seek action or otherwise carefully examines you, it doesn't get a chance to notice that you aren't at your true age" | effect:gm-note | A note: who gets a chance to notice is the table's | `threefold-aspect.json` | — | Who looks closely enough is the table's |
+| VS-222f | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | `threefold-aspect.json` | ✅ | Dismissed: gone |
 
 ### VS-223 · Phantom Crowd
 
@@ -974,66 +974,66 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-224a | "The target can walk on air as if it were solid ground" | when:cast · reach:single · effect:elevation/lift · ending:duration | The target may stand and walk on air for 5 minutes | | ☐ | |
-| VS-224b | "It can ascend and descend in this way at a maximum of a 45-degree angle" | effect:elevation/lift | Its height changes by at most the distance it moves across | | ☐ | |
+| VS-224a | "The target can walk on air as if it were solid ground" | when:cast · reach:single · effect:elevation/lift · ending:duration | The target may stand and walk on air for 5 minutes | `air-walk.json` | ✅ | The Patient: `air walk`, 5 minutes; it rose 5 ft walking 5 ft over |
+| VS-224b | "It can ascend and descend in this way at a maximum of a 45-degree angle" | effect:elevation/lift | Its height changes by at most the distance it moves across | `air-walk.json` | ✅ | Rising 20 ft over 5 ft: refused. Control: without the spell, allowed |
 
 ### VS-225 · Allfood
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-225a | "You transform one object into an edible substance that any living creature can chew, swallow, and safely digest" | when:cast · reach:object · effect:gm-note | A note: the object becoming food is the table's | | ☐ | |
-| VS-225b | "One bulk of allfood provides enough sustenance to feed one Medium creature for a day" | effect:gm-note | A note: how many it feeds is the table's | | ☐ | |
-| VS-225c | "After 1 day, if no one has eaten the allfood, it reverts to its original form" | ending:duration | Uneaten allfood reverts after a day | | ☐ | |
-| VS-225d | "Heightened (+1) Double the maximum bulk (to a maximum of 256 bulk at 10th level)" | scaling:dice-per-rank · reach:filtered | Rank 3 takes an object of up to 2 Bulk | | ☐ | |
+| VS-225a | "You transform one object into an edible substance that any living creature can chew, swallow, and safely digest" | when:cast · reach:object · effect:gm-note | A note: the object becoming food is the table's | `allfood.json` | ✅ | A boot in the pile became "Allfood (ZZ Boot)" |
+| VS-225b | "One bulk of allfood provides enough sustenance to feed one Medium creature for a day" | effect:gm-note | A note: how many it feeds is the table's | `allfood.json` | — | How many it feeds is the table's |
+| VS-225c | "After 1 day, if no one has eaten the allfood, it reverts to its original form" | ending:duration | Uneaten allfood reverts after a day | `allfood.json` | ✅ | A day later, uneaten: "ZZ Boot" again |
+| VS-225d | "Heightened (+1) Double the maximum bulk (to a maximum of 256 bulk at 10th level)" | scaling:dice-per-rank · reach:filtered | Rank 3 takes an object of up to 2 Bulk | `allfood.json` | ✅ | A 2-Bulk saddle: refused at rank 2, taken at rank 3 |
 
 ### VS-226 · Animal Messenger
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-226a | "You offer food, and an ordinary Tiny animal within range approaches to eat it" | when:cast · reach:filtered · effect:gm-note | A note: which Tiny animal comes is the table's | | ☐ | |
-| VS-226b | "You imprint the image, direction, and distance of an obvious place or landmark well known to you within the animal" | effect:gm-note | A note: the destination is the table's | | ☐ | |
-| VS-226c | "You can also attach a small object or note up to light Bulk to it" | effect:gm-note | A note: the attached message is the table's | | ☐ | |
-| VS-226d | "The spell ends after the message is delivered or after 24 hours, whichever comes first" | ending:duration · ending:spent | Ends on delivery or after 24 hours | | ☐ | |
-| VS-226e | "If there are no Tiny wild animals in range, the spell is lost" | economy:requires · effect:gm-note | A note: no animal in range loses the spell | | ☐ | |
+| VS-226a | "You offer food, and an ordinary Tiny animal within range approaches to eat it" | when:cast · reach:filtered · effect:gm-note | A note: which Tiny animal comes is the table's | `animal-messenger.json` | — | Which animal comes is the table's |
+| VS-226b | "You imprint the image, direction, and distance of an obvious place or landmark well known to you within the animal" | effect:gm-note | A note: the destination is the table's | `animal-messenger.json` | ✅ | The destination asked at the cast, on the caster's effect: "the Mill at Brook's End" |
+| VS-226c | "You can also attach a small object or note up to light Bulk to it" | effect:gm-note | A note: the attached message is the table's | `animal-messenger.json` | — | The note is the table's |
+| VS-226d | "The spell ends after the message is delivered or after 24 hours, whichever comes first" | ending:duration · ending:spent | Ends on delivery or after 24 hours | `animal-messenger.json` | ✅ | 24 hours; delivered, its Dismiss ended it |
+| VS-226e | "If there are no Tiny wild animals in range, the spell is lost" | economy:requires · effect:gm-note | A note: no animal in range loses the spell | `animal-messenger.json` | — | Whether an animal is near is the table's |
 
 ### VS-227 · Anticipate Peril
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-227a | "The target gains a +1 status bonus to its next initiative roll" | when:cast · reach:single · effect:bonus | +1 status to the target's next initiative roll | | ☐ | |
-| VS-227b | "after which the spell ends" | ending:spent | Rolling initiative spends it | | ☐ | |
-| VS-227c | "Heightened (+2) The status bonus increases by 1, to a maximum of +4 at 7th rank" | scaling:dice-per-rank · effect:bonus | Rank 3: +2; rank 7: +4 | | ☐ | |
+| VS-227a | "The target gains a +1 status bonus to its next initiative roll" | when:cast · reach:single · effect:bonus | +1 status to the target's next initiative roll | `anticipate-peril.json` | ✅ | The Patient's next initiative: +1 status |
+| VS-227b | "after which the spell ends" | ending:spent | Rolling initiative spends it | `anticipate-peril.json` | ✅ | That roll spent it: the next initiative had none |
+| VS-227c | "Heightened (+2) The status bonus increases by 1, to a maximum of +4 at 7th rank" | scaling:dice-per-rank · effect:bonus | Rank 3: +2; rank 7: +4 | `anticipate-peril.json` | ✅ | Rank 3: +2; rank 7: +4 (pf2e's own effect reads a function its rules don't know and gives 0, so the rank's bonus is written out) |
 
 ### VS-228 · Artistic Recollection
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-228a | "You touch your finger to a blank surface and create an image of a person, place, or object" | when:cast · reach:object · effect:gm-note · ending:duration | A note: the painting is the table's, for a minute | | ☐ | |
-| VS-228b | "must represent a subject the caster has seen in person or has studied extensively" | effect:gm-note | A note: whether the subject qualifies is the table's | | ☐ | |
+| VS-228a | "You touch your finger to a blank surface and create an image of a person, place, or object" | when:cast · reach:object · effect:gm-note · ending:duration | A note: the painting is the table's, for a minute |  | — | The painting is the table's |
+| VS-228b | "must represent a subject the caster has seen in person or has studied extensively" | effect:gm-note | A note: whether the subject qualifies is the table's |  | — | Whether the subject qualifies is the table's |
 
 ### VS-229 · Augury
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-229a | "During the casting of this spell, ask about the results of a particular course of action" | when:cast · effect:gm-note | A note: the question is put to the GM | | ☐ | |
-| VS-229b | "The spell can predict results up to 30 minutes into the future and reveal the GM's best guess among the following outcomes: good, bad, mixed (the results will be a mix of good and bad), and nothing (there won't be particularly good or bad results)" | effect:gm-note · effect:info | The GM answers good, bad, mixed or nothing | | ☐ | |
-| VS-229c | "The GM rolls a secret flat" | check:flat-check · check:secret | A secret flat check is whispered to the GM | | ☐ | |
-| VS-229d | "On a failure, the result is always" | effect:gm-note | A failed flat check makes the answer nothing | | ☐ | |
-| VS-229e | "If anyone asks about the same topic as the first casting of augury during an additional casting, the GM uses the secret roll result from the first casting" | check:result-kept · check:secret | A repeat question reuses the first secret roll | | ☐ | |
+| VS-229a | "During the casting of this spell, ask about the results of a particular course of action" | when:cast · effect:gm-note | A note: the question is put to the GM | `augury.json` | ✅ | The question asked at the cast went to the GM |
+| VS-229b | "The spell can predict results up to 30 minutes into the future and reveal the GM's best guess among the following outcomes: good, bad, mixed (the results will be a mix of good and bad), and nothing (there won't be particularly good or bad results)" | effect:gm-note · effect:info | The GM answers good, bad, mixed or nothing | `augury.json` | ✅ | Good, bad, mixed or nothing; "Mixed" chosen went to the caster's players |
+| VS-229c | "The GM rolls a secret flat" | check:flat-check · check:secret | A secret flat check is whispered to the GM | `augury.json` | ✅ | A DC 6 flat check, rolled blind for the GM: 14 |
+| VS-229d | "On a failure, the result is always" | effect:gm-note | A failed flat check makes the answer nothing | `augury.json` | ✅ | A failed flat check (a 1): only "Nothing" offered |
+| VS-229e | "If anyone asks about the same topic as the first casting of augury during an additional casting, the GM uses the secret roll result from the first casting" | check:result-kept · check:secret | A repeat question reuses the first secret roll | `augury.json` | ✅ | The same question retyped: no new roll, the first one's pass kept, though the dice were set to fail |
 
 ### VS-230 · Breadcrumbs
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-230a | "The target leaves a glittering trail behind them that lasts for the spell's duration" | when:cast · reach:single · effect:gm-note · ending:duration | A note: the target's trail is the table's, for an hour | | ☐ | |
-| VS-230b | "Heightened (2nd) The duration increases to 8 hours" | scaling:from-rank · ending:duration | Rank 2: 8 hours | | ☐ | |
-| VS-230c | "Heightened (3rd) The duration increases to last until your next daily preparations" | scaling:from-rank · ending:preparations | Rank 3: until the caster's next preparations | | ☐ | |
+| VS-230a | "The target leaves a glittering trail behind them that lasts for the spell's duration" | when:cast · reach:single · effect:gm-note · ending:duration | A note: the target's trail is the table's, for an hour | `breadcrumbs.json` | ✅ | The Patient's two moves left two glittering marks, each lasting the hour; an hour later, gone |
+| VS-230b | "Heightened (2nd) The duration increases to 8 hours" | scaling:from-rank · ending:duration | Rank 2: 8 hours | `breadcrumbs.json` | ✅ | Rank 2: 8 hours, the marks 8 hours too |
+| VS-230c | "Heightened (3rd) The duration increases to last until your next daily preparations" | scaling:from-rank · ending:preparations | Rank 3: until the caster's next preparations | `breadcrumbs.json` | ✅ | Rank 3: until the caster's preparations |
 
 ### VS-231 · Claim Curse
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-231a | "Choose a curse affecting the target that you don't already have" | when:cast · reach:single · check:caster-choice | The caster picks one of the target's curses it lacks | | ☐ | |
-| VS-231b | "For 5 minutes, you're affected by the curse (at the same stage as the target, and it can't be changed, if applicable), and the target isn't" | reach:self · effect:affliction · effect:suppress · ending:duration | The caster carries the curse at its stage; the target's is paused | | ☐ | |
-| VS-231c | "If the curse's duration ends before claim curse would, it ends as normal" | ending:with-condition | A curse that runs out first ends for good | | ☐ | |
-| VS-231d | "when the spell's duration ends the curse's effects return to the target as normal" | ending:duration · effect:suppress | After 5 minutes the curse is back on the target | | ☐ | |
+| VS-231a | "Choose a curse affecting the target that you don't already have" | when:cast · reach:single · check:caster-choice | The caster picks one of the target's curses it lacks | `claim-curse.json` | ✅ | "ZZ Hex of Rot" named, on the Target. Control: the Patient, with no curse, refused |
+| VS-231b | "For 5 minutes, you're affected by the curse (at the same stage as the target, and it can't be changed, if applicable), and the target isn't" | reach:self · effect:affliction · effect:suppress · ending:duration | The caster carries the curse at its stage; the target's is paused | `claim-curse.json` | ✅ | The caster carries it at stage 2 for 5 minutes, without its saves; the Target has none of it meanwhile |
+| VS-231c | "If the curse's duration ends before claim curse would, it ends as normal" | ending:with-condition | A curse that runs out first ends for good | `claim-curse.json` | ✅ | A curse with 2 minutes left: carried 2 minutes, then "ran its course", returned to nobody |
+| VS-231d | "when the spell's duration ends the curse's effects return to the target as normal" | ending:duration · effect:suppress | After 5 minutes the curse is back on the target | `claim-curse.json` | ✅ | Five minutes on: gone from the caster, back on the Target at stage 2 |

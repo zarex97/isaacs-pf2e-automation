@@ -1,0 +1,23 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.augury.Prompt",
+        "fields": [
+            {
+                "key": "question",
+                "label": "ISAACS_AUTOMATION.Vanilla.augury.Question",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "augury",
+                "flag": "question",
+                "dc": 6
+            }
+        }
+    ]
+}

@@ -1156,6 +1156,48 @@
             "secret-chest": {
                 "Prompt": "The container to send to the Ethereal Plane:",
                 "Container": "Container"
+            },
+            "cozy-cabin": {
+                "Cabin": "Cozy Cabin"
+            },
+            "glimpse-weakness": {
+                "Mark": "glimpse weakness"
+            },
+            "threefold-aspect": {
+                "Prompt": "Which age?",
+                "Age": "Age",
+                "Maiden": "Maiden (young adult)",
+                "Mother": "Mother (adult)",
+                "Matriarch": "Matriarch (elderly)",
+                "Natural": "Your natural age",
+                "Aspect": "threefold aspect",
+                "Sustain": "Sustain Threefold Aspect"
+            },
+            "air-walk": {
+                "Walk": "air walk"
+            },
+            "allfood": {
+                "Prompt": "The unattended object to turn into allfood:",
+                "Item": "Object"
+            },
+            "animal-messenger": {
+                "Prompt": "The place the animal carries your note to:",
+                "Place": "Destination",
+                "Messenger": "animal messenger"
+            },
+            "augury": {
+                "Prompt": "The course of action to ask about, within 30 minutes:",
+                "Question": "Question"
+            },
+            "breadcrumbs": {
+                "Trail": "breadcrumbs"
+            },
+            "claim-curse": {
+                "Prompt": "The target's curse to take on (blank: its first):",
+                "Curse": "Curse"
+            },
+            "anticipate-peril": {
+                "Peril": "anticipate peril"
             }
         },
         "Conditions": {
@@ -1319,7 +1361,9 @@
             "Restyled": "Restyled:",
             "Restyle": "{item} now looks: {look}.",
             "Roughly": "About {count} \"{kind}\" in {name}.",
-            "Marked": "{caster}'s sigil is on {name}, for good."
+            "Marked": "{caster}'s sigil is on {name}, for good.",
+            "Age": "Which age now?",
+            "Aged": "{name}: {age}."
         },
         "FallOff": {
             "Fell": "{name} falls off."
@@ -1337,7 +1381,13 @@
             "Fine": "Fine {name}",
             "Enhanced": "{items}: made fine for an hour, if not eaten. At this rank the spell takes up to {gallons} gallon(s) of water or {pounds} pounds of food.",
             "Removed": "Toxins removed: {items}.",
-            "Cleansed": "{items}: made fine, for good. At this rank the spell takes {feet} contiguous cubic feet."
+            "Cleansed": "{items}: made fine, for good. At this rank the spell takes {feet} contiguous cubic feet.",
+            "NoneToExtract": "{name} holds no poison to extract.",
+            "NoWeapon": "{actor} holds no weapon to take the poison.",
+            "Extracted": "{effect} is drawn out, into {weapon}: +{dice}d6 poison on its next hit before the end of your next turn.",
+            "NoAllfood": "No \"{item}\" of {cap} Bulk or less, non-magical, to turn to allfood.",
+            "Allfood": "Allfood ({name})",
+            "Allfooded": "{item} is allfood for a day, unless it is eaten. At this rank: {cap} Bulk at most."
         },
         "Influence": {
             "Title": "Web of Influence",
@@ -1457,6 +1507,48 @@
             "Refused": "\"{item}\" can't be duplicated: it must be yours, non-magical, 1 Bulk or less, and of no precious or uncommon material.",
             "Made": "A duplicate of {item} in your hands. The Perception DC to know it false, by any sense but touch: {dc}.",
             "Puddle": "The duplicate collapses into a puddle of blood that quickly evaporates."
+        },
+        "Cabin": {
+            "Light": "Sustain: the cabin's light",
+            "LightHint": "Light or put out the cabin's magical light.",
+            "Lit": "The cabin's light is lit.",
+            "Dark": "The cabin's light goes out.",
+            "Left": "{name} steps out of the cabin, and it is gone."
+        },
+        "Fish": {
+            "MusicalTrout": "Musical trout",
+            "PrimordialBass": "Primordial bass",
+            "Ghoulfish": "Ghoulfish",
+            "BurblingBarbel": "Burbling barbel",
+            "DashingDace": "Dashing dace",
+            "Vigocarp": "Vigocarp",
+            "AggressivePerch": "Aggressive perch",
+            "ScholarSalmon": "Scholar salmon",
+            "Hint": "A magical fish. Cook and eat it within the hour of its catching: whoever eats it gains its bonus for an hour.",
+            "Caught": "Caught: {fish}."
+        },
+        "Glimpse": {
+            "Cashed": "{name} strikes the weakness in {target}: +{bonus} precision damage on this hit, and the spell ends."
+        },
+        "AirWalk": {
+            "TooSteep": "{name} walks on air no steeper than 45°: {rise} ft up or down over {across} ft is too steep."
+        },
+        "Augury": {
+            "Title": "Augury",
+            "Flat": "Augury: the secret DC {dc} flat check",
+            "Asked": "{actor} asks: {question}. Your best guess:",
+            "Failed": "{actor} asks: {question}. The flat check failed: the answer is nothing.",
+            "Good": "Good",
+            "Bad": "Bad",
+            "Mixed": "Mixed",
+            "Nothing": "Nothing",
+            "Answer": "{question}: {answer}."
+        },
+        "Curse": {
+            "None": "{name} has no curse you could take on.",
+            "Claimed": "{actor} takes {curse} from {from}, for now.",
+            "Ended": "{curse} ran its course.",
+            "Back": "{curse} returns to {name}."
         }
     }
 }

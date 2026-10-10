@@ -1,0 +1,105 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Prompt",
+        "fields": [
+            {
+                "key": "age",
+                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Age",
+                "type": "text",
+                "options": [
+                    "maiden",
+                    "mother",
+                    "matriarch"
+                ]
+            }
+        ],
+        "labels": {
+            "maiden": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Maiden",
+            "mother": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Mother",
+            "matriarch": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Matriarch"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "unlimited"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Aspect",
+                "describes": "age",
+                "untilPreparations": true,
+                "dismissable": true,
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "threefold-aspect",
+                        "value": true
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "deception",
+                        "type": "status",
+                        "value": 4,
+                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Aspect",
+                        "predicate": [
+                            "threefold-aspect",
+                            "action:impersonate"
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "deception",
+                        "type": "proficiency",
+                        "value": "@actor.level",
+                        "slug": "threefold-aspect-proficiency",
+                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Aspect",
+                        "predicate": [
+                            "threefold-aspect",
+                            "action:impersonate"
+                        ]
+                    }
+                ],
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Sustain",
+                    "traits": [
+                        "concentrate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "age",
+                                "option": "threefold-aspect",
+                                "options": [
+                                    {
+                                        "value": "maiden",
+                                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Maiden"
+                                    },
+                                    {
+                                        "value": "mother",
+                                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Mother"
+                                    },
+                                    {
+                                        "value": "matriarch",
+                                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Matriarch"
+                                    },
+                                    {
+                                        "value": "natural",
+                                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Natural"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

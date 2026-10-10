@@ -1,0 +1,29 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.animal-messenger.Prompt",
+        "fields": [
+            {
+                "key": "place",
+                "label": "ISAACS_AUTOMATION.Vanilla.animal-messenger.Place",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 24,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.animal-messenger.Messenger",
+                "rules": [],
+                "describes": "place",
+                "dismissable": true
+            }
+        }
+    ]
+}

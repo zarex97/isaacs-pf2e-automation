@@ -177,3 +177,28 @@ export async function markObject(_rider, context) {
     await thing.setFlag(LIB_ID, "sigils", [...marks, { casterUuid: caster.uuid, name: caster.name, visible: true }]);
     context.notes.push(t("Handiwork.Marked", { name: thing.name, caster: caster.name }));
 }
+
+/**
+ * *Threefold Aspect*: "Choose one when you Cast the Spell. While the spell lasts, you can change the age to any of the
+ * three or to your natural age by Sustaining the spell." `{ type: "age", options }` on the action the effect gives its
+ * caster: asks which age — the three, or the natural one — renames the effect for it, and switches its bonus on for an
+ * assumed age and off for the natural one (the effect's `RollOption` rule).
+ */
+export async function chooseAge(rider, context) {
+    const uuid = context.item?.flags?.[LIB_ID]?.originAction?.effectUuid;
+    const effect = uuid ? await fromUuid(uuid).catch(() => null) : null;
+    if (!effect) return;
+    const options = rider.apply.options ?? [];
+    const chosen = await foundry.applications.api.DialogV2.wait({
+        window: { title: effect.name },
+        content: `<p>${t("Handiwork.Age")}</p>`,
+        buttons: options.map((o) => ({ action: o.value, label: game.i18n.localize(o.label) })),
+        rejectClose: false,
+    });
+    const option = options.find((o) => o.value === chosen);
+    if (!option) return;
+    const base = effect.name.split(" — ")[0];
+    const rules = (effect.system.rules ?? []).map((rule) => (rule.key === "RollOption" && rule.option === rider.apply.option ? { ...rule, value: option.value !== "natural" } : rule));
+    await effect.update({ name: `${base} — ${game.i18n.localize(option.label)}`, "system.rules": rules });
+    context.notes.push(t("Handiwork.Aged", { name: base, age: game.i18n.localize(option.label) }));
+}
