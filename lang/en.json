@@ -280,7 +280,8 @@
             "CorpseTarget": "{name} needs a corpse targeted.",
             "AnimalTarget": "{name} needs an animal targeted.",
             "Cost": "{name} at this rank costs {gp} gp, and there isn't enough.",
-            "TargetTraits": "{name} needs every target to be: {traits}."
+            "TargetTraits": "{name} needs every target to be: {traits}.",
+            "HeldGroups": "{name} needs a held weapon of these groups: {groups}."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -1048,6 +1049,26 @@
             },
             "mud-pit": {
                 "Mud": "Mud Pit"
+            },
+            "shillelagh": {
+                "Third": "Shillelagh: a third die against an aberration or undead"
+            },
+            "restyle": {
+                "Prompt": "The worn clothing to restyle, and its new look:",
+                "Item": "Clothing",
+                "Look": "New look"
+            },
+            "far-sight": {
+                "Sight": "far sight"
+            },
+            "sky-sight": {
+                "Sight": "sky sight"
+            },
+            "air-bubble": {
+                "Bubble": "air bubble"
+            },
+            "rope-trick": {
+                "Rope": "{name}: the rope"
             }
         },
         "Conditions": {
@@ -1138,7 +1159,13 @@
             "Ejected": "{token} is put back outside.",
             "Collapses": "{name} begins to collapse: {why}",
             "DoorGone": "its door is gone.",
-            "Overfull": "one creature too many stepped in."
+            "Overfull": "one creature too many stepped in.",
+            "Detach": "The rope can be pulled free: Athletics against DC {dc}, a critical success. Select the token that pulls.",
+            "Pull": "Pull the rope free",
+            "Select": "Select the token that pulls the rope.",
+            "Detached": "{actor} pulls the rope free.",
+            "RopeGone": "the rope was pulled free",
+            "Unravels": "{name} begins to unravel ({why}): it is gone in {rounds} round(s), and everyone inside is set down below."
         },
         "Message": {
             "Prompt": "Your message:",
@@ -1200,7 +1227,10 @@
             "MapName": "Map: {scene}",
             "Mapped": "A map of {scene} is drawn.",
             "Adjust": "What changes now?",
-            "Adjusted": "{name}: {words}."
+            "Adjusted": "{name}: {words}.",
+            "NotWorn": "Nobody the spell reached is wearing \"{item}\".",
+            "Restyled": "Restyled:",
+            "Restyle": "{item} now looks: {look}."
         },
         "FallOff": {
             "Fell": "{name} falls off."
@@ -1242,6 +1272,18 @@
         "Journey": {
             "Title": "Umbral Journey",
             "Pace": "The slowest of you has a Speed of {speed} feet: each hour covers {hourly} miles, {days} days' ground, and {hours} hours {total} miles."
+        },
+        "Swap": {
+            "NoOne": "Nobody to swap places with.",
+            "TooFar": "{name} is {feet} feet away, beyond {range}: the spell fails.",
+            "NoRoom": "{caster} and {name} cannot both fit in each other's space: the spell fails.",
+            "Done": "{caster} and {name} swap places."
+        },
+        "Liberate": {
+            "Title": "Liberating Command",
+            "Free": "{name} is not grabbed, immobilized or restrained.",
+            "Offer": "{name} is {held}: escape now, with your reaction.",
+            "Native": "Escape (against the creature you target)"
         }
     }
 }

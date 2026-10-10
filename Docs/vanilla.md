@@ -7,12 +7,14 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Spell | Rank | Area and targets | Riders | Lingering |
 | :-- | :-- | :-- | :-- | :-- |
 | Acid Grip | 2 |  | success: pushed 5 ft in a direction you choose; failure / crit. failure: 1d6 (+1d6 per 2 ranks) persistent acid; failure / crit. failure: spell-effect-acid-grip; failure: pushed 10 ft in a direction you choose; crit. failure: pushed 20 ft in a direction you choose |  |
+| Air Bubble | 1 |  | air bubble (1 minutes) |  |
 | Animal Form | 2 |  | choice (on you) |  |
 | Animal Vision | 3 |  | animal vision (1 hours, on you); success / crit. success: expire |  |
 | Ant Haul | 1 |  | spell-effect-ant-haul |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
 | Bless | 1 |  | spell-effect-bless (Sustain: +1, on you) |  |
+| Blessing of Vigor | 1 |  | spell-effect-blessing-of-vigor |  |
 | Blind Eye | 5 |  | blind eye (until it ends) |  |
 | Blinding Fury | 6 |  | reaction (on you); success / failure / crit. failure: unobserve; failure: blinding fury (1 minutes, carries damage-applied unobserve); crit. failure: blinding fury (until it ends, carries damage-applied unobserve) |  |
 | Blindness | 3 |  | success: blinded (until its next turn); failure: blinded (1 minutes); crit. failure: blinded (no end); crit. success / success / failure / crit. failure: temporarily immune to blindness (1 minutes); crit. success / success / failure / crit. failure: GM note: “The target is temporarily immune to blindness and is unaffected.” |  |
@@ -54,6 +56,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | False Vitality | 2 |  | spell-effect-false-vitality (on you) |  |
 | Familiar's Call | 3 |  | fetch-familiar (on you) |  |
+| Far Sight | 3 |  | far sight (10 minutes, on you) |  |
 | Fate's Travels | 3 |  | fates-travels; fate's travels (1 days, on you) |  |
 | Fear | 1 | up to 1, +4 at rank 3 | success: frightened 1; failure: frightened 2; crit. failure: frightened 3; crit. failure: fleeing (1 rounds) |  |
 | Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
@@ -64,6 +67,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Frostbite | 1 |  | crit. failure: spell-effect-frostbite |  |
 | Frozen Lungs | 2 |  | success: frozen lungs (1 minutes, carries holder-acts damage); failure: frozen lungs (1 minutes, carries holder-acts damage); crit. failure: frozen lungs (1 minutes, carries holder-acts damage) |  |
 | Gecko Grip | 2 |  | spell-effect-gecko-grip (below rank 5); spell-effect-gecko-grip (1 hours, from rank 5) |  |
+| Ghostly Weapon | 3 |  | spell-effect-ghostly-weapon |  |
 | Ghoulish Cravings | 2 |  | success: sickened 1; failure / crit. failure: sickened 2; failure: ghoulish hunger (until it ends); crit. failure: ghoulish hunger (until it ends) |  |
 | Glamorize | 1 |  | glamorize (1 hours, on you) |  |
 | Glowing Trail | 1 |  | glowing trail (1 hours, on you) |  |
@@ -85,8 +89,10 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Infuse Vitality | 1 |  | spell-effect-infuse-vitality |  |
 | Invent Code | 3 |  | invented code (8 hours, on you); invented code (8 hours) |  |
 | Invisibility | 2 |  | invisible (10 minutes, ends on a hostile action, below rank 4); invisible (1 minutes, from rank 4) |  |
+| King's Castle | 5 |  | swap |  |
 | Laughing Fit | 2 |  | success / failure / crit. failure: laughing: can't use reactions (1 minutes, while Sustained); failure / crit. failure: slowed 1 (1 minutes, while Sustained); crit. failure: prone (no end); crit. failure: helpless with laughter: can't use actions or reactions (1 rounds, while Sustained) |  |
 | Levitate | 3 |  | elevation; spell-effect-levitate (carries turn-end toggle) |  |
+| Liberating Command | 1 |  | liberate |  |
 | Light | 1 | 5-ft square, an orb of light there, 20/40 ft, on a creature or the square; moved 60 ft by Sustain; 4 at most |  |  |
 | Lightning Bolt | 3 | 120-ft line (pf2e's), from you, all |  |  |
 | Lightning Storm | 5 | choose: 20-ft burst or 2 × 20-ft burst, all, placed, no targets |  | bolt: 4d12 electricity on a creature in the storm (basic reflex), at the cast and on each Sustain, ends if not Sustained, 1 minutes |
@@ -123,7 +129,9 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
+| Restyle | 1 |  | restyle (on you) |  |
 | Revealing Light | 2 | 10-ft burst (pf2e's), all | success: revealed (2 rounds); failure: revealed (1 minutes); crit. failure: revealed (10 minutes) |  |
+| Rope Trick | 4 |  | pocket (8 hours, on you) |  |
 | Runic Weapon | 1 |  | spell-effect-runic-weapon |  |
 | Sanctuary | 1 |  | sanctuary (1 minutes, ends on a hostile action) |  |
 | Scatter Scree | 1 | 10-ft line (pf2e's), all |  | difficult terrain, ends your previous one, 1 minutes |
@@ -137,7 +145,9 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Share Life | 2 |  | life linked (10 minutes) |  |
 | Shattering Gem | 1 |  | shattering gem (1 minutes) |  |
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
+| Shillelagh | 1 |  | spell-effect-shillelagh (on you) |  |
 | Silence | 2 |  | spell-effect-silence |  |
+| Sky Sight | 1 |  | sky sight (1 hours, on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |
 | Slither | 5 | 20-ft burst (pf2e's), all | failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area) | Dismiss, reflex on turn end — failure: 3d6 piercing; failure: 1d6 (+1d6 per 2 ranks) persistent poison; failure: encasement (Escape, ends with the area); crit. failure: 3d6 piercing; crit. failure: 2d6 (+2d6 per 2 ranks) persistent poison; crit. failure: encasement (Escape, ends with the area), 1 minutes |
 | Slow | 3 | up to 1, +9 at rank 6 | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |

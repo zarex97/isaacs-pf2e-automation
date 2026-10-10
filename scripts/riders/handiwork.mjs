@@ -21,6 +21,10 @@ import { LIB_ID } from "../id.mjs";
  *
  * *Glamorize*: "While the spell is active, you can Sustain it to make further adjustments." `{ type: "adjust" }`, on the
  * action an effect gives its caster (`originAction`), asks what changes now and writes it on the effect's name.
+ *
+ * *Restyle*: "You permanently change the appearance of one piece of clothing currently worn by you or an ally … The
+ * object's statistics also remain unchanged." `{ type: "restyle", item, look }` finds the worn item the cast named, on
+ * the caster or a creature the cast reached, and writes its new look into its description — nothing else on it moves.
  */
 
 const MAPS = "isaacs-pf2e-automation-maps";
@@ -107,4 +111,24 @@ export async function adjustEffect(_rider, context) {
     const base = effect.name.split(" — ")[0];
     await effect.update({ name: `${base} — ${words}` });
     context.notes.push(t("Handiwork.Adjusted", { name: base, words }));
+}
+
+/** Is an item worn: equipped in the worn slot, or carried as worn clothing? */
+export function isWorn(item) {
+    const equipped = item?.system?.equipped ?? {};
+    return equipped.carryType === "worn" && (equipped.inSlot !== false);
+}
+
+export async function restyleItem(rider, context, chosen = {}) {
+    const named = String(chosen[rider.apply.item ?? "item"] ?? "").trim().toLowerCase();
+    const look = String(chosen[rider.apply.look ?? "look"] ?? "").trim();
+    const wearers = [context.originActor, ...(context.targets ?? []).map((token) => token?.actor ?? token)].filter((a) => a?.items);
+    const item = wearers.flatMap((actor) => [...actor.items]).find((i) => i.name.toLowerCase() === named && isWorn(i));
+    if (!item || !look) {
+        context.notes.push(t("Handiwork.NotWorn", { item: named }));
+        return;
+    }
+    const was = item.system?.description?.value ?? "";
+    await item.update({ "system.description.value": `${was}<p><em>${t("Handiwork.Restyled")}</em> ${foundry.utils.escapeHTML(look)}</p>` });
+    context.notes.push(t("Handiwork.Restyle", { item: item.name, look }));
 }

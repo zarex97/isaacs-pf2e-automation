@@ -18,12 +18,26 @@ import { LIB_ID } from "../id.mjs";
  * the room's clock; when the door goes — its hours up, or deleted because it was scrubbed away — or a creature steps in
  * past the room's capacity (one creature a square), the room collapses: one creature at random is put back on the
  * nearest open square to the door each round of the world clock, and the room is deleted once empty. Active GM only.
+ *
+ * *Rope Trick*: "The space holds up to eight Medium creatures and their gear. A Large creature counts as two Medium
+ * creatures, a Huge creature counts as four Medium creatures, and a Gargantuan creature fills the space on its own … The
+ * rope can't be removed or hidden, though it can be detached … by … critically succeeding at an Athletics check against
+ * the spell's DC … the space begins to unravel. It disappears in 1d4 rounds, depositing the creatures within safely on
+ * the ground below." `capacity` sets the room's hold, counted by size (`weighted`); `collapse: "all"` empties it at once
+ * after `delay` rounds rather than one a round; `detach` posts a card whose Athletics check, critically succeeding
+ * against the spell's DC, starts the collapse; `door` names the square on the board.
  */
 
 const FLAG = "pocket";
 const ROUND = 6;
 
 const isGM = () => game.users?.activeGM?.id === game.user?.id;
+
+/** The spell's DC, from the spellcasting entry that cast it. */
+function castDc(context) {
+    const item = context.item ?? context.riderItem;
+    return item?.spellcasting?.statistic?.dc?.value ?? null;
+}
 
 /** A square Region on a scene, one grid square across, with the behaviors given. */
 function squareRegion(name, x, y, grid, behaviors, flags) {
@@ -34,6 +48,11 @@ function squareRegion(name, x, y, grid, behaviors, flags) {
 export function nearestOpen(point, grid, occupied) {
     const rings = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1], [2, 0], [-2, 0], [0, 2], [0, -2]];
     return rings.map(([dx, dy]) => ({ x: point.x + dx * grid, y: point.y + dy * grid })).find((p) => !occupied.some((o) => o.x === p.x && o.y === p.y)) ?? point;
+}
+
+/** What a creature counts for in a room counted by size: a Large two, a Huge four, a Gargantuan eight. */
+export function sizeWeight(size) {
+    return { lg: 2, huge: 4, grg: 8 }[size] ?? 1;
 }
 
 /** How many creatures the room holds: one to a square. */
@@ -65,15 +84,26 @@ export const Pocket = {
         const at = { x: casterToken._source.x, y: casterToken._source.y };
         const occupied = scene.tokens.map((token) => ({ x: token._source.x, y: token._source.y }));
         const doorAt = nearestOpen({ x: at.x + grid, y: at.y }, grid, occupied);
-        const [door] = await scene.createEmbeddedDocuments("Region", [squareRegion(t("Pocket.Door", { name }), doorAt.x, doorAt.y, grid, [], {
-            [LIB_ID]: { lingering: { expiresAt: game.time.worldTime + seconds, name, originUuid: caster.uuid }, [FLAG]: { roomUuid: room.uuid, capacity: capacityOf(feet, scene.grid.distance) } },
+        const doorName = rider.apply.door ? t(rider.apply.door, { name }) : t("Pocket.Door", { name });
+        const capacity = Number(rider.apply.capacity) || capacityOf(feet, scene.grid.distance);
+        const [door] = await scene.createEmbeddedDocuments("Region", [squareRegion(doorName, doorAt.x, doorAt.y, grid, [], {
+            [LIB_ID]: { lingering: { expiresAt: game.time.worldTime + seconds, name, originUuid: caster.uuid }, [FLAG]: { roomUuid: room.uuid, capacity, weighted: !!rider.apply.weighted } },
         })]);
         const [exit] = await room.createEmbeddedDocuments("Region", [squareRegion(t("Pocket.Exit"), 0, (side - 1) * grid, grid,
             [{ type: "teleportToken", name: t("Pocket.Exit"), system: { destinations: [door.uuid], placement: "center" } }],
             { [LIB_ID]: { [FLAG]: { doorUuid: door.uuid } } })]);
-        await door.createEmbeddedDocuments("RegionBehavior", [{ type: "teleportToken", name: t("Pocket.Door", { name }), system: { destinations: [exit.uuid], placement: "random" } }]);
-        await room.setFlag(LIB_ID, FLAG, { room: true, doorUuid: door.uuid, sceneId: scene.id, door: doorAt });
+        await door.createEmbeddedDocuments("RegionBehavior", [{ type: "teleportToken", name: doorName, system: { destinations: [exit.uuid], placement: "random" } }]);
+        await room.setFlag(LIB_ID, FLAG, { room: true, doorUuid: door.uuid, sceneId: scene.id, door: doorAt, all: rider.apply.collapse === "all", delay: rider.apply.delay ?? null });
         context.notes.push(t("Pocket.Opened", { name, feet }));
+        if (rider.apply.detach) {
+            const dc = Number(context.dc) || Number(castDc(context)) || 20;
+            await ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor: caster }),
+                flavor: name,
+                content: `<p>${t("Pocket.Detach", { dc })}</p><div class="isaacs-automation-choice"><button type="button" data-action="isaacs-automation-detach">${t("Pocket.Pull")}</button></div>`,
+                flags: { [LIB_ID]: { [FLAG]: { detach: { roomUuid: room.uuid, dc } } } },
+            });
+        }
     },
 
     /** The room is collapsing: put one creature out at random, and delete the room once nobody is left. */
@@ -99,12 +129,56 @@ export const Pocket = {
 
     async collapse(room, why) {
         if (!room || room.getFlag(LIB_ID, FLAG)?.collapsing) return;
-        await room.setFlag(LIB_ID, FLAG, { ...room.getFlag(LIB_ID, FLAG), collapsing: true, lastEject: game.time.worldTime });
+        const spec = room.getFlag(LIB_ID, FLAG);
+        // Everyone at once, after a few rounds — *Rope Trick*'s 1d4.
+        if (spec.all) {
+            const rounds = spec.delay ? (await new Roll(String(spec.delay)).evaluate()).total : 0;
+            await room.setFlag(LIB_ID, FLAG, { ...spec, collapsing: true, dueAt: game.time.worldTime + rounds * ROUND });
+            await ChatMessage.create({ content: `<p>${t("Pocket.Unravels", { name: room.name, why, rounds })}</p>` });
+            if (rounds <= 0) await Pocket.ejectAll(room);
+            return;
+        }
+        await room.setFlag(LIB_ID, FLAG, { ...spec, collapsing: true, lastEject: game.time.worldTime });
         await ChatMessage.create({ content: `<p>${t("Pocket.Collapses", { name: room.name, why })}</p>` });
         await Pocket.ejectOne(room);
     },
 
+    /** Everyone inside set down on the ground by the door, and the room gone. */
+    async ejectAll(room) {
+        const spec = room?.getFlag(LIB_ID, FLAG);
+        if (!spec?.collapsing) return;
+        const outside = game.scenes.get(spec.sceneId);
+        for (const token of room.tokens.contents) {
+            if (outside) {
+                const spot = nearestOpen(spec.door, outside.grid.size, outside.tokens.map((other) => ({ x: other._source.x, y: other._source.y })));
+                await outside.createEmbeddedDocuments("Token", [{ ...token.toObject(), _id: undefined, x: spot.x, y: spot.y, elevation: 0 }]);
+            }
+            await ChatMessage.create({ content: `<p>${t("Pocket.Ejected", { token: token.name })}</p>` });
+        }
+        await room.delete();
+    },
+
     registerHooks() {
+        // *Rope Trick*'s rope pulled free: an Athletics check against the spell's DC, a critical success.
+        Hooks.on("renderChatMessageHTML", (message, html) => {
+            const spec = flagOf(message, FLAG)?.detach;
+            const button = spec && html?.querySelector?.('[data-action="isaacs-automation-detach"]');
+            if (!button || button.dataset.bound) return;
+            button.dataset.bound = "1";
+            button.addEventListener("click", async () => {
+                const actor = canvas.tokens?.controlled?.[0]?.actor ?? game.user.character;
+                if (!actor) return ui.notifications.warn(t("Pocket.Select"));
+                const roll = await actor.skills?.athletics?.roll({ dc: { value: spec.dc }, skipDialog: true, label: t("Pocket.Pull") });
+                if (roll?.degreeOfSuccess !== 3) return;
+                await ChatMessage.create({ content: `<p>${t("Pocket.Detached", { actor: actor.name })}</p>`, flags: { [LIB_ID]: { [FLAG]: { detached: spec.roomUuid } } } });
+            });
+        });
+        Hooks.on("createChatMessage", async (message) => {
+            if (!isGM()) return;
+            const roomUuid = flagOf(message, FLAG)?.detached;
+            const room = roomUuid ? fromUuidSync(roomUuid) : null;
+            if (room) await Pocket.collapse(room, t("Pocket.RopeGone"));
+        });
         // The door scrubbed away, or its hours up: the room begins to collapse.
         Hooks.on("deleteRegion", async (region) => {
             if (!isGM()) return;
@@ -120,13 +194,20 @@ export const Pocket = {
             if (!spec?.room || spec.collapsing) return;
             const door = fromUuidSync(spec.doorUuid);
             const capacity = Number(flagOf(door, FLAG)?.capacity) || capacityOf(20, room.grid.distance);
-            if (room.tokens.size > capacity) await Pocket.collapse(room, t("Pocket.Overfull"));
+            const filled = flagOf(door, FLAG)?.weighted
+                ? room.tokens.contents.reduce((sum, inside) => sum + sizeWeight(inside.actor?.size), 0)
+                : room.tokens.size;
+            if (filled > capacity) await Pocket.collapse(room, t("Pocket.Overfull"));
         });
         // A round of the world clock puts the next creature out.
         Hooks.on("updateWorldTime", async () => {
             if (!isGM()) return;
             for (const room of game.scenes.filter((scene) => scene.getFlag(LIB_ID, FLAG)?.collapsing)) {
                 const spec = room.getFlag(LIB_ID, FLAG);
+                if (spec.all) {
+                    if (game.time.worldTime >= (Number(spec.dueAt) || 0)) await Pocket.ejectAll(room);
+                    continue;
+                }
                 const due = Math.floor((game.time.worldTime - (Number(spec.lastEject) || 0)) / ROUND);
                 for (let i = 0; i < due && room.tokens.size > 0; i++) await Pocket.ejectOne(room);
                 if (game.scenes.has(room.id)) await room.setFlag(LIB_ID, FLAG, { ...spec, lastEject: game.time.worldTime });

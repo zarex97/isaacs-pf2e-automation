@@ -1,0 +1,22 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "pocket",
+                "feet": 15,
+                "capacity": 8,
+                "weighted": true,
+                "collapse": "all",
+                "delay": "1d4",
+                "detach": true,
+                "door": "ISAACS_AUTOMATION.Vanilla.rope-trick.Rope"
+            }
+        }
+    ]
+}
