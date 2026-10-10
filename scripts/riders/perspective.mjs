@@ -86,8 +86,28 @@ export async function sendOff(rider, context) {
     });
     if (!direction) return;
     const perFoot = scene.grid.size / (scene.grid.distance || 5);
-    const shapes = region.toObject().shapes.map((shape) => ({ ...shape, ...along({ x: shape.x, y: shape.y }, direction, Number(rider.apply.feet) || 100, perFoot) }));
+    const feet = Number(rider.apply.feet) || 100;
+    // An emanation is drawn around its `base`; any other shape from its own corner.
+    const shapes = region.toObject().shapes.map((shape) => (shape.base
+        ? { ...shape, base: { ...shape.base, ...along({ x: shape.base.x, y: shape.base.y }, direction, feet, perFoot) } }
+        : { ...shape, ...along({ x: shape.x, y: shape.y }, direction, feet, perFoot) }));
     const lingering = flagOf(region, "lingering");
     await region.update({ shapes, [`flags.${LIB_ID}.lingering`]: { ...lingering, followsCaster: false, expiresAt: game.time.worldTime + 6 } });
     context.notes.push(t("Perspective.SentOff", { name: region.name, feet: Number(rider.apply.feet) || 100 }));
 }
+
+export const Parade = {
+    /**
+     * The caster's effect for an area — the one that holds *Send the parade off* — ends with the area, however it ends.
+     * Marked `endsWithArea`; matched by the spell and caster the area names, since the area is made after the effect.
+     */
+    registerHooks() {
+        Hooks.on("deleteRegion", async (region) => {
+            if (game.users?.activeGM?.id !== game.user?.id) return;
+            const spec = flagOf(region, "lingering");
+            const caster = spec?.originUuid ? fromUuidSync(spec.originUuid) : null;
+            const ids = (caster?.itemTypes?.effect ?? []).filter((effect) => effect.flags?.[LIB_ID]?.endsWithArea && effect.flags?.[LIB_ID]?.rider?.source === spec.itemUuid).map((effect) => effect.id);
+            if (ids.length > 0) await caster.deleteEmbeddedDocuments("Item", ids).catch(() => null);
+        });
+    },
+};

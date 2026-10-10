@@ -77,7 +77,8 @@ export async function offerPathway(rider, context, rank = 5) {
         context.notes.push(t("Pathway.None", { feature: word }));
         return;
     }
-    if (caster.items.some((item) => (item.system?.traits?.value ?? []).includes("extradimensional"))) {
+    // Carried: a physical item — a spell the caster knows is no space they hold.
+    if (caster.items.some((item) => item.isOfType?.("physical") && (item.system?.traits?.value ?? []).includes("extradimensional"))) {
         context.notes.push(t("Pathway.Extradimensional"));
         return;
     }

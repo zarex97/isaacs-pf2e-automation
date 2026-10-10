@@ -2041,6 +2041,7 @@ async function applyEffect(rider, context) {
             if (words) source.name = `${source.name} — ${words}`;
         }
         // *Umbral Journey*: words its holder's players are told when it ends, however it ends (`journey.mjs`).
+        if (rider.apply.endsWithArea) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsWithArea: true } });
         if (rider.apply.together) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { together: true } });
         if (rider.apply.endNote) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endNote: rider.apply.endNote } });
         // *Enhance Senses*: senses read off the creature as it lands (`senses.mjs`) — without a previous casting's, which

@@ -80,6 +80,8 @@ export async function disguiseMagic(_rider, context, chosen = {}, { rank = 1, it
         flags: { [LIB_ID]: { untilPreparations: caster.uuid } },
     }]);
     spec.effectUuid = effect.uuid;
+    // A fresh disguise, not merged into an old one's results.
+    await (thing ?? creature).update({ [`flags.${LIB_ID}.-=${FLAG}`]: null });
     await (thing ?? creature).update({ [`flags.${LIB_ID}.${FLAG}`]: spec });
     const { Dismiss } = await import("./dismiss.mjs");
     await Dismiss.grantForEffect(caster, context.item, effect);
@@ -91,7 +93,8 @@ export const Disguise = {
     registerHooks() {
         Hooks.on("deleteItem", async (item) => {
             if (game.users?.activeGM?.id !== game.user?.id || item.type !== "effect") return;
-            for (const actor of game.actors) {
+            const actors = [...game.actors, ...[...game.scenes].flatMap((scene) => scene.tokens.filter((token) => !token.actorLink && token.actor).map((token) => token.actor))];
+            for (const actor of actors) {
                 const holders = [actor, ...actor.items].filter((doc) => doc.flags?.[LIB_ID]?.[FLAG]?.effectUuid === item.uuid);
                 for (const doc of holders) await doc.update({ [`flags.${LIB_ID}.-=${FLAG}`]: null });
             }

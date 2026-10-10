@@ -3811,7 +3811,8 @@
                                     }
                                 }
                             ]
-                        }
+                        },
+                        "endsWithArea": true
                     }
                 }
             ]

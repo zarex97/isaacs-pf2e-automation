@@ -53,7 +53,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "endsWithArea": true
             }
         }
     ]

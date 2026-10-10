@@ -47,7 +47,9 @@ export async function detectMagic(rider, context) {
     const origin = caster?.getActiveTokens?.(true, false)?.[0];
     if (!caster || !origin) return;
     const spell = context.item;
-    const rank = Number(spell?.rank) || 1;
+    // The rank it was cast at: the sheet's spell is at its own (`castItemOf`).
+    const { castItemOf } = await import("./apply.mjs");
+    const rank = Number(castItemOf(context)?.rank ?? spell?.rank) || 1;
     const range = Number(rider.apply.range) || 30;
     const known = rider.apply.ignoreKnown === true;
     const friendly = (actor) => actor === caster || actor?.isAllyOf?.(caster);

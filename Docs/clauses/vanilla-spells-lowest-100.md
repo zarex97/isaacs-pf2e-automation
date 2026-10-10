@@ -551,8 +551,8 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-181a | "The target gains fast healing 8" | when:cast · reach:filtered · effect:fast-healing · ending:duration | A living target has fast healing 8 for 4 rounds | | ☐ | |
-| VS-181b | "Heightened (+1) The fast healing increases by 2" | scaling:dice-per-rank · effect:fast-healing | Rank 5: fast healing 10 | | ☐ | |
+| VS-181a | "The target gains fast healing 8" | when:cast · reach:filtered · effect:fast-healing · ending:duration | A living target has fast healing 8 for 4 rounds | `spiritual-renewal.json` | ✅ | The Patient: fast healing 8 for 4 rounds at rank 4. Control: the Ghoul Soldier (undead) refused |
+| VS-181b | "Heightened (+1) The fast healing increases by 2" | scaling:dice-per-rank · effect:fast-healing | Rank 5: fast healing 10 | `spiritual-renewal.json` | ✅ | Rank 5: fast healing 10. Rank 4: 8 |
 
 ### VS-182 · Temporary Tool
 
@@ -575,45 +575,45 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-184a | "You step into a blazing fire that's big enough for you to fit inside and instantly teleport to any other fire within 5 miles that also has a sufficiently large size" | when:cast · reach:self · economy:requires · effect:teleport | From inside a large fire, the caster teleports to another within 5 miles | | ☐ | |
-| VS-184b | "Once you enter the first fire, you instantly know the rough locations of other sufficiently large fires within range" | effect:info | A note: the large fires in range are the table's to tell | | ☐ | |
-| VS-184c | "can exit from the original fire, if you prefer" | check:caster-choice | The caster may step back out where they entered | | ☐ | |
-| VS-184d | "You can't carry extradimensional spaces with you; if you attempt to do so, the spell fails" | economy:requires | Carrying an extradimensional space makes the spell fail | | ☐ | |
-| VS-184e | "Heightened (6th) The fire you exit can be up to 50 miles away" | scaling:from-rank · effect:range | Rank 6 reaches a fire 50 miles away | | ☐ | |
-| VS-184f | "Heightened (8th) The fire you exit can be up to 500 miles away" | scaling:from-rank · effect:range | Rank 8 reaches a fire 500 miles away | | ☐ | |
-| VS-184g | "Heightened (9th) The fire you exit can be anywhere on the same planet" | scaling:from-rank · effect:range | Rank 9 reaches any fire on the planet | | ☐ | |
+| VS-184a | "You step into a blazing fire that's big enough for you to fit inside and instantly teleport to any other fire within 5 miles that also has a sufficiently large size" | when:cast · reach:self · economy:requires · effect:teleport | From inside a large fire, the caster teleports to another within 5 miles | `fires-pathway.json` | ✅ | Beside ZZ Bonfire A, the caster stepped out at another fire. Controls: away from any fire, "No fire large enough here"; a Bag of Holding carried, "the spell fails" |
+| VS-184b | "Once you enter the first fire, you instantly know the rough locations of other sufficiently large fires within range" | effect:info | A note: the large fires in range are the table's to tell | `fires-pathway.json` | ✅ | Whispered: "ZZ Bonfire B — 90 feet to the southeast", and a fire on another scene by its miles |
+| VS-184c | "can exit from the original fire, if you prefer" | check:caster-choice | The caster may step back out where they entered | `fires-pathway.json` | ✅ | "Step back out of ZZ Bonfire A" set the caster down in that fire's square |
+| VS-184d | "You can't carry extradimensional spaces with you; if you attempt to do so, the spell fails" | economy:requires | Carrying an extradimensional space makes the spell fail | `fires-pathway.json` | ✅ | A Bag of Holding (extradimensional) carried: it fails. Control: the spells the caster knows with that trait do not count |
+| VS-184e | "Heightened (6th) The fire you exit can be up to 50 miles away" | scaling:from-rank · effect:range | Rank 6 reaches a fire 50 miles away | `fires-pathway.json` | ✅ | A fire 50 miles off (by the scenes' `at` flags): listed at rank 6, not at 5. Control: 5 miles off, listed at 5 |
+| VS-184f | "Heightened (8th) The fire you exit can be up to 500 miles away" | scaling:from-rank · effect:range | Rank 8 reaches a fire 500 miles away | `fires-pathway.json` | ✅ | A fire 300 miles off: listed at rank 8, not at 6 |
+| VS-184g | "Heightened (9th) The fire you exit can be anywhere on the same planet" | scaling:from-rank · effect:range | Rank 9 reaches any fire on the planet | `fires-pathway.json` | ✅ | Rank 9: a fire on a scene with no `at` listed, and stepping out moved the caster's token onto that scene |
 
 ### VS-185 · Nature's Pathway
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-185a | "You step into a living tree with a trunk big enough for you to fit inside it and instantly teleport to any tree within 5 miles that also has a sufficiently large trunk" | when:cast · reach:self · economy:requires · effect:teleport | From inside a large tree, the caster teleports to another within 5 miles | | ☐ | |
-| VS-185b | "Once you enter the first tree, you instantly know the rough locations of other sufficiently large trees within range" | effect:info | A note: the large trees in range are the table's to tell | | ☐ | |
-| VS-185c | "can exit from the original tree, if you prefer" | check:caster-choice | The caster may step back out where they entered | | ☐ | |
-| VS-185d | "You can't carry extradimensional spaces with you; if you attempt to do so, the spell fails" | economy:requires | Carrying an extradimensional space makes the spell fail | | ☐ | |
-| VS-185e | "Heightened (6th) The tree you exit can be up to 50 miles away" | scaling:from-rank · effect:range | Rank 6 reaches a tree 50 miles away | | ☐ | |
-| VS-185f | "Heightened (8th) The tree you exit can be up to 500 miles away" | scaling:from-rank · effect:range | Rank 8 reaches a tree 500 miles away | | ☐ | |
-| VS-185g | "Heightened (9th) The tree you exit can be anywhere on the same planet" | scaling:from-rank · effect:range | Rank 9 reaches any tree on the planet | | ☐ | |
+| VS-185a | "You step into a living tree with a trunk big enough for you to fit inside it and instantly teleport to any tree within 5 miles that also has a sufficiently large trunk" | when:cast · reach:self · economy:requires · effect:teleport | From inside a large tree, the caster teleports to another within 5 miles | `natures-pathway.json` | ✅ | Beside ZZ Oak Tree A: stepped out at ZZ Pine Tree B, 145 ft southeast. Control: a region not named for a tree, refused |
+| VS-185b | "Once you enter the first tree, you instantly know the rough locations of other sufficiently large trees within range" | effect:info | A note: the large trees in range are the table's to tell | `natures-pathway.json` | ✅ | Whispered: "ZZ Pine Tree B — 145 feet to the southeast" |
+| VS-185c | "can exit from the original tree, if you prefer" | check:caster-choice | The caster may step back out where they entered | `natures-pathway.json` | ✅ | Its first button steps back out where the caster went in |
+| VS-185d | "You can't carry extradimensional spaces with you; if you attempt to do so, the spell fails" | economy:requires | Carrying an extradimensional space makes the spell fail | `natures-pathway.json` | ✅ | As Fire's Pathway: a carried extradimensional item fails it |
+| VS-185e | "Heightened (6th) The tree you exit can be up to 50 miles away" | scaling:from-rank · effect:range | Rank 6 reaches a tree 50 miles away | `natures-pathway.json` | ✅ | The same rank table as Fire's Pathway: 50 miles at 6 |
+| VS-185f | "Heightened (8th) The tree you exit can be up to 500 miles away" | scaling:from-rank · effect:range | Rank 8 reaches a tree 500 miles away | `natures-pathway.json` | ✅ | 500 miles at 8 |
+| VS-185g | "Heightened (9th) The tree you exit can be anywhere on the same planet" | scaling:from-rank · effect:range | Rank 9 reaches any tree on the planet | `natures-pathway.json` | ✅ | Any scene on the same plane at 9 |
 
 ### VS-186 · Tremorsense
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-186a | "You gain tremorsense as an imprecise sense with a range of 30 feet" | when:cast · reach:self · effect:sense · ending:duration | The caster has imprecise tremorsense 30 ft for 10 minutes | | ☐ | |
-| VS-186b | "you can detect a creature only if it's on the same surface as you and only if the subject is moving along (or burrowing through) the surface" | reach:filtered · effect:sense | Only creatures moving on the caster's surface are sensed | | ☐ | |
-| VS-186c | "Heightened (3rd) The spell's duration is 1 hour" | scaling:from-rank · ending:duration | From rank 3 it lasts an hour | | ☐ | |
-| VS-186d | "Heightened (5th) The spell's duration is 8 hours" | scaling:from-rank · ending:duration | From rank 5 it lasts 8 hours | | ☐ | |
+| VS-186a | "You gain tremorsense as an imprecise sense with a range of 30 feet" | when:cast · reach:self · effect:sense · ending:duration | The caster has imprecise tremorsense 30 ft for 10 minutes | `tremorsense.json` | ✅ | The caster: tremorsense, imprecise, 30 feet, 10 minutes. Control: none before |
+| VS-186b | "you can detect a creature only if it's on the same surface as you and only if the subject is moving along (or burrowing through) the surface" | reach:filtered · effect:sense | Only creatures moving on the caster's surface are sensed | `tremorsense.json` | — | Foundry's tremor sense already ignores flyers; whether a creature is moving is the table's |
+| VS-186c | "Heightened (3rd) The spell's duration is 1 hour" | scaling:from-rank · ending:duration | From rank 3 it lasts an hour | `tremorsense.json` | ✅ | Rank 3: 1 hour. Rank 2: 10 minutes |
+| VS-186d | "Heightened (5th) The spell's duration is 8 hours" | scaling:from-rank · ending:duration | From rank 5 it lasts 8 hours | `tremorsense.json` | ✅ | Rank 5: 8 hours |
 
 ### VS-187 · Disguise Magic
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-187a | "You alter how an item's or spell's magical aura appears to effects like detect magic" | when:cast · reach:object · effect:gm-note | Detection reads the target's aura as disguised, until preparations | | ☐ | |
-| VS-187b | "You can hide the auras entirely, have an item register as a common item of lower level, or make a spell register as a common spell of the same or lower rank" | check:caster-choice · effect:gm-note | The caster's chosen disguise is recorded for the table | | ☐ | |
-| VS-187c | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
-| VS-187d | "A caster using Detect Magic or Read Aura of a higher rank than disguise magic can attempt to disbelieve the illusion using the skill matching the tradition of the spell" | reach:filtered · check:skill | A higher-rank detector may roll its tradition's skill to disbelieve | | ☐ | |
-| VS-187e | "Further attempts by the same caster get the same result as the initial check to disbelieve" | check:result-kept | A detector's first disbelief result stands for its later tries | | ☐ | |
-| VS-187f | "Heightened (2nd) You can Cast this Spell on a creature, disguising all items and spell effects on it" | scaling:from-rank · reach:single · effect:gm-note | From rank 2 a creature can be the target | | ☐ | |
+| VS-187a | "You alter how an item's or spell's magical aura appears to effects like detect magic" | when:cast · reach:object · effect:gm-note | Detection reads the target's aura as disguised, until preparations | `disguise-magic.json` | ✅ | A level 4 dagger on the Target, hidden: Detect Magic said "no magic". Control: "present" once dismissed |
+| VS-187b | "You can hide the auras entirely, have an item register as a common item of lower level, or make a spell register as a common spell of the same or lower rank" | check:caster-choice · effect:gm-note | The caster's chosen disguise is recorded for the table | `disguise-magic.json` | ✅ | Hidden, or lowered: rank 4 detection reported the dagger as level 1 |
+| VS-187c | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss it | `disguise-magic.json` | ✅ | Its Dismiss ended it and lifted the disguise; it also ends at daily preparations |
+| VS-187d | "A caster using Detect Magic or Read Aura of a higher rank than disguise magic can attempt to disbelieve the illusion using the skill matching the tradition of the spell" | reach:filtered · check:skill | A higher-rank detector may roll its tradition's skill to disbelieve | `disguise-magic.json` | ✅ | Rank 4 detection rolled Occultism: a 20 saw level 4, a 1 saw level 1. Control: rank 1 detection rolled nothing |
+| VS-187e | "Further attempts by the same caster get the same result as the initial check to disbelieve" | check:result-kept | A detector's first disbelief result stands for its later tries | `disguise-magic.json` | ✅ | The next pulse with the opposite die rolled nothing and saw the same as before |
+| VS-187f | "Heightened (2nd) You can Cast this Spell on a creature, disguising all items and spell effects on it" | scaling:from-rank · reach:single · effect:gm-note | From rank 2 a creature can be the target | `disguise-magic.json` | ✅ | Rank 2, no item named: everything on the Target hidden. Control: rank 1, refused |
 
 ### VS-188 · Dome of Tranquility
 
@@ -645,51 +645,51 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-190a | "You record a message up to 5 minutes long and inscribe a special rune on any flat unattended surface or small object within reach" | when:cast · reach:object · effect:gm-note | A note: the rune and its message are kept for the table | | ☐ | |
-| VS-190b | "You also specify a trigger that creatures must meet to activate the rune" | check:caster-choice · effect:gm-note | The caster's trigger is recorded with the rune | | ☐ | |
-| VS-190c | "For the duration of the spell, creatures that meet the criteria of the trigger can touch the rune to hear the recorded message in their head as though you were speaking to them telepathically" | reach:filtered · effect:gm-note · ending:duration | A note: who meets the trigger and hears it is the table's | | ☐ | |
-| VS-190d | "You know when someone is listening to the message, but you don't know who's listening to it" | effect:info | The caster is told when the message plays, not by whom | | ☐ | |
-| VS-190e | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
-| VS-190f | "Heightened (+2) The duration increases for every 2 ranks, becoming 1 week, 1 month, 1 year, or unlimited respectively" | scaling:dice-per-rank · ending:duration · ending:permanent | Rank 3 lasts a week, 5 a month, 7 a year, 9 unlimited | | ☐ | |
+| VS-190a | "You record a message up to 5 minutes long and inscribe a special rune on any flat unattended surface or small object within reach" | when:cast · reach:object · effect:gm-note | A note: the rune and its message are kept for the table | `message-rune.json` | ✅ | The message and trigger asked at the cast; the rune posted for everyone |
+| VS-190b | "You also specify a trigger that creatures must meet to activate the rune" | check:caster-choice · effect:gm-note | The caster's trigger is recorded with the rune | `message-rune.json` | ✅ | "Its trigger: Anyone wearing the guild sigil" |
+| VS-190c | "For the duration of the spell, creatures that meet the criteria of the trigger can touch the rune to hear the recorded message in their head as though you were speaking to them telepathically" | reach:filtered · effect:gm-note · ending:duration | A note: who meets the trigger and hears it is the table's | `message-rune.json` | ✅ | The Patient touched it; the GM was asked about the trigger; on yes, the message was whispered to the Patient's players |
+| VS-190d | "You know when someone is listening to the message, but you don't know who's listening to it" | effect:info | The caster is told when the message plays, not by whom | `message-rune.json` | ✅ | The caster's players were told "Someone is listening", with no name |
+| VS-190e | "You can Dismiss the spell" | ending:dismiss | The caster can Dismiss it | `message-rune.json` | ✅ | Dismissed, the rune refused a touch: "The rune is gone" |
+| VS-190f | "Heightened (+2) The duration increases for every 2 ranks, becoming 1 week, 1 month, 1 year, or unlimited respectively" | scaling:dice-per-rank · ending:duration · ending:permanent | Rank 3 lasts a week, 5 a month, 7 a year, 9 unlimited | `message-rune.json` | ✅ | Rank 1: 1 day; 3: 7 days; 5: 30; 7: 365; 9: unlimited |
 
 ### VS-191 · Reflected Beauty
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-191a | "When you cast reflected beauty, choose a willing creature that's the same size as you and that you can see within 30 feet" | when:cast · reach:single · reach:filtered | A willing, same-size, seen creature within 30 ft is chosen | | ☐ | |
-| VS-191b | "The spell then disguises you with a realistic illusion, as if via Illusory Disguise heightened to 3rd rank, but includes tactile and olfactory sensation in addition to visual and voice" | reach:self · effect:gm-note | The caster carries a rank-3 Illusory Disguise for the hour | | ☐ | |
-| VS-191c | "The appearance of the illusion that disguises you includes any changes to sex characteristics or other aspects needed to match the target creature's heart's desire" | effect:gm-note | A note: what the disguise looks like is the table's | | ☐ | |
-| VS-191d | "If you're ever more than 30 feet from the subject you're reflecting, reflected beauty immediately ends" | ending:out-of-range | More than 30 ft from the subject ends the spell | | ☐ | |
-| VS-191e | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
+| VS-191a | "When you cast reflected beauty, choose a willing creature that's the same size as you and that you can see within 30 feet" | when:cast · reach:single · reach:filtered | A willing, same-size, seen creature within 30 ft is chosen | `reflected-beauty.json` | ✅ | The Patient, beside the caster: cast. Controls: D2 at 140 ft, and a Large target, refused |
+| VS-191b | "The spell then disguises you with a realistic illusion, as if via Illusory Disguise heightened to 3rd rank, but includes tactile and olfactory sensation in addition to visual and voice" | reach:self · effect:gm-note | The caster carries a rank-3 Illusory Disguise for the hour | `reflected-beauty.json` | ✅ | The caster carries pf2e's Illusory Disguise effect for 1 hour |
+| VS-191c | "The appearance of the illusion that disguises you includes any changes to sex characteristics or other aspects needed to match the target creature's heart's desire" | effect:gm-note | A note: what the disguise looks like is the table's | `reflected-beauty.json` | — | What the disguise looks like is the table's |
+| VS-191d | "If you're ever more than 30 feet from the subject you're reflecting, reflected beauty immediately ends" | ending:out-of-range | More than 30 ft from the subject ends the spell | `reflected-beauty.json` | ✅ | The Patient moved to 25 ft: still on. To 35 ft: it ended |
+| VS-191e | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | `reflected-beauty.json` | ✅ | The caster holds its Dismiss |
 
 ### VS-192 · Shift Perspective
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-192a | "You throw one item of light Bulk or less that you're holding to a location within range that you can see, then gain temporary vision from where that object lands" | when:cast · reach:object · economy:requires · effect:sense | A held light item lands at a seen point; the caster sees from it | | ☐ | |
-| VS-192b | "The object sees in all directions with your normal visual senses" | effect:sense | The view from the object uses the caster's own senses | | ☐ | |
-| VS-192c | "You can Sustain this spell to switch between the thrown object's perspective and your regular vision while the spell is active, but you can only see through one perspective at a time" | when:sustain · effect:sense | Each Sustain switches the caster's view between the two | | ☐ | |
-| VS-192d | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | | ☐ | |
+| VS-192a | "You throw one item of light Bulk or less that you're holding to a location within range that you can see, then gain temporary vision from where that object lands" | when:cast · reach:object · economy:requires · effect:sense | A held light item lands at a seen point; the caster sees from it | `shift-perspective.json` | ✅ | A held ZZ Pebble (light Bulk) left the caster's hands and landed as a loot token in the square aimed at, 80 ft away. Control: with nothing light held, refused |
+| VS-192b | "The object sees in all directions with your normal visual senses" | effect:sense | The view from the object uses the caster's own senses | `shift-perspective.json` | ✅ | The pebble's token sees with the caster's own sight and detection modes; the caster's players see through it, the caster's token sees nothing |
+| VS-192c | "You can Sustain this spell to switch between the thrown object's perspective and your regular vision while the spell is active, but you can only see through one perspective at a time" | when:sustain · effect:sense | Each Sustain switches the caster's view between the two | `shift-perspective.json` | ✅ | *Switch senses*: back to the caster's own sight, and again to the pebble's |
+| VS-192d | "You can Dismiss this spell" | ending:dismiss | The caster can Dismiss it | `shift-perspective.json` | ✅ | Dismissed: the view ended, the caster's sight back, the switch gone. The pebble stays where it landed |
 
 ### VS-193 · Instant Parade
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-193a | "An illusory parade with dozens of participants and performers appears around you, following you as you move" | when:cast · reach:area/emanation · area:aura/region · ending:duration | A 10-ft emanation follows the caster for 10 minutes | | ☐ | |
-| VS-193b | "The parade is lively and noisy, providing enough cover and distraction to hide among the crowd. You and other creatures can Hide and Sneak inside the crowd" | when:while-inside · effect:cover | Creatures inside can Hide and Sneak as though in cover | | ☐ | |
-| VS-193c | "though creatures that disbelieve the illusion still see creatures within as normal" | reach:filtered · effect:gm-note | A note: who has disbelieved is the table's | | ☐ | |
-| VS-193d | "You can choose to send the parade off with a 2-action activity, which has the concentrate trait" | economy:granted-action | A 2-action concentrate activity sends the parade off | | ☐ | |
-| VS-193e | "When you do so, the parade no longer follows you and instead continues traveling in the direction of your choice" | check:caster-choice · area:drifts | The area stops following and moves in the chosen direction | | ☐ | |
-| VS-193f | "The parade travels 100 feet over 1 round and then disappears as the spell is Dismissed" | area:drifts · ending:duration | It travels 100 ft over a round, then the spell ends | | ☐ | |
-| VS-193g | "You can otherwise Dismiss the spell normally if you prefer" | ending:dismiss | The caster can Dismiss it | | ☐ | |
+| VS-193a | "An illusory parade with dozens of participants and performers appears around you, following you as you move" | when:cast · reach:area/emanation · area:aura/region · ending:duration | A 10-ft emanation follows the caster for 10 minutes | `instant-parade.json` | ✅ | A 10-ft emanation that moved with the caster's token, for 10 minutes |
+| VS-193b | "The parade is lively and noisy, providing enough cover and distraction to hide among the crowd. You and other creatures can Hide and Sneak inside the crowd" | when:while-inside · effect:cover | Creatures inside can Hide and Sneak as though in cover | `instant-parade.json` | ✅ | The Patient inside carries `instant-parade` and the note that it can Hide and Sneak; stepped out, it lost it |
+| VS-193c | "though creatures that disbelieve the illusion still see creatures within as normal" | reach:filtered · effect:gm-note | A note: who has disbelieved is the table's | `instant-parade.json` | ✅ | The area offers its disbelief check, DC 13, as Phantom Crowd's does |
+| VS-193d | "You can choose to send the parade off with a 2-action activity, which has the concentrate trait" | economy:granted-action | A 2-action concentrate activity sends the parade off | `instant-parade.json` | ✅ | *Send the parade off*: 2 actions, concentrate, on the caster |
+| VS-193e | "When you do so, the parade no longer follows you and instead continues traveling in the direction of your choice" | check:caster-choice · area:drifts | The area stops following and moves in the chosen direction | `instant-parade.json` | ✅ | East chosen: it stopped following; the caster moved and it stayed |
+| VS-193f | "The parade travels 100 feet over 1 round and then disappears as the spell is Dismissed" | area:drifts · ending:duration | It travels 100 ft over a round, then the spell ends | `instant-parade.json` | ✅ | Moved 100 ft east, gone a round later, the caster's effect with it |
+| VS-193g | "You can otherwise Dismiss the spell normally if you prefer" | ending:dismiss | The caster can Dismiss it | `instant-parade.json` | ✅ | Dismissed: the area and the caster's effect both gone |
 
 ### VS-194 · Acid Storm
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-194a | "You evoke a storm of acid rain that pelts the area for the spell's duration" | when:cast · reach:area/burst · area:lingering · ending:duration | A 20-ft burst within 120 ft stays for 1 minute | | ☐ | |
-| VS-194b | "A creature that begins its turn in the area takes 3d8 acid damage (basic Reflex save)" | when:turn-start · check:basic-save · effect:damage | Starting a turn inside: basic Reflex against 3d8 acid | | ☐ | |
-| VS-194c | "Heightened (+2) The damage increases by 1d8" | scaling:dice-per-rank · effect:damage | Rank 7 deals 4d8 | | ☐ | |
+| VS-194a | "You evoke a storm of acid rain that pelts the area for the spell's duration" | when:cast · reach:area/burst · area:lingering · ending:duration | A 20-ft burst within 120 ft stays for 1 minute | `acid-storm.json` | ✅ | A 20-ft burst placed 10 ft away, for 1 minute |
+| VS-194b | "A creature that begins its turn in the area takes 3d8 acid damage (basic Reflex save)" | when:turn-start · check:basic-save · effect:damage | Starting a turn inside: basic Reflex against 3d8 acid | `acid-storm.json` | ✅ | The Target, inside, saved at its turn start: 40, 13 and 9 acid by result. Control: ZZ Ally's turn, outside, nothing |
+| VS-194c | "Heightened (+2) The damage increases by 1d8" | scaling:dice-per-rank · effect:damage | Rank 7 deals 4d8 | `acid-storm.json` | ✅ | Rank 7: 4d8. Rank 5: 3d8 |
 
 ### VS-195 · Approximate
 
