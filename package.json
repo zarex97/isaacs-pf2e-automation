@@ -11,7 +11,8 @@
     "build:vanilla": "node build/build-vanilla.mjs",
     "build:patterns": "node build/build-patterns.mjs",
     "precedent": "node build/precedent.mjs",
-    "coverage:assistant": "node build/coverage-assistant.mjs"
+    "coverage:assistant": "node build/coverage-assistant.mjs",
+    "live:launch": "node build/live-launch.mjs"
   },
   "engines": {
     "node": ">=22"
