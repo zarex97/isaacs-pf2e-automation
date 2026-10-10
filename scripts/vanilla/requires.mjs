@@ -47,7 +47,8 @@ export function unmetRequirement(spell, options = {}) {
     }
     // `{ casterNotTraits }`: the caster is none of them — *Blood Duplicate*'s "you can't cast this spell if you don't have blood".
     if (requires && typeof requires === "object" && Array.isArray(requires.casterNotTraits)) {
-        const own = spell?.actor?.system?.traits?.value ?? [];
+        // The traits as prepared — a character's come from its ancestry and its effects, not its source.
+        const own = [...(spell?.actor?.traits ?? spell?.actor?.system?.traits?.value ?? [])];
         if (requires.casterNotTraits.some((trait) => own.includes(trait))) return t("Requires.CasterNotTraits", { name: spell.name, traits: requires.casterNotTraits.join(", ") });
     }
     // `{ targetsHostile }`: two targets, each hostile to the other — *Fated Healing*'s "2 creatures who are hostile toward each other".

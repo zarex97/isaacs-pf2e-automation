@@ -23,7 +23,10 @@ export function bulkOf(container, items) {
 }
 
 async function ethereal() {
-    return game.actors.find((a) => a.flags?.[LIB_ID]?.ethereal) ?? Actor.create({ name: t("Chest.Ethereal"), type: "loot", ownership: { default: 0 }, flags: { [LIB_ID]: { ethereal: true } } });
+    const plane = game.actors.find((a) => a.flags?.[LIB_ID]?.ethereal) ?? await Actor.create({ name: t("Chest.Ethereal"), type: "loot", flags: { [LIB_ID]: { ethereal: true } } });
+    // Hidden from the players: pf2e gives a new loot actor limited ownership by default.
+    if (plane && plane.ownership?.default !== 0) await plane.update({ "ownership.default": 0 });
+    return plane;
 }
 
 /** Move a container and what is in it from one actor to another, keeping it a container. */

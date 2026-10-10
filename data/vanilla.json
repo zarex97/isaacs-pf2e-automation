@@ -386,7 +386,15 @@
                         "type": "effect",
                         "uuid": "Compendium.pf2e.spell-effects.Item.rVkUzqS4rpZp9LS3",
                         "atCastRank": true,
-                        "endsOnHostileFrom": true
+                        "endsOnHostileFrom": true,
+                        "addRules": [
+                            {
+                                "key": "ActorTraits",
+                                "add": [
+                                    "minion"
+                                ]
+                            }
+                        ]
                     }
                 }
             ]
@@ -7441,23 +7449,8 @@
                     "predicate": [
                         "rider:target:object"
                     ],
-                    "duration": {
-                        "value": 1,
-                        "unit": "unlimited"
-                    },
                     "apply": {
-                        "type": "effect",
-                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
-                        "rules": [
-                            {
-                                "key": "RollOption",
-                                "domain": "all",
-                                "option": "sigil-visible",
-                                "toggleable": true,
-                                "value": true,
-                                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
-                            }
-                        ]
+                        "type": "mark"
                     }
                 },
                 {

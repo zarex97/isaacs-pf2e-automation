@@ -173,7 +173,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Shield | 1 |  | spell-effect-shield (on you); GM note: “You can't cast shield again yet: it ended with a Shield Block less than 10 minutes ago.” (on you) |  |
 | Shift Perspective | 2 | 5-ft square, all, placed, no targets | throw-view (1 minutes, on you) |  |
 | Shillelagh | 1 |  | spell-effect-shillelagh (on you) |  |
-| Sigil | 1 |  | sigil (until it ends); sigil (7 days); sigil (30 days, from rank 3); sigil (365 days, from rank 5); sigil (until it ends, from rank 7) |  |
+| Sigil | 1 |  | mark; sigil (7 days); sigil (30 days, from rank 3); sigil (365 days, from rank 5); sigil (until it ends, from rank 7) |  |
 | Silence | 2 |  | spell-effect-silence |  |
 | Sky Sight | 1 |  | sky sight (1 hours, on you) |  |
 | Sleep | 1 | 5-ft burst (pf2e's), all | success: Drowsy: –1 status to Perception (1 rounds); failure: unconscious (1 minutes, without prone, below rank 4); crit. failure: unconscious (1 hours, without prone, below rank 4); failure: unconscious (1 rounds, from rank 4); crit. failure: unconscious (1 minutes, from rank 4); failure / crit. failure: GM note: “Heightened sleep: it can't attempt Perception checks to wake up, and when the duration ends it is sleeping normally instead of waking.” (from rank 4) |  |

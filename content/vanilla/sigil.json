@@ -5,23 +5,8 @@
             "predicate": [
                 "rider:target:object"
             ],
-            "duration": {
-                "value": 1,
-                "unit": "unlimited"
-            },
             "apply": {
-                "type": "effect",
-                "label": "ISAACS_AUTOMATION.Vanilla.sigil.Sigil",
-                "rules": [
-                    {
-                        "key": "RollOption",
-                        "domain": "all",
-                        "option": "sigil-visible",
-                        "toggleable": true,
-                        "value": true,
-                        "label": "ISAACS_AUTOMATION.Vanilla.sigil.Visible"
-                    }
-                ]
+                "type": "mark"
             }
         },
         {

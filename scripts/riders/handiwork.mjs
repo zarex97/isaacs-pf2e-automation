@@ -163,3 +163,17 @@ function coinsNamed(pile, words) {
     if (pile.items.some((item) => item.name.toLowerCase().includes(words))) return 0;
     return (named.length ? named : ["pp", "gp", "sp", "cp"]).reduce((sum, d) => sum + (Number(coins[d]) || 0), 0);
 }
+
+/**
+ * *Sigil*, on an object: "You harmlessly place your unique magical sigil … on the targeted … object. The mark can be
+ * visible or invisible". An object — a loot pile — holds no effects, so `{ type: "mark" }` keeps the caster's sigil on
+ * it as a flag, visible, for good; on a creature the spell is an effect that fades.
+ */
+export async function markObject(_rider, context) {
+    const thing = context.actor;
+    const caster = context.originActor;
+    if (!thing || !caster) return;
+    const marks = (thing.getFlag(LIB_ID, "sigils") ?? []).filter((m) => m.casterUuid !== caster.uuid);
+    await thing.setFlag(LIB_ID, "sigils", [...marks, { casterUuid: caster.uuid, name: caster.name, visible: true }]);
+    context.notes.push(t("Handiwork.Marked", { name: thing.name, caster: caster.name }));
+}

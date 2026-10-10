@@ -42,7 +42,7 @@ import { Message, sendMessage } from "./message.mjs";
 import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
 import { fatesTravels } from "./travel.mjs";
-import { adjustEffect, approximateCount, drawMap, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
+import { adjustEffect, approximateCount, drawMap, markObject, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
 import { fetchToward, swapPlaces } from "./swap.mjs";
 import { offerLiberation } from "./liberate.mjs";
 import { Leash } from "./leash.mjs";
@@ -536,6 +536,8 @@ async function applyOne(rider, context) {
             return sendOff(rider, context);
         case "spend-badge":
             return spendBadge(rider, context);
+        case "mark":
+            return markObject(rider, context);
         case "cradle":
             return cradleAloft(rider, context, castChoicesOf(context), { dc: RiderExtensions.resolveDC("spell", context) });
         case "stash":

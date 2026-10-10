@@ -392,7 +392,8 @@
             "Ends": "{attacker} critically succeeds against {ward}: it ends."
         },
         "Hostile": {
-            "Ended": "{actor} acted with hostility: {what} ends."
+            "Ended": "{actor} acted with hostility: {what} ends.",
+            "Toward": "{what} ends: {attacker} acted with hostility toward {victim}."
         },
         "EndsWith": {
             "Ended": "{actor} is no longer {slug}: {what} ends."
@@ -1317,7 +1318,8 @@
             "NotWorn": "Nobody the spell reached is wearing \"{item}\".",
             "Restyled": "Restyled:",
             "Restyle": "{item} now looks: {look}.",
-            "Roughly": "About {count} \"{kind}\" in {name}."
+            "Roughly": "About {count} \"{kind}\" in {name}.",
+            "Marked": "{caster}'s sigil is on {name}, for good."
         },
         "FallOff": {
             "Fell": "{name} falls off."

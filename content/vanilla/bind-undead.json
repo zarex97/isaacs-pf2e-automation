@@ -13,7 +13,15 @@
                 "type": "effect",
                 "uuid": "Compendium.pf2e.spell-effects.Item.rVkUzqS4rpZp9LS3",
                 "atCastRank": true,
-                "endsOnHostileFrom": true
+                "endsOnHostileFrom": true,
+                "addRules": [
+                    {
+                        "key": "ActorTraits",
+                        "add": [
+                            "minion"
+                        ]
+                    }
+                ]
             }
         }
     ]

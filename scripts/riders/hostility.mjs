@@ -30,10 +30,10 @@ function victims(message) {
     return actor ? [actor] : [...(game.user?.targets ?? [])].map((token) => token.actor).filter(Boolean);
 }
 
-async function end(actor, effects, reason) {
+async function end(actor, effects, attacker, victim) {
     if (effects.length === 0) return;
     await actor.deleteEmbeddedDocuments("Item", effects.map((e) => e.id)).catch(() => null);
-    await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t("Hostile.Ended", { actor: actor.name, what: `${effects.map((e) => e.name).join(", ")}${reason}` })}</p>` });
+    await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${t("Hostile.Toward", { what: effects.map((e) => e.name).join(", "), attacker: attacker.name, victim: victim.name })}</p>` });
 }
 
 export const Hostility = {
@@ -50,10 +50,10 @@ export const Hostility = {
                     const caster = origin ? fromUuidSync(origin) : null;
                     return caster && (caster === attacker || caster.isAllyOf?.(attacker));
                 });
-                if (victim.isOwner || game.user.isGM) await end(victim, bound, "");
+                if (victim.isOwner || game.user.isGM) await end(victim, bound, attacker, victim);
                 // The holder turning on the one it is linked to.
                 const linked = (attacker.itemTypes?.effect ?? []).filter((effect) => effect.flags?.[LIB_ID]?.[TO] && effect.flags?.[LIB_ID]?.linkedTo === victim.uuid);
-                await end(attacker, linked, "");
+                await end(attacker, linked, attacker, victim);
             }
         });
     },
