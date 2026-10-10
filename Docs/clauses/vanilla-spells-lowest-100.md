@@ -420,8 +420,8 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-166a | "The target becomes a +1 striking weapon while in your hands, gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | when:cast · reach:weapon · economy:requires · effect:weapon-runes | The held club or staff: +1 to attack, two damage dice, 1 minute | | ☐ | |
-| VS-166b | "as long as you are on your home plane, attacks you make with the target against aberrations, extraplanar creatures, and undead increase the number of weapon damage dice to three" | reach:filtered · effect:strike-damage · effect:gm-note | Three damage dice against aberrations, extraplanar creatures and undead | | ☐ | |
+| VS-166a | "The target becomes a +1 striking weapon while in your hands, gaining a +1 item bonus to attack rolls and increasing the number of weapon damage dice to two" | when:cast · reach:weapon · economy:requires · effect:weapon-runes | The held club or staff: +1 to attack, two damage dice, 1 minute | `shillelagh.json` | ✅ | The held Club became "+1 Striking Club" for 1 minute: +1 to attack, 2d6 against D2. Control: 1d6 before. Cast with the club stowed: refused |
+| VS-166b | "as long as you are on your home plane, attacks you make with the target against aberrations, extraplanar creatures, and undead increase the number of weapon damage dice to three" | reach:filtered · effect:strike-damage · effect:gm-note | Three damage dice against aberrations, extraplanar creatures and undead | `shillelagh.json` | ✅ | 3d6 against the Ghoul Soldier (undead). Control: 2d6 against D2 (humanoid). An extraplanar foe is pf2e's own toggle, the table's |
 
 ### VS-167 · Bracing Tendrils
 
@@ -444,23 +444,23 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-169a | "If the target is Grabbed, Immobilized, or Restrained, it can immediately use a reaction to attempt to escape" | when:cast · reach:filtered · economy:reaction · effect:hold/condition | A grabbed, immobilized or restrained target is offered an Escape at once | | ☐ | |
+| VS-169a | "If the target is Grabbed, Immobilized, or Restrained, it can immediately use a reaction to attempt to escape" | when:cast · reach:filtered · economy:reaction · effect:hold/condition | A grabbed, immobilized or restrained target is offered an Escape at once | `liberating-command.json` | ✅ | The Target, grabbed: a card offering Escape; clicked, pf2e's Escape rolled, and the card closed. Control: not grabbed, "not grabbed, immobilized or restrained" and no card |
 
 ### VS-170 · Restyle
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-170a | "You permanently change the appearance of one piece of clothing currently worn by you or an ally to better fit your aesthetic sensibilities" | when:cast · reach:object · effect:gm-note · ending:permanent | A note: the garment's new look is the table's | | ☐ | |
-| VS-170b | "You can change its color, texture, pattern, and other minor parts of its design, but the changes can't alter the clothing's overall shape, size, or purpose" | effect:gm-note | A note: what may change, and what may not, is the table's | | ☐ | |
-| VS-170c | "The object's statistics also remain unchanged" | — | Nothing on the item's sheet changes | | ☐ | |
+| VS-170a | "You permanently change the appearance of one piece of clothing currently worn by you or an ally to better fit your aesthetic sensibilities" | when:cast · reach:object · effect:gm-note · ending:permanent | A note: the garment's new look is the table's | `restyle.json` | ✅ | The Patient's worn ZZ Cloak: "Restyled: deep crimson with gold trim" in its description. Control: a held ZZ Scarf, refused |
+| VS-170b | "You can change its color, texture, pattern, and other minor parts of its design, but the changes can't alter the clothing's overall shape, size, or purpose" | effect:gm-note | A note: what may change, and what may not, is the table's | `restyle.json` | — | What may and may not change about a garment is the table's |
+| VS-170c | "The object's statistics also remain unchanged" | — | Nothing on the item's sheet changes | `restyle.json` | ✅ | Price 2 gp, Bulk 0.1, name and level the same before and after |
 
 ### VS-171 · Far Sight
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-171a | "You can view creatures, objects, and terrain features that are more than 30 feet away and up to 300 feet away as though they were only 30 feet away" | when:cast · reach:self · effect:sense · effect:gm-note | A note: detail out to 300 feet seen as at 30 is the table's | | ☐ | |
-| VS-171b | "You can view creatures, objects, and terrain features that are 300 feet away or more as though they were only one-tenth as far away" | effect:sense · effect:gm-note | A note: beyond 300 feet, seen at a tenth the distance | | ☐ | |
-| VS-171c | "it doesn't let you treat the objects as actually closer for the purposes of spells, ranged attacks, or otherwise" | — | Ranges of spells and attacks are unchanged | | ☐ | |
+| VS-171a | "You can view creatures, objects, and terrain features that are more than 30 feet away and up to 300 feet away as though they were only 30 feet away" | when:cast · reach:self · effect:sense · effect:gm-note | A note: detail out to 300 feet seen as at 30 is the table's | `far-sight.json` | — | Foundry's vision cannot show distant things as nearer. The caster carries `far sight` for 10 minutes |
+| VS-171b | "You can view creatures, objects, and terrain features that are 300 feet away or more as though they were only one-tenth as far away" | effect:sense · effect:gm-note | A note: beyond 300 feet, seen at a tenth the distance | `far-sight.json` | — | As above |
+| VS-171c | "it doesn't let you treat the objects as actually closer for the purposes of spells, ranged attacks, or otherwise" | — | Ranges of spells and attacks are unchanged | `far-sight.json` | — | Nothing to change: ranges stay as they are |
 
 ### VS-172 · Invent Code
 
@@ -487,33 +487,33 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-174a | "You gaze up and see the sky clearly despite environmental conditions" | when:cast · reach:self · effect:gm-note · ending:duration | A note: the caster sees the sky clearly for 1 hour | | ☐ | |
-| VS-174b | "You can see through weather and physical obstructions such as a forest canopy, building material, and cave walls" | effect:sense · effect:gm-note | A note: sky seen through canopy, roofs and rock is the table's | | ☐ | |
-| VS-174c | "This can be used to spot flying creatures or navigate by the stars even when you otherwise couldn't see them" | effect:gm-note | A note: flyers and stars overhead may be seen, the table's | | ☐ | |
+| VS-174a | "You gaze up and see the sky clearly despite environmental conditions" | when:cast · reach:self · effect:gm-note · ending:duration | A note: the caster sees the sky clearly for 1 hour | `sky-sight.json` | ✅ | The caster carries `sky sight` for 1 hour, with its roll option |
+| VS-174b | "You can see through weather and physical obstructions such as a forest canopy, building material, and cave walls" | effect:sense · effect:gm-note | A note: sky seen through canopy, roofs and rock is the table's | `sky-sight.json` | — | What overhead is seen through is the table's |
+| VS-174c | "This can be used to spot flying creatures or navigate by the stars even when you otherwise couldn't see them" | effect:gm-note | A note: flyers and stars overhead may be seen, the table's | `sky-sight.json` | — | Spotting flyers or stars is the table's |
 
 ### VS-175 · Blessing of Vigor
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-175a | "The target gains fast healing 3" | when:cast · reach:single · effect:fast-healing · ending:duration | Fast healing 3 for 3 rounds | | ☐ | |
-| VS-175b | "Heightened (+1) The fast healing increases by 3" | scaling:dice-per-rank · effect:fast-healing | Rank 2: fast healing 6 | | ☐ | |
+| VS-175a | "The target gains fast healing 3" | when:cast · reach:single · effect:fast-healing · ending:duration | Fast healing 3 for 3 rounds | `blessing-of-vigor.json` | ✅ | The Patient at 30 of 50: healed 6 at each of its turns, at rank 2 |
+| VS-175b | "Heightened (+1) The fast healing increases by 3" | scaling:dice-per-rank · effect:fast-healing | Rank 2: fast healing 6 | `blessing-of-vigor.json` | ✅ | Rank 2: fast healing 6. Control: rank 1, 3 |
 
 ### VS-176 · Ghostly Weapon
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-176a | "It gains the effects of the Ghost Touch property rune" | when:cast · reach:weapon · effect:weapon-runes · ending:duration | The weapon carries ghost touch for 5 minutes | | ☐ | |
-| VS-176b | "meaning it is magical if it wasn't already" | effect:trait-gained | The weapon counts as magical | | ☐ | |
-| VS-176c | "is especially effective against incorporeal creatures" | reach:filtered · effect:ignore-resistance | Its damage gets past an incorporeal creature's resistance | | ☐ | |
-| VS-176d | "can be wielded by a corporeal or incorporeal creature" | effect:gm-note | A note: an incorporeal creature can wield it | | ☐ | |
+| VS-176a | "It gains the effects of the Ghost Touch property rune" | when:cast · reach:weapon · effect:weapon-runes · ending:duration | The weapon carries ghost touch for 5 minutes | `ghostly-weapon.json` | ✅ | The Club: `item:rune:property:ghost-touch`, for 5 minutes |
+| VS-176b | "meaning it is magical if it wasn't already" | effect:trait-gained | The weapon counts as magical | `ghostly-weapon.json` | ✅ | The Strike's traits gained `magical` |
+| VS-176c | "is especially effective against incorporeal creatures" | reach:filtered · effect:ignore-resistance | Its damage gets past an incorporeal creature's resistance | `ghostly-weapon.json` | ✅ | A ghost resisting all damage 2: a 5 took all 5. Control: before the spell, a 2 took 0 |
+| VS-176d | "can be wielded by a corporeal or incorporeal creature" | effect:gm-note | A note: an incorporeal creature can wield it | `ghostly-weapon.json` | — | Who may wield it is the table's |
 
 ### VS-177 · Air Bubble
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-177a | "Trigger A creature within range enters an environment where it can't breathe" | economy:reaction · reach:single | Cast as a reaction when a creature in range can't breathe | | ☐ | |
-| VS-177b | "A bubble of pure air appears around the target's head, allowing it to breathe normally" | when:cast · reach:single · effect:gm-note · ending:duration | The target breathes normally for up to 1 minute | | ☐ | |
-| VS-177c | "The effect ends as soon as the target returns to an environment where it can breathe normally" | effect:gm-note | A note: it ends once the air is breathable, the table's | | ☐ | |
+| VS-177a | "Trigger A creature within range enters an environment where it can't breathe" | economy:reaction · reach:single | Cast as a reaction when a creature in range can't breathe | `air-bubble.json` | — | Whether a creature can breathe is the table's; the reaction is cast as pf2e casts it |
+| VS-177b | "A bubble of pure air appears around the target's head, allowing it to breathe normally" | when:cast · reach:single · effect:gm-note · ending:duration | The target breathes normally for up to 1 minute | `air-bubble.json` | ✅ | The Patient carries `air bubble` for 1 minute |
+| VS-177c | "The effect ends as soon as the target returns to an environment where it can breathe normally" | effect:gm-note | A note: it ends once the air is breathable, the table's | `air-bubble.json` | — | When the air is good again is the table's |
 
 ### VS-178 · Creation
 
@@ -531,21 +531,21 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-179a | "You and a willing creature swap places. You appear in the target's former space, and the target appears in your former space" | when:cast · reach:self · reach:single · effect:teleport | The caster and the target exchange spaces | | ☐ | |
-| VS-179b | "You and your target must each be able to fit in the new spaces within range; otherwise, the spell fails" | economy:requires · reach:filtered | A swap where either cannot fit, or is out of range, fails | | ☐ | |
+| VS-179a | "You and a willing creature swap places. You appear in the target's former space, and the target appears in your former space" | when:cast · reach:self · reach:single · effect:teleport | The caster and the target exchange spaces | `kings-castle.json` | ✅ | Caster at 1200,1000 and the Patient at 1300,1000 traded places |
+| VS-179b | "You and your target must each be able to fit in the new spaces within range; otherwise, the spell fails" | economy:requires · reach:filtered | A swap where either cannot fit, or is out of range, fails | `kings-castle.json` | ✅ | Failed with a third creature in a Large Patient's new space, off the map's edge, and at 140 feet. Control: the space cleared, it swapped |
 
 ### VS-180 · Rope Trick
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-180a | "You cause the target rope to rise vertically into the air" | when:cast · reach:object · effect:gm-note · ending:duration | A note: the rope stands upright for 8 hours, the table's | | ☐ | |
-| VS-180b | "Where it ends, an extradimensional space opens, connected to the top of the rope" | effect:gm-note | A note: the space at the rope's top is the table's | | ☐ | |
-| VS-180c | "This space can be reached only by climbing the rope" | effect:gm-note | A note: only climbing the rope reaches it | | ☐ | |
-| VS-180d | "The entrance to the space can't be seen, and it can be pinpointed only by the presence of the rope" | effect:gm-note | A note: the entrance is unseen, found only by the rope | | ☐ | |
-| VS-180e | "The rope can't be removed or hidden, though it can be detached from the extradimensional space by pulling it with 16,000 pounds of weight, critically succeeding at an Athletics check against the spell's DC, or destroying the rope" | check:skill · effect:gm-note | A critical success at Athletics against the spell DC detaches the rope | | ☐ | |
-| VS-180f | "The space holds up to eight Medium creatures and their gear. A Large creature counts as two Medium creatures, a Huge creature counts as four Medium creatures, and a Gargantuan creature fills the space on its own" | effect:gm-note | A note: capacity eight Medium; Large two, Huge four, Gargantuan all | | ☐ | |
-| VS-180g | "If the rope is detached or destroyed, or if a creature attempts to enter the space that would put it over its capacity, the space begins to unravel" | effect:gm-note | A note: what starts the unravelling is the table's | | ☐ | |
-| VS-180h | "It disappears in 1d4 rounds, depositing the creatures within safely on the ground below" | ending:duration · effect:teleport · effect:gm-note | After 1d4 rounds the space ends and its occupants land below | | ☐ | |
+| VS-180a | "You cause the target rope to rise vertically into the air" | when:cast · reach:object · effect:gm-note · ending:duration | A note: the rope stands upright for 8 hours, the table's | `rope-trick.json` | ✅ | A rope square beside the caster, lasting 8 hours |
+| VS-180b | "Where it ends, an extradimensional space opens, connected to the top of the rope" | effect:gm-note | A note: the space at the rope's top is the table's | `rope-trick.json` | ✅ | A room scene of its own, joined to the rope by Foundry's Teleport Token |
+| VS-180c | "This space can be reached only by climbing the rope" | effect:gm-note | A note: only climbing the rope reaches it | `rope-trick.json` | ✅ | The rope square is the only way in |
+| VS-180d | "The entrance to the space can't be seen, and it can be pinpointed only by the presence of the rope" | effect:gm-note | A note: the entrance is unseen, found only by the rope | `rope-trick.json` | — | What can be seen of the entrance is the table's |
+| VS-180e | "The rope can't be removed or hidden, though it can be detached from the extradimensional space by pulling it with 16,000 pounds of weight, critically succeeding at an Athletics check against the spell's DC, or destroying the rope" | check:skill · effect:gm-note | A critical success at Athletics against the spell DC detaches the rope | `rope-trick.json` | ✅ | Athletics against DC 13: a 16 did nothing; a natural 20, a critical success, began the unravelling |
+| VS-180f | "The space holds up to eight Medium creatures and their gear. A Large creature counts as two Medium creatures, a Huge creature counts as four Medium creatures, and a Gargantuan creature fills the space on its own" | effect:gm-note | A note: capacity eight Medium; Large two, Huge four, Gargantuan all | `rope-trick.json` | ✅ | Eight Medium: no collapse. Seven Medium and a Large: it unravels |
+| VS-180g | "If the rope is detached or destroyed, or if a creature attempts to enter the space that would put it over its capacity, the space begins to unravel" | effect:gm-note | A note: what starts the unravelling is the table's | `rope-trick.json` | ✅ | Overfilling, a pulled rope, or the rope deleted each began it |
+| VS-180h | "It disappears in 1d4 rounds, depositing the creatures within safely on the ground below" | ending:duration · effect:teleport · effect:gm-note | After 1d4 rounds the space ends and its occupants land below | `rope-trick.json` | ✅ | 1d4 rolled 2: still standing after 1 round, and after 2 all eight set down beside the rope, the room and rope gone |
 
 ### VS-181 · Spiritual Renewal
 

@@ -1050,6 +1050,15 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
     const { enhancedSenseRules } = await import("../scripts/riders/senses.mjs");
     check("Enhance Senses: low-light vision, imprecise senses doubled", enhancedSenseRules([{ type: "scent", acuity: "imprecise", range: 30 }, { type: "darkvision", acuity: "precise", range: Infinity }]), [{ key: "Sense", selector: "low-light-vision" }, { key: "Sense", selector: "scent", acuity: "imprecise", range: 60 }]);
     check("…darkvision for one that had low-light vision", enhancedSenseRules([{ type: "low-light-vision", acuity: "precise", range: Infinity }])[0].selector, "darkvision");
+    const { fits } = await import("../scripts/riders/swap.mjs");
+    const board = { x: 0, y: 0, width: 1000, height: 1000 };
+    check("King's Castle: a footprint fits where nobody else stands, on the board", [fits({ x: 100, y: 100, w: 100, h: 100 }, [], board), fits({ x: 100, y: 100, w: 200, h: 200 }, [{ x: 200, y: 200, w: 100, h: 100 }], board), fits({ x: 950, y: 0, w: 100, h: 100 }, [], board)], [true, false, false]);
+    const { heldBy } = await import("../scripts/riders/liberate.mjs");
+    check("Liberating Command: grabbed, immobilized or restrained", [heldBy(["grabbed", "prone"]), heldBy(["prone"])], [["grabbed"], []]);
+    const { isWorn } = await import("../scripts/riders/handiwork.mjs");
+    check("Restyle: only clothing worn", [isWorn({ system: { equipped: { carryType: "worn", inSlot: true } } }), isWorn({ system: { equipped: { carryType: "worn" } } }), isWorn({ system: { equipped: { carryType: "held" } } })], [true, true, false]);
+    const { sizeWeight } = await import("../scripts/targeting/pocket.mjs");
+    check("Rope Trick: Large two, Huge four, Gargantuan the lot", ["med", "lg", "huge", "grg", "sm"].map(sizeWeight), [1, 2, 4, 8, 1]);
     const { cutTo } = await import("../scripts/riders/message.mjs");
     check("Sending: 25 words at most", [cutTo("a b  c d", 2), cutTo(" one two ", 25), cutTo("", 25)], ["a b", "one two", ""]);
     const { lent } = await import("../scripts/riders/senses-link.mjs");

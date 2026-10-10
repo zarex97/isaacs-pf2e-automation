@@ -65,6 +65,28 @@
                 }
             ]
         },
+        "air-bubble": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.air-bubble.Bubble",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "air-bubble"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "animal-form": {
             "riders": [
                 {
@@ -326,6 +348,18 @@
                         "sustain": {
                             "step": 1
                         }
+                    }
+                }
+            ]
+        },
+        "blessing-of-vigor": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.oEFDsVxDU9McwDvs",
+                        "atCastRank": true
                     }
                 }
             ]
@@ -2308,6 +2342,29 @@
                 }
             ]
         },
+        "far-sight": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 10,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.far-sight.Sight",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "far-sight"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "fates-travels": {
             "requires": "corpse-target",
             "riders": [
@@ -2704,6 +2761,20 @@
                     "apply": {
                         "type": "effect",
                         "uuid": "Compendium.pf2e.spell-effects.Item.qn7uO5Ih01yLJot7"
+                    }
+                }
+            ]
+        },
+        "ghostly-weapon": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.EScdpppYsf9KhG4D",
+                        "preselect": {
+                            "spellEffectGhostlyWeapon": "$held"
+                        }
                     }
                 }
             ]
@@ -3706,6 +3777,17 @@
                 }
             ]
         },
+        "kings-castle": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "swap",
+                        "range": 60
+                    }
+                }
+            ]
+        },
         "laughing-fit": {
             "riders": [
                 {
@@ -3829,6 +3911,16 @@
                                 }
                             ]
                         }
+                    }
+                }
+            ]
+        },
+        "liberating-command": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "liberate"
                     }
                 }
             ]
@@ -5574,6 +5666,34 @@
                 }
             ]
         },
+        "restyle": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.restyle.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.restyle.Item",
+                        "type": "text"
+                    },
+                    {
+                        "key": "look",
+                        "label": "ISAACS_AUTOMATION.Vanilla.restyle.Look",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "restyle",
+                        "item": "item",
+                        "look": "look"
+                    }
+                }
+            ]
+        },
         "revealing-light": {
             "areaTargeting": {
                 "affects": "all"
@@ -5637,6 +5757,28 @@
                                 "uuid": "Compendium.pf2e.conditionitems.Item.TkIyaNPgTZFBCCuh"
                             }
                         ]
+                    }
+                }
+            ]
+        },
+        "rope-trick": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "pocket",
+                        "feet": 15,
+                        "capacity": 8,
+                        "weighted": true,
+                        "collapse": "all",
+                        "delay": "1d4",
+                        "detach": true,
+                        "door": "ISAACS_AUTOMATION.Vanilla.rope-trick.Rope"
                     }
                 }
             ]
@@ -6132,6 +6274,46 @@
                 }
             ]
         },
+        "shillelagh": {
+            "requires": {
+                "heldGroups": [
+                    "club",
+                    "staff"
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.deG1dtfuQph03Kkg",
+                        "preselect": {
+                            "spellEffectShillelagh": "$held"
+                        },
+                        "addRules": [
+                            {
+                                "key": "DamageDice",
+                                "diceNumber": 1,
+                                "label": "ISAACS_AUTOMATION.Vanilla.shillelagh.Third",
+                                "selector": "{item|flags.system.rulesSelections.spellEffectShillelagh}-damage",
+                                "predicate": [
+                                    {
+                                        "or": [
+                                            "target:trait:aberration",
+                                            "target:trait:undead"
+                                        ]
+                                    },
+                                    {
+                                        "not": "shillelagh-third-die"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "silence": {
             "riders": [
                 {
@@ -6149,6 +6331,29 @@
                                 "subtle"
                             ]
                         }
+                    }
+                }
+            ]
+        },
+        "sky-sight": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.sky-sight.Sight",
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "sky-sight"
+                            }
+                        ]
                     }
                 }
             ]

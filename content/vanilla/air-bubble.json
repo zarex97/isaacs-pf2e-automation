@@ -1,0 +1,22 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 1,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.air-bubble.Bubble",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "air-bubble"
+                    }
+                ]
+            }
+        }
+    ]
+}

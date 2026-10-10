@@ -42,7 +42,9 @@ import { Message, sendMessage } from "./message.mjs";
 import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
 import { fatesTravels } from "./travel.mjs";
-import { adjustEffect, drawMap, reshapeItem, sortItems } from "./handiwork.mjs";
+import { adjustEffect, drawMap, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
+import { swapPlaces } from "./swap.mjs";
+import { offerLiberation } from "./liberate.mjs";
 import { detectPoison, enhanceVictuals } from "./poison.mjs";
 import { findConnection } from "./influence.mjs";
 import { offerRecall } from "./recall.mjs";
@@ -492,6 +494,12 @@ async function applyOne(rider, context) {
             return journeyPace(rider, context);
         case "adjust":
             return adjustEffect(rider, context);
+        case "restyle":
+            return restyleItem(rider, context, castChoicesOf(context));
+        case "swap":
+            return swapPlaces(rider, context);
+        case "liberate":
+            return offerLiberation(rider, context);
         case "secret-page":
             return changePage(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 1);
         case "reaction":

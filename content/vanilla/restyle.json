@@ -1,0 +1,28 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.restyle.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.restyle.Item",
+                "type": "text"
+            },
+            {
+                "key": "look",
+                "label": "ISAACS_AUTOMATION.Vanilla.restyle.Look",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "restyle",
+                "item": "item",
+                "look": "look"
+            }
+        }
+    ]
+}

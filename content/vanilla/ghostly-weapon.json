@@ -1,0 +1,14 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.EScdpppYsf9KhG4D",
+                "preselect": {
+                    "spellEffectGhostlyWeapon": "$held"
+                }
+            }
+        }
+    ]
+}

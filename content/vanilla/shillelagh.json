@@ -1,0 +1,40 @@
+{
+    "requires": {
+        "heldGroups": [
+            "club",
+            "staff"
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.deG1dtfuQph03Kkg",
+                "preselect": {
+                    "spellEffectShillelagh": "$held"
+                },
+                "addRules": [
+                    {
+                        "key": "DamageDice",
+                        "diceNumber": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.shillelagh.Third",
+                        "selector": "{item|flags.system.rulesSelections.spellEffectShillelagh}-damage",
+                        "predicate": [
+                            {
+                                "or": [
+                                    "target:trait:aberration",
+                                    "target:trait:undead"
+                                ]
+                            },
+                            {
+                                "not": "shillelagh-third-die"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
