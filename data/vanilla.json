@@ -120,6 +120,44 @@
                 }
             ]
         },
+        "air-walk": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 5,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.air-walk.Walk",
+                        "rules": [],
+                        "airWalk": true
+                    }
+                }
+            ]
+        },
+        "allfood": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.allfood.Prompt",
+                "fields": [
+                    {
+                        "key": "item",
+                        "label": "ISAACS_AUTOMATION.Vanilla.allfood.Item",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "allfood",
+                        "flag": "item"
+                    }
+                }
+            ]
+        },
         "animal-form": {
             "riders": [
                 {
@@ -264,6 +302,35 @@
                 }
             ]
         },
+        "animal-messenger": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.animal-messenger.Prompt",
+                "fields": [
+                    {
+                        "key": "place",
+                        "label": "ISAACS_AUTOMATION.Vanilla.animal-messenger.Place",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 24,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.animal-messenger.Messenger",
+                        "rules": [],
+                        "describes": "place",
+                        "dismissable": true
+                    }
+                }
+            ]
+        },
         "animal-vision": {
             "requires": "animal-target",
             "riders": [
@@ -305,6 +372,18 @@
                 }
             ]
         },
+        "anticipate-peril": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "effect",
+                        "uuid": "Compendium.pf2e.spell-effects.Item.4ag0OHKfjROmR4Pm",
+                        "atCastRank": true
+                    }
+                }
+            ]
+        },
         "approximate": {
             "castChoice": {
                 "prompt": "ISAACS_AUTOMATION.Vanilla.approximate.Prompt",
@@ -322,6 +401,29 @@
                     "apply": {
                         "type": "approximate",
                         "flag": "kind"
+                    }
+                }
+            ]
+        },
+        "augury": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.augury.Prompt",
+                "fields": [
+                    {
+                        "key": "question",
+                        "label": "ISAACS_AUTOMATION.Vanilla.augury.Question",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "augury",
+                        "flag": "question",
+                        "dc": 6
                     }
                 }
             ]
@@ -913,6 +1015,83 @@
                 }
             ]
         },
+        "breadcrumbs": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "lte": [
+                                "item:rank",
+                                1
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.breadcrumbs.Trail",
+                        "rules": [],
+                        "trail": true,
+                        "trailFades": "duration"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                2
+                            ]
+                        },
+                        {
+                            "lte": [
+                                "item:rank",
+                                2
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 8,
+                        "unit": "hours"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.breadcrumbs.Trail",
+                        "rules": [],
+                        "trail": true,
+                        "trailFades": "duration"
+                    }
+                },
+                {
+                    "event": "action-used",
+                    "predicate": [
+                        {
+                            "gte": [
+                                "item:rank",
+                                3
+                            ]
+                        }
+                    ],
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.breadcrumbs.Trail",
+                        "rules": [],
+                        "trail": true,
+                        "trailFades": "duration",
+                        "untilPreparations": true
+                    }
+                }
+            ]
+        },
         "breath-of-life": {
             "riders": [
                 {
@@ -1338,6 +1517,28 @@
                 }
             ]
         },
+        "claim-curse": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.claim-curse.Prompt",
+                "fields": [
+                    {
+                        "key": "curse",
+                        "label": "ISAACS_AUTOMATION.Vanilla.claim-curse.Curse",
+                        "type": "text"
+                    }
+                ]
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "claim-curse",
+                        "flag": "curse",
+                        "minutes": 5
+                    }
+                }
+            ]
+        },
         "cleanse-affliction": {
             "riders": [
                 {
@@ -1692,6 +1893,26 @@
                     }
                 }
             ]
+        },
+        "cozy-cabin": {
+            "areaTargeting": {
+                "area": {
+                    "type": "square",
+                    "value": 20
+                },
+                "range": 30,
+                "affects": "all",
+                "placeOnly": true
+            },
+            "lingering": {
+                "name": "ISAACS_AUTOMATION.Vanilla.cozy-cabin.Cabin",
+                "duration": {
+                    "value": 12,
+                    "unit": "hours"
+                },
+                "dismiss": true,
+                "cabin": true
+            }
         },
         "cradle-aloft": {
             "castChoice": {
@@ -2883,6 +3104,16 @@
                 }
             ]
         },
+        "extract-poison": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "apply": {
+                        "type": "extract"
+                    }
+                }
+            ]
+        },
         "falling-stars": {
             "areaTargeting": {
                 "affects": "all",
@@ -3210,6 +3441,17 @@
                             "8": 500,
                             "9": "planet"
                         }
+                    }
+                }
+            ]
+        },
+        "fishing-spot": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "apply": {
+                        "type": "fish"
                     }
                 }
             ]
@@ -3647,6 +3889,23 @@
                                 }
                             ]
                         }
+                    }
+                }
+            ]
+        },
+        "glimpse-weakness": {
+            "riders": [
+                {
+                    "event": "action-used",
+                    "duration": {
+                        "value": 1,
+                        "unit": "minutes"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.glimpse-weakness.Mark",
+                        "rules": [],
+                        "glimpse": true
                     }
                 }
             ]
@@ -9137,6 +9396,111 @@
                             }
                         ],
                         "dismissable": "holder"
+                    }
+                }
+            ]
+        },
+        "threefold-aspect": {
+            "castChoice": {
+                "prompt": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Prompt",
+                "fields": [
+                    {
+                        "key": "age",
+                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Age",
+                        "type": "text",
+                        "options": [
+                            "maiden",
+                            "mother",
+                            "matriarch"
+                        ]
+                    }
+                ],
+                "labels": {
+                    "maiden": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Maiden",
+                    "mother": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Mother",
+                    "matriarch": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Matriarch"
+                }
+            },
+            "riders": [
+                {
+                    "event": "action-used",
+                    "self": true,
+                    "duration": {
+                        "value": 1,
+                        "unit": "unlimited"
+                    },
+                    "apply": {
+                        "type": "effect",
+                        "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Aspect",
+                        "describes": "age",
+                        "untilPreparations": true,
+                        "dismissable": true,
+                        "rules": [
+                            {
+                                "key": "RollOption",
+                                "domain": "all",
+                                "option": "threefold-aspect",
+                                "value": true
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "deception",
+                                "type": "status",
+                                "value": 4,
+                                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Aspect",
+                                "predicate": [
+                                    "threefold-aspect",
+                                    "action:impersonate"
+                                ]
+                            },
+                            {
+                                "key": "FlatModifier",
+                                "selector": "deception",
+                                "type": "proficiency",
+                                "value": "@actor.level",
+                                "slug": "threefold-aspect-proficiency",
+                                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Aspect",
+                                "predicate": [
+                                    "threefold-aspect",
+                                    "action:impersonate"
+                                ]
+                            }
+                        ],
+                        "originAction": {
+                            "name": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Sustain",
+                            "traits": [
+                                "concentrate"
+                            ],
+                            "spends": false,
+                            "riders": [
+                                {
+                                    "event": "action-used",
+                                    "self": true,
+                                    "apply": {
+                                        "type": "age",
+                                        "option": "threefold-aspect",
+                                        "options": [
+                                            {
+                                                "value": "maiden",
+                                                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Maiden"
+                                            },
+                                            {
+                                                "value": "mother",
+                                                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Mother"
+                                            },
+                                            {
+                                                "value": "matriarch",
+                                                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Matriarch"
+                                            },
+                                            {
+                                                "value": "natural",
+                                                "label": "ISAACS_AUTOMATION.Vanilla.threefold-aspect.Natural"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
                     }
                 }
             ]

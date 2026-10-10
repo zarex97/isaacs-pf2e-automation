@@ -1,0 +1,12 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "effect",
+                "uuid": "Compendium.pf2e.spell-effects.Item.4ag0OHKfjROmR4Pm",
+                "atCastRank": true
+            }
+        }
+    ]
+}

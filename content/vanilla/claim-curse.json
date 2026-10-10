@@ -1,0 +1,22 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.claim-curse.Prompt",
+        "fields": [
+            {
+                "key": "curse",
+                "label": "ISAACS_AUTOMATION.Vanilla.claim-curse.Curse",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "claim-curse",
+                "flag": "curse",
+                "minutes": 5
+            }
+        }
+    ]
+}

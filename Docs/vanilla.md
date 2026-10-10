@@ -9,10 +9,15 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Acid Grip | 2 |  | success: pushed 5 ft in a direction you choose; failure / crit. failure: 1d6 (+1d6 per 2 ranks) persistent acid; failure / crit. failure: spell-effect-acid-grip; failure: pushed 10 ft in a direction you choose; crit. failure: pushed 20 ft in a direction you choose |  |
 | Acid Storm | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | reflex on turn start — 3d8 (+1d8 per rank) acid, 1 minutes |
 | Air Bubble | 1 |  | air bubble (1 minutes) |  |
+| Air Walk | 4 |  | air walk (5 minutes) |  |
+| Allfood | 2 |  | allfood |  |
 | Animal Form | 2 |  | choice (on you) |  |
+| Animal Messenger | 2 |  | animal messenger (24 hours, on you) |  |
 | Animal Vision | 3 |  | animal vision (1 hours, on you); success / crit. success: expire |  |
 | Ant Haul | 1 |  | spell-effect-ant-haul |  |
+| Anticipate Peril | 1 |  | spell-effect-anticipate-peril |  |
 | Approximate | 1 |  | approximate |  |
+| Augury | 2 |  | augury (on you) |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |
 | Bind Undead | 3 |  | spell-effect-bind-undead |  |
 | Blazing Bolt | 2 |  | rays (on you) |  |
@@ -26,6 +31,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Blood Duplicate | 2 |  | 1 piercing (on you); blood duplicate (1 hours, on you) |  |
 | Blur | 2 |  | concealed (1 minutes) |  |
 | Bracing Tendrils | 3 |  | bracing tendrils (1 minutes, on you) |  |
+| Breadcrumbs | 1 |  | breadcrumbs (1 hours); breadcrumbs (8 hours, from rank 2); breadcrumbs (until it ends, from rank 3) |  |
 | Breath of Life | 5 |  | reaction (on you); heals 5d8 (+1d8 per rank) |  |
 | Breathe Fire | 1 | 15-ft cone (pf2e's), from you, all |  |  |
 | Calm | 2 | 10-ft burst (pf2e's), all | success: spell-effect-calm; failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed — until another creature is hostile to it.”; crit. failure: GM note: “The target can't use hostile actions, and emotion effects on it are suppressed, even if others are hostile to it.” |  |
@@ -33,6 +39,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Chain Lightning | 6 | a chain, each within 30 ft of the last |  |  |
 | Chilling Spray | 1 | 15-ft cone (pf2e's), from you, all | failure: frosted (2 rounds); crit. failure: frosted (2 rounds) |  |
 | Circle of Protection | 3 | 10-ft emanation (pf2e's), all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, while inside: its rules, 1 minutes; from rank 4, moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, while inside: its rules, 1 hours |
+| Claim Curse | 3 |  | claim-curse |  |
 | Cleanse Affliction | 2 |  | cleanse (on you) |  |
 | Cleanse Cuisine | 1 |  | victuals |  |
 | Command | 1 | up to 1, +9 at rank 5 | failure: GM note: “On its next turn, the target must spend its first action doing as commanded: approach, run away, release what it holds, drop prone, or stand in place.”; crit. failure: GM note: “On its next turn, the target must spend all its actions obeying the command.” |  |
@@ -40,6 +47,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Control Water | 5 | 50-ft square, all, filtered | success: slowed 1 (1 rounds); failure: slowed 1 (1 minutes); crit. failure: slowed 2 (1 minutes) |  |
 | Coral Scourge | 3 |  | success: clumsy 1 (1 minutes); success: coral scourge (1 minutes); failure / crit. failure: clumsy 2 (1 minutes); failure: coral scourge (1 minutes, carries turn-start climb); crit. failure: coral scourge (1 minutes, carries turn-start climb) |  |
 | Countless Eyes | 4 |  | countless eyes (1 minutes) |  |
+| Cozy Cabin | 3 | 20-ft square, all, placed, no targets |  | Dismiss, 12 hours |
 | Cradle Aloft | 1 |  | cradle (on you) |  |
 | Create Earthen Facsimile | 1 |  | earthen facsimile (10 minutes, on you) |  |
 | Creation | 4 |  | creation (1 hours, on you) |  |
@@ -67,6 +75,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
 | Environmental Endurance | 2 |  | environmental endurance (until it ends); environmental endurance (until it ends); environmental endurance (until it ends, from rank 3); environmental endurance (until it ends, from rank 5) |  |
 | Evil Eye | 1 |  | failure: sickened 1; crit. failure: sickened 2; failure / crit. failure: evil eye (1 minutes, while Sustained) |  |
+| Extract Poison | 2 |  | extract |  |
 | Falling Stars | 9 | choose: 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst or 4 × 40-ft burst, all | rolled once: 6d10 bludgeoning (centre only) + 14d6 (chosen energy), one basic reflex each |  |
 | False Vitality | 2 |  | spell-effect-false-vitality (on you) |  |
 | Familiar's Call | 3 |  | fetch-familiar (on you) |  |
@@ -77,6 +86,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Final Sacrifice | 2 | 20-ft emanation (pf2e's), all |  |  |
 | Fire Shield | 4 |  | spell-effect-fire-shield (carries damage-received damage) |  |
 | Fire's Pathway | 5 |  | pathway (on you) |  |
+| Fishing Spot | 1 |  | fish (on you) |  |
 | Floating Flame | 2 | 5-ft square (pf2e's), all |  | ends if not Sustained, Sustain: moves 10 ft, 3d6 fire to those it passes (basic reflex), once a round, 1 minutes |
 | Fly | 4 |  | spell-effect-fly (below rank 7); spell-effect-fly (1 hours, from rank 7) |  |
 | Force Barrage | 1 | up to 3, +3 per 2 ranks |  |  |
@@ -87,6 +97,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Ghostly Weapon | 3 |  | spell-effect-ghostly-weapon |  |
 | Ghoulish Cravings | 2 |  | success: sickened 1; failure / crit. failure: sickened 2; failure: ghoulish hunger (until it ends); crit. failure: ghoulish hunger (until it ends) |  |
 | Glamorize | 1 |  | glamorize (1 hours, on you) |  |
+| Glimpse Weakness | 1 |  | glimpse weakness (1 minutes) |  |
 | Glowing Trail | 1 |  | glowing trail (1 hours, on you) |  |
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
@@ -201,6 +212,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Telekinetic Maneuver | 2 |  | choice |  |
 | Telepathic Bond | 5 |  | telepathic bond (8 hours, on you); telepathic bond (8 hours) |  |
 | Temporary Tool | 1 |  | temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you); temporary tool (1 minutes, on you) |  |
+| Threefold Aspect | 3 |  | threefold aspect (until it ends, on you) |  |
 | Timber | 1 | 15-ft line (pf2e's), from you, all | crit. failure: dazzled (until its next turn) |  |
 | Timely Reminder | 2 |  | timely reminder (365 days, on you); timely reminder (365 days, from rank 5) |  |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |

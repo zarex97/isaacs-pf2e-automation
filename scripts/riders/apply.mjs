@@ -42,7 +42,7 @@ import { Message, sendMessage } from "./message.mjs";
 import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
 import { fatesTravels } from "./travel.mjs";
-import { adjustEffect, approximateCount, drawMap, markObject, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
+import { adjustEffect, approximateCount, chooseAge, drawMap, markObject, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
 import { fetchToward, swapPlaces } from "./swap.mjs";
 import { offerLiberation } from "./liberate.mjs";
 import { Leash } from "./leash.mjs";
@@ -54,7 +54,10 @@ import { knowTheWay } from "./wayfinding.mjs";
 import { cradleAloft } from "./cradle.mjs";
 import { stashChest } from "./chest.mjs";
 import { Duplicate } from "./duplicate.mjs";
-import { detectPoison, enhanceVictuals } from "./poison.mjs";
+import { catchFish } from "./fish.mjs";
+import { augury } from "./augury.mjs";
+import { claimCurse } from "./curse.mjs";
+import { detectPoison, enhanceVictuals, extractPoison, makeAllfood } from "./poison.mjs";
 import { findConnection, findCreator } from "./influence.mjs";
 import { offerRecall } from "./recall.mjs";
 import { journeyPace } from "./journey.mjs";
@@ -536,6 +539,18 @@ async function applyOne(rider, context) {
             return sendOff(rider, context);
         case "spend-badge":
             return spendBadge(rider, context);
+        case "extract":
+            return extractPoison(rider, context, { rank: Number(castItemOf(context)?.rank) || 2, item: castItemOf(context) });
+        case "allfood":
+            return makeAllfood(rider, context, castChoicesOf(context), Number(castItemOf(context)?.rank) || 2);
+        case "age":
+            return chooseAge(rider, context);
+        case "fish":
+            return catchFish(rider, context);
+        case "augury":
+            return augury(rider, context, castChoicesOf(context));
+        case "claim-curse":
+            return claimCurse(rider, context, castChoicesOf(context));
         case "mark":
             return markObject(rider, context);
         case "cradle":
@@ -2084,6 +2099,9 @@ async function applyEffect(rider, context) {
         // *Guiding Star*: where it was cast, and by whom, on the effect's own name.
         if (rider.apply.namesPlace) source.name = `${source.name} — ${t("Rider.Toward", { scene: canvas?.scene?.name ?? "", caster: context.originActor?.name ?? "" })}`;
         if (rider.apply.endsOnHostileFrom) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnHostileFrom: true } });
+        // *Glimpse Weakness*: the mark an ally's first hit cashes, at the cast's rank (`glimpse.mjs`). *Air Walk* (`airwalk.mjs`).
+        if (rider.apply.glimpse) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { glimpse: { rank: Number(castItemOf(context)?.rank) || 1 } } });
+        if (rider.apply.airWalk) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { airWalk: true } });
         if (rider.apply.endsOnHostileTo) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsOnHostileTo: true } });
         if (rider.apply.onlyIfExpired) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { onlyIfExpired: true } });
         if (rider.apply.whileCondition) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { whileCondition: rider.apply.whileCondition } });
@@ -3414,7 +3432,10 @@ function effectSource(label, rules, rider, context) {
     // *Glowing Trail*: a mark left at each move, visible or not, fading by the cast's rank (`trail.mjs`).
     if (rider.apply?.trail) {
         const chosen = castChoicesOf(context);
-        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { trail: { visible: chosen.mode !== "invisible", color: String(chosen.color ?? "") || null, fades: fadesAfter(castItemOf(context)?.rank) } } });
+        // *Breadcrumbs*: "lasts for the spell's duration" — `trailFades: "duration"`, else Glowing Trail's own fading.
+        const seconds = { rounds: 6, minutes: 60, hours: 3600, days: 86400 }[rider.duration?.unit] * (Number(rider.duration?.value) || 0);
+        const fades = rider.apply.trailFades === "duration" ? (seconds > 0 ? seconds : 365 * 86400) : fadesAfter(castItemOf(context)?.rank);
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { trail: { visible: chosen.mode !== "invisible", color: String(chosen.color ?? "") || null, fades } } });
     }
     // What it forbids its holder, as a pf2e effect's below — *Caster's Imposition*'s cooperative casting (`forbids.mjs`).
     if (Array.isArray(rider.apply?.forbids)) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { forbids: rider.apply.forbids, ...(rider.apply.forbidsExcept ? { forbidsExcept: rider.apply.forbidsExcept } : {}) } });

@@ -163,3 +163,64 @@ export const Victuals = {
         }
     },
 };
+
+/**
+ * *Extract Poison*: "Attempt a counteract check against one poison you're aware of on or in an object you touch. If you
+ * successfully counteract the poison, you negate the object's toxicity and transfer the poison into a weapon you are
+ * holding … On your next successful attack with that weapon before the end of your next turn, you add 1d6 poison damage
+ * per level of the poison you counteracted. On a critically failed attack roll, you lose the extracted poison". `{ type:
+ * "extract" }` counteracts the targeted pile's first poison at the cast's rank; on a success the poison is gone and the
+ * caster's held weapon carries pf2e's *Extract Poison* at that poison's level, until the end of their next turn — spent
+ * by the next damage roll the weapon's hit makes, or lost on a critically failed attack.
+ */
+const EXTRACT = "Compendium.pf2e.spell-effects.Item.fEhCbATDNlt6c1Ug";
+
+export async function extractPoison(_rider, context, { rank = 2, item = null } = {}) {
+    const caster = context.originActor;
+    const pile = context.actor;
+    if (!caster || !pile) return;
+    const poison = pile.items.find((i) => traitsOf(i).includes("poison"));
+    const weapon = caster.itemTypes?.weapon?.find((w) => w.system?.equipped?.carryType === "held" && (w.system.equipped.handsHeld ?? 0) > 0);
+    if (!poison) return context.notes.push(t("Poison.NoneToExtract", { name: pile.name }));
+    if (!weapon) return context.notes.push(t("Poison.NoWeapon", { actor: caster.name }));
+    const level = Number(poison.system?.level?.value) || 0;
+    const theirs = Math.max(1, Math.ceil(level / 2));
+    const statistic = item?.spellcasting?.statistic ?? RiderExtensions.statistic(caster, "spellcasting");
+    const roll = statistic ? await statistic.roll({ dc: { value: dcByLevel(level) }, skipDialog: true, label: t("Counteract.Against", { effect: poison.name }), extraRollOptions: [`${LIB_ID}:counteract`] }) : null;
+    const outcome = DEGREES[roll?.degreeOfSuccess ?? -1];
+    if (!outcome || !counteracts(outcome, rank, theirs)) return context.notes.push(t("Poison.Holds", { effect: poison.name, rank: theirs, ours: rank }));
+    await poison.delete();
+    const source = (await fromUuid(EXTRACT))?.toObject();
+    if (!source) return;
+    source.system.rules = source.system.rules.map((rule) => (rule.key !== "ChoiceSet" ? rule : { ...rule, selection: rule.flag === "weapon" ? weapon.id : Math.max(1, level) }));
+    source.system.duration = { value: 1, unit: "rounds", expiry: "turn-end", sustained: false };
+    source.system.badge = { type: "counter", value: 1 };
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: [
+        { event: "damage-applied", apply: { type: "spend-badge" } },
+        { event: "strike-resolved", outcomes: ["criticalFailure"], apply: { type: "spend-badge" } },
+    ] } });
+    source.system.context = { origin: { actor: caster.uuid, token: null, item: context.item?.uuid ?? null, spellcasting: null, rollOptions: [] }, target: null, roll: null };
+    await caster.createEmbeddedDocuments("Item", [source]);
+    context.notes.push(t("Poison.Extracted", { effect: poison.name, weapon: weapon.name, dice: Math.max(1, level) }));
+}
+
+/**
+ * *Allfood*: "You transform one object into an edible substance … After 1 day, if no one has eaten the allfood, it
+ * reverts to its original form … Heightened (+1) Double the maximum bulk". `{ type: "allfood", flag }` turns the
+ * targeted pile's item the cast named — non-magical, within the rank's Bulk — into allfood, a food to eat, and back after
+ * a day if it is still there.
+ */
+export function allfoodBulk(rank) {
+    return 2 ** Math.max(0, (Number(rank) || 2) - 2);
+}
+
+export async function makeAllfood(rider, context, chosen = {}, rank = 2) {
+    const pile = context.actor;
+    const named = String(chosen[rider.apply.flag ?? "item"] ?? "").trim().toLowerCase();
+    const thing = pile?.items?.find((i) => i.name.toLowerCase() === named);
+    const cap = allfoodBulk(rank);
+    if (!thing || thing.isMagical || (Number(thing.system?.bulk?.value) || 0) > cap) return context.notes.push(t("Poison.NoAllfood", { item: named, cap }));
+    const original = { name: thing.name, category: thing.system?.category ?? null };
+    await thing.update({ name: t("Poison.Allfood", { name: thing.name }), [`flags.${LIB_ID}.${FLAG}`]: { name: original.name, until: game.time.worldTime + 86400 } });
+    context.notes.push(t("Poison.Allfooded", { item: original.name, cap }));
+}

@@ -83,6 +83,12 @@ import { Hostility } from "./riders/hostility.mjs";
 import { Cradle } from "./riders/cradle.mjs";
 import { Chest } from "./riders/chest.mjs";
 import { Duplicate } from "./riders/duplicate.mjs";
+import { Cabin } from "./riders/cabin.mjs";
+import { Fish } from "./riders/fish.mjs";
+import { Glimpse } from "./riders/glimpse.mjs";
+import { AirWalk } from "./riders/airwalk.mjs";
+import { Augury } from "./riders/augury.mjs";
+import { Curse } from "./riders/curse.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -156,6 +162,12 @@ export const INIT = [
     ["a held thing left floating", () => Cradle.registerHooks()],
     ["a chest kept on another plane", () => Chest.registerHooks()],
     ["a copy shaped from blood", () => Duplicate.registerHooks()],
+    ["a cabin raised for the night", () => Cabin.registerHooks()],
+    ["a fish from another plane", () => Fish.registerHooks()],
+    ["a weakness shown to the whole party", () => Glimpse.registerHooks()],
+    ["walking on air", () => AirWalk.registerHooks()],
+    ["a glimpse of what a course of action brings", () => { Augury.registerSettings(); Augury.registerHooks(); }],
+    ["a curse carried for someone else", () => Curse.registerHooks()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

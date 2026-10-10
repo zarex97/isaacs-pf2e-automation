@@ -1,0 +1,20 @@
+{
+    "areaTargeting": {
+        "area": {
+            "type": "square",
+            "value": 20
+        },
+        "range": 30,
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.cozy-cabin.Cabin",
+        "duration": {
+            "value": 12,
+            "unit": "hours"
+        },
+        "dismiss": true,
+        "cabin": true
+    }
+}
