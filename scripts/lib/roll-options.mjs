@@ -79,6 +79,10 @@ export function describeActor(actor, prefix = "target") {
         if (hp.max > 0 && hp.value <= hp.max / 2) options.push(`${at}:hp-half-or-less`);
     }
 
+    // Off the ground — *Blazing Fissure* catches only "each creature along the line and on solid ground".
+    const token = actor.token ?? actor.getActiveTokens?.(true, true)?.[0];
+    if ((Number(token?._source?.elevation ?? token?.elevation) || 0) > 0) options.push(`${at}:elevated`);
+
     // Light sensitivity is an ability on the stat block, not a trait, so pf2e emits nothing for it.
     const LIGHT = ["light-blindness", "light-sensitivity", "light-sensitive"];
     if (actor.items?.some((i) => LIGHT.includes(i.slug ?? game.pf2e?.system?.sluggify?.(i.name)))) {

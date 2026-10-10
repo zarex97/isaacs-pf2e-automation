@@ -1070,6 +1070,18 @@ for (const [name, count] of [["vanilla-spells-low.md", 10], ["vanilla-spells-mid
     check("Disguise Magic: the tradition's skill; hidden, or lesser", [skillFor("divine"), skillFor("primal"), asDisguised({ name: "Wand", level: 5 }, { mode: "hide" }), asDisguised({ name: "Wand", level: 5 }, { mode: "lower", as: "Torch", level: 1 })], ["religion", "nature", null, { name: "Torch", level: 1, illusion: false }]);
     const { strays } = await import("../scripts/riders/leash.mjs");
     check("Reflected Beauty: more than 30 feet ends it", [strays(30, 30), strays(35, 30)], [false, true]);
+    const { roughly } = await import("../scripts/riders/handiwork.mjs");
+    check("Approximate: rounded to the largest digit", [180, 1449, 7, 95].map(roughly), [200, 1000, 7, 100]);
+    const { ranOut } = await import("../scripts/riders/journey.mjs");
+    check("Dreaming Potential: the full 8 hours, or not", [ranOut({ system: { start: { value: 0 }, duration: { value: 8, unit: "hours" } } }, 28800), ranOut({ system: { start: { value: 0 }, duration: { value: 8, unit: "hours" } } }, 100)], [true, false]);
+    const { pointOf, bearing, placesWithin } = await import("../scripts/riders/wayfinding.mjs");
+    check("Know the Way: a compass point from a bearing, north up the map", [pointOf(bearing({ x: 0, y: 0 }, { x: 0, y: -10 })), pointOf(bearing({ x: 0, y: 0 }, { x: 10, y: 0 })), pointOf(bearing({ x: 0, y: 0 }, { x: 10, y: 0 }, 90))], ["north", "east", "north"]);
+    check("…places within the window, newest first, one per name", placesWithin([{ t: 0, label: "a" }, { t: 90000, label: "b" }, { t: 95000, label: "a" }], 100000, 1).map((p) => p.t), [95000, 90000]);
+    const { ritualSkills } = await import("../scripts/riders/obstruction.mjs");
+    check("Ritual Obstruction: the skills a primary check names", ritualSkills("Arcana or Occultism (expert)"), ["arcana", "occultism"]);
+    const { mustSave } = await import("../scripts/targeting/repels.mjs");
+    const circleCaster = { flags: { "isaacs-pf2e-automation": { castChoices: { s: { alignment: "unholy" } } } } };
+    check("Circle of Protection: only a summoned creature of the alignment saves", [mustSave({ traits: ["summoned"], castTrait: "alignment" }, { system: { traits: { value: ["summoned", "unholy"] } } }, circleCaster, { id: "s" }), mustSave({ traits: ["summoned"], castTrait: "alignment" }, { system: { traits: { value: ["unholy"] } } }, circleCaster, { id: "s" }), mustSave({ statistic: "will" }, { system: { traits: { value: [] } } }, null, null)], [true, false, true]);
     const { cutTo } = await import("../scripts/riders/message.mjs");
     check("Sending: 25 words at most", [cutTo("a b  c d", 2), cutTo(" one two ", 25), cutTo("", 25)], ["a b", "one two", ""]);
     const { lent } = await import("../scripts/riders/senses-link.mjs");

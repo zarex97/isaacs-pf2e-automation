@@ -1,0 +1,36 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Prompt",
+        "fields": [
+            {
+                "key": "item",
+                "label": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Item",
+                "type": "text"
+            },
+            {
+                "key": "cleanse",
+                "label": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Cleanse",
+                "type": "text",
+                "options": [
+                    "yes",
+                    "no"
+                ]
+            }
+        ],
+        "labels": {
+            "yes": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.Yes",
+            "no": "ISAACS_AUTOMATION.Vanilla.cleanse-cuisine.No"
+        }
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "victuals",
+                "flag": "item",
+                "cleanse": "cleanse",
+                "lasting": true
+            }
+        }
+    ]
+}

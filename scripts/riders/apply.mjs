@@ -42,7 +42,7 @@ import { Message, sendMessage } from "./message.mjs";
 import { Ventriloquism } from "./ventriloquism.mjs";
 import { changePage } from "./secret-page.mjs";
 import { fatesTravels } from "./travel.mjs";
-import { adjustEffect, drawMap, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
+import { adjustEffect, approximateCount, drawMap, reshapeItem, restyleItem, sortItems } from "./handiwork.mjs";
 import { swapPlaces } from "./swap.mjs";
 import { offerLiberation } from "./liberate.mjs";
 import { Leash } from "./leash.mjs";
@@ -50,6 +50,7 @@ import { Rune } from "./rune.mjs";
 import { offerPathway } from "./pathway.mjs";
 import { sendOff, throwView } from "./perspective.mjs";
 import { disguiseMagic } from "./disguise.mjs";
+import { knowTheWay } from "./wayfinding.mjs";
 import { detectPoison, enhanceVictuals } from "./poison.mjs";
 import { findConnection } from "./influence.mjs";
 import { offerRecall } from "./recall.mjs";
@@ -353,6 +354,25 @@ export async function resolveReaction(payload) {
 }
 
 /**
+ * One off the counter of the effect that carries this rider; the last one ends it. *Magic Stone*: "Each stone can be
+ * used only once, after which it crumbles to dust" — a Strike with a sling spends a stone.
+ */
+async function spendBadge(rider, context) {
+    const effect = [context.riderItem, context.item].find((i) => i?.type === "effect" && i.system?.badge?.type === "counter");
+    if (!effect) return;
+    // `group`: only a Strike with a weapon of that group spends one — the message's own weapon, not the effect.
+    if (rider.apply.group && context.message?.item?.system?.group !== rider.apply.group) return;
+    const left = Math.max(0, (Number(effect.system.badge.value) || 1) - 1);
+    if (left > 0) {
+        await effect.update({ "system.badge.value": left });
+        context.notes.push(t("OriginAction.Left", { name: effect.name, left }));
+        return;
+    }
+    context.notes.push(t("OriginAction.Last", { name: effect.name }));
+    await effect.delete();
+}
+
+/**
  * A flat check, rolled and announced.
  *
  * Three things in this module promise "succeed at a DC N flat check or the effect fails": Greater Flash
@@ -511,6 +531,12 @@ async function applyOne(rider, context) {
             return throwView(rider, context);
         case "send-off":
             return sendOff(rider, context);
+        case "spend-badge":
+            return spendBadge(rider, context);
+        case "know-way":
+            return knowTheWay(rider, context, Number(castItemOf(context)?.rank) || 1);
+        case "approximate":
+            return approximateCount(rider, context, castChoicesOf(context));
         case "disguise":
             return disguiseMagic(rider, context, castChoicesOf(context), { rank: Number(castItemOf(context)?.rank) || 1, item: castItemOf(context) });
         case "secret-page":
@@ -2041,6 +2067,8 @@ async function applyEffect(rider, context) {
             if (words) source.name = `${source.name} — ${words}`;
         }
         // *Umbral Journey*: words its holder's players are told when it ends, however it ends (`journey.mjs`).
+        if (rider.apply.onlyIfExpired) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { onlyIfExpired: true } });
+        if (rider.apply.whileCondition) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { whileCondition: rider.apply.whileCondition } });
         if (rider.apply.endsWithArea) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endsWithArea: true } });
         if (rider.apply.together) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { together: true } });
         if (rider.apply.endNote) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { endNote: rider.apply.endNote } });
@@ -2061,7 +2089,11 @@ async function applyEffect(rider, context) {
             if (area) source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { withArea: area } });
         }
         // A count the effect carries — *Blister*'s one, two or four blisters.
-        if (Number(rider.apply.badge) > 0) source.system.badge = { type: "counter", value: Number(rider.apply.badge) };
+        // …or one the caster chose as it was cast — *Magic Stone*'s "1 to 3 … stones" (`"$cast:<flag>"`).
+        const badge = typeof rider.apply.badge === "string" && rider.apply.badge.startsWith("$cast:")
+            ? Number(castChoicesOf(context)[rider.apply.badge.slice(6)])
+            : Number(rider.apply.badge);
+        if (badge > 0) source.system.badge = { type: "counter", value: badge };
         // "If you cast nudge fate while a previous casting of this hex is still in effect, the previous effect ends."
         if (rider.apply.endsPrevious && rider.apply.slug) await endPreviousEffects(rider.apply.slug, context.originActor);
         const [created] = await context.actor.createEmbeddedDocuments("Item", [source]);
@@ -2976,6 +3008,10 @@ async function applyAreaDamage(rider, context) {
     const statistic = actor.getStatistic?.(rider.apply.save ?? "reflex");
     const save = statistic && dc ? await statistic.roll({ dc: { value: dc }, skipDialog: true, item, extraRollOptions: ["damaging-effect"] }) : null;
     const multiplier = [2, 1, 0.5, 0][save?.degreeOfSuccess ?? 1];
+    // What the save's result brings besides damage — *Blazing Fissure*'s "it falls prone" on a failure or worse.
+    const outcome = DEGREES[save?.degreeOfSuccess ?? 1];
+    const following = (rider.apply.riders ?? []).filter((r) => !r.outcomes || r.outcomes.includes(outcome));
+    if (following.length > 0) await applyRiderList(following, { ...context, outcome });
     if (!multiplier) return;
     const DamageRoll = CONFIG.Dice.rolls.find((cls) => cls.name === "DamageRoll");
     const roll = await new DamageRoll(typedTotals(reaching)).evaluate();

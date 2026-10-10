@@ -1,0 +1,21 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.approximate.Prompt",
+        "fields": [
+            {
+                "key": "kind",
+                "label": "ISAACS_AUTOMATION.Vanilla.approximate.Kind",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "approximate",
+                "flag": "kind"
+            }
+        }
+    ]
+}

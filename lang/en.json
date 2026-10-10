@@ -197,7 +197,8 @@
             "Interposes": "{name} takes the blow for {actor}: {taken} damage to it, {left} to {actor}."
         },
         "Repels": {
-            "Barred": "{name} can't move closer to {caster} within {area}."
+            "Barred": "{name} can't move closer to {caster} within {area}.",
+            "SaveFirst": "{name} must succeed at a Will save to enter {area}: rolling it now; try the step again."
         },
         "Pull": {
             "Moved": "{name} is pulled {feet} ft toward the centre (of {wanted})."
@@ -284,7 +285,8 @@
             "HeldGroups": "{name} needs a held weapon of these groups: {groups}.",
             "TargetNotTraits": "{name} can't target a creature that is {traits}.",
             "SameSizeWithin": "{name} needs one creature your size, within {feet} feet, targeted.",
-            "HeldLight": "{name} needs an item of light Bulk or less in your hand."
+            "HeldLight": "{name} needs an item of light Bulk or less in your hand.",
+            "TargetCondition": "{name} needs a target that is {condition}."
         },
         "Dismiss": {
             "Name": "Dismiss {name}",
@@ -1095,6 +1097,37 @@
             },
             "acid-storm": {
                 "Storm": "Acid Storm"
+            },
+            "approximate": {
+                "Prompt": "The kind of object to count in the pile:",
+                "Kind": "Kind of object"
+            },
+            "cleanse-cuisine": {
+                "Prompt": "The food or drink (blank: every food in the pile), and whether to remove its toxins:",
+                "Item": "Food or drink",
+                "Cleanse": "Remove toxins",
+                "Yes": "Yes, remove them",
+                "No": "No"
+            },
+            "dreaming-potential": {
+                "Dream": "dreaming potential",
+                "Woke": "A full night of the dream: it counts as a day of downtime retraining, if what it retrains needs no instructor."
+            },
+            "magic-stone": {
+                "Prompt": "How many stones — one for each action spent?",
+                "Stones": "magic stones"
+            },
+            "ritual-obstruction": {
+                "Zone": "Ritual Obstruction"
+            },
+            "circle-of-protection": {
+                "Prompt": "Ward against which?",
+                "Circle": "Circle of Protection",
+                "Inside": "+1 status bonus to AC and saves against creatures of the chosen alignment; +3 against their summoned creatures' attacks and their effects that control you.",
+                "Unholy": "Evil (unholy)",
+                "Holy": "Good (holy)",
+                "Chaotic": "Chaotic",
+                "Lawful": "Lawful"
             }
         },
         "Conditions": {
@@ -1256,7 +1289,8 @@
             "Adjusted": "{name}: {words}.",
             "NotWorn": "Nobody the spell reached is wearing \"{item}\".",
             "Restyled": "Restyled:",
-            "Restyle": "{item} now looks: {look}."
+            "Restyle": "{item} now looks: {look}.",
+            "Roughly": "About {count} \"{kind}\" in {name}."
         },
         "FallOff": {
             "Fell": "{name} falls off."
@@ -1272,7 +1306,9 @@
             "Food": "food",
             "Holds": "{effect} stays in it: counteract rank {rank} against the spell's {ours}.",
             "Fine": "Fine {name}",
-            "Enhanced": "{items}: made fine for an hour, if not eaten. At this rank the spell takes up to {gallons} gallon(s) of water or {pounds} pounds of food."
+            "Enhanced": "{items}: made fine for an hour, if not eaten. At this rank the spell takes up to {gallons} gallon(s) of water or {pounds} pounds of food.",
+            "Removed": "Toxins removed: {items}.",
+            "Cleansed": "{items}: made fine, for good. At this rank the spell takes {feet} contiguous cubic feet."
         },
         "Influence": {
             "Title": "Web of Influence",
@@ -1348,6 +1384,19 @@
             "NoThing": "No \"{item}\" on {name} to disguise.",
             "Hidden": "{thing}: its aura is hidden.",
             "Lowered": "{thing}: its aura registers as {as}, level {level}."
+        },
+        "Wayfinding": {
+            "NorthUp": "North is toward the top of the map.",
+            "North": "North is {degrees}° clockwise from the top of the map.",
+            "Choose": "Choose a place you were at:",
+            "Nowhere": "No place you were at, in that time, is remembered.",
+            "Square": "{scene}: square {x}, {y}",
+            "Lies": "{place} lies to the {toward}.",
+            "Elsewhere": "{place} is on another map; which way it lies, the GM says."
+        },
+        "Obstruction": {
+            "Label": "{name}: no better than failure",
+            "Cursed": "You begin {name}, and know at once: {area} is cursed to impede rituals."
         }
     }
 }

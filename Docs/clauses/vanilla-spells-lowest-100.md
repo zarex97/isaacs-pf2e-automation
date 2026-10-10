@@ -695,67 +695,67 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-195a | "Name a particular type of object you're looking for within the area" | when:cast · reach:object · check:caster-choice | The caster names an object type in a 1-cubic-foot area | | ☐ | |
-| VS-195b | "You gain an instant estimate of the quantity of the chosen objects that are clearly visible within the target area. The number is rounded to the largest digit" | effect:info | A note: the rounded count is the table's to tell | | ☐ | |
-| VS-195c | "the distinguishing features must be obvious at a glance, and the spell is fooled by objects disguised as other objects" | effect:gm-note | A note: what fools the count is the table's | | ☐ | |
+| VS-195a | "Name a particular type of object you're looking for within the area" | when:cast · reach:object · check:caster-choice | The caster names an object type in a 1-cubic-foot area | `approximate.json` | ✅ | "copper" named at the cast, counted in the targeted pile |
+| VS-195b | "You gain an instant estimate of the quantity of the chosen objects that are clearly visible within the target area. The number is rounded to the largest digit" | effect:info | A note: the rounded count is the table's to tell | `approximate.json` | ✅ | 180 copper pieces and 12 dented copper coins: "About 200". 7 stones: "About 7" |
+| VS-195c | "the distinguishing features must be obvious at a glance, and the spell is fooled by objects disguised as other objects" | effect:gm-note | A note: what fools the count is the table's | `approximate.json` | — | What is disguised as something else is the table's |
 
 ### VS-196 · Breathe Fire
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-196a | "A gout of flame sprays from your mouth" | when:cast · reach:area/cone | A 15-ft cone aimed from the caster's edge | | ☐ | |
-| VS-196b | "You deal 2d6 fire damage to creatures in the area with a basic Reflex save" | check:basic-save · effect:damage | Each creature caught saves basic Reflex against 2d6 fire | | ☐ | |
-| VS-196c | "Heightened (+1) The damage increases by 2d6" | scaling:dice-per-rank · effect:damage | Rank 2 deals 4d6 | | ☐ | |
+| VS-196a | "A gout of flame sprays from your mouth" | when:cast · reach:area/cone | A 15-ft cone aimed from the caster's edge | `breathe-fire.json` | ✅ | A 15-ft cone from the caster's edge, aimed east: the Target caught, the Patient beside it to the south not |
+| VS-196b | "You deal 2d6 fire damage to creatures in the area with a basic Reflex save" | check:basic-save · effect:damage | Each creature caught saves basic Reflex against 2d6 fire | `breathe-fire.json` | ✅ | The card's basic Reflex, DC 13, on each creature caught, through the target rows |
+| VS-196c | "Heightened (+1) The damage increases by 2d6" | scaling:dice-per-rank · effect:damage | Rank 2 deals 4d6 | `breathe-fire.json` | ✅ | Rank 2: 4d6 fire. Rank 1: 2d6 |
 
 ### VS-197 · Cleanse Cuisine
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-197a | "You transform all food and beverages in the area into delicious fare" | when:cast · reach:object · effect:gm-note | A note: the food in the cubic foot improved is the table's | | ☐ | |
-| VS-197b | "You can also choose to remove all toxins and contaminations from the food" | check:caster-choice · effect:gm-note | A note: the food freed of toxins is the table's | | ☐ | |
-| VS-197c | "Heightened (+2) Add another cubic foot to the area, which must be contiguous with the rest" | scaling:area-per-rank · effect:gm-note | Rank 3 covers two contiguous cubic feet | | ☐ | |
+| VS-197a | "You transform all food and beverages in the area into delicious fare" | when:cast · reach:object · effect:gm-note | A note: the food in the cubic foot improved is the table's | `cleanse-cuisine.json` | ✅ | The pile's ZZ Pie became "Fine ZZ Pie", and still was an hour later; a second casting left it as it was |
+| VS-197b | "You can also choose to remove all toxins and contaminations from the food" | check:caster-choice · effect:gm-note | A note: the food freed of toxins is the table's | `cleanse-cuisine.json` | ✅ | Chosen yes: the pile's Arsenic removed. Control: chosen no, it stayed |
+| VS-197c | "Heightened (+2) Add another cubic foot to the area, which must be contiguous with the rest" | scaling:area-per-rank · effect:gm-note | Rank 3 covers two contiguous cubic feet | `cleanse-cuisine.json` | ✅ | Rank 3's card: 2 contiguous cubic feet. Rank 1: 1 |
 
 ### VS-198 · Control Water
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-198a | "you can raise or lower the level of water in the chosen area by 10 feet" | when:cast · reach:area/square · check:caster-choice · effect:gm-note | A note: a 50-ft square's water moved 10 ft is the table's | | ☐ | |
-| VS-198b | "Creatures that have the water trait and that are in the area when you Cast the Spell must attempt a Fortitude save, with the effects of the Slow spell" | reach:filtered · check:save · effect:condition · ending:duration | Water-trait creatures inside save Fortitude; slowed as Slow's degrees say | | ☐ | |
+| VS-198a | "you can raise or lower the level of water in the chosen area by 10 feet" | when:cast · reach:area/square · check:caster-choice · effect:gm-note | A note: a 50-ft square's water moved 10 ft is the table's | `control-water.json` | — | The water level is the table's; the 50-ft square is placed as the area |
+| VS-198b | "Creatures that have the water trait and that are in the area when you Cast the Spell must attempt a Fortitude save, with the effects of the Slow spell" | reach:filtered · check:save · effect:condition · ending:duration | Water-trait creatures inside save Fortitude; slowed as Slow's degrees say | `control-water.json` | ✅ | A 50-ft square: the Target given the water trait caught, the Patient beside it excluded; its failed Fortitude: slowed 1 for a minute |
 
 ### VS-199 · Dreaming Potential
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-199a | "You draw the target into a lucid dream" | when:cast · reach:single · ending:duration | The touched sleeper carries the dream for 8 hours | | ☐ | |
-| VS-199b | "If it sleeps the full 8 hours uninterrupted, when it wakes, it counts as having spent a day of downtime retraining" | effect:gm-note | A note: a day of retraining after unbroken sleep is the table's | | ☐ | |
-| VS-199c | "it can't use dreaming potential for any retraining that would require either an instructor or specialized knowledge it can't access within the dream" | effect:gm-note | A note: retraining that needs a teacher is the table's to refuse | | ☐ | |
+| VS-199a | "You draw the target into a lucid dream" | when:cast · reach:single · ending:duration | The touched sleeper carries the dream for 8 hours | `dreaming-potential.json` | ✅ | The unconscious Patient: `dreaming potential`, 8 hours. Control: awake, refused |
+| VS-199b | "If it sleeps the full 8 hours uninterrupted, when it wakes, it counts as having spent a day of downtime retraining" | effect:gm-note | A note: a day of retraining after unbroken sleep is the table's | `dreaming-potential.json` | ✅ | Woken after 2 hours: the dream ended with no retraining. A full 8 hours: "it counts as a day of downtime retraining" |
+| VS-199c | "it can't use dreaming potential for any retraining that would require either an instructor or specialized knowledge it can't access within the dream" | effect:gm-note | A note: retraining that needs a teacher is the table's to refuse | `dreaming-potential.json` | — | Which retraining needs an instructor is the table's; the note says so |
 
 ### VS-200 · Know the Way
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-200a | "You immediately know which direction is north (if it exists at your current location)" | when:cast · reach:self · effect:info | A note: which way is north is the table's to tell | | ☐ | |
-| VS-200b | "you can choose a location you were at within the last 24 hours and learn what direction it lies" | check:caster-choice · effect:info | A note: the direction to the chosen place is the table's | | ☐ | |
-| VS-200c | "Heightened (3rd) You can choose a location you were at within the last week" | scaling:from-rank · effect:info | From rank 3 a place from the last week can be chosen | | ☐ | |
-| VS-200d | "Heightened (7th) You can choose a location you were at regardless of how long ago you were there" | scaling:from-rank · effect:info | From rank 7 any place ever visited can be chosen | | ☐ | |
+| VS-200a | "You immediately know which direction is north (if it exists at your current location)" | when:cast · reach:self · effect:info | A note: which way is north is the table's to tell | `know-the-way.json` | ✅ | "North is toward the top of the map"; with the scene's `north` at 90°, said so, and a place east on the map lay north |
+| VS-200b | "you can choose a location you were at within the last 24 hours and learn what direction it lies" | check:caster-choice · effect:info | A note: the direction to the chosen place is the table's | `know-the-way.json` | ✅ | The caster's last stops listed; square 12, 10 "lies to the southeast" |
+| VS-200c | "Heightened (3rd) You can choose a location you were at within the last week" | scaling:from-rank · effect:info | From rank 3 a place from the last week can be chosen | `know-the-way.json` | ✅ | A place from 3 days ago: listed at rank 3, not at 1 |
+| VS-200d | "Heightened (7th) You can choose a location you were at regardless of how long ago you were there" | scaling:from-rank · effect:info | From rank 7 any place ever visited can be chosen | `know-the-way.json` | ✅ | A place from 30 days ago: listed at rank 7, not at 3 |
 
 ### VS-201 · Magic Stone
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-201a | "You can target 1 non-magical stone or sling bullet for every action you use Casting this Spell" | when:cast · reach:object · scaling:per-action | One stone per action spent, up to 3 | | ☐ | |
-| VS-201b | "The stones must be unattended or carried by you or a willing ally" | economy:requires | Only unattended stones, or the caster's or a willing ally's | | ☐ | |
-| VS-201c | "The stones become +1 striking disrupting Sling Bullets" | effect:weapon-runes · ending:duration | Each stone is a +1 striking disrupting sling bullet for 1 minute | | ☐ | |
-| VS-201d | "Each stone can be used only once, after which it crumbles to dust" | ending:spent | A stone is gone after one Strike | | ☐ | |
+| VS-201a | "You can target 1 non-magical stone or sling bullet for every action you use Casting this Spell" | when:cast · reach:object · scaling:per-action | One stone per action spent, up to 3 | `magic-stone.json` | ✅ | Two stones chosen: the effect's counter at 2 |
+| VS-201b | "The stones must be unattended or carried by you or a willing ally" | economy:requires | Only unattended stones, or the caster's or a willing ally's | `magic-stone.json` | ✅ | Cast on the creature carrying them; the effect lives on that sheet |
+| VS-201c | "The stones become +1 striking disrupting Sling Bullets" | effect:weapon-runes · ending:duration | Each stone is a +1 striking disrupting sling bullet for 1 minute | `magic-stone.json` | ✅ | The held sling: +1 to attack, striking, vitalizing (pf2e's disrupting) for 1 minute. Control: back to plain once spent |
+| VS-201d | "Each stone can be used only once, after which it crumbles to dust" | ending:spent | A stone is gone after one Strike | `magic-stone.json` | ✅ | Each sling Strike spent one: 2, 1, gone. Control: a Club Strike spent none |
 
 ### VS-202 · Ritual Obstruction
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-202a | "You establish a zone of magical feedback that makes it impossible to succeed at rituals of this spell's rank or lower in the area" | when:cast · reach:area/burst · area:lingering · ending:duration | A 60-ft burst stays on the board for a day | | ☐ | |
-| VS-202b | "Ritual obstruction ignores all cover, including walls and ceilings, to the extent of its area" | effect:cover-reduced | Walls and ceilings do not cut the area short | | ☐ | |
-| VS-202c | "Anyone attempting to cast a ritual within the area knows, when they begin to cast the ritual, the area is cursed to impede rituals" | when:while-inside · effect:info | A ritual caster inside is told the area is cursed | | ☐ | |
-| VS-202d | "Any ritual cast in the area can't have a final result better than failure" | when:while-inside · reach:filtered · check:degree-shift | A ritual of its rank or lower inside ends no better than failure | | ☐ | |
+| VS-202a | "You establish a zone of magical feedback that makes it impossible to succeed at rituals of this spell's rank or lower in the area" | when:cast · reach:area/burst · area:lingering · ending:duration | A 60-ft burst stays on the board for a day | `ritual-obstruction.json` | ✅ | A 60-ft burst on the board for a day |
+| VS-202b | "Ritual obstruction ignores all cover, including walls and ceilings, to the extent of its area" | effect:cover-reduced | Walls and ceilings do not cut the area short | `ritual-obstruction.json` | ✅ | A Region is not cut by walls: it reaches past them |
+| VS-202c | "Anyone attempting to cast a ritual within the area knows, when they begin to cast the ritual, the area is cursed to impede rituals" | when:while-inside · effect:info | A ritual caster inside is told the area is cursed | `ritual-obstruction.json` | ✅ | Resolute Obliteration begun inside: "Ritual Obstruction is cursed to impede rituals" |
+| VS-202d | "Any ritual cast in the area can't have a final result better than failure" | when:while-inside · reach:filtered · check:degree-shift | A ritual of its rank or lower inside ends no better than failure | `ritual-obstruction.json` | ✅ | Its Arcana check, 19 against DC 15: a failure. Controls: the next check, a success; a rank 6 ritual, no curse and a success |
 
 ### VS-203 · Timely Reminder
 
@@ -772,24 +772,24 @@ it offline; **Evidence** names what proved it in world `pf`. Clause IDs are the 
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-204a | "Each creature along the line and on solid ground takes 4d6 bludgeoning damage and 6d6 fire damage with a Reflex save" | when:cast · reach:area/line · reach:filtered · check:save · effect:damage | A 120-ft line catches grounded creatures; Reflex against 4d6 bludgeoning and 6d6 fire | | ☐ | |
-| VS-204b | "Critical Success The creature is unaffected" | check:save | Nothing | | ☐ | |
-| VS-204c | "Success The creature takes half damage" | check:save · effect:damage | Half damage | | ☐ | |
-| VS-204d | "Failure The creature takes full damage, and it falls Prone" | check:save · effect:damage · effect:condition | Full damage and prone | | ☐ | |
-| VS-204e | "Critical Failure The creature takes double damage, and it falls prone" | check:save · effect:damage · effect:condition | Double damage and prone | | ☐ | |
-| VS-204f | "Heightened (+1) The damage increases by 1d6 bludgeoning and 1d6 fire" | scaling:dice-per-rank · effect:damage | Rank 6 deals 5d6 bludgeoning and 7d6 fire | | ☐ | |
+| VS-204a | "Each creature along the line and on solid ground takes 4d6 bludgeoning damage and 6d6 fire damage with a Reflex save" | when:cast · reach:area/line · reach:filtered · check:save · effect:damage | A 120-ft line catches grounded creatures; Reflex against 4d6 bludgeoning and 6d6 fire | `blazing-fissure.json` | ✅ | A 120-ft line: the Target caught; raised 10 ft, excluded. 4d6 bludgeoning and 6d6 fire rolled once |
+| VS-204b | "Critical Success The creature is unaffected" | check:save | Nothing | `blazing-fissure.json` | ✅ | A critical success: no damage, not prone |
+| VS-204c | "Success The creature takes half damage" | check:save · effect:damage | Half damage | `blazing-fissure.json` | ✅ | A success: 19 of 39, not prone |
+| VS-204d | "Failure The creature takes full damage, and it falls Prone" | check:save · effect:damage · effect:condition | Full damage and prone | `blazing-fissure.json` | ✅ | A failure: 29 of 29, prone |
+| VS-204e | "Critical Failure The creature takes double damage, and it falls prone" | check:save · effect:damage · effect:condition | Double damage and prone | `blazing-fissure.json` | ✅ | A critical failure: 64 of 32, prone |
+| VS-204f | "Heightened (+1) The damage increases by 1d6 bludgeoning and 1d6 fire" | scaling:dice-per-rank · effect:damage | Rank 6 deals 5d6 bludgeoning and 7d6 fire | `blazing-fissure.json` | ✅ | Rank 6: 5d6 bludgeoning and 7d6 fire |
 
 ### VS-205 · Circle of Protection
 
 | ID | Clause | Patterns | Must happen | Static check | Status | Evidence |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| VS-205a | "You ward a creature and those nearby against a specified alignment" | when:cast · reach:area/emanation · area:aura/pf2e · area:from-target | A 10-ft emanation around the touched creature moves with it | | ☐ | |
-| VS-205b | "Choose chaotic, evil, good, or lawful; this spell gains the opposing trait" | check:caster-choice · effect:trait-gained | The chosen alignment is kept; the spell gains its opposite | | ☐ | |
-| VS-205c | "Creatures in the area gain a +1 status bonus to AC against attacks by creatures of the chosen alignment and to saves against effects from such creatures" | when:while-inside · effect:bonus | Inside: +1 status to AC and saves against that alignment | | ☐ | |
-| VS-205d | "This bonus increases to +3 against effects from such creatures that directly control the target and attacks made by summoned creatures of the chosen alignment" | reach:filtered · effect:bonus | +3 against control effects and summoned attackers of that alignment | | ☐ | |
-| VS-205e | "Summoned creatures of the chosen alignment can't willingly enter the area without succeeding at a Will save" | when:on-entering · reach:filtered · check:save · effect:approach-barred | A summoned creature of it must succeed at Will to enter | | ☐ | |
-| VS-205f | "repeated attempts use the first save result" | check:result-kept | Its first Will result stands for later attempts | | ☐ | |
-| VS-205g | "Heightened (4th) The duration increases to 1 hour" | scaling:from-rank · ending:duration | From rank 4 it lasts an hour | | ☐ | |
+| VS-205a | "You ward a creature and those nearby against a specified alignment" | when:cast · reach:area/emanation · area:aura/pf2e · area:from-target | A 10-ft emanation around the touched creature moves with it | `circle-of-protection.json` | ✅ | A 10-ft emanation on the Patient touched; it moved with the Patient |
+| VS-205b | "Choose chaotic, evil, good, or lawful; this spell gains the opposing trait" | check:caster-choice · effect:trait-gained | The chosen alignment is kept; the spell gains its opposite | `circle-of-protection.json` | ✅ | Unholy chosen and kept for the area's rules; holy chosen, its rules read holy |
+| VS-205c | "Creatures in the area gain a +1 status bonus to AC against attacks by creatures of the chosen alignment and to saves against effects from such creatures" | when:while-inside · effect:bonus | Inside: +1 status to AC and saves against that alignment | `circle-of-protection.json` | ✅ | An unholy attacker: the Patient's AC 11. Controls: plain 10, holy 10. Its Will against an unholy creature's effect: +1 |
+| VS-205d | "This bonus increases to +3 against effects from such creatures that directly control the target and attacks made by summoned creatures of the chosen alignment" | reach:filtered · effect:bonus | +3 against control effects and summoned attackers of that alignment | `circle-of-protection.json` | ✅ | An unholy summoned attacker: AC 13. An unholy creature's Command: +3 to the save |
+| VS-205e | "Summoned creatures of the chosen alignment can't willingly enter the area without succeeding at a Will save" | when:on-entering · reach:filtered · check:save · effect:approach-barred | A summoned creature of it must succeed at Will to enter | `circle-of-protection.json` | ✅ | An unholy summoned creature stepping in: stopped, and its Will save rolled. Control: no longer summoned, it walked in |
+| VS-205f | "repeated attempts use the first save result" | check:result-kept | Its first Will result stands for later attempts | `circle-of-protection.json` | ✅ | Its critical failure kept: the next step in was stopped with no new save |
+| VS-205g | "Heightened (4th) The duration increases to 1 hour" | scaling:from-rank · ending:duration | From rank 4 it lasts an hour | `circle-of-protection.json` | ✅ | Rank 4: 1 hour. Rank 3: 1 minute |
 
 ### VS-206 · Frozen Lungs
 

@@ -76,6 +76,9 @@ import { Rune } from "./riders/rune.mjs";
 import { Pathway } from "./riders/pathway.mjs";
 import { Disguise } from "./riders/disguise.mjs";
 import { Parade } from "./riders/perspective.mjs";
+import { Wayfinding } from "./riders/wayfinding.mjs";
+import { Obstruction } from "./riders/obstruction.mjs";
+import { FromTarget } from "./targeting/from-target.mjs";
 import { Preparations } from "./riders/preparations.mjs";
 import { Reveal } from "./riders/reveal.mjs";
 import { LightOrb } from "./targeting/light-orb.mjs";
@@ -142,6 +145,9 @@ export const INIT = [
     ["from one fire or tree to another", () => Pathway.registerHooks()],
     ["magic made to look like other magic", () => Disguise.registerHooks()],
     ["an effect that ends with its area", () => Parade.registerHooks()],
+    ["where each creature has been", () => Wayfinding.registerHooks()],
+    ["a place where rituals fail", () => { Obstruction.register(); Obstruction.registerHooks(); }],
+    ["an area on the creature touched", () => FromTarget.register()],
     ["until the caster's daily preparations", () => Preparations.registerHooks()],
     ["a revealed creature is seen", () => Reveal.registerMode()],
     ["a light set down", () => { LightOrb.register(); LightOrb.registerHooks(); }],

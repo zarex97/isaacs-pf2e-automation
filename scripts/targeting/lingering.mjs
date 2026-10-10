@@ -296,7 +296,7 @@ export const Lingering = {
         // that remembers to take them away again.
         const scenery = await Lingering.scenery(spec, region, config);
         // An area that does nothing on its own but move when Sustained — *Floating Flame* — is still kept.
-        if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0 && !spec.sustain && !spec.drifts) return null;
+        if (behaviors.length === 0 && scenery.lightIds.length === 0 && scenery.wallIds.length === 0 && !spec.sustain && !spec.drifts && !spec.obstructsRituals) return null;
 
         const [created] = await canvas.scene.createEmbeddedDocuments("Region", [
             {
@@ -322,6 +322,8 @@ export const Lingering = {
                             // A section of a wall of squares: the wall is one wall to a move (`firstForMovement`).
                             section,
                             repels: spec.repels ?? null,
+                            // *Ritual Obstruction*: no ritual of its rank or lower succeeds inside (`obstruction.mjs`).
+                            obstructsRituals: spec.obstructsRituals === true,
                             repelled: {},
                             originTokenUuid: originToken?.document?.uuid ?? originToken?.uuid ?? null,
                             sustain: spec.sustain ? scaledSustain(spec.sustain, config.steps ?? 0) : null,

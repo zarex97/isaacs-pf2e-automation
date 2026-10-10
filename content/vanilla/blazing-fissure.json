@@ -1,0 +1,44 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "anchor": "caster",
+        "predicate": [
+            {
+                "not": "rider:target:elevated"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "area-damage",
+                "save": "reflex",
+                "parts": [
+                    {
+                        "formula": "4d6",
+                        "perStep": "1d6",
+                        "type": "bludgeoning"
+                    },
+                    {
+                        "formula": "6d6",
+                        "perStep": "1d6",
+                        "type": "fire"
+                    }
+                ],
+                "riders": [
+                    {
+                        "outcomes": [
+                            "failure",
+                            "criticalFailure"
+                        ],
+                        "apply": {
+                            "type": "condition",
+                            "slug": "prone"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -36,6 +36,13 @@ export function unmetRequirement(spell, options = {}) {
         }
         return null;
     }
+    // `{ targetCondition }`: every target has it — *Dreaming Potential*'s "1 willing sleeping creature", unconscious.
+    if (requires && typeof requires === "object" && requires.targetCondition) {
+        const targets = [...(globalThis.game?.user?.targets ?? [])];
+        if (targets.length === 0 || !targets.every((token) => token.actor?.hasCondition?.(requires.targetCondition))) {
+            return t("Requires.TargetCondition", { name: spell.name, condition: requires.targetCondition });
+        }
+    }
     // `{ targetNotTraits }`: no target has any of them — *Spiritual Renewal*'s "1 living creature", not undead or construct.
     if (requires && typeof requires === "object" && Array.isArray(requires.targetNotTraits)) {
         const targets = [...(globalThis.game?.user?.targets ?? [])];
