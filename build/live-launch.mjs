@@ -4,7 +4,8 @@
 //   npm run live:launch -- other   # another world
 //
 // The admin password comes from FOUNDRY_ADMIN, else from ~/.config/isaacs-automation/foundry.env
-// (`FOUNDRY_ADMIN=...`, mode 600). It is never printed. A GitHub secret will not do: the VPS cannot read one back.
+// (`FOUNDRY_ADMIN=...`, mode 600). The Gamemaster's own password is FOUNDRY_GM there, if it has one; without it
+// the launcher tries none, then the admin password. It is never printed. A GitHub secret will not do: the VPS cannot read one back.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -13,13 +14,16 @@ const WORLD = process.argv[2] ?? "pf";
 const CDP = "http://127.0.0.1:9222";
 const ENV = path.join(os.homedir(), ".config", "isaacs-automation", "foundry.env");
 
-function adminPassword() {
-    if (process.env.FOUNDRY_ADMIN) return process.env.FOUNDRY_ADMIN;
-    if (!fs.existsSync(ENV)) throw new Error(`No FOUNDRY_ADMIN and no ${ENV}.`);
-    const line = fs.readFileSync(ENV, "utf8").split("\n").find((l) => l.startsWith("FOUNDRY_ADMIN="));
-    if (!line) throw new Error(`${ENV} has no FOUNDRY_ADMIN= line.`);
-    return line.slice("FOUNDRY_ADMIN=".length).trim().replace(/^["']|["']$/g, "");
+function secret(key, required = true) {
+    if (process.env[key]) return process.env[key];
+    const line = fs.existsSync(ENV) ? fs.readFileSync(ENV, "utf8").split("\n").find((l) => l.startsWith(`${key}=`)) : null;
+    if (!line) {
+        if (required) throw new Error(`No ${key}, in the environment or in ${ENV}.`);
+        return null;
+    }
+    return line.slice(key.length + 1).trim().replace(/^["']|["']$/g, "");
 }
+const adminPassword = () => secret("FOUNDRY_ADMIN");
 
 async function tab() {
     const pages = await (await fetch(`${CDP}/json`)).json();
@@ -34,7 +38,7 @@ async function evaluate(page, expression) {
     const result = await new Promise((resolve) => {
         ws.addEventListener("message", (ev) => {
             const m = JSON.parse(ev.data);
-            if (m.id === 1) resolve(m.result?.result?.value ?? m.result);
+            if (m.id === 1) resolve(m.result?.exceptionDetails ? null : m.result?.result?.value ?? null);
         });
         ws.send(JSON.stringify({ id: 1, method: "Runtime.evaluate", params: { expression, awaitPromise: true, returnByValue: true } }));
     });
@@ -54,9 +58,12 @@ if (now.active && now.world !== WORLD) {
 if (!(await status()).active) {
     const pw = JSON.stringify(adminPassword());
     const out = await evaluate(page, `(async () => {
+        // Setup's own form posts JSON; a 200 page can still be a refusal, so the launch is what tells.
         const auth = await fetch("/auth", { method: "POST", body: new URLSearchParams({ action: "adminAuth", adminPassword: ${pw} }) });
+        const page = await auth.text();
+        const said = /InvalidAdminKey/.test(page) && !auth.url.endsWith("/setup") ? "refused" : "accepted";
         const launch = await fetch("/setup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "launchWorld", world: ${JSON.stringify(WORLD)} }) });
-        return JSON.stringify({ auth: auth.status, launch: launch.status });
+        return JSON.stringify({ auth: auth.status, said, launch: launch.status, answer: (await launch.text()).slice(0, 160) });
     })()`);
     console.log("launch:", out);
     for (let i = 0; i < 60 && (await status()).world !== WORLD; i++) await sleep(1000);
@@ -71,11 +78,13 @@ for (let i = 0; i < 20 && !joined; i++) {
     joined = await evaluate(page, `(async () => {
         const gm = [...document.querySelectorAll('select[name="userid"] option')].find((o) => /gamemaster/i.test(o.textContent));
         if (!gm) return null;
-        const r = await fetch("/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "join", userid: gm.value, password: "" }) });
-        location.href = "/game";
-        return "join " + r.status;
+        for (const password of ${JSON.stringify([secret("FOUNDRY_GM", false), "", secret("FOUNDRY_ADMIN", false)].filter((p) => p !== null))}) {
+            const r = await fetch("/join", { method: "POST", body: new URLSearchParams({ action: "join", userid: gm.value, password }) });
+            if (r.ok) { location.href = "/game"; return "joined"; }
+        }
+        return "refused";
     })()`).catch(() => null);
 }
-if (!joined) throw new Error("No Gamemaster on /join.");
+if (joined !== "joined") throw new Error(joined ? "The Gamemaster password was refused: set FOUNDRY_GM." : "No Gamemaster on /join.");
 console.log(joined);
 console.log(`World ${WORLD} is up; the tab is loading /game.`);
