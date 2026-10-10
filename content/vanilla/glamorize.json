@@ -1,0 +1,75 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.glamorize.Prompt",
+        "fields": [
+            {
+                "key": "look",
+                "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Look",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 1,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Glamour",
+                "describes": "look",
+                "rules": [
+                    {
+                        "key": "RollOption",
+                        "domain": "all",
+                        "option": "glamorize-bonus",
+                        "toggleable": true,
+                        "value": false,
+                        "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Bonus"
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "deception",
+                        "type": "status",
+                        "value": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Glamour",
+                        "predicate": [
+                            "glamorize-bonus",
+                            "action:impersonate"
+                        ]
+                    },
+                    {
+                        "key": "FlatModifier",
+                        "selector": "performance",
+                        "type": "status",
+                        "value": 1,
+                        "label": "ISAACS_AUTOMATION.Vanilla.glamorize.Glamour",
+                        "predicate": [
+                            "glamorize-bonus",
+                            "action:perform"
+                        ]
+                    }
+                ],
+                "originAction": {
+                    "name": "ISAACS_AUTOMATION.Vanilla.glamorize.Sustain",
+                    "traits": [
+                        "concentrate"
+                    ],
+                    "spends": false,
+                    "riders": [
+                        {
+                            "event": "action-used",
+                            "self": true,
+                            "apply": {
+                                "type": "adjust"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

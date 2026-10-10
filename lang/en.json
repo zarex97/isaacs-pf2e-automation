@@ -261,6 +261,7 @@
         },
         "OriginAction": {
             "Description": "{name}: from {target}, the creature {spell} marked. Each use spends one.",
+            "Keeps": "{name}: from {target}, the creature {spell} marked. It uses nothing up.",
             "Left": "{name}: {left} left.",
             "Last": "{name}: the last one — the spell ends."
         },
@@ -1018,6 +1019,35 @@
                 "Prompt": "Which piece of wood you carry, and its new shape.",
                 "Item": "Item",
                 "Shape": "New shape"
+            },
+            "umbral-journey": {
+                "Journey": "umbral journey",
+                "Arrive": "The journey through the Netherworld ends: you come out within a mile of where you meant to go."
+            },
+            "read-omens": {
+                "Prompt": "A goal or activity you plan within 1 week, or an event you expect within 1 week:",
+                "Event": "Goal or event"
+            },
+            "enhance-victuals": {
+                "Prompt": "The food or drink to enhance (blank: every food the target holds):",
+                "Item": "Food or drink"
+            },
+            "glamorize": {
+                "Prompt": "The minor detail of your appearance, or the small effect about you:",
+                "Look": "Change",
+                "Glamour": "glamorize",
+                "Bonus": "The GM grants glamorize's +1 to Impersonate and Perform",
+                "Sustain": "Sustain Glamorize"
+            },
+            "web-of-influence": {
+                "Prompt": "Anyone you already know is connected, to leave out (names, separated by commas):",
+                "Exclude": "Leave out"
+            },
+            "enhance-senses": {
+                "Senses": "enhance senses"
+            },
+            "mud-pit": {
+                "Mud": "Mud Pit"
             }
         },
         "Conditions": {
@@ -1117,7 +1147,10 @@
             "Reply": "Reply",
             "Nobody": "Nobody to send it to.",
             "Telepathy": "{name}: speak",
-            "TelepathyHint": "Speak telepathically to the others the bond joins: write the words, and they hear them."
+            "TelepathyHint": "Speak telepathically to the others the bond joins: write the words, and they hear them.",
+            "AsksGm": "{from} casts {spell} and asks the GM",
+            "Answer": "Answer",
+            "Answered": "The answer, for {to}"
         },
         "Ventriloquism": {
             "Throw": "Throw your voice",
@@ -1165,10 +1198,50 @@
             "Legend": "Landmarks",
             "Here": "you stood at square {x}, {y}",
             "MapName": "Map: {scene}",
-            "Mapped": "A map of {scene} is drawn."
+            "Mapped": "A map of {scene} is drawn.",
+            "Adjust": "What changes now?",
+            "Adjusted": "{name}: {words}."
         },
         "FallOff": {
             "Fell": "{name} falls off."
+        },
+        "Poison": {
+            "Title": "Detect Poison",
+            "Clean": "{name} is neither venomous nor poisonous.",
+            "CleanObject": "{name} is not poison and has not been poisoned.",
+            "Poisonous": "{name} is venomous or poisonous.",
+            "PoisonedObject": "{name} is poison, or has been poisoned.",
+            "Count": "{name} holds {count} poison(s): {list}.",
+            "NoFood": "{name} holds no {item} to enhance.",
+            "Food": "food",
+            "Holds": "{effect} stays in it: counteract rank {rank} against the spell's {ours}.",
+            "Fine": "Fine {name}",
+            "Enhanced": "{items}: made fine for an hour, if not eaten. At this rank the spell takes up to {gallons} gallon(s) of water or {pounds} pounds of food."
+        },
+        "Influence": {
+            "Title": "Web of Influence",
+            "None": "{name} has no magical connection the spell can find.",
+            "Nearest": "The nearest creature magically connected to {name} is {feet} feet away, to the {toward}.",
+            "OtherPlane": "The nearest creature magically connected to {name} is on a different plane.",
+            "Beyond": "The creatures magically connected to {name} are beyond this map: the GM says how far and which way.",
+            "East": "east",
+            "Southeast": "southeast",
+            "South": "south",
+            "Southwest": "southwest",
+            "West": "west",
+            "Northwest": "northwest",
+            "North": "north",
+            "Northeast": "northeast"
+        },
+        "Recall": {
+            "Title": "Hypercognition",
+            "Left": "Recall Knowledge, at no action: {left} left.",
+            "Roll": "Recall Knowledge",
+            "Check": "Recall Knowledge ({skill})"
+        },
+        "Journey": {
+            "Title": "Umbral Journey",
+            "Pace": "The slowest of you has a Speed of {speed} feet: each hour covers {hourly} miles, {days} days' ground, and {hours} hours {total} miles."
         }
     }
 }

@@ -36,6 +36,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Daze | 1 |  | crit. failure: stunned 1 |  |
 | Deep Breath | 1 |  | deep breath (10 minutes, carries holder-acts shorten, on you); deep breath (60 minutes, carries holder-acts shorten, from rank 2, on you); deep breath (480 minutes, carries holder-acts shorten, from rank 4, on you) |  |
 | Detect Magic | 1 |  | detect-magic (on you); detect-magic (on you) |  |
+| Detect Poison | 1 |  | detect-poison |  |
 | Disintegrate | 6 |  | rays (on you) |  |
 | Dispel Magic | 2 |  | counteract |  |
 | Dizzying Colors | 1 | 15-ft cone (pf2e's), from you, all | success: dazzled (1 rounds); failure: stunned 1; failure: blinded (1 rounds); failure: dazzled (1 minutes); crit. failure: stunned (1 rounds); crit. failure: blinded (1 minutes) |  |
@@ -44,6 +45,8 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Electric Arc | 1 | up to 2 |  |  |
 | Endure | 1 |  | spell-effect-endure |  |
 | Enfeeble | 1 |  | success: enfeebled 1 (1 rounds); failure: enfeebled 2 (1 minutes); crit. failure: enfeebled 3 (1 minutes) |  |
+| Enhance Senses | 4 | up to 1, +2 at rank 6, +3 at rank 8, +4 at rank 10 | enhance senses (1 hours) |  |
+| Enhance Victuals | 2 |  | victuals |  |
 | Enlarge | 2 | up to 1, +9 at rank 6 | spell-effect-enlarge (below rank 4); spell-effect-enlarge (from rank 4) |  |
 | Entangling Flora | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, reflex on turn start — failure / crit. failure: spell-effect-entangling-flora (Escape, ends on leaving); crit. failure: immobilized (1 rounds), 1 minutes |
 | Environmental Endurance | 2 |  | environmental endurance (until it ends); environmental endurance (until it ends); environmental endurance (until it ends, from rank 3); environmental endurance (until it ends, from rank 5) |  |
@@ -62,6 +65,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Frozen Lungs | 2 |  | success: frozen lungs (1 minutes, carries holder-acts damage); failure: frozen lungs (1 minutes, carries holder-acts damage); crit. failure: frozen lungs (1 minutes, carries holder-acts damage) |  |
 | Gecko Grip | 2 |  | spell-effect-gecko-grip (below rank 5); spell-effect-gecko-grip (1 hours, from rank 5) |  |
 | Ghoulish Cravings | 2 |  | success: sickened 1; failure / crit. failure: sickened 2; failure: ghoulish hunger (until it ends); crit. failure: ghoulish hunger (until it ends) |  |
+| Glamorize | 1 |  | glamorize (1 hours, on you) |  |
 | Glowing Trail | 1 |  | glowing trail (1 hours, on you) |  |
 | Gravity Well | 3 | 30-ft burst (pf2e's), all | pulled toward the centre on a reflex save: criticalSuccess 0 ft, success 5 ft, failure 15 ft, criticalFailure 30 ft |  |
 | Grease | 1 | choose: 10-ft square or no area, all | failure / crit. failure: prone (no end); failure: GM note: “The holder or wielder takes a –2 circumstance penalty to checks that involve using the greased object.”; crit. failure: GM note: “The holder or wielder releases the greased object; it lands in an adjacent square of the GM's choice.” | reflex on entering — failure: GM note: “Moving onto the grease, it failed to Balance: it must stop, or fall prone to keep going.”; crit. failure: prone (no end), 1 minutes |
@@ -72,6 +76,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Heroism | 3 |  | spell-effect-heroism |  |
 | Holy Light | 3 |  | success: 5d6 spirit; crit. success: 10d6 spirit; counteract-area (on you) |  |
 | Hydraulic Push | 1 |  | success: pushed 5 ft away; crit. success: pushed 10 ft away |  |
+| Hypercognition | 3 |  | recall (on you) |  |
 | Hypnotize | 3 | 10-ft burst (pf2e's), all | failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area) | ends if not Sustained, while inside: dazzled, will on entering / turn end — failure: fascinated by the cloud (ends with the area); crit. failure: fascinated by the cloud: no reactions (ends with the area), 1 minutes |
 | Ice Storm | 4 | 20-ft burst (pf2e's), all |  | difficult terrain, 2 cold on turn end, 1 minutes |
 | Ignition | 1 | variant — Ignition (Melee): crit. success: 1d6 (+1d6 per rank) persistent fire | crit. success: 1d4 (+1d4 per rank) persistent fire |  |
@@ -97,6 +102,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Mist | 2 | 20-ft burst (pf2e's), all, placed, no targets |  | while inside: concealed, its rules, 1 minutes |
 | Moon Frenzy | 5 |  | spell-effect-moon-frenzy |  |
 | Mountain Resilience | 4 |  | spell-effect-mountain-resilience (carries damage-received shorten) |  |
+| Mud Pit | 1 | 15-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, 1 minutes |
 | Nettleskin | 1 |  | nettleskin (10 rounds, carries damage-received damage, damage-received shorten, on you) |  |
 | Noxious Vapors | 1 | 10-ft emanation (pf2e's), all | crit. failure: sickened 1 | until your next turn, while inside: concealed, its rules, 1 rounds |
 | Nudge Fate | 1 |  | nudge fate (1 minutes) |  |
@@ -113,6 +119,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Protector Tree | 1 | choose: 5-ft line, all, placed, no targets |  | a wall of squares, in 5-ft sections: AC 10, Hardness 0, 10 HP (+10 per rank), takes a Strike first for your allies beside it, 1 minutes |
 | Puff of Poison | 1 |  | failure: 1d4 (+1d4 per 2 ranks) persistent poison; crit. failure: 2d4 (+2d4 per 2 ranks) persistent poison |  |
 | Quick Sort | 1 |  | sort-items |  |
+| Read Omens | 4 |  | message (on you) |  |
 | Regenerate | 7 |  | spell-effect-regenerate |  |
 | Repulsion | 6 | choose: 5-ft emanation or 10-ft emanation or 15-ft emanation or 20-ft emanation or 25-ft emanation or 30-ft emanation or 35-ft emanation or 40-ft emanation, all, placed, no targets |  | moves with you, repels: a will save on being inside at the cast or entering, once — success: difficult terrain closing in, failure: can't close in, 1 minutes |
 | Resist Energy | 2 | up to 1, +1 at rank 4, +3 at rank 7 | spell-effect-resist-energy |  |
@@ -159,6 +166,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Timely Reminder | 2 |  | timely reminder (365 days, on you); timely reminder (365 days, from rank 5) |  |
 | Toxic Cloud | 5 | 20-ft burst (pf2e's), all, placed, no targets |  | drifts 10 ft away from you each round, Dismiss, while inside: concealed, its rules, fortitude on turn start — 6d8 (+1d8 per rank) poison, 1 minutes |
 | Translocate | 4 | 5-ft square, you move there (seen, until rank 5) | GM note: “If this would bring another creature along — even inside an extradimensional container — the spell is lost.” (on you) |  |
+| Umbral Journey | 5 | up to 10 | journey (on you); umbral journey (8 hours, on you); umbral journey (8 hours) |  |
 | Unfettered Movement | 4 |  | spell-effect-unfettered-movement |  |
 | Vampiric Feast | 3 |  | temp-hp (1 minutes, on you) |  |
 | Vapor Form | 4 |  | spell-effect-vapor-form |  |
@@ -171,6 +179,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Water Breathing | 2 |  | water breathing (1 hours); water breathing (8 hours, from rank 3); water breathing (until it ends, from rank 4) |  |
 | Wave of Despair | 5 |  | success: despair: no reactions, a Will save at the start of each turn (1 rounds, carries turn-start will save); failure / crit. failure: despair: no reactions, a Will save at the start of each turn (1 minutes, carries turn-start will save); crit. failure: slowed 1 (1 minutes) |  |
 | Weapon Storm | 4 | choose: 30-ft cone or 10-ft emanation, from you, all | rolled once: 4 dice of the held weapon (+1 per rank), one basic reflex each, critical specialization on a critical failure |  |
+| Web of Influence | 4 |  | connections |  |
 | Web | 2 | 10-ft burst (pf2e's), all, placed, no targets |  | difficult terrain, athletics or reflex on entering / moving out / moving in it — failure: –10 ft. to Speeds (1 rounds, ends on leaving); crit. failure: immobilized (1 rounds, Escape); crit. failure: –10 ft. to Speeds (2 rounds, ends on leaving), 1 minutes |
 | Wilding Word | 1 |  | success / failure / crit. failure: wilding word's speaker (1 minutes, carries damage-received condition, damage-received condition, on you); success: wilding word (1 minutes); failure: wilding word (1 minutes); crit. failure: wilding word (1 minutes) |  |
 

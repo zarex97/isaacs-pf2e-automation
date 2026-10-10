@@ -78,6 +78,13 @@ having broken the system.
 
 ## 3. Reach the world
 
+**Unattended, on the VPS:** `npm run live:launch` (or `npm run live:launch -- <world>`) closes whatever world is
+open, logs the headless debug Chrome into Setup, launches `pf` and joins as Gamemaster. It reads the admin password
+from `FOUNDRY_ADMIN`, else from `~/.config/isaacs-automation/foundry.env` (`FOUNDRY_ADMIN=...`, mode 600), and never
+prints it. A GitHub secret cannot stand in: nothing outside Actions can read one back.
+
+By hand:
+
 If another world is already running you land on `/join`, not `/setup`. Get to `/setup` with the page's
 own **Return to Setup** form, then launch the world by clicking its play control:
 

@@ -42,6 +42,7 @@ async function ask(title, words) {
 }
 
 export async function sendMessage(rider, context, chosen = {}) {
+    if (rider.apply.toGm) return askGm(rider, context, chosen);
     const from = context.originActor;
     const named = rider.apply.to ? chosen[rider.apply.to] : null;
     const to = (named ? game.actors?.getName?.(String(named).trim()) : null) ?? context.actor;
@@ -57,6 +58,27 @@ export async function sendMessage(rider, context, chosen = {}) {
         flavor: t("Message.To", { from: from.name, to: to.name }),
         content: `<p>${foundry.utils.escapeHTML(text)}</p>${reply}`,
         flags: { [LIB_ID]: { [FLAG]: { fromUuid: from.uuid, toUuid: to.uuid, words: rider.apply.words ?? null, reply: !!rider.apply.reply } } },
+    });
+}
+
+/**
+ * *Read Omens*: "Choose a particular goal or activity you plan to engage in within 1 week … You learn a cryptic clue or
+ * piece of advice that could help with the chosen event". `toGm: true` whispers what the cast chose to the GMs alone,
+ * with a button that whispers their answer back to the caster's players.
+ */
+async function askGm(rider, context, chosen) {
+    const from = context.originActor;
+    const text = cutTo(chosen[rider.apply.flag ?? "message"], rider.apply.words);
+    if (!from || !text) {
+        context.notes.push(t("Message.Nobody"));
+        return;
+    }
+    await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: from }),
+        whisper: ChatMessage.getWhisperRecipients("GM").map((user) => user.id),
+        flavor: t("Message.AsksGm", { from: from.name, spell: context.item?.name ?? "" }),
+        content: `<p>${foundry.utils.escapeHTML(text)}</p><div class="isaacs-automation-choice"><button type="button" data-action="isaacs-automation-reply">${t("Message.Answer")}</button></div>`,
+        flags: { [LIB_ID]: { [FLAG]: { fromUuid: from.uuid, toUuid: null, words: null, reply: true, spell: context.item?.name ?? null } } },
     });
 }
 
@@ -81,15 +103,16 @@ export const Message = {
             if (!button || button.dataset.bound) return;
             button.dataset.bound = "1";
             button.addEventListener("click", async () => {
-                const to = await fromUuid(spec.toUuid);
+                // A question to the GMs is answered by whoever is GM, not by a creature.
+                const to = spec.toUuid ? await fromUuid(spec.toUuid) : null;
                 const from = await fromUuid(spec.fromUuid);
-                const text = await ask(t("Message.Reply"), spec.words);
-                if (!text || !to || !from) return;
+                const text = await ask(t(spec.toUuid ? "Message.Reply" : "Message.Answer"), spec.words);
+                if (!text || (spec.toUuid && !to) || !from) return;
                 button.disabled = true;
                 await ChatMessage.create({
-                    speaker: ChatMessage.getSpeaker({ actor: to }),
+                    speaker: to ? ChatMessage.getSpeaker({ actor: to }) : { alias: spec.spell ?? game.user.name },
                     whisper: playersOf(from),
-                    flavor: t("Message.To", { from: to.name, to: from.name }),
+                    flavor: to ? t("Message.To", { from: to.name, to: from.name }) : t("Message.Answered", { to: from.name }),
                     content: `<p>${foundry.utils.escapeHTML(text)}</p>`,
                 });
             });

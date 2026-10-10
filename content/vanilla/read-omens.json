@@ -1,0 +1,23 @@
+{
+    "castChoice": {
+        "prompt": "ISAACS_AUTOMATION.Vanilla.read-omens.Prompt",
+        "fields": [
+            {
+                "key": "event",
+                "label": "ISAACS_AUTOMATION.Vanilla.read-omens.Event",
+                "type": "text"
+            }
+        ]
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "message",
+                "flag": "event",
+                "toGm": true
+            }
+        }
+    ]
+}

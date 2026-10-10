@@ -1,0 +1,46 @@
+{
+    "areaTargeting": {
+        "maxTargets": 10
+    },
+    "riders": [
+        {
+            "event": "action-used",
+            "self": true,
+            "apply": {
+                "type": "journey",
+                "days": 3,
+                "hours": 8
+            }
+        },
+        {
+            "event": "action-used",
+            "self": true,
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Journey",
+                "rules": [],
+                "dismissable": true,
+                "together": true,
+                "endNote": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Arrive"
+            }
+        },
+        {
+            "event": "action-used",
+            "duration": {
+                "value": 8,
+                "unit": "hours"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Journey",
+                "rules": [],
+                "together": true,
+                "endNote": "ISAACS_AUTOMATION.Vanilla.umbral-journey.Arrive"
+            }
+        }
+    ]
+}

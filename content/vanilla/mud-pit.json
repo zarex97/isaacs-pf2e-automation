@@ -1,0 +1,14 @@
+{
+    "areaTargeting": {
+        "affects": "all",
+        "placeOnly": true
+    },
+    "lingering": {
+        "name": "ISAACS_AUTOMATION.Vanilla.mud-pit.Mud",
+        "duration": {
+            "value": 1,
+            "unit": "minutes"
+        },
+        "difficultTerrain": 2
+    }
+}

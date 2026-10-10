@@ -44,7 +44,7 @@ export function originActionSource({ spec, item, effect, token, steps, dc }) {
         system: {
             actionType: { value: "action" },
             actions: { value: Number(spec.actions) || 1 },
-            description: { value: `<p>${t("OriginAction.Description", { name, target: token?.name ?? "", spell: item?.name ?? "" })}</p>` },
+            description: { value: `<p>${t(spec.spends === false ? "OriginAction.Keeps" : "OriginAction.Description", { name, target: token?.name ?? "", spell: item?.name ?? "" })}</p>` },
             traits: { value: spec.traits ?? ["concentrate"], rarity: "common" },
         },
         flags: {

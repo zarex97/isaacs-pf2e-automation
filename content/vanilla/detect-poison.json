@@ -1,0 +1,10 @@
+{
+    "riders": [
+        {
+            "event": "action-used",
+            "apply": {
+                "type": "detect-poison"
+            }
+        }
+    ]
+}
