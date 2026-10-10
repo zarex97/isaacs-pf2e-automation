@@ -1195,6 +1195,9 @@
             "claim-curse": {
                 "Prompt": "The target's curse to take on (blank: its first):",
                 "Curse": "Curse"
+            },
+            "anticipate-peril": {
+                "Peril": "anticipate peril"
             }
         },
         "Conditions": {

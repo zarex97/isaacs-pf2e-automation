@@ -2,10 +2,138 @@
     "riders": [
         {
             "event": "action-used",
+            "predicate": [
+                {
+                    "lte": [
+                        "item:rank",
+                        2
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
             "apply": {
                 "type": "effect",
-                "uuid": "Compendium.pf2e.spell-effects.Item.4ag0OHKfjROmR4Pm",
-                "atCastRank": true
+                "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "initiative",
+                        "type": "status",
+                        "value": 1,
+                        "removeAfterRoll": [
+                            "check:type:initiative"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        3
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        4
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "initiative",
+                        "type": "status",
+                        "value": 2,
+                        "removeAfterRoll": [
+                            "check:type:initiative"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        5
+                    ]
+                },
+                {
+                    "lte": [
+                        "item:rank",
+                        6
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "initiative",
+                        "type": "status",
+                        "value": 3,
+                        "removeAfterRoll": [
+                            "check:type:initiative"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril"
+                    }
+                ]
+            }
+        },
+        {
+            "event": "action-used",
+            "predicate": [
+                {
+                    "gte": [
+                        "item:rank",
+                        7
+                    ]
+                }
+            ],
+            "duration": {
+                "value": 10,
+                "unit": "minutes"
+            },
+            "apply": {
+                "type": "effect",
+                "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril",
+                "rules": [
+                    {
+                        "key": "FlatModifier",
+                        "selector": "initiative",
+                        "type": "status",
+                        "value": 4,
+                        "removeAfterRoll": [
+                            "check:type:initiative"
+                        ],
+                        "label": "ISAACS_AUTOMATION.Vanilla.anticipate-peril.Peril"
+                    }
+                ]
             }
         }
     ]

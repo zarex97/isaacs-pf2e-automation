@@ -31,7 +31,7 @@ export async function catchFish(_rider, context) {
         type: "consumable",
         name: t(NAMES[fish]),
         img: "icons/consumables/meat/fish-whole-blue.webp",
-        system: { category: "food", quantity: 1, uses: { value: 1, max: 1, autoDestroy: true }, description: { value: `<p>${t("Fish.Hint")}</p>` } },
+        system: { category: "food", quantity: 1, uses: { value: 1, max: 1, autoDestroy: false }, description: { value: `<p>${t("Fish.Hint")}</p>` } },
         flags: { [LIB_ID]: { [FLAG]: { fish, until: game.time.worldTime + 3600 } } },
     }]);
     context.notes.push(t("Fish.Caught", { fish: t(NAMES[fish]) }));
@@ -39,17 +39,20 @@ export async function catchFish(_rider, context) {
 
 export const Fish = {
     registerHooks() {
-        // Eaten — used up, while still fresh: the eater's hour of the fish.
-        Hooks.on("deleteItem", async (item) => {
+        // Eaten — its one use spent, while still fresh: the eater's hour of the fish. (Handing it over moves it, which
+        // spends nothing.)
+        Hooks.on("updateItem", async (item, change) => {
             if (game.users?.activeGM?.id !== game.user?.id) return;
             const spec = item.flags?.[LIB_ID]?.[FLAG];
+            const uses = foundry.utils.getProperty(change, "system.uses.value");
             const eater = item.actor;
-            if (!spec?.fish || !eater || game.time.worldTime >= Number(spec.until)) return;
+            if (!spec?.fish || !eater || uses === undefined || Number(uses) > 0 || game.time.worldTime >= Number(spec.until)) return;
             const source = (await fromUuid(EFFECT))?.toObject();
             if (!source) return;
             source.system.rules = source.system.rules.map((rule) => (rule.key === "ChoiceSet" ? { ...rule, selection: spec.fish } : rule));
             source.system.duration = { value: 1, unit: "hours", expiry: "turn-start", sustained: false };
             await eater.createEmbeddedDocuments("Item", [source]);
+            await item.delete();
         });
         // Not eaten within the hour: gone.
         Hooks.on("updateWorldTime", async () => {

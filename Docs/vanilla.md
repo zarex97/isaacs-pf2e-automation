@@ -15,7 +15,7 @@ vanilla spells** setting); its area and lingering ground still apply.
 | Animal Messenger | 2 |  | animal messenger (24 hours, on you) |  |
 | Animal Vision | 3 |  | animal vision (1 hours, on you); success / crit. success: expire |  |
 | Ant Haul | 1 |  | spell-effect-ant-haul |  |
-| Anticipate Peril | 1 |  | spell-effect-anticipate-peril |  |
+| Anticipate Peril | 1 |  | anticipate peril (10 minutes); anticipate peril (10 minutes, from rank 3); anticipate peril (10 minutes, from rank 5); anticipate peril (10 minutes, from rank 7) |  |
 | Approximate | 1 |  | approximate |  |
 | Augury | 2 |  | augury (on you) |  |
 | Banishment | 5 |  | crit. success: stunned 1 (on you); failure / crit. failure: banished for good (until it ends); crit. failure: GM note: “It can't return by any means to the plane it was banished from for 1 week.”; GM note: “Paid the extra action and an anathema cost? The target takes a –2 circumstance penalty to its save — apply it before rolling. The spell fails if you aren't on your home plane.” (on you) |  |

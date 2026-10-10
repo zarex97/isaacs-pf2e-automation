@@ -180,7 +180,9 @@ export async function extractPoison(_rider, context, { rank = 2, item = null } =
     const pile = context.actor;
     if (!caster || !pile) return;
     const poison = pile.items.find((i) => traitsOf(i).includes("poison"));
-    const weapon = caster.itemTypes?.weapon?.find((w) => w.system?.equipped?.carryType === "held" && (w.system.equipped.handsHeld ?? 0) > 0);
+    // "A weapon you are holding": the one, or the one the caster picks of several.
+    const { chooseHeldWeapon } = await import("./weapon.mjs");
+    const weapon = await chooseHeldWeapon(caster, context.item?.name ?? "");
     if (!poison) return context.notes.push(t("Poison.NoneToExtract", { name: pile.name }));
     if (!weapon) return context.notes.push(t("Poison.NoWeapon", { actor: caster.name }));
     const level = Number(poison.system?.level?.value) || 0;
@@ -192,7 +194,8 @@ export async function extractPoison(_rider, context, { rank = 2, item = null } =
     await poison.delete();
     const source = (await fromUuid(EXTRACT))?.toObject();
     if (!source) return;
-    source.system.rules = source.system.rules.map((rule) => (rule.key !== "ChoiceSet" ? rule : { ...rule, selection: rule.flag === "weapon" ? weapon.id : Math.max(1, level) }));
+    // pf2e's level choices are strings ("1" … "20"); a selection of another type leaves the prompt open.
+    source.system.rules = source.system.rules.map((rule) => (rule.key !== "ChoiceSet" ? rule : { ...rule, selection: rule.flag === "weapon" ? weapon.id : String(Math.max(1, level)) }));
     source.system.duration = { value: 1, unit: "rounds", expiry: "turn-end", sustained: false };
     source.system.badge = { type: "counter", value: 1 };
     source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { riders: [

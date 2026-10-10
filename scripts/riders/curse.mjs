@@ -38,7 +38,7 @@ export async function claimCurse(rider, context, chosen = {}) {
     source.system.duration = { value: Math.max(1, Math.round((until - now) / 6)), unit: "rounds", expiry: "turn-end", sustained: false };
     source.system.start = { value: now, initiative: null };
     // "At the same stage as the target, and it can't be changed": the copy keeps its stage, and none of its saves.
-    source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { [FLAG]: { from: target.uuid, source: curse.toObject(), endsAt: endsAt(curse) }, riders: [] } });
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, { [LIB_ID]: { [FLAG]: { from: target.uuid, source: curse.toObject(), endsAt: Number.isFinite(endsAt(curse)) ? endsAt(curse) : null }, riders: [] } });
     await caster.createEmbeddedDocuments("Item", [source]);
     await curse.delete();
     context.notes.push(t("Curse.Claimed", { curse: curse.name, from: target.name, actor: caster.name }));
@@ -52,7 +52,8 @@ export const Curse = {
             if (!spec) return;
             const target = fromUuidSync(spec.from);
             if (!target) return;
-            if (game.time.worldTime >= spec.endsAt) {
+            // A curse with no end is kept as `null`: Infinity does not survive being stored.
+            if (spec.endsAt !== null && game.time.worldTime >= spec.endsAt) {
                 await ChatMessage.create({ content: `<p>${t("Curse.Ended", { curse: item.name })}</p>` });
                 return;
             }
